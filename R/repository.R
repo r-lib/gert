@@ -6,7 +6,7 @@
 #' @family git
 #' @name repository
 #' @rdname repository
-#' @useDynLib gert R_git_clone
+#' @useDynLib gert R_git_repository_clone
 #' @param url remote url
 #' @param path local path, must be a non-existing or empty directory
 #' @param branch which branch to clone
@@ -17,7 +17,7 @@ git_clone <- function(url, path = NULL, branch = NULL){
   stopifnot(is.character(path))
   stopifnot(is.null(branch) || is.character(branch))
   path <- normalizePath(path.expand(path), mustWork = FALSE)
-  .Call(R_git_clone, url, path, branch)
+  .Call(R_git_repository_clone, url, path, branch)
 }
 
 #' @export

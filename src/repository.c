@@ -61,7 +61,7 @@ SEXP R_git_repository_open(SEXP path){
   return new_git_repository(repo);
 }
 
-SEXP R_git_clone(SEXP url, SEXP path, SEXP branch){
+SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch){
   git_repository *repo = NULL;
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
@@ -93,11 +93,17 @@ SEXP R_git_repository_info(SEXP ptr){
     SET_STRING_ELT(refs, i, Rf_mkChar(ref_list.strings[i]));
   }
   SEXP list = PROTECT(Rf_allocVector(VECSXP, 4));
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, Rf_length(list)));
+  SET_STRING_ELT(names, 0, Rf_mkChar("path"));
+  SET_STRING_ELT(names, 1, Rf_mkChar("ref"));
+  SET_STRING_ELT(names, 2, Rf_mkChar("shorthand"));
+  SET_STRING_ELT(names, 3, Rf_mkChar("reflist"));
   SET_VECTOR_ELT(list, 0, Rf_mkString(git_repository_workdir(repo)));
   SET_VECTOR_ELT(list, 1, Rf_mkString(git_reference_name(head)));
   SET_VECTOR_ELT(list, 2, Rf_mkString(git_reference_shorthand(head)));
   SET_VECTOR_ELT(list, 3, refs);
-  UNPROTECT(2);
+  Rf_setAttrib(list, R_NamesSymbol, names);
+  UNPROTECT(3);
   git_reference_free(head);
   git_strarray_free(&ref_list);
   return list;
