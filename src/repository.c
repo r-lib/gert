@@ -66,7 +66,7 @@ static git_strarray *files_to_array(SEXP files){
   int len = Rf_length(files);
   git_strarray *paths = malloc(sizeof *paths);
   paths->count = len;
-  paths->strings = malloc(len);
+  paths->strings = calloc(len, sizeof *paths->strings);
   for(int i = 0; i < len; i++)
     paths->strings[i] = strdup(CHAR(STRING_ELT(files, i)));
   return paths;
