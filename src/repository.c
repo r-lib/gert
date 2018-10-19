@@ -2,6 +2,12 @@
 #include <Rinternals.h>
 #include "utils.h"
 
+static SEXP safe_string(const char *x){
+  if(x == NULL)
+    return Rf_ScalarString(NA_STRING);
+  return Rf_mkString(x);
+}
+
 static void fin_git_repository(SEXP ptr){
   if(!R_ExternalPtrAddr(ptr)) return;
   git_repository_free(R_ExternalPtrAddr(ptr));
@@ -86,9 +92,8 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP verbose){
 
 SEXP R_git_repository_info(SEXP ptr){
   git_strarray ref_list;
-  git_reference *head = NULL;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_repository_head(&head, repo), "git_repository_head");
+  
   bail_if(git_reference_list(&ref_list, repo), "git_reference_list");
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, ref_list.count));
   for(int i = 0; i < ref_list.count; i++){
@@ -100,9 +105,16 @@ SEXP R_git_repository_info(SEXP ptr){
   SET_STRING_ELT(names, 1, Rf_mkChar("ref"));
   SET_STRING_ELT(names, 2, Rf_mkChar("shorthand"));
   SET_STRING_ELT(names, 3, Rf_mkChar("reflist"));
-  SET_VECTOR_ELT(list, 0, Rf_mkString(git_repository_workdir(repo)));
-  SET_VECTOR_ELT(list, 1, Rf_mkString(git_reference_name(head)));
-  SET_VECTOR_ELT(list, 2, Rf_mkString(git_reference_shorthand(head)));
+  SET_VECTOR_ELT(list, 0, safe_string(git_repository_workdir(repo)));
+  
+  git_reference *head = NULL;
+  if(git_repository_head(&head, repo) == 0){
+    SET_VECTOR_ELT(list, 1, safe_string(git_reference_name(head)));
+    SET_VECTOR_ELT(list, 2, safe_string(git_reference_shorthand(head)));    
+  } else {
+    SET_VECTOR_ELT(list, 1, Rf_ScalarString(NA_STRING));
+    SET_VECTOR_ELT(list, 2, Rf_ScalarString(NA_STRING));    
+  }
   SET_VECTOR_ELT(list, 3, refs);
   Rf_setAttrib(list, R_NamesSymbol, names);
   UNPROTECT(3);
