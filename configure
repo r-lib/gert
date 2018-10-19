@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Anticonf (tm) script by Jeroen Ooms (2018)
 # This script will query 'pkg-config' for the required cflags and ldflags.
 # If pkg-config is unavailable or does not find the library, try setting
@@ -69,8 +70,6 @@ fi
 # Write to Makevars
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
 
-# Extract curlopt symbols
-echo '#include <curl/curl.h>' | ${CC} ${CPPFLAGS} ${PKG_CFLAGS} ${CFLAGS} -E -xc - | grep "^[ \t]*CURLOPT_.*," | sed s/,// > tools/option_table.txt
-
 # Success
+echo "Configuration OK!"
 exit 0
