@@ -48,5 +48,5 @@ git_repository_info <- function(git_repository){
 #' @export
 print.git_repository <- function(x, ...){
   info <- git_repository_info(x)
-  utils::str(info)
+  cat(sprintf("<git_repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))
 }
