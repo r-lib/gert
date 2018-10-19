@@ -1,6 +1,7 @@
 #' Git Repository
 #' 
-#' Init, clone or open a repository.
+#' First create a repository object via [git_clone], [git_open], or [git_init]. 
+#' Then read data with [git_info] or [git_ls].
 #' 
 #' @export
 #' @family git
@@ -25,7 +26,7 @@ git_clone <- function(url, path = NULL, branch = NULL, verbose = interactive()){
 #' @export
 #' @rdname repository
 #' @useDynLib gert R_git_repository_init
-git_init <- function(path){
+git_init <- function(path = '.'){
   path <- normalizePath(path.expand(path), mustWork = FALSE)
   .Call(R_git_repository_init, path)
 }
@@ -33,7 +34,7 @@ git_init <- function(path){
 #' @export
 #' @rdname repository
 #' @useDynLib gert R_git_repository_open
-git_open <- function(path){
+git_open <- function(path = '.'){
   path <- normalizePath(path.expand(path), mustWork = FALSE)
   .Call(R_git_repository_open, path)
 }
@@ -43,7 +44,7 @@ git_open <- function(path){
 #' @param repo a `git_repository` object as returned by [git_open],  [git_init] or [git_clone]. 
 #' If you pass a string, this will be passed to [git_open] first.
 #' @useDynLib gert R_git_repository_info
-git_info <- function(repo){
+git_info <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   .Call(R_git_repository_info, repo)
@@ -52,7 +53,7 @@ git_info <- function(repo){
 #' @export
 #' @rdname repository
 #' @useDynLib gert R_git_repository_ls
-git_ls <- function(repo){
+git_ls <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)  
   out <- .Call(R_git_repository_ls, repo)
@@ -61,6 +62,29 @@ git_ls <- function(repo){
   class(df$mtime) <- c("POSIXct", "POSIXt")
   class(df) <- c("tbl_df", "tbl", "data.frame")
   df
+}
+
+#' @export
+#' @rdname repository
+#' @param files vector of paths relative to the git root directory
+#' @useDynLib gert R_git_repository_add
+git_add <- function(files, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  info <- git_info(repo)
+  normalizePath(file.path(info$path, files), mustWork = TRUE)
+  .Call(R_git_repository_add, repo, files)
+}
+
+#' @export
+#' @rdname repository
+#' @useDynLib gert R_git_repository_rm
+git_rm <- function(files, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  info <- git_info(repo)
+  normalizePath(file.path(info$path, files), mustWork = TRUE)
+  .Call(R_git_repository_rm, repo, files)
 }
 
 #' @export

@@ -1,5 +1,6 @@
 #include <git2.h>
 #include <Rinternals.h>
+#include <string.h>
 #include "utils.h"
 
 static SEXP safe_string(const char *x){
@@ -153,6 +154,35 @@ SEXP R_git_repository_ls(SEXP ptr){
   SET_VECTOR_ELT(df, 2, mtimes);
   UNPROTECT(4);
   return df;
+}
+
+SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){
+  git_index *index = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_repository_index(&index, repo), "git_repository_index");
+  git_strarray paths;
+  int len = Rf_length(files);
+  paths.count = len;
+  paths.strings = malloc(len);
+  for(int i = 0; i < Rf_length(files); i++)
+    paths.strings[i] = strdup(CHAR(STRING_ELT(files, i)));
+  git_index_add_option_t flags = Rf_asLogical(force) ? GIT_INDEX_ADD_FORCE : GIT_INDEX_ADD_DEFAULT;
+  bail_if(git_index_add_all(index, &paths, flags, NULL, NULL), "git_index_add_bypath");
+  git_index_free(index);
+  for(int i = 0; i < Rf_length(files); i++)
+    free(paths.strings[i]);
+  return ptr;
+}
+
+SEXP R_git_repository_rm(SEXP ptr, SEXP files){
+  git_index *index = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_repository_index(&index, repo), "git_repository_index");
+  for(int i = 0; i < Rf_length(files); i++){
+    bail_if(git_index_remove_bypath(index, CHAR(STRING_ELT(files, i))), "git_index_remove_bypath");
+  }
+  git_index_free(index);
+  return ptr;
 }
 
 SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){

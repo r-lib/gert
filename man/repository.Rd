@@ -7,17 +7,23 @@
 \alias{git_open}
 \alias{git_info}
 \alias{git_ls}
+\alias{git_add}
+\alias{git_rm}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, verbose = interactive())
 
-git_init(path)
+git_init(path = ".")
 
-git_open(path)
+git_open(path = ".")
 
-git_info(repo)
+git_info(repo = ".")
 
-git_ls(repo)
+git_ls(repo = ".")
+
+git_add(files, repo = ".")
+
+git_rm(files, repo = ".")
 }
 \arguments{
 \item{url}{remote url}
@@ -30,8 +36,11 @@ git_ls(repo)
 
 \item{repo}{a \code{git_repository} object as returned by \link{git_open},  \link{git_init} or \link{git_clone}.
 If you pass a string, this will be passed to \link{git_open} first.}
+
+\item{files}{vector of paths relative to the git root directory}
 }
 \description{
-Init, clone or open a repository.
+First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.
+Then read data with \link{git_info} or \link{git_ls}.
 }
 \concept{git}
