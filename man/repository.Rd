@@ -21,7 +21,7 @@ git_info(repo = ".")
 
 git_ls(repo = ".")
 
-git_add(files, repo = ".")
+git_add(files, force = FALSE, repo = ".")
 
 git_rm(files, repo = ".")
 }
@@ -34,10 +34,12 @@ git_rm(files, repo = ".")
 
 \item{verbose}{display some progress info while downloading}
 
-\item{repo}{a \code{git_repository} object as returned by \link{git_open},  \link{git_init} or \link{git_clone}.
-If you pass a string, this will be passed to \link{git_open} first.}
+\item{repo}{a path to an existing repository, or a \code{git_repository} object as
+returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{files}{vector of paths relative to the git root directory}
+
+\item{force}{add files even if in gitignore}
 }
 \description{
 First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.

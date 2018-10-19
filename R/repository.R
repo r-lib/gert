@@ -41,8 +41,8 @@ git_open <- function(path = '.'){
 
 #' @export
 #' @rdname repository
-#' @param repo a `git_repository` object as returned by [git_open],  [git_init] or [git_clone]. 
-#' If you pass a string, this will be passed to [git_open] first.
+#' @param repo a path to an existing repository, or a `git_repository` object as 
+#' returned by [git_open],  [git_init] or [git_clone].
 #' @useDynLib gert R_git_repository_info
 git_info <- function(repo = '.'){
   if(is.character(repo))
@@ -67,13 +67,15 @@ git_ls <- function(repo = '.'){
 #' @export
 #' @rdname repository
 #' @param files vector of paths relative to the git root directory
+#' @param force add files even if in gitignore
 #' @useDynLib gert R_git_repository_add
-git_add <- function(files, repo = '.'){
+git_add <- function(files, force = FALSE, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   info <- git_info(repo)
   normalizePath(file.path(info$path, files), mustWork = TRUE)
-  .Call(R_git_repository_add, repo, files)
+  force <- as.logical(force)
+  .Call(R_git_repository_add, repo, files, force)
 }
 
 #' @export

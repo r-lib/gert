@@ -62,6 +62,22 @@ static void checkout_progress(const char *path, size_t cur, size_t tot, void *pa
   }
 }
 
+static git_strarray *files_to_array(SEXP files){
+  int len = Rf_length(files);
+  git_strarray *paths = malloc(sizeof *paths);
+  paths->count = len;
+  paths->strings = malloc(len);
+  for(int i = 0; i < len; i++)
+    paths->strings[i] = strdup(CHAR(STRING_ELT(files, i)));
+  return paths;
+}
+
+static void free_file_array(git_strarray *paths){
+  for(int i = 0; i < paths->count; i++)
+    free(paths->strings[i]);
+  free(paths);
+}
+
 SEXP R_git_repository_init(SEXP path){
   git_repository *repo = NULL;
   bail_if(git_repository_init(&repo, CHAR(STRING_ELT(path, 0)), 0), "git_repository_init");
@@ -160,17 +176,12 @@ SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){
   git_index *index = NULL;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_repository_index(&index, repo), "git_repository_index");
-  git_strarray paths;
-  int len = Rf_length(files);
-  paths.count = len;
-  paths.strings = malloc(len);
-  for(int i = 0; i < Rf_length(files); i++)
-    paths.strings[i] = strdup(CHAR(STRING_ELT(files, i)));
+  git_strarray *paths = files_to_array(files);
   git_index_add_option_t flags = Rf_asLogical(force) ? GIT_INDEX_ADD_FORCE : GIT_INDEX_ADD_DEFAULT;
-  bail_if(git_index_add_all(index, &paths, flags, NULL, NULL), "git_index_add_bypath");
+  bail_if(git_index_add_all(index, paths, flags, NULL, NULL), "git_index_add_bypath");
+  bail_if(git_index_write(index), "git_index_write");
+  free_file_array(paths);
   git_index_free(index);
-  for(int i = 0; i < Rf_length(files); i++)
-    free(paths.strings[i]);
   return ptr;
 }
 
@@ -178,9 +189,10 @@ SEXP R_git_repository_rm(SEXP ptr, SEXP files){
   git_index *index = NULL;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_repository_index(&index, repo), "git_repository_index");
-  for(int i = 0; i < Rf_length(files); i++){
-    bail_if(git_index_remove_bypath(index, CHAR(STRING_ELT(files, i))), "git_index_remove_bypath");
-  }
+  git_strarray *paths = files_to_array(files);
+  bail_if(git_index_remove_all(index, paths, NULL, NULL), "git_index_remove_all");
+  bail_if(git_index_write(index), "git_index_write");
+  free_file_array(paths);
   git_index_free(index);
   return ptr;
 }

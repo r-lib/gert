@@ -1,6 +1,6 @@
 # gert
 
-> Experimental git client for R based on libgit2
+> Simple Git Client for R
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Build Status](https://travis-ci.org/jeroen/gert.svg?branch=master)](https://travis-ci.org/jeroen/gert)
