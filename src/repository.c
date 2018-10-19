@@ -8,6 +8,12 @@ static SEXP safe_string(const char *x){
   return Rf_mkString(x);
 }
 
+static SEXP safe_char(const char *x){
+  if(x == NULL)
+    return NA_STRING;
+  return Rf_mkCharCE(x, CE_UTF8);
+}
+
 static void fin_git_repository(SEXP ptr){
   if(!R_ExternalPtrAddr(ptr)) return;
   git_repository_free(R_ExternalPtrAddr(ptr));
@@ -123,6 +129,28 @@ SEXP R_git_repository_info(SEXP ptr){
   return list;
 }
 
+SEXP R_git_repository_ls(SEXP ptr){
+  git_index *index = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_repository_index(&index, repo), "git_repository_index");
+  
+  size_t entry_count = git_index_entrycount(index);
+  SEXP paths = PROTECT(Rf_allocVector(STRSXP, entry_count));
+  SEXP sizes = PROTECT(Rf_allocVector(REALSXP, entry_count));
+  
+  for(size_t i = 0; i < entry_count; i++){
+    const git_index_entry *entry = git_index_get_byindex(index, i);
+    SET_STRING_ELT(paths, i, safe_char(entry->path));
+    REAL(sizes)[i] = (double) entry->file_size;
+  }
+  git_index_free(index);
+  SEXP df = PROTECT(Rf_allocVector(VECSXP, 2));
+  SET_VECTOR_ELT(df, 0, paths);
+  SET_VECTOR_ELT(df, 1, sizes);
+  UNPROTECT(3);
+  return df;
+}
+
 SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   git_repository *repo = get_git_repository(ptr);
   
@@ -142,3 +170,4 @@ SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   git_object_free(treeish);
   return ptr;
 }
+

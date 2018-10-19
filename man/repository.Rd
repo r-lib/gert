@@ -6,6 +6,7 @@
 \alias{git_init}
 \alias{git_open}
 \alias{git_repository_info}
+\alias{git_repository_ls}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, verbose = interactive())
@@ -15,6 +16,8 @@ git_init(path)
 git_open(path)
 
 git_repository_info(git_repository)
+
+git_repository_ls(git_repository_info)
 }
 \arguments{
 \item{url}{remote url}

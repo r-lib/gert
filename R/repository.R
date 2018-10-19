@@ -47,6 +47,18 @@ git_repository_info <- function(git_repository){
   .Call(R_git_repository_info, git_repository)
 }
 
+
+#' @export
+#' @rdname repository
+#' @useDynLib gert R_git_repository_ls
+git_repository_ls <- function(git_repository_info){
+  out <- .Call(R_git_repository_ls, git_repository_info)
+  names(out) <- c("path", "filesize")
+  df <- data.frame(out, stringsAsFactors = FALSE)
+  class(df) <- c("tbl_df", "tbl", "data.frame")
+  df
+}
+
 #' @export
 print.git_repository <- function(x, ...){
   info <- git_repository_info(x)
