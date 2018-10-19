@@ -137,17 +137,21 @@ SEXP R_git_repository_ls(SEXP ptr){
   size_t entry_count = git_index_entrycount(index);
   SEXP paths = PROTECT(Rf_allocVector(STRSXP, entry_count));
   SEXP sizes = PROTECT(Rf_allocVector(REALSXP, entry_count));
+  SEXP mtimes = PROTECT(Rf_allocVector(REALSXP, entry_count));
   
   for(size_t i = 0; i < entry_count; i++){
     const git_index_entry *entry = git_index_get_byindex(index, i);
+    git_index_time timeval = entry->mtime;
     SET_STRING_ELT(paths, i, safe_char(entry->path));
     REAL(sizes)[i] = (double) entry->file_size;
+    REAL(mtimes)[i] = (double) timeval.seconds + timeval.nanoseconds * 1e-9;
   }
   git_index_free(index);
-  SEXP df = PROTECT(Rf_allocVector(VECSXP, 2));
+  SEXP df = PROTECT(Rf_allocVector(VECSXP, 3));
   SET_VECTOR_ELT(df, 0, paths);
   SET_VECTOR_ELT(df, 1, sizes);
-  UNPROTECT(3);
+  SET_VECTOR_ELT(df, 2, mtimes);
+  UNPROTECT(4);
   return df;
 }
 

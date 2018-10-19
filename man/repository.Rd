@@ -5,8 +5,8 @@
 \alias{git_clone}
 \alias{git_init}
 \alias{git_open}
-\alias{git_repository_info}
-\alias{git_repository_ls}
+\alias{git_info}
+\alias{git_ls}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, verbose = interactive())
@@ -15,9 +15,9 @@ git_init(path)
 
 git_open(path)
 
-git_repository_info(git_repository)
+git_info(repo)
 
-git_repository_ls(git_repository_info)
+git_ls(repo)
 }
 \arguments{
 \item{url}{remote url}
@@ -28,8 +28,8 @@ git_repository_ls(git_repository_info)
 
 \item{verbose}{display some progress info while downloading}
 
-\item{git_repository}{a \code{git_repository} object as returned by \link{git_open} or
-\link{git_init} or \link{git_clone}}
+\item{repo}{a \code{git_repository} object as returned by \link{git_open},  \link{git_init} or \link{git_clone}.
+If you pass a string, this will be passed to \link{git_open} first.}
 }
 \description{
 Init, clone or open a repository.

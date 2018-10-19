@@ -40,27 +40,31 @@ git_open <- function(path){
 
 #' @export
 #' @rdname repository
-#' @param git_repository a `git_repository` object as returned by [git_open] or 
-#' [git_init] or [git_clone]
+#' @param repo a `git_repository` object as returned by [git_open],  [git_init] or [git_clone]. 
+#' If you pass a string, this will be passed to [git_open] first.
 #' @useDynLib gert R_git_repository_info
-git_repository_info <- function(git_repository){
-  .Call(R_git_repository_info, git_repository)
+git_info <- function(repo){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  .Call(R_git_repository_info, repo)
 }
-
 
 #' @export
 #' @rdname repository
 #' @useDynLib gert R_git_repository_ls
-git_repository_ls <- function(git_repository_info){
-  out <- .Call(R_git_repository_ls, git_repository_info)
-  names(out) <- c("path", "filesize")
+git_ls <- function(repo){
+  if(is.character(repo))
+    repo <- git_open(repo)  
+  out <- .Call(R_git_repository_ls, repo)
+  names(out) <- c("path", "filesize", "mtime")
   df <- data.frame(out, stringsAsFactors = FALSE)
+  class(df$mtime) <- c("POSIXct", "POSIXt")
   class(df) <- c("tbl_df", "tbl", "data.frame")
   df
 }
 
 #' @export
 print.git_repository <- function(x, ...){
-  info <- git_repository_info(x)
+  info <- git_info(x)
   cat(sprintf("<git_repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))
 }
