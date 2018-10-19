@@ -8,7 +8,7 @@
 \alias{git_repository_info}
 \title{Git Repository}
 \usage{
-git_clone(url, path = NULL, branch = NULL, verbose = FALSE)
+git_clone(url, path = NULL, branch = NULL, verbose = interactive())
 
 git_init(path)
 

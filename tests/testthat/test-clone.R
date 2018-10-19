@@ -2,7 +2,7 @@ context("test-clone")
 
 test_that("cloning repositories works", {
   path <- file.path(tempdir(), 'jsonlite')
-  repo <- git_clone('https://github.com/jeroen/jsonlite', path = path, verbose = FALSE)
+  repo <- git_clone('https://github.com/jeroen/jsonlite', path = path)
   expect_true(file.exists(path))
   info <- git_repository_info(repo)
   expect_equal(normalizePath(info$path), normalizePath(path))

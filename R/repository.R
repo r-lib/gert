@@ -11,7 +11,7 @@
 #' @param path local path, must be a non-existing or empty directory
 #' @param branch which branch to clone
 #' @param verbose display some progress info while downloading
-git_clone <- function(url, path = NULL, branch = NULL, verbose = FALSE){
+git_clone <- function(url, path = NULL, branch = NULL, verbose = interactive()){
   stopifnot(is.character(url))
   if(!length(path))
     path <- file.path(getwd(), basename(url))
