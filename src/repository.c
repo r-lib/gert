@@ -61,15 +61,17 @@ SEXP R_git_repository_open(SEXP path){
   return new_git_repository(repo);
 }
 
-SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch){
+SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP verbose){
   git_repository *repo = NULL;
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
-  clone_opts.checkout_opts.progress_cb = checkout_progress;
+  if(Rf_asLogical(verbose)){
+    clone_opts.checkout_opts.progress_cb = checkout_progress;
   
 #if LIBGIT2_VER_MAJOR > 0 || LIBGIT2_VER_MINOR >= 23
-  clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
+    clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
 #endif
+  }
   
   /* specify branch to checkout */
   if(Rf_length(branch))

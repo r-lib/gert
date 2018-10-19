@@ -8,7 +8,7 @@
 \alias{git_repository_info}
 \title{Git Repository}
 \usage{
-git_clone(url, path = NULL, branch = NULL)
+git_clone(url, path = NULL, branch = NULL, verbose = FALSE)
 
 git_init(path)
 
@@ -22,6 +22,8 @@ git_repository_info(git_repository)
 \item{path}{local path, must be a non-existing or empty directory}
 
 \item{branch}{which branch to clone}
+
+\item{verbose}{display some progress info while downloading}
 
 \item{git_repository}{a \code{git_repository} object as returned by \link{git_open} or
 \link{git_init} or \link{git_clone}}

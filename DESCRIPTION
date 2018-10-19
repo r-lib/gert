@@ -12,3 +12,5 @@ BugReports: http://github.com/jeroen/gert/issues
 Encoding: UTF-8
 RoxygenNote: 6.1.0
 Roxygen: list(markdown = TRUE)
+Suggests: 
+    testthat

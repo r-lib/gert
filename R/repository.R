@@ -10,14 +10,16 @@
 #' @param url remote url
 #' @param path local path, must be a non-existing or empty directory
 #' @param branch which branch to clone
-git_clone <- function(url, path = NULL, branch = NULL){
+#' @param verbose display some progress info while downloading
+git_clone <- function(url, path = NULL, branch = NULL, verbose = FALSE){
   stopifnot(is.character(url))
   if(!length(path))
     path <- file.path(getwd(), basename(url))
   stopifnot(is.character(path))
   stopifnot(is.null(branch) || is.character(branch))
+  verbose <- as.logical(verbose)
   path <- normalizePath(path.expand(path), mustWork = FALSE)
-  .Call(R_git_repository_clone, url, path, branch)
+  .Call(R_git_repository_clone, url, path, branch, verbose)
 }
 
 #' @export
