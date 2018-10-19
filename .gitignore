@@ -1,0 +1,10 @@
+*.o
+*.so
+*.dll
+*.mp4
+*.mpeg
+*.mkv
+*.out
+.Rproj.user
+src/Makevars
+.Rhistory

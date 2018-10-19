@@ -1,0 +1,14 @@
+Package: gert
+Type: Package
+Title: Git Client for R
+Version: 0.1
+Author: Jeroen Ooms
+Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
+Description: Experimental rewrite of git client for R based on 'libgit2' <https://libgit2.org/>.
+License: MIT + file LICENSE
+SystemRequirements: libgit2 (>= 0.19): libgit2-devel (rpm) or libgit2-dev (deb)
+URL: http://github.com/jeroen/gert (devel), https://libgit2.org (upstream)
+BugReports: http://github.com/jeroen/gert/issues
+Encoding: UTF-8
+RoxygenNote: 6.1.0
+Roxygen: list(markdown = TRUE)

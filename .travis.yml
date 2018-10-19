@@ -1,0 +1,21 @@
+language: r
+cache: packages
+latex: false
+fortran: false
+pandoc: false
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+    - os: osx
+      osx_image: xcode9.3
+      brew_packages: libgit2
+    - os: osx
+      osx_image: xcode7.3
+      disable_homebrew: true
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change

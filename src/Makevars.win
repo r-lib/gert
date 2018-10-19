@@ -1,0 +1,19 @@
+VERSION = 0.27.2
+RWINLIB = ../windows/libgit2-${VERSION}
+
+PKG_CPPFLAGS = -I${RWINLIB}/include \
+	-DR_NO_REMAP -DSTRICT_R_HEADERS
+
+PKG_LIBS = -L${RWINLIB}/lib${R_ARCH} \
+	-lgit2 -lcurl-dualssl -lhttp_parser -lssh2 -lz -lssl -lcrypto \
+	-lwinhttp -lgdi32 -lole32 -lrpcrt4 -lws2_32 -lcrypt32 -lwldap32
+
+all: clean winlibs
+
+winlibs:
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" $(VERSION)
+
+clean:
+	rm -f $(SHLIB) $(OBJECTS)
+
+.PHONY: all winlibs clean
