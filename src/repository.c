@@ -26,11 +26,27 @@ static git_repository *get_git_repository(SEXP ptr){
 
 static int fetch_progress(const git_transfer_progress *stats, void *payload){
   R_CheckUserInterrupt();
+  unsigned int tot = stats->total_objects;
+  unsigned int cur = stats->received_objects;
+  static size_t prev = 0;
+  if(prev != cur){
+    prev = cur;
+    REprintf("\rReceived %d of %d objects...", cur, tot);
+    if(cur == tot) 
+      REprintf("done!\n");
+  }
   return 0;
 }
 
 static void checkout_progress(const char *path, size_t cur, size_t tot, void *payload){
   R_CheckUserInterrupt();
+  static size_t prev = 0;
+  if(prev != cur){
+    prev = cur;
+    REprintf("\rChecked out %d of %d commits...", cur, tot);
+    if(cur == tot) 
+      REprintf(" done!\n");
+  }
 }
 
 SEXP R_git_repository_init(SEXP path){
@@ -50,8 +66,11 @@ SEXP R_git_clone(SEXP url, SEXP path, SEXP branch){
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
   clone_opts.checkout_opts.progress_cb = checkout_progress;
+  
+#if LIBGIT2_VER_MAJOR > 0 || LIBGIT2_VER_MINOR >= 23
   clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
-
+#endif
+  
   /* specify branch to checkout */
   if(Rf_length(branch))
     clone_opts.checkout_branch = CHAR(STRING_ELT(branch, 0));
