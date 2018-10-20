@@ -62,6 +62,12 @@ static void checkout_progress(const char *path, size_t cur, size_t tot, void *pa
   }
 }
 
+static int auth_callback(git_cred **cred, const char *url, const char *username, 
+                               unsigned int allowed_types, void *payload){
+  REprintf("Need credentials for %s\n", url);
+  return 0;
+}
+
 static git_strarray *files_to_array(SEXP files){
   int len = Rf_length(files);
   git_strarray *paths = malloc(sizeof *paths);
@@ -99,6 +105,7 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP verbose){
   
 #if AT_LEAST_LIBGIT2(0, 23)
     clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
+    clone_opts.fetch_opts.callbacks.credentials = auth_callback;
 #endif
   }
   
@@ -266,6 +273,6 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspecs){
   free_file_array(refs);
   return ptr;
 #else
-  Rf_error("git_remote_fetch requires at least libgit2 v0.23") 
+  Rf_error("git_remote_fetch requires at least libgit2 v0.23");
 #endif
 }
