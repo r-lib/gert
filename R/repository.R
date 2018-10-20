@@ -100,8 +100,29 @@ git_remotes <- function(repo = '.'){
             names = c("remote", "url", "refspecs"), row.names = seq_along(out[[1]]))
 }
 
+
+#' @export
+#' @rdname repository
+#' @useDynLib gert R_git_remote_fetch
+git_fetch <- function(remote = "origin", refs = NULL, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  remote <- as.character(remote)
+  refs <- as.character(refs)
+  .Call(R_git_remote_fetch, repo, remote, refs)
+}
+
 #' @export
 print.git_repository <- function(x, ...){
   info <- git_info(x)
   cat(sprintf("<git_repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))
+}
+
+#' @export
+#' @useDynLib gert R_libgit2_config
+git_libgit2_config <- function(){
+  res <- .Call(R_libgit2_config)
+  names(res) <- c("version", "ssh", "https", "threads")
+  res$version <- as.numeric_version(res$version)
+  res
 }

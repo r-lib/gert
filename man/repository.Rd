@@ -10,6 +10,7 @@
 \alias{git_add}
 \alias{git_rm}
 \alias{git_remotes}
+\alias{git_fetch}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, verbose = interactive())
@@ -27,6 +28,8 @@ git_add(files, force = FALSE, repo = ".")
 git_rm(files, repo = ".")
 
 git_remotes(repo = ".")
+
+git_fetch(remote = "origin", refs = NULL, repo = ".")
 }
 \arguments{
 \item{url}{remote url}
