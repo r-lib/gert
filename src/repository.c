@@ -97,7 +97,7 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP verbose){
   if(Rf_asLogical(verbose)){
     clone_opts.checkout_opts.progress_cb = checkout_progress;
   
-#if LIBGIT2_VER_MAJOR > 0 || LIBGIT2_VER_MINOR >= 23
+#if AT_LEAST_LIBGIT2(0, 23)
     clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
 #endif
   }
@@ -201,11 +201,11 @@ SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   git_repository *repo = get_git_repository(ptr);
   
   /* Set checkout options */
-  #if LIBGIT2_VER_MAJOR > 0 || LIBGIT2_VER_MINOR >= 21
+#if AT_LEAST_LIBGIT2(0, 21)
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
-  #else
+#else
   git_checkout_opts opts = GIT_CHECKOUT_OPTS_INIT;
-  #endif
+#endif
   opts.checkout_strategy = Rf_asLogical(force) ? GIT_CHECKOUT_FORCE : GIT_CHECKOUT_SAFE;
   
   /* Parse the branch/tag/ref string */
@@ -254,7 +254,7 @@ SEXP R_git_remotes_list(SEXP ptr){
 }
 
 SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspecs){
-#if LIBGIT2_VER_MAJOR > 0 || LIBGIT2_VER_MINOR >= 23
+#if AT_LEAST_LIBGIT2(0, 23)
   git_remote *remote = NULL;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))), "git_remote_lookup");
