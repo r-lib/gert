@@ -46,6 +46,10 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{files}{vector of paths relative to the git root directory}
 
 \item{force}{add files even if in gitignore}
+
+\item{remote}{name of a remote listed in \code{\link[=git_remotes]{git_remotes()}}}
+
+\item{refs}{which branches/tags/etc to download. Defaults to the base refspecs.}
 }
 \description{
 First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.

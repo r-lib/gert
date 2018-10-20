@@ -104,6 +104,8 @@ git_remotes <- function(repo = '.'){
 #' @export
 #' @rdname repository
 #' @useDynLib gert R_git_remote_fetch
+#' @param remote name of a remote listed in [git_remotes()]
+#' @param refs which branches/tags/etc to download. Defaults to the base refspecs.
 git_fetch <- function(remote = "origin", refs = NULL, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
