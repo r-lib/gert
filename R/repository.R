@@ -90,6 +90,17 @@ git_rm <- function(files, repo = '.'){
 }
 
 #' @export
+#' @rdname repository
+#' @useDynLib gert R_git_remotes_list
+git_remotes <- function(repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  out <- .Call(R_git_remotes_list, repo)
+  structure(out, class = c("tbl_df", "tbl", "data.frame"),
+            names = c("remote", "url", "refspecs"), row.names = seq_along(out[[1]]))
+}
+
+#' @export
 print.git_repository <- function(x, ...){
   info <- git_info(x)
   cat(sprintf("<git_repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))

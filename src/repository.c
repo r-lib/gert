@@ -217,3 +217,38 @@ SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   return ptr;
 }
 
+static SEXP make_refspecs(git_remote *remote){
+  int size = git_remote_refspec_count(remote);
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, size));
+  for(int i = 0; i < size; i++){
+    SET_STRING_ELT(out, i, safe_char(git_refspec_string(git_remote_get_refspec(remote, i))));
+  }
+  UNPROTECT(1);
+  return out;
+}
+
+SEXP R_git_remotes_list(SEXP ptr){
+  git_strarray remotes = {0};
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_remote_list(&remotes, repo), "git_remote_list");
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, remotes.count));
+  SEXP url = PROTECT(Rf_allocVector(STRSXP, remotes.count));
+  SEXP refspecs = PROTECT(Rf_allocVector(VECSXP, remotes.count));
+  for(int i = 0; i < remotes.count; i++){
+    git_remote *remote = NULL;
+    char *name = remotes.strings[i];
+    SET_STRING_ELT(names, i, safe_char(name));
+    if(!git_remote_lookup(&remote, repo, name)){
+      SET_STRING_ELT(url, i, safe_char(git_remote_url(remote)));
+      SET_VECTOR_ELT(refspecs, i, make_refspecs(remote));
+      git_remote_free(remote);
+    }
+    free(name);
+  }
+  SEXP out = PROTECT(Rf_allocVector(VECSXP, 3));
+  SET_VECTOR_ELT(out, 0, names);
+  SET_VECTOR_ELT(out, 1, url);
+  SET_VECTOR_ELT(out, 2, refspecs);  
+  UNPROTECT(4);
+  return out;
+}

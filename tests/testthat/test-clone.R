@@ -11,6 +11,12 @@ test_that("cloning repositories works", {
   info2 <- git_info(repo2)
   expect_equal(info, info2)
   expect_is(git_ls(repo), 'data.frame')
+  
+  # Test remotes
+  remotes <- git_remotes(repo)
+  expect_equal(remotes$remote, "origin")
+  expect_equal(remotes$url, "https://github.com/jeroen/jsonlite")
+  
 })
 
 test_that("adding and removing files", {
@@ -23,4 +29,6 @@ test_that("adding and removing files", {
   expect_equal(git_ls(tempdir())$path, c('cars.csv', 'iris.csv'))
   git_rm(c('cars.csv', 'iris.csv'), repo = repo)
   expect_equal(nrow(git_ls(repo)), 0)
+  remotes <- git_remotes(repo)
+  expect_equal(nrow(remotes), 0)
 })
