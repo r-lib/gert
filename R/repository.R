@@ -119,12 +119,3 @@ print.git_repository <- function(x, ...){
   info <- git_info(x)
   cat(sprintf("<git_repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))
 }
-
-#' @export
-#' @useDynLib gert R_libgit2_config
-git_libgit2_config <- function(){
-  res <- .Call(R_libgit2_config)
-  names(res) <- c("version", "ssh", "https", "threads")
-  res$version <- as.numeric_version(res$version)
-  res
-}
