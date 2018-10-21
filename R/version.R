@@ -12,7 +12,7 @@ git_libgit2_config <- function(){
   res
 }
 
-.onLoad <- function(libname, pkgname){
+.onAttach <- function(libname, pkgname){
   config <- git_libgit2_config()
   ssh <- ifelse(config$ssh, "YES", "NO")
   https <- ifelse(config$https, "YES", "NO")

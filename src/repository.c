@@ -1,19 +1,5 @@
-#include <git2.h>
-#include <Rinternals.h>
 #include <string.h>
 #include "utils.h"
-
-static SEXP safe_string(const char *x){
-  if(x == NULL)
-    return Rf_ScalarString(NA_STRING);
-  return Rf_mkString(x);
-}
-
-static SEXP safe_char(const char *x){
-  if(x == NULL)
-    return NA_STRING;
-  return Rf_mkCharCE(x, CE_UTF8);
-}
 
 static void fin_git_repository(SEXP ptr){
   if(!R_ExternalPtrAddr(ptr)) return;
