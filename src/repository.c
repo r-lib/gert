@@ -7,6 +7,15 @@ typedef struct {
   SEXP askpass;
 } auth_callback_data;
 
+static const char *session_keyphrase(const char *set){
+  static char *key;
+  if(set){
+    key = strdup(set);
+    return NULL;
+  }
+  return key;
+}
+
 static const char *prompt_user_password(SEXP rpass, const char *prompt){
   if(Rf_isString(rpass) && Rf_length(rpass)) {
     return CHAR(STRING_ELT(rpass, 0));
@@ -94,7 +103,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
     // Second try is with the user provided key
     if(cb_data->retries == 1) {
       cb_data->retries++;
-      if(git_cred_ssh_key_memory_new(cred, username, "", "", NULL) == 0){
+      if(git_cred_ssh_key_memory_new(cred, username, "", "", session_keyphrase(NULL)) == 0){
         REprintf("Trying to authenticate '%s' using provided ssh-key...\n", username);
         return 0;
       } else {
@@ -351,4 +360,11 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspecs){
 #else
   Rf_error("git_remote_fetch requires at least libgit2 v0.23");
 #endif
+}
+
+SEXP R_set_session_keyphrase(SEXP key){
+  if(!Rf_length(key) || !Rf_isString(key))
+    Rf_error("Need to pass a string");
+  session_keyphrase(CHAR(STRING_ELT(key, 0)));
+  return R_NilValue;
 }

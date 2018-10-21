@@ -1,7 +1,7 @@
 #' Version info
-#' 
+#'
 #' Shows the version of libgit2 and which features have been enabled.
-#' 
+#'
 #' @export
 #' @rdname version
 #' @useDynLib gert R_libgit2_config
@@ -17,6 +17,6 @@ git_libgit2_config <- function(){
   ssh <- ifelse(config$ssh, "YES", "NO")
   https <- ifelse(config$https, "YES", "NO")
   packageStartupMessage(sprintf(
-    "Linking to libgit2 v%s, ssh support: %s, https support: %s", 
+    "Linking to libgit2 v%s, ssh support: %s, https support: %s",
     as.character(config$version), ssh, https))
 }

@@ -104,7 +104,6 @@ git_remotes <- function(repo = '.'){
             names = c("remote", "url", "refspecs"), row.names = seq_along(out[[1]]))
 }
 
-
 #' @export
 #' @rdname repository
 #' @useDynLib gert R_git_remote_fetch
