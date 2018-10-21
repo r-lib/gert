@@ -76,6 +76,8 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   /* First get a username */
   auth_callback_data *cb_data = payload;
 
+#if AT_LEAST_LIBGIT2(0, 23)
+
   /* This is for SSH remotes */
   if(allowed_types & GIT_CREDTYPE_SSH_MEMORY){
     // First try the ssh agent
@@ -105,9 +107,11 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
       REprintf("Failed to authenticate over SSH. You either need to provide a key or setup ssh-agent\n");
       if(strcmp(username, "git"))
         REprintf("Are you sure ssh address has username '%s'? (ssh remotes usually have username 'git')\n", username);
-      return GITERR_CALLBACK;
+      return GIT_EUSER;
     }
   }
+
+#endif
 
   /* This is for HTTP remotes */
   if(allowed_types & GIT_CREDTYPE_USERPASS_PLAINTEXT){
