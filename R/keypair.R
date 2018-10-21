@@ -29,8 +29,6 @@ setup_ssh_key <- function(file = "~/.ssh/id_rsa", open_github = TRUE){
   }  
 }
 
-
-#' @rdname ssh_keys
 #' @importFrom openssl askpass
 #' @export
 openssl::askpass
