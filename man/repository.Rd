@@ -13,7 +13,8 @@
 \alias{git_fetch}
 \title{Git Repository}
 \usage{
-git_clone(url, path = NULL, branch = NULL, verbose = interactive())
+git_clone(url, path = NULL, branch = NULL, passwd = askpass,
+  verbose = interactive())
 
 git_init(path = ".")
 
@@ -32,11 +33,16 @@ git_remotes(repo = ".")
 git_fetch(remote = "origin", refs = NULL, repo = ".")
 }
 \arguments{
-\item{url}{remote url}
+\item{url}{remote url. Typically starts with \code{https://github.com/} for public
+repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
+private repos. You will be prompted for a password or pat when needed.}
 
 \item{path}{local path, must be a non-existing or empty directory}
 
 \item{branch}{which branch to clone}
+
+\item{passwd}{a string or a callback function to get passwords for https
+authentication or password proctected ssh keys.}
 
 \item{verbose}{display some progress info while downloading}
 

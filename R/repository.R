@@ -1,18 +1,22 @@
 #' Git Repository
-#' 
-#' First create a repository object via [git_clone], [git_open], or [git_init]. 
+#'
+#' First create a repository object via [git_clone], [git_open], or [git_init].
 #' Then read data with [git_info] or [git_ls].
-#' 
+#'
 #' @export
 #' @family git
 #' @name repository
 #' @rdname repository
 #' @useDynLib gert R_git_repository_clone
-#' @param url remote url
+#' @param url remote url. Typically starts with `https://github.com/` for public
+#' repositories, and `https://yourname@github.com/` or `git@github.com/` for
+#' private repos. You will be prompted for a password or pat when needed.
 #' @param path local path, must be a non-existing or empty directory
 #' @param branch which branch to clone
+#' @param passwd a string or a callback function to get passwords for https
+#' authentication or password proctected ssh keys.
 #' @param verbose display some progress info while downloading
-git_clone <- function(url, path = NULL, branch = NULL, verbose = interactive()){
+git_clone <- function(url, path = NULL, branch = NULL, passwd = askpass, verbose = interactive()){
   stopifnot(is.character(url))
   if(!length(path))
     path <- file.path(getwd(), basename(url))
@@ -20,7 +24,7 @@ git_clone <- function(url, path = NULL, branch = NULL, verbose = interactive()){
   stopifnot(is.null(branch) || is.character(branch))
   verbose <- as.logical(verbose)
   path <- normalizePath(path.expand(path), mustWork = FALSE)
-  .Call(R_git_repository_clone, url, path, branch, verbose)
+  .Call(R_git_repository_clone, url, path, branch, NULL, passwd, verbose)
 }
 
 #' @export
@@ -41,7 +45,7 @@ git_open <- function(path = '.'){
 
 #' @export
 #' @rdname repository
-#' @param repo a path to an existing repository, or a `git_repository` object as 
+#' @param repo a path to an existing repository, or a `git_repository` object as
 #' returned by [git_open],  [git_init] or [git_clone].
 #' @useDynLib gert R_git_repository_info
 git_info <- function(repo = '.'){
@@ -55,7 +59,7 @@ git_info <- function(repo = '.'){
 #' @useDynLib gert R_git_repository_ls
 git_ls <- function(repo = '.'){
   if(is.character(repo))
-    repo <- git_open(repo)  
+    repo <- git_open(repo)
   out <- .Call(R_git_repository_ls, repo)
   names(out) <- c("path", "filesize", "mtime")
   df <- data.frame(out, stringsAsFactors = FALSE)

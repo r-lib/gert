@@ -1,6 +1,28 @@
 #include <string.h>
 #include "utils.h"
 
+typedef struct {
+  int retries;
+  SEXP getkey;
+  SEXP askpass;
+} auth_callback_data;
+
+static const char *prompt_user_password(SEXP rpass, const char *prompt){
+  if(Rf_isString(rpass) && Rf_length(rpass)) {
+    return CHAR(STRING_ELT(rpass, 0));
+  } else if(Rf_isFunction(rpass)){
+    int err;
+    SEXP call = PROTECT(Rf_lcons(rpass, Rf_lcons(safe_string(prompt), R_NilValue)));
+    SEXP res = PROTECT(R_tryEval(call, R_GlobalEnv, &err));
+    if(err || !Rf_isString(res)){
+      UNPROTECT(2);
+      return NULL;
+    }
+    return CHAR(STRING_ELT(res, 0));
+  } //should never happen
+  Rf_errorcall(R_NilValue, "unsupported password type (must be string or function)");
+}
+
 static void fin_git_repository(SEXP ptr){
   if(!R_ExternalPtrAddr(ptr)) return;
   git_repository_free(R_ExternalPtrAddr(ptr));
@@ -31,7 +53,7 @@ static int fetch_progress(const git_transfer_progress *stats, void *payload){
   if(prev != cur){
     prev = cur;
     REprintf("\rReceived %d of %d objects...", cur, tot);
-    if(cur == tot) 
+    if(cur == tot)
       REprintf("done!\n");
   }
   return 0;
@@ -43,15 +65,74 @@ static void checkout_progress(const char *path, size_t cur, size_t tot, void *pa
   if(prev != cur){
     prev = cur;
     REprintf("\rChecked out %d of %d commits...", cur, tot);
-    if(cur == tot) 
+    if(cur == tot)
       REprintf(" done!\n");
   }
 }
 
-static int auth_callback(git_cred **cred, const char *url, const char *username, 
+/* Examples: https://github.com/libgit2/libgit2/blob/master/tests/online/clone.c */
+static int auth_callback(git_cred **cred, const char *url, const char *username,
                                unsigned int allowed_types, void *payload){
-  REprintf("Need credentials for %s\n", url);
-  return 0;
+  /* First get a username */
+  auth_callback_data *cb_data = payload;
+
+  /* This is for SSH remotes */
+  if(allowed_types & GIT_CREDTYPE_SSH_MEMORY){
+    // First try the ssh agent
+    if(cb_data->retries == 0){
+      cb_data->retries++;
+      const char * ssh_user = username ? username : "git";
+      if(git_cred_ssh_key_from_agent(cred, ssh_user) == 0){
+        REprintf("Trying to authenticate '%s' using ssh-agent...\n", ssh_user);
+        return 0;
+      } else {
+        REprintf("Failed to connect to ssh-agent: %s\n", giterr_last()->message);
+      }
+    }
+    // Second try is with the user provided key
+    if(cb_data->retries == 1) {
+      cb_data->retries++;
+      if(git_cred_ssh_key_memory_new(cred, username, "", "", NULL) == 0){
+        REprintf("Trying to authenticate '%s' using provided ssh-key...\n", username);
+        return 0;
+      } else {
+        REprintf("Failed to load ssh-key: %s\n", giterr_last()->message);
+      }
+    }
+
+    // Third is just bail with an error
+    if(cb_data->retries == 2) {
+      REprintf("Failed to authenticate over SSH. You either need to provide a key or setup ssh-agent\n");
+      if(strcmp(username, "git"))
+        REprintf("Are you sure ssh address has username '%s'? (ssh remotes usually have username 'git')\n", username);
+      return GITERR_CALLBACK;
+    }
+  }
+
+  /* This is for HTTP remotes */
+  if(allowed_types & GIT_CREDTYPE_USERPASS_PLAINTEXT){
+    if(cb_data->retries > 2){
+      REprintf("Failed password authentiation %d times. Giving up\n", cb_data->retries);
+      cb_data->retries = 0;
+    } else {
+      cb_data->retries++;
+      if(username == NULL)
+        username = prompt_user_password(cb_data->askpass, "Please enter USERNAME");
+      if(!username)
+        goto cred_fail;
+      REprintf("Trying plaintext auth for user '%s' (attempt #%d)\n", username, cb_data->retries);
+      char buf[1000];
+      snprintf(buf, 999, "Enter PASSWORD or PAT for user '%s'", username);
+      const char *pass = prompt_user_password(cb_data->askpass, buf);
+      if(!pass)
+        goto cred_fail;
+      return git_cred_userpass_plaintext_new(cred, username, pass);
+    }
+  }
+
+cred_fail:
+  REprintf("All authentication methods failed\n");
+  return GIT_EUSER;
 }
 
 static git_strarray *files_to_array(SEXP files){
@@ -82,25 +163,30 @@ SEXP R_git_repository_open(SEXP path){
   return new_git_repository(repo);
 }
 
-SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP verbose){
+SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP askpass, SEXP verbose){
+  auth_callback_data data_cb;
   git_repository *repo = NULL;
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
   if(Rf_asLogical(verbose)){
     clone_opts.checkout_opts.progress_cb = checkout_progress;
-  
+    auth_callback_data *payload = malloc(sizeof *payload);
 #if AT_LEAST_LIBGIT2(0, 23)
-    clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
+    data_cb.retries = 0;
+    data_cb.askpass = askpass;
+    data_cb.getkey = getkey;
+    clone_opts.fetch_opts.callbacks.payload = &data_cb;
     clone_opts.fetch_opts.callbacks.credentials = auth_callback;
+    clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
 #endif
   }
-  
+
   /* specify branch to checkout */
   if(Rf_length(branch))
     clone_opts.checkout_branch = CHAR(STRING_ELT(branch, 0));
 
   /* try to clone */
-  bail_if(git_clone(&repo, CHAR(STRING_ELT(url, 0)), CHAR(STRING_ELT(path, 0)), 
+  bail_if(git_clone(&repo, CHAR(STRING_ELT(url, 0)), CHAR(STRING_ELT(path, 0)),
                     &clone_opts), "git_clone");
   bail_if_null(repo, "failed to clone repo");
   return new_git_repository(repo);
@@ -109,7 +195,7 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP verbose){
 SEXP R_git_repository_info(SEXP ptr){
   git_strarray ref_list;
   git_repository *repo = get_git_repository(ptr);
-  
+
   bail_if(git_reference_list(&ref_list, repo), "git_reference_list");
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, ref_list.count));
   for(int i = 0; i < ref_list.count; i++){
@@ -122,14 +208,14 @@ SEXP R_git_repository_info(SEXP ptr){
   SET_STRING_ELT(names, 2, Rf_mkChar("shorthand"));
   SET_STRING_ELT(names, 3, Rf_mkChar("reflist"));
   SET_VECTOR_ELT(list, 0, safe_string(git_repository_workdir(repo)));
-  
+
   git_reference *head = NULL;
   if(git_repository_head(&head, repo) == 0){
     SET_VECTOR_ELT(list, 1, safe_string(git_reference_name(head)));
-    SET_VECTOR_ELT(list, 2, safe_string(git_reference_shorthand(head)));    
+    SET_VECTOR_ELT(list, 2, safe_string(git_reference_shorthand(head)));
   } else {
     SET_VECTOR_ELT(list, 1, Rf_ScalarString(NA_STRING));
-    SET_VECTOR_ELT(list, 2, Rf_ScalarString(NA_STRING));    
+    SET_VECTOR_ELT(list, 2, Rf_ScalarString(NA_STRING));
   }
   SET_VECTOR_ELT(list, 3, refs);
   Rf_setAttrib(list, R_NamesSymbol, names);
@@ -143,12 +229,12 @@ SEXP R_git_repository_ls(SEXP ptr){
   git_index *index = NULL;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_repository_index(&index, repo), "git_repository_index");
-  
+
   size_t entry_count = git_index_entrycount(index);
   SEXP paths = PROTECT(Rf_allocVector(STRSXP, entry_count));
   SEXP sizes = PROTECT(Rf_allocVector(REALSXP, entry_count));
   SEXP mtimes = PROTECT(Rf_allocVector(REALSXP, entry_count));
-  
+
   for(size_t i = 0; i < entry_count; i++){
     const git_index_entry *entry = git_index_get_byindex(index, i);
     git_index_time timeval = entry->mtime;
@@ -192,7 +278,7 @@ SEXP R_git_repository_rm(SEXP ptr, SEXP files){
 
 SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   git_repository *repo = get_git_repository(ptr);
-  
+
   /* Set checkout options */
 #if AT_LEAST_LIBGIT2(0, 21)
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
@@ -200,7 +286,7 @@ SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   git_checkout_opts opts = GIT_CHECKOUT_OPTS_INIT;
 #endif
   opts.checkout_strategy = Rf_asLogical(force) ? GIT_CHECKOUT_FORCE : GIT_CHECKOUT_SAFE;
-  
+
   /* Parse the branch/tag/ref string */
   git_object *treeish = NULL;
   const char *refstring = CHAR(STRING_ELT(ref, 0));
@@ -241,7 +327,7 @@ SEXP R_git_remotes_list(SEXP ptr){
   SEXP out = PROTECT(Rf_allocVector(VECSXP, 3));
   SET_VECTOR_ELT(out, 0, names);
   SET_VECTOR_ELT(out, 1, url);
-  SET_VECTOR_ELT(out, 2, refspecs);  
+  SET_VECTOR_ELT(out, 2, refspecs);
   UNPROTECT(4);
   return out;
 }
