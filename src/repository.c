@@ -165,7 +165,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   /* This is for HTTP remotes */
   if(allowed_types & GIT_CREDTYPE_USERPASS_PLAINTEXT){
     if(cb_data->retries > 2){
-      REprintf("Failed password authentiation %d times. Giving up\n", cb_data->retries);
+      print_if_verbose("Failed password authentiation %d times. Giving up\n", cb_data->retries);
       cb_data->retries = 0;
     } else {
       cb_data->retries++;
@@ -173,7 +173,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
         username = prompt_user_password(cb_data->askpass, "Please enter USERNAME");
       if(!username)
         goto cred_fail;
-      REprintf("Trying plaintext auth for user '%s' (attempt #%d)\n", username, cb_data->retries);
+      print_if_verbose("Trying plaintext auth for user '%s' (attempt #%d)\n", username, cb_data->retries);
       char buf[1000];
       snprintf(buf, 999, "Enter PASSWORD or PAT for user '%s'", username);
       const char *pass = prompt_user_password(cb_data->askpass, buf);
@@ -184,7 +184,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   }
 
 cred_fail:
-  REprintf("All authentication methods failed\n");
+  print_if_verbose("All authentication methods failed\n");
   return GIT_EUSER;
 }
 
