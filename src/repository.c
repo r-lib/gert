@@ -130,11 +130,15 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
     // First try the ssh agent
     if(cb_data->retries == 0){
       cb_data->retries++;
-      if(git_cred_ssh_key_from_agent(cred, ssh_user) == 0){
-        print_if_verbose("Trying to authenticate '%s' using ssh-agent...\n", ssh_user);
-        return 0;
+      if(getenv("SSH_AUTH_SOCK")){
+        if(git_cred_ssh_key_from_agent(cred, ssh_user) == 0){
+          print_if_verbose("Trying to authenticate '%s' using ssh-agent...\n", ssh_user);
+          return 0;
+        } else {
+          print_if_verbose("Failed to connect to ssh-agent: %s\n", giterr_last()->message);
+        }
       } else {
-        print_if_verbose("Failed to connect to ssh-agent: %s\n", giterr_last()->message);
+        print_if_verbose("Unable to find ssh-agent (SSH_AUTH_SOCK undefined)");
       }
     }
     // Second try is with the user provided key
