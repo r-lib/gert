@@ -204,21 +204,23 @@ SEXP R_git_repository_open(SEXP path){
 }
 
 SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP askpass, SEXP verbose){
-  auth_callback_data data_cb;
   git_repository *repo = NULL;
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
-  if(Rf_asLogical(verbose)){
-    clone_opts.checkout_opts.progress_cb = checkout_progress;
-    auth_callback_data *payload = malloc(sizeof *payload);
+
 #if AT_LEAST_LIBGIT2(0, 23)
+    auth_callback_data data_cb;
     data_cb.retries = 0;
     data_cb.askpass = askpass;
     data_cb.getkey = getkey;
     clone_opts.fetch_opts.callbacks.payload = &data_cb;
     clone_opts.fetch_opts.callbacks.credentials = auth_callback;
-    clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
 #endif
+
+  /* Enables download progress and user interrupt */
+  if(Rf_asLogical(verbose)){
+    clone_opts.checkout_opts.progress_cb = checkout_progress;
+    clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
   }
 
   /* specify branch to checkout */
