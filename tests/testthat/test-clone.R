@@ -32,10 +32,3 @@ test_that("adding and removing files", {
   remotes <- git_remotes(repo)
   expect_equal(nrow(remotes), 0)
 })
-
-test_that("ssh remotes work", {
-  remote <- 'git@github.com:jeroen/webp.git'
-  target <- file.path(tempdir(), basename(remote))
-  repo <- git_clone(remote, path = target)
-  expect_true(file.exists(file.path(target, 'DESCRIPTION')))
-})
