@@ -1,7 +1,10 @@
 #include <string.h>
 #include "utils.h"
 
+#define print_if_verbose(...) print_log(verbose, __VA_ARGS__)
+
 typedef struct {
+  int verbose;
   int retries;
   SEXP getkey;
   SEXP askpass;
@@ -12,6 +15,15 @@ typedef struct {
   const char *pubkey_path;
   const char *pass_phrase;
 } auth_key_data;
+
+static void print_log(int verbose, const char *fmt, ...){
+  if(verbose){
+    va_list args;
+    va_start(args, fmt);
+    REvprintf(fmt, args);
+    va_end(args);
+  }
+}
 
 static const char *session_keyphrase(const char *set){
   static char *key;
@@ -109,6 +121,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   /* First get a username */
   auth_callback_data *cb_data = payload;
   const char * ssh_user = username ? username : "git";
+  int verbose = cb_data->verbose;
 
 #if AT_LEAST_LIBGIT2(0, 20)
 
@@ -118,10 +131,10 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
     if(cb_data->retries == 0){
       cb_data->retries++;
       if(git_cred_ssh_key_from_agent(cred, ssh_user) == 0){
-        REprintf("Trying to authenticate '%s' using ssh-agent...\n", ssh_user);
+        print_if_verbose("Trying to authenticate '%s' using ssh-agent...\n", ssh_user);
         return 0;
       } else {
-        REprintf("Failed to connect to ssh-agent: %s\n", giterr_last()->message);
+        print_if_verbose("Failed to connect to ssh-agent: %s\n", giterr_last()->message);
       }
     }
     // Second try is with the user provided key
@@ -131,18 +144,18 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
       const auth_key_data *key_data = get_key_files(cb_data->getkey, &data);
       if(key_data && !git_cred_ssh_key_new(cred, ssh_user, key_data->pubkey_path,
                                                  key_data->key_path, key_data->pass_phrase)){
-        REprintf("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
+        print_if_verbose("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
       } else {
-        REprintf("Failed to load ssh-key: %s\n", giterr_last()->message);
+        print_if_verbose("Failed to load ssh-key: %s\n", giterr_last()->message);
       }
     }
 
     // Third is just bail with an error
     if(cb_data->retries == 2) {
-      REprintf("Failed to authenticate over SSH. You either need to provide a key or setup ssh-agent\n");
+      print_if_verbose("Failed to authenticate over SSH. You either need to provide a key or setup ssh-agent\n");
       if(strcmp(ssh_user, "git"))
-        REprintf("Are you sure ssh address has username '%s'? (ssh remotes usually have username 'git')\n", ssh_user);
+        print_if_verbose("Are you sure ssh address has username '%s'? (ssh remotes usually have username 'git')\n", ssh_user);
       return GIT_EUSER;
     }
   }
@@ -210,6 +223,7 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
 
 #if AT_LEAST_LIBGIT2(0, 23)
     auth_callback_data data_cb;
+    data_cb.verbose = Rf_asLogical(verbose);
     data_cb.retries = 0;
     data_cb.askpass = askpass;
     data_cb.getkey = getkey;
