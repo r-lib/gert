@@ -229,13 +229,14 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
     data_cb.getkey = getkey;
     clone_opts.fetch_opts.callbacks.payload = &data_cb;
     clone_opts.fetch_opts.callbacks.credentials = auth_callback;
-#endif
 
-  /* Enables download progress and user interrupt */
-  if(Rf_asLogical(verbose)){
-    clone_opts.checkout_opts.progress_cb = checkout_progress;
-    clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
-  }
+    /* Enables download progress and user interrupt */
+    if(Rf_asLogical(verbose)){
+      clone_opts.checkout_opts.progress_cb = checkout_progress;
+      clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
+    }
+
+#endif
 
   /* specify branch to checkout */
   if(Rf_length(branch))
