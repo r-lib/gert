@@ -42,9 +42,9 @@ setup_ssh_key <- function(file = "~/.ssh/id_rsa", open_github = TRUE){
 make_key_cb <- function(file, password){
   function(){
     key <- read_key(file, password = password)
-    tmp_pass <- paste(sample(letters, 20, T), collapse = "")
+    tmp_pass <- paste(sample(letters, 10, replace = TRUE), collapse = "")
     write_ssh(key$pubkey, tmp_pub <- tempfile())
-    write_pem(key, tmp_key <- tempfile())
+    write_pem(key, tmp_key <- tempfile(), password = tmp_pass)
     c(tmp_pub, tmp_key, tmp_pass)
   }
 }
