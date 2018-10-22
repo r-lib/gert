@@ -22,6 +22,14 @@ setup_ssh_key <- function(file = "~/.ssh/id_rsa", open_github = TRUE){
     write_pem(key, private_key)
     write_ssh(key$pubkey, paste0(private_key, '.pub'))
   }
+
+  # See https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
+  conf_file <- file.path(dirname(private_key), 'config')
+  if(!file.exists(conf_file)){
+    writeLines(c('Host *', ' AddKeysToAgent yes', ' UseKeychain yes',
+                 paste(' IdentityFile ', private_key)), con = conf_file)
+  }
+
   cat(sprintf("Below your public key to share (%s):\n\n", paste0(private_key, '.pub')))
   cat(write_ssh(key$pubkey), "\n\n")
   if(isTRUE(open_github)){
