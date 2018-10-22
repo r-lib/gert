@@ -13,8 +13,8 @@
 \alias{git_fetch}
 \title{Git Repository}
 \usage{
-git_clone(url, path = NULL, branch = NULL, passwd = askpass,
-  verbose = interactive())
+git_clone(url, path = NULL, branch = NULL, password = askpass,
+  ssh_key = my_key(), verbose = interactive())
 
 git_init(path = ".")
 
@@ -41,8 +41,10 @@ private repos. You will be prompted for a password or pat when needed.}
 
 \item{branch}{which branch to clone}
 
-\item{passwd}{a string or a callback function to get passwords for https
-authentication or password proctected ssh keys.}
+\item{password}{a string or a callback function to get passwords for authentication
+or password proctected ssh keys.}
+
+\item{ssh_key}{path or object containing your ssh private key}
 
 \item{verbose}{display some progress info while downloading}
 

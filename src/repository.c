@@ -7,6 +7,12 @@ typedef struct {
   SEXP askpass;
 } auth_callback_data;
 
+typedef struct {
+  const char *key_path;
+  const char *pubkey_path;
+  const char *pass_phrase;
+} auth_key_data;
+
 static const char *session_keyphrase(const char *set){
   static char *key;
   if(set){
@@ -30,6 +36,24 @@ static const char *prompt_user_password(SEXP rpass, const char *prompt){
     return CHAR(STRING_ELT(res, 0));
   } //should never happen
   Rf_errorcall(R_NilValue, "unsupported password type (must be string or function)");
+}
+
+static const auth_key_data *get_key_files(SEXP cb, auth_key_data *out){
+  if(!Rf_isFunction(cb))
+    Rf_error("cb must be a function");
+  int err;
+  SEXP call = PROTECT(Rf_lcons(cb, R_NilValue));
+  SEXP res = PROTECT(R_tryEval(call, R_GlobalEnv, &err));
+  if(err || !Rf_isString(res)){
+    UNPROTECT(2);
+    return NULL;
+  }
+  /* Todo: Maybe strdup() in case res gets collected */
+  out->pubkey_path = CHAR(STRING_ELT(res, 0));
+  out->key_path = CHAR(STRING_ELT(res, 1));
+  out->pass_phrase = CHAR(STRING_ELT(res, 2));
+  UNPROTECT(2);
+  return out;
 }
 
 static void fin_git_repository(SEXP ptr){
@@ -84,15 +108,15 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
                                unsigned int allowed_types, void *payload){
   /* First get a username */
   auth_callback_data *cb_data = payload;
+  const char * ssh_user = username ? username : "git";
 
-#if AT_LEAST_LIBGIT2(0, 23)
+#if AT_LEAST_LIBGIT2(0, 20)
 
   /* This is for SSH remotes */
-  if(allowed_types & GIT_CREDTYPE_SSH_MEMORY){
+  if(allowed_types & GIT_CREDTYPE_SSH_KEY){
     // First try the ssh agent
     if(cb_data->retries == 0){
       cb_data->retries++;
-      const char * ssh_user = username ? username : "git";
       if(git_cred_ssh_key_from_agent(cred, ssh_user) == 0){
         REprintf("Trying to authenticate '%s' using ssh-agent...\n", ssh_user);
         return 0;
@@ -103,8 +127,11 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
     // Second try is with the user provided key
     if(cb_data->retries == 1) {
       cb_data->retries++;
-      if(git_cred_ssh_key_memory_new(cred, username, "", "", session_keyphrase(NULL)) == 0){
-        REprintf("Trying to authenticate '%s' using provided ssh-key...\n", username);
+      auth_key_data data;
+      const auth_key_data *key_data = get_key_files(cb_data->getkey, &data);
+      if(key_data && !git_cred_ssh_key_new(cred, ssh_user, key_data->pubkey_path,
+                                                 key_data->key_path, key_data->pass_phrase)){
+        REprintf("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
       } else {
         REprintf("Failed to load ssh-key: %s\n", giterr_last()->message);
@@ -114,8 +141,8 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
     // Third is just bail with an error
     if(cb_data->retries == 2) {
       REprintf("Failed to authenticate over SSH. You either need to provide a key or setup ssh-agent\n");
-      if(strcmp(username, "git"))
-        REprintf("Are you sure ssh address has username '%s'? (ssh remotes usually have username 'git')\n", username);
+      if(strcmp(ssh_user, "git"))
+        REprintf("Are you sure ssh address has username '%s'? (ssh remotes usually have username 'git')\n", ssh_user);
       return GIT_EUSER;
     }
   }

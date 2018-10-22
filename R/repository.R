@@ -13,10 +13,11 @@
 #' private repos. You will be prompted for a password or pat when needed.
 #' @param path local path, must be a non-existing or empty directory
 #' @param branch which branch to clone
-#' @param passwd a string or a callback function to get passwords for https
-#' authentication or password proctected ssh keys.
+#' @param ssh_key path or object containing your ssh private key
+#' @param password a string or a callback function to get passwords for authentication
+#' or password proctected ssh keys.
 #' @param verbose display some progress info while downloading
-git_clone <- function(url, path = NULL, branch = NULL, passwd = askpass, verbose = interactive()){
+git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_key = my_key(), verbose = interactive()){
   stopifnot(is.character(url))
   if(!length(path))
     path <- file.path(getwd(), basename(url))
@@ -24,7 +25,8 @@ git_clone <- function(url, path = NULL, branch = NULL, passwd = askpass, verbose
   stopifnot(is.null(branch) || is.character(branch))
   verbose <- as.logical(verbose)
   path <- normalizePath(path.expand(path), mustWork = FALSE)
-  .Call(R_git_repository_clone, url, path, branch, NULL, passwd, verbose)
+  key_cb <- make_key_cb(ssh_key, password = password)
+  .Call(R_git_repository_clone, url, path, branch, key_cb, password, verbose)
 }
 
 #' @export

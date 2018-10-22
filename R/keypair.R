@@ -10,22 +10,34 @@
 #' is appended to the filename.
 #' @param open_github automatically open a browser window to let the user
 #' add the key to Github.
+#' @importFrom openssl write_ssh write_pem read_key
 setup_ssh_key <- function(file = "~/.ssh/id_rsa", open_github = TRUE){
   private_key <- normalizePath(file, mustWork = FALSE)
   if(file.exists(private_key)){
     cat(sprintf("Found existing RSA keyspair at: %s\n", private_key))
-    key <- openssl::read_key(file)
+    key <- read_key(file)
   } else {
     cat(sprintf("Generating new RSA keyspair at: %s\n", private_key))
     key <- openssl::rsa_keygen()
-    openssl::write_pem(key, private_key)
-    openssl::write_ssh(key$pubkey, paste0(private_key, '.pub'))
+    write_pem(key, private_key)
+    write_ssh(key$pubkey, paste0(private_key, '.pub'))
   }
   cat(sprintf("Below your public key to share (%s):\n\n", paste0(private_key, '.pub')))
-  cat(openssl::write_ssh(key$pubkey), "\n\n")
+  cat(write_ssh(key$pubkey), "\n\n")
   if(isTRUE(open_github)){
     cat("Opening browser to add your key: https://github.com/settings/ssh/new\n")
     utils::browseURL('https://github.com/settings/ssh/new')
+  }
+}
+
+#' @importFrom openssl write_ssh write_pem read_key
+make_key_cb <- function(file, password){
+  function(){
+    key <- read_key(file, password = password)
+    tmp_pass <- paste(sample(letters, 20, T), collapse = "")
+    write_ssh(key$pubkey, tmp_pub <- tempfile())
+    write_pem(key, tmp_key <- tempfile())
+    c(tmp_pub, tmp_key, tmp_pass)
   }
 }
 
@@ -37,3 +49,7 @@ set_session_pass <- function(key){
 #' @importFrom openssl askpass
 #' @export
 openssl::askpass
+
+#' @importFrom openssl my_key
+#' @export
+openssl::my_key

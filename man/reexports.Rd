@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{askpass}
+\alias{my_key}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -11,6 +12,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{openssl}{\code{\link[openssl]{askpass}}}
+  \item{openssl}{\code{\link[openssl]{askpass}}, \code{\link[openssl]{my_key}}}
 }}
 
