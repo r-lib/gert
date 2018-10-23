@@ -138,7 +138,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
           print_if_verbose("Failed to connect to ssh-agent: %s\n", giterr_last()->message);
         }
       } else {
-        print_if_verbose("Unable to find ssh-agent (SSH_AUTH_SOCK undefined)");
+        print_if_verbose("Unable to find ssh-agent (SSH_AUTH_SOCK undefined)\n");
       }
     }
     // Second try is with the user provided key
