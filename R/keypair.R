@@ -38,18 +38,17 @@ setup_ssh_key <- function(file = "~/.ssh/id_rsa", open_github = TRUE){
   }
 }
 
-#' @importFrom openssl write_ssh write_pem read_key
+#' @importFrom openssl write_ssh write_pem read_key write_pkcs1
 make_key_cb <- function(file, password){
   function(){
     key <- read_key(file, password = password)
-    tmp_pass <- paste(sample(letters, 10, replace = TRUE), collapse = "")
-    write_ssh(key$pubkey, tmp_pub <- tempfile())
-    write_pem(key, tmp_key <- tempfile(), password = tmp_pass)
+    tmp_pub <- write_ssh(key$pubkey, tempfile())
+    tmp_key <- write_pkcs1(key, tempfile())
     if(.Platform$OS.type == "unix"){
       Sys.chmod(tmp_pub, '0644')
       Sys.chmod(tmp_key, '0400')
     }
-    c(tmp_pub, tmp_key, tmp_pass)
+    c(tmp_pub, tmp_key, "")
   }
 }
 
