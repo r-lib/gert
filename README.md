@@ -9,11 +9,19 @@
 
 ## Installation
 
-You can install the released version of gert from Github:
+To install the development version:
 
 ``` r
 remotes::install_github("jeroen/gert")
 ```
+
+On Linux you need somewhat recent version of libgit2:
+
+ - Ubuntu (18.04): [libgit2-dev](https://packages.ubuntu.com/bionic/libgit2-dev)
+ - Debian: [libgit2-dev](https://packages.debian.org/buster/libgit2-dev)
+ - Fedora: [libgit2-devel](https://apps.fedoraproject.org/packages/libgit2-devel)
+ 
+It is possible to install the package with older versions of libgit2 (e.g. on CentOS or old Ubuntu) however these do not support authentication over ssh/https remotes. Offline functionality should work fine though.
 
 ## Example
 
