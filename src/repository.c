@@ -126,7 +126,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
 #if AT_LEAST_LIBGIT2(0, 20)
 
   /* This is for SSH remotes */
-  if(allowed_types & GIT_CREDTYPE_SSH_KEY){
+  if(allowed_types & GIT_CREDTYPE_SSH_MEMORY){
     // First try the ssh agent
     if(cb_data->retries == 0){
       cb_data->retries++;
@@ -146,8 +146,8 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
       cb_data->retries++;
       auth_key_data data;
       const auth_key_data *key_data = get_key_files(cb_data->getkey, &data);
-      if(key_data && !git_cred_ssh_key_new(cred, ssh_user, key_data->pubkey_path,
-                                                 key_data->key_path, key_data->pass_phrase)){
+      if(key_data && !git_cred_ssh_key_memory_new(cred, ssh_user, key_data->pubkey_path,
+                                                 key_data->key_path, NULL)){
         print_if_verbose("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
       } else {
