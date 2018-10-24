@@ -125,7 +125,7 @@ git_branches <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   out <- .Call(R_git_branch_list, repo)
-  make_tibble(out, c("name", "local", "ref"))
+  make_tibble(out, c("name", "local", "ref", "id"))
 }
 
 #' @export

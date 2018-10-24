@@ -366,6 +366,7 @@ SEXP R_git_branch_list(SEXP ptr){
   bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
   while((res = git_branch_next(&ref, &type, iter)) != GIT_ITEROVER){
     bail_if(res, "git_branch_next");
+    git_reference_free(ref);
     count++;
   }
   git_branch_iterator_free(iter);
@@ -373,6 +374,7 @@ SEXP R_git_branch_list(SEXP ptr){
   SEXP names = PROTECT(Rf_allocVector(STRSXP, count));
   SEXP islocal = PROTECT(Rf_allocVector(LGLSXP, count));
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, count));
+  SEXP ids = PROTECT(Rf_allocVector(STRSXP, count));
   bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
   for(int i = 0; i < count; i++){
     bail_if(git_branch_next(&ref, &type, iter), "git_branch_next");
@@ -381,13 +383,17 @@ SEXP R_git_branch_list(SEXP ptr){
       SET_STRING_ELT(names, i, safe_char(name));
     LOGICAL(islocal)[i] = (type == GIT_BRANCH_LOCAL);
     SET_STRING_ELT(refs, i, safe_char(git_reference_name(ref)));
+    if(git_reference_target(ref))
+      SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_reference_target(ref))));
+    git_reference_free(ref);
   }
   git_branch_iterator_free(iter);
-  SEXP df = PROTECT(Rf_allocVector(VECSXP, 3));
+  SEXP df = PROTECT(Rf_allocVector(VECSXP, 4));
   SET_VECTOR_ELT(df, 0, names);
   SET_VECTOR_ELT(df, 1, islocal);
   SET_VECTOR_ELT(df, 2, refs);
-  UNPROTECT(4);
+  SET_VECTOR_ELT(df, 3, ids);
+  UNPROTECT(5);
   return df;
 }
 
