@@ -37,7 +37,7 @@ SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
       SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(&oid)));
   }
   git_strarray_free(&tag_list);
-  return make_tibble_and_unprotect(3, "tag", names, "ref", refs, "id", ids);
+  return build_tibble(3, "tag", names, "ref", refs, "id", ids);
 }
 
 SEXP R_git_branch_list(SEXP ptr){
@@ -72,7 +72,7 @@ SEXP R_git_branch_list(SEXP ptr){
     git_reference_free(ref);
   }
   git_branch_iterator_free(iter);
-  return make_tibble_and_unprotect(4, "name", names, "local", islocal, "ref", refs, "id", ids);
+  return build_tibble(4, "name", names, "local", islocal, "ref", refs, "id", ids);
 }
 
 static SEXP make_refspecs(git_remote *remote){
@@ -103,5 +103,5 @@ SEXP R_git_remotes_list(SEXP ptr){
     }
     free(name);
   }
-  return make_tibble_and_unprotect(3, "remote", names, "url", url, "refspecs", refspecs);
+  return build_tibble(3, "remote", names, "url", url, "refspecs", refspecs);
 }

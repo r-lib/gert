@@ -62,7 +62,7 @@ SEXP R_git_repository_ls(SEXP ptr){
     REAL(mtimes)[i] = (double) timeval.seconds + timeval.nanoseconds * 1e-9;
   }
   git_index_free(index);
-  return make_tibble_and_unprotect(3, "path", paths, "filesize", sizes, "mtime", mtimes);
+  return build_tibble(3, "path", paths, "filesize", sizes, "mtime", mtimes);
 }
 
 SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){

@@ -47,23 +47,29 @@ SEXP make_strvec(int n, ...){
 }
 
 /* The input SEXPS must be protected beforehand */
-SEXP make_tibble_and_unprotect(int n, ...){
+SEXP make_list(int n, ...){
   va_list args;
   va_start(args, n);
   SEXP names = PROTECT(Rf_allocVector(STRSXP, n));
-  SEXP df = PROTECT(Rf_allocVector(VECSXP, n));
+  SEXP vec = PROTECT(Rf_allocVector(VECSXP, n));
   for (int i = 0; i < n; i++)  {
     SET_STRING_ELT(names, i, safe_char(va_arg(args, const char *)));
-    SET_VECTOR_ELT(df, i, va_arg(args, SEXP));
+    SET_VECTOR_ELT(vec, i, va_arg(args, SEXP));
   }
   va_end(args);
-  int nrows = n ? Rf_length(VECTOR_ELT(df, 0)) : 0;
+  Rf_setAttrib(vec, R_NamesSymbol, names);
+  UNPROTECT(2 + n);
+  return vec;
+}
+
+SEXP as_tibble(SEXP df){
+  PROTECT(df);
+  int nrows = Rf_length(df) ? Rf_length(VECTOR_ELT(df, 0)) : 0;
   SEXP rownames = PROTECT(Rf_allocVector(INTSXP, nrows));
   for(int j = 0; j < nrows; j++)
     INTEGER(rownames)[j] = j+1;
-  Rf_setAttrib(df, R_NamesSymbol, names);
   Rf_setAttrib(df, R_RowNamesSymbol, rownames);
   Rf_setAttrib(df, R_ClassSymbol, make_strvec(3, "tbl_df", "tbl", "data.frame"));
-  UNPROTECT(3 + n);
+  UNPROTECT(2);
   return df;
 }

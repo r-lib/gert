@@ -7,8 +7,11 @@ void bail_if_null(void * ptr, const char * what);
 SEXP safe_string(const char *x);
 SEXP safe_char(const char *x);
 SEXP make_strvec(int n, ...);
-SEXP make_tibble_and_unprotect(int n, ...);
+SEXP make_list(int n, ...);
+SEXP as_tibble(SEXP df);
 git_repository *get_git_repository(SEXP ptr);
+
+#define build_tibble(...) as_tibble(make_list( __VA_ARGS__))
 
 #define AT_LEAST_LIBGIT2(x,y) (LIBGIT2_VER_MAJOR > x || LIBGIT2_VER_MINOR >= y)
 
