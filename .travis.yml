@@ -17,10 +17,10 @@ matrix:
 
 addons:
   apt:
+    update: true
+    packages: libgit2-dev
     sources:
       - sourceline: 'ppa:opencpu/libgit2'
-    packages:
-      - libgit2-dev
 
 notifications:
   email:
