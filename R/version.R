@@ -21,7 +21,7 @@ git_libgit2_config <- function(){
     as.character(config$version), ssh, https))
 
   # Load tibble (if available) for pretty printing
-  if(is.null(.getNamespace('tibble'))){
+  if(interactive() && is.null(.getNamespace('tibble'))){
     tryCatch({
       getNamespace('tibble')
     }, error= function(e){})
