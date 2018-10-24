@@ -19,7 +19,7 @@ setup_ssh_key <- function(file = "~/.ssh/id_rsa", open_github = TRUE){
   } else {
     cat(sprintf("Generating new RSA keyspair at: %s\n", private_key))
     key <- openssl::rsa_keygen()
-    write_pem(key, private_key)
+    write_pkcs1(key, private_key)
     write_ssh(key$pubkey, paste0(private_key, '.pub'))
   }
 
