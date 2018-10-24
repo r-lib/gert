@@ -38,16 +38,19 @@ SEXP R_git_repository_ls(SEXP ptr){
   SEXP paths = PROTECT(Rf_allocVector(STRSXP, entry_count));
   SEXP sizes = PROTECT(Rf_allocVector(REALSXP, entry_count));
   SEXP mtimes = PROTECT(Rf_allocVector(REALSXP, entry_count));
+  SEXP ctimes = PROTECT(Rf_allocVector(REALSXP, entry_count));
 
   for(size_t i = 0; i < entry_count; i++){
     const git_index_entry *entry = git_index_get_byindex(index, i);
-    git_index_time timeval = entry->mtime;
     SET_STRING_ELT(paths, i, safe_char(entry->path));
     REAL(sizes)[i] = (double) entry->file_size;
-    REAL(mtimes)[i] = (double) timeval.seconds + timeval.nanoseconds * 1e-9;
+    REAL(mtimes)[i] = (double) entry->mtime.seconds + entry->mtime.nanoseconds * 1e-9;
+    REAL(ctimes)[i] = (double) entry->ctime.seconds + entry->ctime.nanoseconds * 1e-9;
   }
   git_index_free(index);
-  return build_tibble(3, "path", paths, "filesize", sizes, "mtime", mtimes);
+  Rf_setAttrib(mtimes, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  Rf_setAttrib(ctimes, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  return build_tibble(4, "path", paths, "filesize", sizes, "mtime", mtimes, "ctime", ctimes);
 }
 
 SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){

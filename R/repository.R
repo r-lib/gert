@@ -62,9 +62,7 @@ git_info <- function(repo = '.'){
 git_ls <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
-  df <- .Call(R_git_repository_ls, repo)
-  class(df$mtime) <- c("POSIXct", "POSIXt")
-  df
+  .Call(R_git_repository_ls, repo)
 }
 
 #' @export
