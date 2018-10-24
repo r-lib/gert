@@ -11,6 +11,7 @@
 \alias{git_rm}
 \alias{git_remotes}
 \alias{git_fetch}
+\alias{git_checkout}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, password = askpass,
@@ -31,6 +32,8 @@ git_rm(files, repo = ".")
 git_remotes(repo = ".")
 
 git_fetch(remote = "origin", refs = NULL, repo = ".")
+
+git_checkout(ref, force = FALSE, repo = ".")
 }
 \arguments{
 \item{url}{remote url. Typically starts with \code{https://github.com/} for public
@@ -58,6 +61,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{remote}{name of a remote listed in \code{\link[=git_remotes]{git_remotes()}}}
 
 \item{refs}{which branches/tags/etc to download. Defaults to the base refspecs.}
+
+\item{ref}{name of branch or commit to check out}
 }
 \description{
 First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.

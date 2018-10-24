@@ -120,6 +120,18 @@ git_fetch <- function(remote = "origin", refs = NULL, repo = '.'){
 }
 
 #' @export
+#' @rdname repository
+#' @param ref name of branch or commit to check out
+#' @useDynLib gert R_git_checkout
+git_checkout <- function(ref, force = FALSE, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  ref <- as.character(ref)
+  force <- as.logical(force)
+  .Call(R_git_checkout, repo, ref, force)
+}
+
+#' @export
 print.git_repository <- function(x, ...){
   info <- git_info(x)
   cat(sprintf("<git_repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))
