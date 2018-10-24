@@ -1,0 +1,15 @@
+context("adding and removing files")
+
+test_that("adding and removing files", {
+  repo <- git_init(tempdir())
+  expect_equal(nrow(git_ls(repo)), 0)
+  write.csv(iris, file.path(tempdir(), 'iris.csv'))
+  write.csv(cars, file.path(tempdir(), 'cars.csv'))
+  git_add(c('cars.csv', 'iris.csv'), repo = repo)
+  expect_equal(nrow(git_ls(repo)), 2)
+  expect_equal(git_ls(tempdir())$path, c('cars.csv', 'iris.csv'))
+  git_rm(c('cars.csv', 'iris.csv'), repo = repo)
+  expect_equal(nrow(git_ls(repo)), 0)
+  remotes <- git_remotes(repo)
+  expect_equal(nrow(remotes), 0)
+})
