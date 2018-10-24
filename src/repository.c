@@ -356,6 +356,32 @@ SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   git_object_free(treeish);
   return ptr;
 }
+
+SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
+  git_repository *repo = get_git_repository(ptr);
+  git_strarray tag_list;
+  bail_if(git_tag_list_match(&tag_list, CHAR(STRING_ELT(pattern, 0)), repo), "git_tag_list");
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, tag_list.count));
+  SEXP refs = PROTECT(Rf_allocVector(STRSXP, tag_list.count));
+  SEXP ids = PROTECT(Rf_allocVector(STRSXP, tag_list.count));
+  for(int i = 0; i < tag_list.count; i++){
+    git_oid oid;
+    char refstr[1000];
+    snprintf(refstr, 999, "refs/tags/%s", tag_list.strings[i]);
+    SET_STRING_ELT(names, i, safe_char(tag_list.strings[i]));
+    SET_STRING_ELT(refs, i, safe_char(refstr));
+    if(git_reference_name_to_id(&oid, repo, refstr) == 0)
+      SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(&oid)));
+  }
+  git_strarray_free(&tag_list);
+  SEXP df = PROTECT(Rf_allocVector(VECSXP, 3));
+  SET_VECTOR_ELT(df, 0, names);
+  SET_VECTOR_ELT(df, 1, refs);
+  SET_VECTOR_ELT(df, 2, ids);
+  UNPROTECT(4);
+  return df;
+}
+
 SEXP R_git_branch_list(SEXP ptr){
   int res = 0;
   int count = 0;

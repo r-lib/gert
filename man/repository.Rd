@@ -12,6 +12,7 @@
 \alias{git_remotes}
 \alias{git_fetch}
 \alias{git_branches}
+\alias{git_tags}
 \alias{git_checkout}
 \title{Git Repository}
 \usage{
@@ -35,6 +36,8 @@ git_remotes(repo = ".")
 git_fetch(remote = "origin", refs = NULL, repo = ".")
 
 git_branches(repo = ".")
+
+git_tags(match = "", repo = ".")
 
 git_checkout(ref, force = FALSE, repo = ".")
 }
@@ -64,6 +67,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{remote}{name of a remote listed in \code{\link[=git_remotes]{git_remotes()}}}
 
 \item{refs}{which branches/tags/etc to download. Defaults to the base refspecs.}
+
+\item{match}{pattern to filter tags (use \code{*} for wildcard)}
 
 \item{ref}{name of branch or commit to check out}
 }

@@ -130,6 +130,18 @@ git_branches <- function(repo = '.'){
 
 #' @export
 #' @rdname repository
+#' @param match pattern to filter tags (use `*` for wildcard)
+#' @useDynLib gert R_git_tag_list
+git_tags <- function(match = "", repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  match <- as.character(match)
+  out <- .Call(R_git_tag_list, repo, match)
+  make_tibble(out, c("tag", "ref", "id"))
+}
+
+#' @export
+#' @rdname repository
 #' @param ref name of branch or commit to check out
 #' @useDynLib gert R_git_checkout
 git_checkout <- function(ref, force = FALSE, repo = '.'){
