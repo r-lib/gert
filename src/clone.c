@@ -82,7 +82,7 @@ static SEXP new_git_repository(git_repository *repo){
   return ptr;
 }
 
-static git_repository *get_git_repository(SEXP ptr){
+git_repository *get_git_repository(SEXP ptr){
   if(TYPEOF(ptr) != EXTPTRSXP || !Rf_inherits(ptr, "git_repository"))
     Rf_error("handle is not a git_repository");
   if(!R_ExternalPtrAddr(ptr))
@@ -202,12 +202,6 @@ static git_strarray *files_to_array(SEXP files){
   return paths;
 }
 
-static void free_file_array(git_strarray *paths){
-  for(int i = 0; i < paths->count; i++)
-    free(paths->strings[i]);
-  free(paths);
-}
-
 SEXP R_git_repository_init(SEXP path){
   git_repository *repo = NULL;
   bail_if(git_repository_init(&repo, CHAR(STRING_ELT(path, 0)), 0), "git_repository_init");
@@ -253,191 +247,6 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   return new_git_repository(repo);
 }
 
-SEXP R_git_repository_info(SEXP ptr){
-  git_strarray ref_list;
-  git_repository *repo = get_git_repository(ptr);
-
-  bail_if(git_reference_list(&ref_list, repo), "git_reference_list");
-  SEXP refs = PROTECT(Rf_allocVector(STRSXP, ref_list.count));
-  for(int i = 0; i < ref_list.count; i++){
-    SET_STRING_ELT(refs, i, Rf_mkChar(ref_list.strings[i]));
-  }
-  SEXP list = PROTECT(Rf_allocVector(VECSXP, 4));
-  SEXP names = PROTECT(Rf_allocVector(STRSXP, Rf_length(list)));
-  SET_STRING_ELT(names, 0, Rf_mkChar("path"));
-  SET_STRING_ELT(names, 1, Rf_mkChar("ref"));
-  SET_STRING_ELT(names, 2, Rf_mkChar("shorthand"));
-  SET_STRING_ELT(names, 3, Rf_mkChar("reflist"));
-  SET_VECTOR_ELT(list, 0, safe_string(git_repository_workdir(repo)));
-
-  git_reference *head = NULL;
-  if(git_repository_head(&head, repo) == 0){
-    SET_VECTOR_ELT(list, 1, safe_string(git_reference_name(head)));
-    SET_VECTOR_ELT(list, 2, safe_string(git_reference_shorthand(head)));
-  } else {
-    SET_VECTOR_ELT(list, 1, Rf_ScalarString(NA_STRING));
-    SET_VECTOR_ELT(list, 2, Rf_ScalarString(NA_STRING));
-  }
-  SET_VECTOR_ELT(list, 3, refs);
-  Rf_setAttrib(list, R_NamesSymbol, names);
-  UNPROTECT(3);
-  git_reference_free(head);
-  git_strarray_free(&ref_list);
-  return list;
-}
-
-SEXP R_git_repository_ls(SEXP ptr){
-  git_index *index = NULL;
-  git_repository *repo = get_git_repository(ptr);
-  bail_if(git_repository_index(&index, repo), "git_repository_index");
-
-  size_t entry_count = git_index_entrycount(index);
-  SEXP paths = PROTECT(Rf_allocVector(STRSXP, entry_count));
-  SEXP sizes = PROTECT(Rf_allocVector(REALSXP, entry_count));
-  SEXP mtimes = PROTECT(Rf_allocVector(REALSXP, entry_count));
-
-  for(size_t i = 0; i < entry_count; i++){
-    const git_index_entry *entry = git_index_get_byindex(index, i);
-    git_index_time timeval = entry->mtime;
-    SET_STRING_ELT(paths, i, safe_char(entry->path));
-    REAL(sizes)[i] = (double) entry->file_size;
-    REAL(mtimes)[i] = (double) timeval.seconds + timeval.nanoseconds * 1e-9;
-  }
-  git_index_free(index);
-  return make_tibble_and_unprotect(3, "path", paths, "filesize", sizes, "mtime", mtimes);
-}
-
-SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){
-  git_index *index = NULL;
-  git_repository *repo = get_git_repository(ptr);
-  bail_if(git_repository_index(&index, repo), "git_repository_index");
-  git_strarray *paths = files_to_array(files);
-  git_index_add_option_t flags = Rf_asLogical(force) ? GIT_INDEX_ADD_FORCE : GIT_INDEX_ADD_DEFAULT;
-  bail_if(git_index_add_all(index, paths, flags, NULL, NULL), "git_index_add_bypath");
-  bail_if(git_index_write(index), "git_index_write");
-  free_file_array(paths);
-  git_index_free(index);
-  return ptr;
-}
-
-SEXP R_git_repository_rm(SEXP ptr, SEXP files){
-  git_index *index = NULL;
-  git_repository *repo = get_git_repository(ptr);
-  bail_if(git_repository_index(&index, repo), "git_repository_index");
-  git_strarray *paths = files_to_array(files);
-  bail_if(git_index_remove_all(index, paths, NULL, NULL), "git_index_remove_all");
-  bail_if(git_index_write(index), "git_index_write");
-  free_file_array(paths);
-  git_index_free(index);
-  return ptr;
-}
-
-SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
-  git_repository *repo = get_git_repository(ptr);
-
-  /* Set checkout options */
-#if AT_LEAST_LIBGIT2(0, 21)
-  git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
-#else
-  git_checkout_opts opts = GIT_CHECKOUT_OPTS_INIT;
-#endif
-  opts.checkout_strategy = Rf_asLogical(force) ? GIT_CHECKOUT_FORCE : GIT_CHECKOUT_SAFE;
-
-  /* Parse the branch/tag/ref string */
-  git_object *treeish = NULL;
-  const char *refstring = CHAR(STRING_ELT(ref, 0));
-  bail_if(git_revparse_single(&treeish, repo, refstring), "git_revparse_single");
-  bail_if(git_checkout_tree(repo, treeish, &opts), "git_checkout_tree");
-  git_object_free(treeish);
-  return ptr;
-}
-
-SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
-  git_repository *repo = get_git_repository(ptr);
-  git_strarray tag_list;
-  bail_if(git_tag_list_match(&tag_list, CHAR(STRING_ELT(pattern, 0)), repo), "git_tag_list");
-  SEXP names = PROTECT(Rf_allocVector(STRSXP, tag_list.count));
-  SEXP refs = PROTECT(Rf_allocVector(STRSXP, tag_list.count));
-  SEXP ids = PROTECT(Rf_allocVector(STRSXP, tag_list.count));
-  for(int i = 0; i < tag_list.count; i++){
-    git_oid oid;
-    char refstr[1000];
-    snprintf(refstr, 999, "refs/tags/%s", tag_list.strings[i]);
-    SET_STRING_ELT(names, i, safe_char(tag_list.strings[i]));
-    SET_STRING_ELT(refs, i, safe_char(refstr));
-    if(git_reference_name_to_id(&oid, repo, refstr) == 0)
-      SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(&oid)));
-  }
-  git_strarray_free(&tag_list);
-  return make_tibble_and_unprotect(3, "tag", names, "ref", refs, "id", ids);
-}
-
-SEXP R_git_branch_list(SEXP ptr){
-  int res = 0;
-  int count = 0;
-  git_branch_t type;
-  git_reference *ref;
-  git_branch_iterator *iter;
-  git_repository *repo = get_git_repository(ptr);
-  bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
-  while((res = git_branch_next(&ref, &type, iter)) != GIT_ITEROVER){
-    bail_if(res, "git_branch_next");
-    git_reference_free(ref);
-    count++;
-  }
-  git_branch_iterator_free(iter);
-
-  SEXP names = PROTECT(Rf_allocVector(STRSXP, count));
-  SEXP islocal = PROTECT(Rf_allocVector(LGLSXP, count));
-  SEXP refs = PROTECT(Rf_allocVector(STRSXP, count));
-  SEXP ids = PROTECT(Rf_allocVector(STRSXP, count));
-  bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
-  for(int i = 0; i < count; i++){
-    bail_if(git_branch_next(&ref, &type, iter), "git_branch_next");
-    const char * name = NULL;
-    if(git_branch_name(&name, ref) == 0)
-      SET_STRING_ELT(names, i, safe_char(name));
-    LOGICAL(islocal)[i] = (type == GIT_BRANCH_LOCAL);
-    SET_STRING_ELT(refs, i, safe_char(git_reference_name(ref)));
-    if(git_reference_target(ref))
-      SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_reference_target(ref))));
-    git_reference_free(ref);
-  }
-  git_branch_iterator_free(iter);
-  return make_tibble_and_unprotect(4, "name", names, "local", islocal, "ref", refs, "id", ids);
-}
-
-static SEXP make_refspecs(git_remote *remote){
-  int size = git_remote_refspec_count(remote);
-  SEXP out = PROTECT(Rf_allocVector(STRSXP, size));
-  for(int i = 0; i < size; i++){
-    SET_STRING_ELT(out, i, safe_char(git_refspec_string(git_remote_get_refspec(remote, i))));
-  }
-  UNPROTECT(1);
-  return out;
-}
-
-SEXP R_git_remotes_list(SEXP ptr){
-  git_strarray remotes = {0};
-  git_repository *repo = get_git_repository(ptr);
-  bail_if(git_remote_list(&remotes, repo), "git_remote_list");
-  SEXP names = PROTECT(Rf_allocVector(STRSXP, remotes.count));
-  SEXP url = PROTECT(Rf_allocVector(STRSXP, remotes.count));
-  SEXP refspecs = PROTECT(Rf_allocVector(VECSXP, remotes.count));
-  for(int i = 0; i < remotes.count; i++){
-    git_remote *remote = NULL;
-    char *name = remotes.strings[i];
-    SET_STRING_ELT(names, i, safe_char(name));
-    if(!git_remote_lookup(&remote, repo, name)){
-      SET_STRING_ELT(url, i, safe_char(git_remote_url(remote)));
-      SET_VECTOR_ELT(refspecs, i, make_refspecs(remote));
-      git_remote_free(remote);
-    }
-    free(name);
-  }
-  return make_tibble_and_unprotect(3, "remote", names, "url", url, "refspecs", refspecs);
-}
-
 SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspecs){
 #if AT_LEAST_LIBGIT2(0, 23)
   git_remote *remote = NULL;
@@ -448,7 +257,7 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspecs){
   opts.callbacks.transfer_progress = fetch_progress;
   bail_if(git_remote_fetch(remote, refs, &opts, NULL), "git_remote_fetch");
   git_remote_free(remote);
-  free_file_array(refs);
+  git_strarray_free(refs);
   return ptr;
 #else
   Rf_error("git_remote_fetch requires at least libgit2 v0.23");
