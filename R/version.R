@@ -19,4 +19,11 @@ git_libgit2_config <- function(){
   packageStartupMessage(sprintf(
     "Linking to libgit2 v%s, ssh support: %s, https support: %s",
     as.character(config$version), ssh, https))
+
+  # Load tibble (if available) for pretty printing
+  if(is.null(.getNamespace('tibble'))){
+    tryCatch({
+      getNamespace('tibble')
+    }, error= function(e){})
+  }
 }

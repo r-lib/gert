@@ -132,7 +132,7 @@ git_branches <- function(repo = '.'){
 #' @rdname repository
 #' @param match pattern to filter tags (use `*` for wildcard)
 #' @useDynLib gert R_git_tag_list
-git_tags <- function(match = "", repo = '.'){
+git_tags <- function(match = "*", repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   match <- as.character(match)

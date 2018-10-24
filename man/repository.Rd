@@ -37,7 +37,7 @@ git_fetch(remote = "origin", refs = NULL, repo = ".")
 
 git_branches(repo = ".")
 
-git_tags(match = "", repo = ".")
+git_tags(match = "*", repo = ".")
 
 git_checkout(ref, force = FALSE, repo = ".")
 }
