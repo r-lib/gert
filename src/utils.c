@@ -46,34 +46,22 @@ SEXP make_strvec(int n, ...){
   return out;
 }
 
-SEXP make_tibble(int n, ...){
-  /* Just for storing pointers */
-  const char *names[n];
-  SEXP values[n];
-
-  /* Protect all SEXP inputs before allocating anything */
+/* The input SEXPS must be protected beforehand */
+SEXP make_tibble_and_unprotect(int n, ...){
   va_list args;
   va_start(args, n);
-  for (int i = 0; i < n; i++)  {
-    names[i] = va_arg(args, const char *);
-    values[i] = PROTECT(va_arg(args, SEXP));
-  }
-  va_end(args);
-
-  /* Create output list and names */
-  SEXP namevec = PROTECT(Rf_allocVector(STRSXP, n));
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, n));
   SEXP df = PROTECT(Rf_allocVector(VECSXP, n));
   for (int i = 0; i < n; i++)  {
-    SET_STRING_ELT(namevec, i, safe_char(names[i]));
-    SET_VECTOR_ELT(df, i, values[i]);
+    SET_STRING_ELT(names, i, safe_char(va_arg(args, const char *)));
+    SET_VECTOR_ELT(df, i, va_arg(args, SEXP));
   }
-
-  /* Create mandatory row names vector */
+  va_end(args);
   int nrows = n ? Rf_length(VECTOR_ELT(df, 0)) : 0;
   SEXP rownames = PROTECT(Rf_allocVector(INTSXP, nrows));
   for(int j = 0; j < nrows; j++)
     INTEGER(rownames)[j] = j+1;
-  Rf_setAttrib(df, R_NamesSymbol, namevec);
+  Rf_setAttrib(df, R_NamesSymbol, names);
   Rf_setAttrib(df, R_RowNamesSymbol, rownames);
   Rf_setAttrib(df, R_ClassSymbol, make_strvec(3, "tbl_df", "tbl", "data.frame"));
   UNPROTECT(3 + n);

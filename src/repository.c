@@ -304,8 +304,7 @@ SEXP R_git_repository_ls(SEXP ptr){
     REAL(mtimes)[i] = (double) timeval.seconds + timeval.nanoseconds * 1e-9;
   }
   git_index_free(index);
-  UNPROTECT(3);
-  return make_tibble(3, "path", paths, "filesize", sizes, "mtime", mtimes);
+  return make_tibble_and_unprotect(3, "path", paths, "filesize", sizes, "mtime", mtimes);
 }
 
 SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){
@@ -370,8 +369,7 @@ SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
       SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(&oid)));
   }
   git_strarray_free(&tag_list);
-  UNPROTECT(3);
-  return make_tibble(3, "tag", names, "ref", refs, "id", ids);
+  return make_tibble_and_unprotect(3, "tag", names, "ref", refs, "id", ids);
 }
 
 SEXP R_git_branch_list(SEXP ptr){
@@ -406,8 +404,7 @@ SEXP R_git_branch_list(SEXP ptr){
     git_reference_free(ref);
   }
   git_branch_iterator_free(iter);
-  UNPROTECT(4);
-  return make_tibble(4, "name", names, "local", islocal, "ref", refs, "id", ids);
+  return make_tibble_and_unprotect(4, "name", names, "local", islocal, "ref", refs, "id", ids);
 }
 
 static SEXP make_refspecs(git_remote *remote){
@@ -438,8 +435,7 @@ SEXP R_git_remotes_list(SEXP ptr){
     }
     free(name);
   }
-  UNPROTECT(3);
-  return make_tibble(3, "remote", names, "url", url, "refspecs", refspecs);
+  return make_tibble_and_unprotect(3, "remote", names, "url", url, "refspecs", refspecs);
 }
 
 SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspecs){

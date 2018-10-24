@@ -7,7 +7,7 @@ void bail_if_null(void * ptr, const char * what);
 SEXP safe_string(const char *x);
 SEXP safe_char(const char *x);
 SEXP make_strvec(int n, ...);
-SEXP make_tibble(int n, ...);
+SEXP make_tibble_and_unprotect(int n, ...);
 
 #define AT_LEAST_LIBGIT2(x,y) (LIBGIT2_VER_MAJOR > x || LIBGIT2_VER_MINOR >= y)
 
