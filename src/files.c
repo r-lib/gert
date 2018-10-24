@@ -50,7 +50,7 @@ SEXP R_git_repository_ls(SEXP ptr){
   git_index_free(index);
   Rf_setAttrib(mtimes, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   Rf_setAttrib(ctimes, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_tibble(4, "path", paths, "filesize", sizes, "mtime", mtimes, "ctime", ctimes);
+  return build_tibble(4, "path", paths, "filesize", sizes, "modified", mtimes, "created", ctimes);
 }
 
 SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){
