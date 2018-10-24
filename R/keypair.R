@@ -19,7 +19,7 @@ setup_ssh_key <- function(file = "~/.ssh/id_rsa", open_github = TRUE){
   } else {
     cat(sprintf("Generating new RSA keyspair at: %s\n", private_key))
     key <- openssl::rsa_keygen()
-    write_pkcs1(key, private_key)
+    write_pem(key, private_key)
     write_ssh(key$pubkey, paste0(private_key, '.pub'))
   }
 
@@ -40,11 +40,14 @@ setup_ssh_key <- function(file = "~/.ssh/id_rsa", open_github = TRUE){
 
 #' @importFrom openssl write_ssh write_pem read_key write_pkcs1
 make_key_cb <- function(file, password){
-  # Note: passphrase are unsupported when libssh2 uses gnutls
   function(){
     key <- read_key(file, password = password)
-    tmp_pub <- write_ssh(key$pubkey)
-    tmp_key <- write_pkcs1(key)
+    tmp_pub <- write_ssh(key$pubkey, tempfile())
+    tmp_key <- write_pkcs1(key, tempfile())
+    if(.Platform$OS.type == "unix"){
+      Sys.chmod(tmp_pub, '0644')
+      Sys.chmod(tmp_key, '0400')
+    }
     c(tmp_pub, tmp_key, "")
   }
 }
