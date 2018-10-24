@@ -356,6 +356,40 @@ SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   git_object_free(treeish);
   return ptr;
 }
+SEXP R_git_branch_list(SEXP ptr){
+  int res = 0;
+  int count = 0;
+  git_branch_t type;
+  git_reference *ref;
+  git_branch_iterator *iter;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
+  while((res = git_branch_next(&ref, &type, iter)) != GIT_ITEROVER){
+    bail_if(res, "git_branch_next");
+    count++;
+  }
+  git_branch_iterator_free(iter);
+
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, count));
+  SEXP islocal = PROTECT(Rf_allocVector(LGLSXP, count));
+  SEXP refs = PROTECT(Rf_allocVector(STRSXP, count));
+  bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
+  for(int i = 0; i < count; i++){
+    bail_if(git_branch_next(&ref, &type, iter), "git_branch_next");
+    const char * name = NULL;
+    if(git_branch_name(&name, ref) == 0)
+      SET_STRING_ELT(names, i, safe_char(name));
+    LOGICAL(islocal)[i] = (type == GIT_BRANCH_LOCAL);
+    SET_STRING_ELT(refs, i, safe_char(git_reference_name(ref)));
+  }
+  git_branch_iterator_free(iter);
+  SEXP df = PROTECT(Rf_allocVector(VECSXP, 3));
+  SET_VECTOR_ELT(df, 0, names);
+  SET_VECTOR_ELT(df, 1, islocal);
+  SET_VECTOR_ELT(df, 2, refs);
+  UNPROTECT(4);
+  return df;
+}
 
 static SEXP make_refspecs(git_remote *remote){
   int size = git_remote_refspec_count(remote);

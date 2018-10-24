@@ -11,6 +11,7 @@
 \alias{git_rm}
 \alias{git_remotes}
 \alias{git_fetch}
+\alias{git_branches}
 \alias{git_checkout}
 \title{Git Repository}
 \usage{
@@ -32,6 +33,8 @@ git_rm(files, repo = ".")
 git_remotes(repo = ".")
 
 git_fetch(remote = "origin", refs = NULL, repo = ".")
+
+git_branches(repo = ".")
 
 git_checkout(ref, force = FALSE, repo = ".")
 }

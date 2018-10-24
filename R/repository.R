@@ -102,8 +102,7 @@ git_remotes <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   out <- .Call(R_git_remotes_list, repo)
-  structure(out, class = c("tbl_df", "tbl", "data.frame"),
-            names = c("remote", "url", "refspecs"), row.names = seq_along(out[[1]]))
+  make_tibble(out, c("remote", "url", "refspecs"))
 }
 
 #' @export
@@ -117,6 +116,16 @@ git_fetch <- function(remote = "origin", refs = NULL, repo = '.'){
   remote <- as.character(remote)
   refs <- as.character(refs)
   .Call(R_git_remote_fetch, repo, remote, refs)
+}
+
+#' @export
+#' @rdname repository
+#' @useDynLib gert R_git_branch_list
+git_branches <- function(repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  out <- .Call(R_git_branch_list, repo)
+  make_tibble(out, c("name", "local", "ref"))
 }
 
 #' @export
