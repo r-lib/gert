@@ -62,11 +62,8 @@ git_info <- function(repo = '.'){
 git_ls <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
-  out <- .Call(R_git_repository_ls, repo)
-  names(out) <- c("path", "filesize", "mtime")
-  df <- data.frame(out, stringsAsFactors = FALSE)
+  df <- .Call(R_git_repository_ls, repo)
   class(df$mtime) <- c("POSIXct", "POSIXt")
-  class(df) <- c("tbl_df", "tbl", "data.frame")
   df
 }
 
@@ -101,8 +98,7 @@ git_rm <- function(files, repo = '.'){
 git_remotes <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
-  out <- .Call(R_git_remotes_list, repo)
-  make_tibble(out, c("remote", "url", "refspecs"))
+  .Call(R_git_remotes_list, repo)
 }
 
 #' @export
@@ -124,8 +120,7 @@ git_fetch <- function(remote = "origin", refs = NULL, repo = '.'){
 git_branches <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
-  out <- .Call(R_git_branch_list, repo)
-  make_tibble(out, c("name", "local", "ref", "id"))
+  .Call(R_git_branch_list, repo)
 }
 
 #' @export
@@ -136,8 +131,7 @@ git_tags <- function(match = "*", repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   match <- as.character(match)
-  out <- .Call(R_git_tag_list, repo, match)
-  make_tibble(out, c("tag", "ref", "id"))
+  .Call(R_git_tag_list, repo, match)
 }
 
 #' @export

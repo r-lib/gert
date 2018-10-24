@@ -304,12 +304,8 @@ SEXP R_git_repository_ls(SEXP ptr){
     REAL(mtimes)[i] = (double) timeval.seconds + timeval.nanoseconds * 1e-9;
   }
   git_index_free(index);
-  SEXP df = PROTECT(Rf_allocVector(VECSXP, 3));
-  SET_VECTOR_ELT(df, 0, paths);
-  SET_VECTOR_ELT(df, 1, sizes);
-  SET_VECTOR_ELT(df, 2, mtimes);
-  UNPROTECT(4);
-  return df;
+  UNPROTECT(3);
+  return make_tibble(3, "path", paths, "filesize", sizes, "mtime", mtimes);
 }
 
 SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){
@@ -374,12 +370,8 @@ SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
       SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(&oid)));
   }
   git_strarray_free(&tag_list);
-  SEXP df = PROTECT(Rf_allocVector(VECSXP, 3));
-  SET_VECTOR_ELT(df, 0, names);
-  SET_VECTOR_ELT(df, 1, refs);
-  SET_VECTOR_ELT(df, 2, ids);
-  UNPROTECT(4);
-  return df;
+  UNPROTECT(3);
+  return make_tibble(3, "tag", names, "ref", refs, "id", ids);
 }
 
 SEXP R_git_branch_list(SEXP ptr){
@@ -414,13 +406,8 @@ SEXP R_git_branch_list(SEXP ptr){
     git_reference_free(ref);
   }
   git_branch_iterator_free(iter);
-  SEXP df = PROTECT(Rf_allocVector(VECSXP, 4));
-  SET_VECTOR_ELT(df, 0, names);
-  SET_VECTOR_ELT(df, 1, islocal);
-  SET_VECTOR_ELT(df, 2, refs);
-  SET_VECTOR_ELT(df, 3, ids);
-  UNPROTECT(5);
-  return df;
+  UNPROTECT(4);
+  return make_tibble(4, "name", names, "local", islocal, "ref", refs, "id", ids);
 }
 
 static SEXP make_refspecs(git_remote *remote){
@@ -451,12 +438,8 @@ SEXP R_git_remotes_list(SEXP ptr){
     }
     free(name);
   }
-  SEXP out = PROTECT(Rf_allocVector(VECSXP, 3));
-  SET_VECTOR_ELT(out, 0, names);
-  SET_VECTOR_ELT(out, 1, url);
-  SET_VECTOR_ELT(out, 2, refspecs);
-  UNPROTECT(4);
-  return out;
+  UNPROTECT(3);
+  return make_tibble(3, "remote", names, "url", url, "refspecs", refspecs);
 }
 
 SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspecs){
