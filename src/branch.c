@@ -1,3 +1,4 @@
+#include <string.h>
 #include "utils.h"
 
 SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
@@ -17,6 +18,9 @@ SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
   bail_if(git_revparse_single(&treeish, repo, refstring), "git_revparse_single");
   bail_if(git_checkout_tree(repo, treeish, &opts), "git_checkout_tree");
   git_object_free(treeish);
+  char buf[1000];
+  snprintf(buf, 999, "refs/heads/%s", refstring);
+  bail_if(git_repository_set_head(repo, buf), "git_repository_set_head");
   return ptr;
 }
 
