@@ -6,7 +6,7 @@ test_that("cloning repositories works", {
   repo <- git_clone('https://github.com/jeroen/jsonlite', path = path)
   expect_true(file.exists(file.path(path, 'DESCRIPTION')))
   info <- git_info(repo)
-  expect_equal(info$ref, "refs/heads/master")
+  expect_equal(info$head, "refs/heads/master")
   expect_equal(info$shorthand, "master")
   repo2 <- git_open(path)
   info2 <- git_info(repo2)

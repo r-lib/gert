@@ -17,31 +17,16 @@ SEXP R_git_repository_info(SEXP ptr){
 
   bail_if(git_reference_list(&ref_list, repo), "git_reference_list");
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, ref_list.count));
-  for(int i = 0; i < ref_list.count; i++){
+  for(int i = 0; i < ref_list.count; i++)
     SET_STRING_ELT(refs, i, Rf_mkChar(ref_list.strings[i]));
-  }
-  SEXP list = PROTECT(Rf_allocVector(VECSXP, 4));
-  SEXP names = PROTECT(Rf_allocVector(STRSXP, Rf_length(list)));
-  SET_STRING_ELT(names, 0, Rf_mkChar("path"));
-  SET_STRING_ELT(names, 1, Rf_mkChar("ref"));
-  SET_STRING_ELT(names, 2, Rf_mkChar("shorthand"));
-  SET_STRING_ELT(names, 3, Rf_mkChar("reflist"));
-  SET_VECTOR_ELT(list, 0, safe_string(git_repository_workdir(repo)));
-
-  git_reference *head = NULL;
-  if(git_repository_head(&head, repo) == 0){
-    SET_VECTOR_ELT(list, 1, safe_string(git_reference_name(head)));
-    SET_VECTOR_ELT(list, 2, safe_string(git_reference_shorthand(head)));
-  } else {
-    SET_VECTOR_ELT(list, 1, Rf_ScalarString(NA_STRING));
-    SET_VECTOR_ELT(list, 2, Rf_ScalarString(NA_STRING));
-  }
-  SET_VECTOR_ELT(list, 3, refs);
-  Rf_setAttrib(list, R_NamesSymbol, names);
-  UNPROTECT(3);
-  git_reference_free(head);
   git_strarray_free(&ref_list);
-  return list;
+  SEXP path = PROTECT(safe_string(git_repository_workdir(repo)));
+  git_reference *head = NULL;
+  int err = git_repository_head(&head, repo) == 0;
+  SEXP headref = PROTECT(safe_string(err ? git_reference_name(head) : NULL));
+  SEXP shorthand = PROTECT(safe_string(err ? git_reference_shorthand(head) : NULL));
+  git_reference_free(head);
+  return build_list(4, "path", path, "head", headref, "shorthand", shorthand, "reflist", refs);
 }
 
 SEXP R_git_repository_ls(SEXP ptr){

@@ -47,7 +47,7 @@ SEXP make_strvec(int n, ...){
 }
 
 /* The input SEXPS must be protected beforehand */
-SEXP make_list(int n, ...){
+SEXP build_list(int n, ...){
   va_list args;
   va_start(args, n);
   SEXP names = PROTECT(Rf_allocVector(STRSXP, n));
@@ -62,7 +62,7 @@ SEXP make_list(int n, ...){
   return vec;
 }
 
-SEXP as_tibble(SEXP df){
+SEXP list_to_tibble(SEXP df){
   PROTECT(df);
   int nrows = Rf_length(df) ? Rf_length(VECTOR_ELT(df, 0)) : 0;
   SEXP rownames = PROTECT(Rf_allocVector(INTSXP, nrows));
