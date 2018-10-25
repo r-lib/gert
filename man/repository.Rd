@@ -14,6 +14,7 @@
 \alias{git_branches}
 \alias{git_tags}
 \alias{git_checkout}
+\alias{git_log}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, password = askpass,
@@ -39,7 +40,9 @@ git_branches(repo = ".")
 
 git_tags(match = "*", repo = ".")
 
-git_checkout(ref, force = FALSE, repo = ".")
+git_checkout(branch, force = FALSE, repo = ".")
+
+git_log(max = 100, branch = "HEAD", repo = ".")
 }
 \arguments{
 \item{url}{remote url. Typically starts with \code{https://github.com/} for public
@@ -48,7 +51,7 @@ private repos. You will be prompted for a password or pat when needed.}
 
 \item{path}{local path, must be a non-existing or empty directory}
 
-\item{branch}{which branch to clone}
+\item{branch}{name of branch or commit to check out}
 
 \item{password}{a string or a callback function to get passwords for authentication
 or password proctected ssh keys.}
@@ -70,7 +73,7 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{match}{pattern to filter tags (use \code{*} for wildcard)}
 
-\item{ref}{name of branch or commit to check out}
+\item{max}{lookup at most latest n parent commits}
 }
 \description{
 First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.

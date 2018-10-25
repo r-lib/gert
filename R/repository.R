@@ -12,7 +12,6 @@
 #' repositories, and `https://yourname@github.com/` or `git@github.com/` for
 #' private repos. You will be prompted for a password or pat when needed.
 #' @param path local path, must be a non-existing or empty directory
-#' @param branch which branch to clone
 #' @param ssh_key path or object containing your ssh private key
 #' @param password a string or a callback function to get passwords for authentication
 #' or password proctected ssh keys.
@@ -134,14 +133,26 @@ git_tags <- function(match = "*", repo = '.'){
 
 #' @export
 #' @rdname repository
-#' @param ref name of branch or commit to check out
-#' @useDynLib gert R_git_checkout
-git_checkout <- function(ref, force = FALSE, repo = '.'){
+#' @param branch name of branch or commit to check out
+#' @useDynLib gert R_git_checkout_branch
+git_checkout <- function(branch, force = FALSE, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
-  ref <- as.character(ref)
+  branch <- as.character(branch)
   force <- as.logical(force)
-  .Call(R_git_checkout, repo, ref, force)
+  .Call(R_git_checkout_branch, repo, branch, force)
+}
+
+#' @export
+#' @rdname repository
+#' @useDynLib gert R_git_commit_log
+#' @param max lookup at most latest n parent commits
+git_log <- function(max = 100, branch = "HEAD", repo = "."){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  branch <- as.character(branch)
+  max <- as.integer(max)
+  .Call(R_git_commit_log, repo, max, branch)
 }
 
 #' @export

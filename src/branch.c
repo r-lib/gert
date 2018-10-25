@@ -1,7 +1,28 @@
 #include <string.h>
 #include "utils.h"
 
-SEXP R_git_checkout(SEXP ptr, SEXP ref, SEXP force){
+SEXP R_git_checkout_branch(SEXP ptr, SEXP branch, SEXP force){
+  git_reference *ref;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_branch_lookup(&ref, repo, CHAR(STRING_ELT(branch, 0)), GIT_BRANCH_LOCAL), "git_branch_lookup");
+
+  /* Set checkout options */
+#if AT_LEAST_LIBGIT2(0, 21)
+  git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
+#else
+  git_checkout_opts opts = GIT_CHECKOUT_OPTS_INIT;
+#endif
+  opts.checkout_strategy = Rf_asLogical(force) ? GIT_CHECKOUT_FORCE : GIT_CHECKOUT_SAFE;
+
+  git_object *obj;
+  bail_if(git_object_lookup(&obj, repo, git_reference_target(ref), GIT_OBJ_ANY), "git_object_lookup");
+  bail_if(git_checkout_tree(repo, obj, &opts), "git_checkout_tree");
+  bail_if(git_repository_set_head(repo, git_reference_name(ref)), "git_repository_set_head");
+  git_reference_free(ref);
+  return ptr;
+}
+
+SEXP R_git_checkout_ref(SEXP ptr, SEXP ref, SEXP force){
   git_repository *repo = get_git_repository(ptr);
 
   /* Set checkout options */
