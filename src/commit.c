@@ -18,15 +18,13 @@ static int count_commit_parents(git_commit *input, int max){
 }
 
 static SEXP make_author(const git_signature *p){
-  char buf[2000];
+  char buf[2000] = "";
   if(p->name && p->email){
     snprintf(buf, 1999, "%s <%s>", p->name, p->email);
   } else if(p->name){
     snprintf(buf, 1999, "%s", p->name);
   } else if(p->email){
     snprintf(buf, 1999, "%s", p->email);
-  } else {
-    snprintf(buf, 1999, "");
   }
   return safe_char(buf);
 }
