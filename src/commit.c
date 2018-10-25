@@ -1,14 +1,34 @@
 #include <string.h>
 #include "utils.h"
 
-static SEXP shrink_strvec(SEXP input, int n){
-  if(Rf_length(input) <= n)
-    return input;
-  SEXP output = PROTECT(Rf_allocVector(STRSXP, n));
-  for(int i = 0; i < n; i++)
-    SET_STRING_ELT(output, i, STRING_ELT(input, i));
-  UNPROTECT(1);
-  return output;
+static int count_commit_parents(git_commit *input, int max){
+  git_commit *x = NULL;
+  git_commit *y = NULL;
+  git_commit_dup(&x, input);
+  for(int i = 0; i < max; i++){
+    int res = git_commit_parent(&y, x, 0);
+    git_commit_free(x);
+    if(res == GIT_ENOTFOUND)
+      return i;
+    bail_if(res, "git_commit_parent");
+    x = y;
+  }
+  git_commit_free(x);
+  return max;
+}
+
+static SEXP make_author(const git_signature *p){
+  char buf[2000];
+  if(p->name && p->email){
+    snprintf(buf, 1999, "%s <%s>", p->name, p->email);
+  } else if(p->name){
+    snprintf(buf, 1999, "%s", p->name);
+  } else if(p->email){
+    snprintf(buf, 1999, "%s", p->email);
+  } else {
+    snprintf(buf, 1999, "");
+  }
+  return safe_char(buf);
 }
 
 SEXP R_git_commit_log(SEXP ptr, SEXP max, SEXP ref){
@@ -19,26 +39,26 @@ SEXP R_git_commit_log(SEXP ptr, SEXP max, SEXP ref){
   git_commit *head = NULL;
   git_commit *commit = NULL;
   bail_if(git_commit_lookup(&head, repo, &oid_parent_commit), "git_commit_lookup");
-  int len = Rf_asInteger(max);
+
+  /* Find out how many ancestors we have */
+  int len = count_commit_parents(head, Rf_asInteger(max) -1) + 1;
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP msg = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP author = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP time = PROTECT(Rf_allocVector(REALSXP, len));
+
   int i;
   for(i = 0; i < len; i++){
     SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(head))));
     SET_STRING_ELT(msg, i, safe_char(git_commit_message(head)));
-    int res = git_commit_parent(&commit, head, 0);
+    SET_STRING_ELT(author, i, make_author(git_commit_author(head)));
+    REAL(time)[i] = git_commit_time(head);
+
+    /* traverse to next commit */
+    bail_if(i<len-1 && git_commit_parent(&commit, head, 0), "git_commit_parent");
     git_commit_free(head);
-    if(res == GIT_ENOTFOUND)
-      break;
-    bail_if(res, "git_commit_parent");
     head = commit;
   }
-  if(i < len){
-    ids = shrink_strvec(ids, i+1);
-    msg = shrink_strvec(msg, i+1);
-    UNPROTECT(2); //unprotect input vecs
-    PROTECT(ids);
-    PROTECT(msg);
-  }
-  return build_tibble(2, "id", ids, "message", msg);
+  Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  return build_tibble(4, "id", ids, "author", author, "time", time, "message", msg);
 }
