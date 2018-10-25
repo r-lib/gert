@@ -100,7 +100,7 @@ SEXP R_git_branch_list(SEXP ptr){
     git_reference_free(ref);
   }
   git_branch_iterator_free(iter);
-  return build_tibble(4, "name", names, "local", islocal, "ref", refs,"upstream", upstreams, "id", ids);
+  return build_tibble(5, "name", names, "local", islocal, "ref", refs,"upstream", upstreams, "commit", ids);
 }
 
 static SEXP make_refspecs(git_remote *remote){
