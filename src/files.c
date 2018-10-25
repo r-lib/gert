@@ -78,44 +78,54 @@ SEXP R_git_repository_rm(SEXP ptr, SEXP files){
   return ptr;
 }
 
-static SEXP status_string(git_status_t status){
-  if (status & (GIT_STATUS_WT_NEW))
-    return safe_char("untracked");
-  if (status & (GIT_STATUS_INDEX_NEW))
-    return safe_char("new");
-  if (status & (GIT_STATUS_WT_MODIFIED | GIT_STATUS_INDEX_MODIFIED))
-    return safe_char("modified");
-  if (status & (GIT_STATUS_WT_DELETED | GIT_STATUS_INDEX_DELETED))
-    return safe_char("deleted");
-  if (status & (GIT_STATUS_WT_RENAMED | GIT_STATUS_INDEX_RENAMED))
-    return safe_char("renamed");
-  if (status & (GIT_STATUS_WT_TYPECHANGE | GIT_STATUS_INDEX_TYPECHANGE))
-    return safe_char("typehange");
-  if (status & (GIT_STATUS_IGNORED))
-    return safe_char("ignored");
-  return safe_char("");
-}
-
-static SEXP guess_path(const git_status_entry *file){
-  if(file->index_to_workdir){
-    if(file->index_to_workdir->new_file.path)
-      return safe_char(file->index_to_workdir->new_file.path);
-    if(file->index_to_workdir->old_file.path)
-      return safe_char(file->index_to_workdir->old_file.path);
-  }
-  if(file->head_to_index){
-    if(file->head_to_index->new_file.path)
-      return safe_char(file->head_to_index->new_file.path);
-    if(file->head_to_index->old_file.path)
-      return safe_char(file->head_to_index->new_file.path);
-  }
-  return safe_char(NULL);
-}
 
 /* See https://github.com/libgit2/libgit2/blob/master/examples/status.c
  * And https://libgit2.org/libgit2/#HEAD/type/git_status_opt_t
- * Todo: perhaps this is a bit overly simplified...
  */
+
+static const char *guess_filename(git_diff_delta *diff){
+  if(diff && diff->new_file.path)
+    return diff->new_file.path;
+  if(diff && diff->old_file.path)
+    return diff->old_file.path;
+  return NULL;
+}
+
+static void extract_entry_data(const git_status_entry *file, char *status, char *filename, int *isstaged){
+  if(file == NULL)
+    return;
+  git_status_t s = file->status;
+  if(s & (GIT_STATUS_INDEX_DELETED | GIT_STATUS_INDEX_MODIFIED | GIT_STATUS_INDEX_NEW | GIT_STATUS_INDEX_RENAMED | GIT_STATUS_INDEX_TYPECHANGE)){
+    strcpy(filename, guess_filename(file->head_to_index));
+    *isstaged = 1;
+    if(s & GIT_STATUS_INDEX_NEW){
+      strcpy(status, "new");
+    } else if(s & GIT_STATUS_INDEX_MODIFIED){
+      strcpy(status, "modified");
+    } else if(s & GIT_STATUS_INDEX_RENAMED){
+      strcpy(status, "renamed");
+    } else if(s & GIT_STATUS_INDEX_TYPECHANGE){
+      strcpy(status, "typechange");
+    } else if(s & GIT_STATUS_INDEX_DELETED){
+      strcpy(status, "deleted");
+    }
+  } else if(s & (GIT_STATUS_WT_DELETED | GIT_STATUS_WT_MODIFIED | GIT_STATUS_WT_NEW | GIT_STATUS_WT_RENAMED | GIT_STATUS_WT_TYPECHANGE)){
+    strcpy(filename, guess_filename(file->index_to_workdir));
+    *isstaged = 0;
+    if(s & GIT_STATUS_WT_NEW){
+      strcpy(status, "new");
+    } else if(s & GIT_STATUS_WT_MODIFIED){
+      strcpy(status, "modified");
+    } else if(s & GIT_STATUS_WT_RENAMED){
+      strcpy(status, "renamed");
+    } else if(s & GIT_STATUS_WT_TYPECHANGE){
+      strcpy(status, "typechange");
+    } else if(s & GIT_STATUS_WT_DELETED){
+      strcpy(status, "deleted");
+    }
+  }
+}
+
 SEXP R_git_status_list(SEXP ptr){
   git_status_list *list = NULL;
   git_repository *repo = get_git_repository(ptr);
@@ -127,14 +137,17 @@ SEXP R_git_status_list(SEXP ptr){
   bail_if(git_status_list_new(&list, repo, &opts), "git_status_list_new");
   size_t len = git_status_list_entrycount(list);
   SEXP files = PROTECT(Rf_allocVector(STRSXP, len));
-  SEXP status = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP statuses = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP staged = PROTECT(Rf_allocVector(LGLSXP, len));
   for(size_t i = 0; i < len; i++){
-    const git_status_entry *file = git_status_byindex(list, i);
-    if(file == NULL)
-      continue;
-    SET_STRING_ELT(files, i, guess_path(file));
-    SET_STRING_ELT(status, i, status_string(file->status));
+    char status[100] = "";
+    char filename[4000] = "";
+    int isstaged = NA_LOGICAL;
+    extract_entry_data(git_status_byindex(list, i), status, filename, &isstaged);
+    SET_STRING_ELT(files, i, safe_char(filename));
+    SET_STRING_ELT(statuses, i, safe_char(status));
+    LOGICAL(staged)[i] = isstaged;
   }
   git_status_list_free(list);
-  return build_tibble(2, "file", files, "status", status);
+  return build_tibble(3, "file", files, "status", statuses, "staged", staged);
 }
