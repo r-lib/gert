@@ -58,11 +58,13 @@ if [ $? -ne 0 ]; then
   lsb_release -c 2>/dev/null | grep -E 'trusty|xenial' 2>/dev/null
   if [ $? -eq 0 ]; then
     echo "------------------------- ANTICONF ERROR ---------------------------"
-    echo "Configuration failed because $PKG_CONFIG_NAME is not installed"
-    echo "Please install it from the PPA (Ubuntu Trusty or Xenial)"
+    echo "Configuration failed because $PKG_CONFIG_NAME is not installed."
+    echo "Please install it from the following PPA (Ubuntu Trusty or Xenial):"
+    echo ""
     echo "  sudo add-apt-repository ppa:opencpu/libgit2"
     echo "  sudo apt-get update"
-    echo "  sudo apt-get install libssh2-dev libgit2-dev"
+    echo "  sudo apt-get install libssh2-1-dev libgit2-dev"
+    echo ""
     echo "--------------------------------------------------------------------"
   else
     echo "------------------------- ANTICONF ERROR ---------------------------"
