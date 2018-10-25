@@ -62,7 +62,7 @@ SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
       SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(&oid)));
   }
   git_strarray_free(&tag_list);
-  return build_tibble(3, "tag", names, "ref", refs, "id", ids);
+  return build_tibble(3, "name", names, "ref", refs, "commit", ids);
 }
 
 SEXP R_git_branch_list(SEXP ptr){
@@ -131,5 +131,5 @@ SEXP R_git_remotes_list(SEXP ptr){
     }
     free(name);
   }
-  return build_tibble(3, "remote", names, "url", url, "refspecs", refspecs);
+  return build_tibble(3, "name", names, "url", url, "refspecs", refspecs);
 }

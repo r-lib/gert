@@ -58,5 +58,5 @@ SEXP R_git_commit_log(SEXP ptr, SEXP max, SEXP ref){
     head = commit;
   }
   Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_tibble(4, "id", ids, "author", author, "time", time, "message", msg);
+  return build_tibble(4, "commit", ids, "author", author, "time", time, "message", msg);
 }
