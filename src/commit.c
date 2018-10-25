@@ -47,15 +47,15 @@ SEXP R_git_commit_log(SEXP ptr, SEXP max, SEXP ref){
   SEXP author = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP time = PROTECT(Rf_allocVector(REALSXP, len));
 
-  int i;
-  for(i = 0; i < len; i++){
+  for(int i = 0; i < len; i++){
     SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(head))));
     SET_STRING_ELT(msg, i, safe_char(git_commit_message(head)));
     SET_STRING_ELT(author, i, make_author(git_commit_author(head)));
     REAL(time)[i] = git_commit_time(head);
 
-    /* traverse to next commit */
-    bail_if(i<len-1 && git_commit_parent(&commit, head, 0), "git_commit_parent");
+    /* traverse to next commit (except for the final one) */
+    if(i < len-1)
+      bail_if(git_commit_parent(&commit, head, 0), "git_commit_parent");
     git_commit_free(head);
     head = commit;
   }
