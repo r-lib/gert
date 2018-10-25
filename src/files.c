@@ -78,3 +78,63 @@ SEXP R_git_repository_rm(SEXP ptr, SEXP files){
   return ptr;
 }
 
+static SEXP status_string(git_status_t status){
+  if (status & (GIT_STATUS_WT_NEW))
+    return safe_char("untracked");
+  if (status & (GIT_STATUS_INDEX_NEW))
+    return safe_char("new");
+  if (status & (GIT_STATUS_WT_MODIFIED | GIT_STATUS_INDEX_MODIFIED))
+    return safe_char("modified");
+  if (status & (GIT_STATUS_WT_DELETED | GIT_STATUS_INDEX_DELETED))
+    return safe_char("deleted");
+  if (status & (GIT_STATUS_WT_RENAMED | GIT_STATUS_INDEX_RENAMED))
+    return safe_char("renamed");
+  if (status & (GIT_STATUS_WT_TYPECHANGE | GIT_STATUS_INDEX_TYPECHANGE))
+    return safe_char("typehange");
+  if (status & (GIT_STATUS_IGNORED))
+    return safe_char("ignored");
+  return safe_char("");
+}
+
+static SEXP guess_path(const git_status_entry *file){
+  if(file->index_to_workdir){
+    if(file->index_to_workdir->new_file.path)
+      return safe_char(file->index_to_workdir->new_file.path);
+    if(file->index_to_workdir->old_file.path)
+      return safe_char(file->index_to_workdir->old_file.path);
+  }
+  if(file->head_to_index){
+    if(file->head_to_index->new_file.path)
+      return safe_char(file->head_to_index->new_file.path);
+    if(file->head_to_index->old_file.path)
+      return safe_char(file->head_to_index->new_file.path);
+  }
+  return safe_char(NULL);
+}
+
+/* See https://github.com/libgit2/libgit2/blob/master/examples/status.c
+ * And https://libgit2.org/libgit2/#HEAD/type/git_status_opt_t
+ * Todo: perhaps this is a bit overly simplified...
+ */
+SEXP R_git_status_list(SEXP ptr){
+  git_status_list *list = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  git_status_options opts = GIT_STATUS_OPTIONS_INIT;
+  opts.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR;
+  opts.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED |
+    GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX |
+    GIT_STATUS_OPT_SORT_CASE_SENSITIVELY;
+  bail_if(git_status_list_new(&list, repo, &opts), "git_status_list_new");
+  size_t len = git_status_list_entrycount(list);
+  SEXP files = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP status = PROTECT(Rf_allocVector(STRSXP, len));
+  for(size_t i = 0; i < len; i++){
+    const git_status_entry *file = git_status_byindex(list, i);
+    if(file == NULL)
+      continue;
+    SET_STRING_ELT(files, i, guess_path(file));
+    SET_STRING_ELT(status, i, status_string(file->status));
+  }
+  git_status_list_free(list);
+  return build_tibble(2, "file", files, "status", status);
+}

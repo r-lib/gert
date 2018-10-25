@@ -91,6 +91,15 @@ git_rm <- function(files, repo = '.'){
 
 #' @export
 #' @rdname repository
+#' @useDynLib gert R_git_status_list
+git_status <- function(repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  .Call(R_git_status_list, repo)
+}
+
+#' @export
+#' @rdname repository
 #' @useDynLib gert R_git_remotes_list
 git_remotes <- function(repo = '.'){
   if(is.character(repo))
