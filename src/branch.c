@@ -4,7 +4,7 @@
 SEXP R_git_checkout_branch(SEXP ptr, SEXP branch, SEXP force){
   git_reference *ref;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_branch_lookup(&ref, repo, CHAR(STRING_ELT(branch, 0)), GIT_BRANCH_LOCAL), "git_branch_lookup");
+  bail_if(git_branch_lookup(&ref, repo, CHAR(STRING_ELT(branch, 0)), GIT_BRANCH_REMOTE), "git_branch_lookup");
 
   /* Set checkout options */
 #if AT_LEAST_LIBGIT2(0, 21)
@@ -84,6 +84,7 @@ SEXP R_git_branch_list(SEXP ptr){
   SEXP islocal = PROTECT(Rf_allocVector(LGLSXP, count));
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, count));
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, count));
+  SEXP upstreams = PROTECT(Rf_allocVector(STRSXP, count));
   bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
   for(int i = 0; i < count; i++){
     bail_if(git_branch_next(&ref, &type, iter), "git_branch_next");
@@ -94,10 +95,12 @@ SEXP R_git_branch_list(SEXP ptr){
     SET_STRING_ELT(refs, i, safe_char(git_reference_name(ref)));
     if(git_reference_target(ref))
       SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_reference_target(ref))));
+    git_reference *upstream = NULL;
+    SET_STRING_ELT(upstreams, i, safe_char(git_branch_upstream(&upstream, ref) ? NULL : git_reference_name(upstream)));
     git_reference_free(ref);
   }
   git_branch_iterator_free(iter);
-  return build_tibble(4, "name", names, "local", islocal, "ref", refs, "id", ids);
+  return build_tibble(4, "name", names, "local", islocal, "ref", refs,"upstream", upstreams, "id", ids);
 }
 
 static SEXP make_refspecs(git_remote *remote){
