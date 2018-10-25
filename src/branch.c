@@ -1,10 +1,31 @@
 #include <string.h>
 #include "utils.h"
 
+SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
+  git_object *obj;
+  git_commit *commit = NULL;
+  git_object *revision = NULL;
+  git_reference *branch = NULL;
+  git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
+  bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
+  git_object_free(revision);
+  bail_if(git_branch_create(&branch, repo, CHAR(STRING_ELT(name, 0)), commit, 0), "git_branch_create");
+  git_commit_free(commit);
+  if(Rf_asInteger(checkout)){
+    bail_if(git_object_lookup(&obj, repo, git_reference_target(branch), GIT_OBJ_ANY), "git_object_lookup");
+    bail_if(git_checkout_tree(repo, obj, &opts), "git_checkout_tree");
+    git_object_free(obj);
+    bail_if(git_repository_set_head(repo, git_reference_name(branch)), "git_repository_set_head");
+  }
+  return ptr;
+}
+
 SEXP R_git_checkout_branch(SEXP ptr, SEXP branch, SEXP force){
   git_reference *ref;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_branch_lookup(&ref, repo, CHAR(STRING_ELT(branch, 0)), GIT_BRANCH_REMOTE), "git_branch_lookup");
+  bail_if(git_branch_lookup(&ref, repo, CHAR(STRING_ELT(branch, 0)), GIT_BRANCH_LOCAL), "git_branch_lookup");
 
   /* Set checkout options */
 #if AT_LEAST_LIBGIT2(0, 21)

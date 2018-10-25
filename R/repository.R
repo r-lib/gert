@@ -145,6 +145,20 @@ git_checkout <- function(branch, force = FALSE, repo = '.'){
 
 #' @export
 #' @rdname repository
+#' @useDynLib gert R_git_create_branch
+#' @param name string with name of the branch / tag / etc
+#' @param checkout switch HEAD to the newly created branch
+git_branch <- function(name, ref = "HEAD", checkout = TRUE, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  name <- as.character(name)
+  ref <- as.character(ref)
+  checkout <- as.logical(checkout)
+  .Call(R_git_create_branch,repo, name, ref, checkout)
+}
+
+#' @export
+#' @rdname repository
 #' @useDynLib gert R_git_commit_log
 #' @param ref string with a branch/tag/commit
 #' @param max lookup at most latest n parent commits

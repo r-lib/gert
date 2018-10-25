@@ -14,6 +14,7 @@
 \alias{git_branches}
 \alias{git_tags}
 \alias{git_checkout}
+\alias{git_branch}
 \alias{git_log}
 \title{Git Repository}
 \usage{
@@ -41,6 +42,8 @@ git_branches(repo = ".")
 git_tags(match = "*", repo = ".")
 
 git_checkout(branch, force = FALSE, repo = ".")
+
+git_branch(name, ref = "HEAD", checkout = TRUE, repo = ".")
 
 git_log(max = 100, ref = "HEAD", repo = ".")
 }
@@ -73,9 +76,13 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{match}{pattern to filter tags (use \code{*} for wildcard)}
 
-\item{max}{lookup at most latest n parent commits}
+\item{name}{string with name of the branch / tag / etc}
 
 \item{ref}{string with a branch/tag/commit}
+
+\item{checkout}{switch HEAD to the newly created branch}
+
+\item{max}{lookup at most latest n parent commits}
 }
 \description{
 First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.
