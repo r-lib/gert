@@ -5,7 +5,7 @@ static int count_commit_parents(git_commit *input, int max){
   git_commit *x = NULL;
   git_commit *y = NULL;
   git_commit_dup(&x, input);
-  for(int i = 0; i < max; i++){
+  for(int i = 1; i < max; i++){
     int res = git_commit_parent(&y, x, 0);
     git_commit_free(x);
     if(res == GIT_ENOTFOUND)
@@ -32,16 +32,16 @@ static SEXP make_author(const git_signature *p){
 }
 
 SEXP R_git_commit_log(SEXP ptr, SEXP max, SEXP ref){
-  git_repository *repo = get_git_repository(ptr);
-  git_oid oid_parent_commit;  /* the SHA1 for last commit */
-  bail_if(git_reference_name_to_id( &oid_parent_commit, repo, CHAR(STRING_ELT(ref, 0))), "git_reference_name_to_id");
-
   git_commit *head = NULL;
   git_commit *commit = NULL;
-  bail_if(git_commit_lookup(&head, repo, &oid_parent_commit), "git_commit_lookup");
+  git_object *revision = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
+  bail_if(git_commit_lookup(&head, repo, git_object_id(revision)), "git_commit_lookup");
+  git_object_free(revision);
 
   /* Find out how many ancestors we have */
-  int len = count_commit_parents(head, Rf_asInteger(max) -1) + 1;
+  int len = count_commit_parents(head, Rf_asInteger(max));
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP msg = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP author = PROTECT(Rf_allocVector(STRSXP, len));

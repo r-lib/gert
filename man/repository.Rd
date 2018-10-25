@@ -42,7 +42,7 @@ git_tags(match = "*", repo = ".")
 
 git_checkout(branch, force = FALSE, repo = ".")
 
-git_log(max = 100, branch = "HEAD", repo = ".")
+git_log(max = 100, ref = "HEAD", repo = ".")
 }
 \arguments{
 \item{url}{remote url. Typically starts with \code{https://github.com/} for public
@@ -74,6 +74,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{match}{pattern to filter tags (use \code{*} for wildcard)}
 
 \item{max}{lookup at most latest n parent commits}
+
+\item{ref}{string with a branch/tag/commit}
 }
 \description{
 First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.

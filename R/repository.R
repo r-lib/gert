@@ -146,13 +146,14 @@ git_checkout <- function(branch, force = FALSE, repo = '.'){
 #' @export
 #' @rdname repository
 #' @useDynLib gert R_git_commit_log
+#' @param ref string with a branch/tag/commit
 #' @param max lookup at most latest n parent commits
-git_log <- function(max = 100, branch = "HEAD", repo = "."){
+git_log <- function(max = 100, ref = "HEAD", repo = "."){
   if(is.character(repo))
     repo <- git_open(repo)
-  branch <- as.character(branch)
+  ref <- as.character(ref)
   max <- as.integer(max)
-  .Call(R_git_commit_log, repo, max, branch)
+  .Call(R_git_commit_log, repo, max, ref)
 }
 
 #' @export
