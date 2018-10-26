@@ -274,21 +274,16 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   return new_git_repository(repo);
 }
 
-SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspecs){
-#if AT_LEAST_LIBGIT2(0, 23)
+SEXP R_git_remote_fetch(SEXP ptr, SEXP name){
   git_remote *remote = NULL;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))), "git_remote_lookup");
-  git_strarray *refs = files_to_array(refspecs);
   git_fetch_options opts = GIT_FETCH_OPTIONS_INIT;
+  opts.update_fetchhead = 1;
   opts.callbacks.transfer_progress = fetch_progress;
-  bail_if(git_remote_fetch(remote, refs, &opts, NULL), "git_remote_fetch");
+  bail_if(git_remote_fetch(remote, NULL, &opts, NULL), "git_remote_fetch");
   git_remote_free(remote);
-  git_strarray_free(refs);
   return ptr;
-#else
-  Rf_error("git_remote_fetch requires at least libgit2 v0.23");
-#endif
 }
 
 SEXP R_set_session_keyphrase(SEXP key){

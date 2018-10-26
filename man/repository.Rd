@@ -39,7 +39,7 @@ git_status(repo = ".")
 
 git_remotes(repo = ".")
 
-git_fetch(remote = "origin", refs = NULL, repo = ".")
+git_fetch(remote = "origin", repo = ".")
 
 git_branches(repo = ".")
 
@@ -78,8 +78,6 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{force}{add files even if in gitignore}
 
 \item{remote}{name of a remote listed in \code{\link[=git_remotes]{git_remotes()}}}
-
-\item{refs}{which branches/tags/etc to download. Defaults to the base refspecs.}
 
 \item{match}{pattern to filter tags (use \code{*} for wildcard)}
 
