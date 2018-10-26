@@ -18,10 +18,29 @@ test_that("private ssh remotes with key", {
 
 # Access token for dummy account with minimal rights
 test_that("HTTP user/pass auth", {
+  # Disable user PAT
+  Sys.unsetenv("GITHUB_PAT")
+
+  # Test with password
   enc <- readBin('pat.bin', raw(), 1e3)
   dec <- openssl::rsa_decrypt(enc, 'key.pem', password = 'testingjerry')
-  target <- file.path(tempdir(), 'testprivate2')
+  target2 <- file.path(tempdir(), 'testprivate2')
   repo <- git_clone('https://testingjerry@github.com/ropensci/testprivate',
-                    path = target, password = rawToChar(dec))
-  expect_true(file.exists(file.path(target, 'hello')))
+                    path = target2, password = rawToChar(dec))
+  expect_true(file.exists(file.path(target2, 'hello')))
+
+  # Test that repo is private
+  expect_error(git_clone('https://github.com/ropensci/testprivate', password = "bla"))
+
+  # Test with PAT
+  Sys.setenv(GITHUB_PAT = rawToChar(dec))
+  on.exit(Sys.unsetenv("GITHUB_PAT"))
+  target3 <- file.path(tempdir(), 'testprivate3')
+  repo <- git_clone('https://github.com/ropensci/testprivate', path = target3)
+  expect_true(file.exists(file.path(target3, 'hello')))
+
+  # Try with user in URL
+  target4 <- file.path(tempdir(), 'testprivate4')
+  repo <- git_clone('https://nobody@github.com/ropensci/testprivate', path = target4)
+  expect_true(file.exists(file.path(target4, 'hello')))
 })

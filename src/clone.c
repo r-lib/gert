@@ -115,6 +115,26 @@ static void checkout_progress(const char *path, size_t cur, size_t tot, void *pa
   }
 }
 
+/* We only want to send the PAT to Github */
+static int url_is_github(const char *url, const char *user){
+  if(url == NULL)
+    return 0;
+  if(strstr(url, "http://github.com") == url)
+    return 1;
+  if(strstr(url, "https://github.com") == url)
+    return 1;
+  if(user){
+    char buf[4000];
+    snprintf(buf, 3999, "http://%s@github.com", user);
+    if(strstr(url, buf) == url)
+      return 1;
+    snprintf(buf, 3999, "https://%s@github.com", user);
+    if(strstr(url, buf) == url)
+      return 1;
+  }
+  return 0;
+}
+
 /* Examples: https://github.com/libgit2/libgit2/blob/master/tests/online/clone.c */
 static int auth_callback(git_cred **cred, const char *url, const char *username,
                                unsigned int allowed_types, void *payload){
@@ -168,10 +188,17 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
 
   /* This is for HTTP remotes */
   if(allowed_types & GIT_CREDTYPE_USERPASS_PLAINTEXT){
-    if(cb_data->retries > 2){
+    if(cb_data->retries > 3){
       print_if_verbose("Failed password authentiation %d times. Giving up\n", cb_data->retries);
       cb_data->retries = 0;
     } else {
+      if(cb_data->retries == 0){
+        cb_data->retries++;
+        if(url_is_github(url, username) && getenv("GITHUB_PAT")){
+          print_if_verbose("Trying to authenticate with your GITHUB_PAT\n");
+          return git_cred_userpass_plaintext_new(cred, "git", getenv("GITHUB_PAT"));
+        }
+      }
       cb_data->retries++;
       if(username == NULL)
         username = prompt_user_password(cb_data->askpass, "Please enter USERNAME");
