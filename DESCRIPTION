@@ -5,10 +5,10 @@ Version: 0.1
 Author: Jeroen Ooms
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Description: Simple git client for R based on 'libgit2' <https://libgit2.org/>. This
-    package only provides basic git functionality that is available in all versions
-    of 'libgit2'.
+    package requires that a somewhat recent version of 'libgit2' is installed on the
+    system.
 License: MIT + file LICENSE
-SystemRequirements: libgit2 (>= 0.19): libgit2-devel (rpm) or libgit2-dev (deb)
+SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb)
 URL: http://github.com/jeroen/gert (devel), https://libgit2.org (upstream)
 BugReports: http://github.com/jeroen/gert/issues
 Encoding: UTF-8
