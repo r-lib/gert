@@ -6,6 +6,17 @@
 #define GIT_CHECKOUT_OPTIONS_INIT GIT_CHECKOUT_OPTS_INIT
 #endif
 
+SEXP R_git_reset(SEXP ptr, SEXP ref, SEXP typenum){
+  git_object *revision = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
+  git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
+  opts.checkout_strategy = GIT_CHECKOUT_SAFE;
+  git_reset_t reset_type = Rf_asInteger(typenum);
+  bail_if(git_reset(repo, revision, reset_type, &opts), "git_reset");
+  return ptr;
+}
+
 SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
   git_object *obj;
   git_commit *commit = NULL;

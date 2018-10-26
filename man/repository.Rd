@@ -17,6 +17,7 @@
 \alias{git_checkout}
 \alias{git_branch}
 \alias{git_log}
+\alias{git_reset}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, password = askpass,
@@ -49,6 +50,9 @@ git_checkout(branch, force = FALSE, repo = ".")
 git_branch(name, ref = "HEAD", checkout = TRUE, repo = ".")
 
 git_log(max = 100, ref = "HEAD", repo = ".")
+
+git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
+  repo = ".")
 }
 \arguments{
 \item{url}{remote url. Typically starts with \code{https://github.com/} for public
@@ -86,6 +90,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{checkout}{switch HEAD to the newly created branch}
 
 \item{max}{lookup at most latest n parent commits}
+
+\item{type}{must be one of \code{"soft"}, \code{"hard"}, or \code{"mixed"}}
 }
 \description{
 First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.
