@@ -23,6 +23,7 @@ SEXP R_git_merge_fast_forward(SEXP ptr, SEXP ref){
   git_merge_preference_t preference;
   const git_annotated_commit *ccommit = commit;
   bail_if(git_merge_analysis(&analysis, &preference, repo, &ccommit, 1), "git_merge_analysis");
+  git_annotated_commit_free(commit);
 
   /* Check analysis output */
   if (analysis & GIT_MERGE_ANALYSIS_UP_TO_DATE){
@@ -39,7 +40,6 @@ SEXP R_git_merge_fast_forward(SEXP ptr, SEXP ref){
 
 done:
   git_reference_free(head);
-  git_annotated_commit_free(commit);
   git_object_free(revision);
   return ptr;
 }
