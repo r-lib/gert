@@ -1,7 +1,7 @@
 #include <string.h>
 #include "utils.h"
 
-/* Tries to fast forward merge (i.e. simply adding commits)
+/* Attempt fast forward merge (simply add commits from other branch)
  * Example: https://github.com/libgit2/libgit2/blob/master/examples/merge.c#L116-L182
  */
 SEXP R_git_merge_fast_forward(SEXP ptr, SEXP ref){
