@@ -13,8 +13,8 @@ static git_strarray *files_to_array(SEXP files){
 
 SEXP R_git_repository_info(SEXP ptr){
   git_strarray ref_list;
+  git_reference *upstream = NULL;
   git_repository *repo = get_git_repository(ptr);
-
   bail_if(git_reference_list(&ref_list, repo), "git_reference_list");
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, ref_list.count));
   for(int i = 0; i < ref_list.count; i++)
@@ -25,8 +25,10 @@ SEXP R_git_repository_info(SEXP ptr){
   int err = git_repository_head(&head, repo) == 0;
   SEXP headref = PROTECT(safe_string(err ? git_reference_name(head) : NULL));
   SEXP shorthand = PROTECT(safe_string(err ? git_reference_shorthand(head) : NULL));
+  SEXP target = PROTECT(safe_string(err ? git_oid_tostr_s(git_reference_target(head)) : NULL));
+  SEXP remote = PROTECT(safe_string(err && !git_branch_upstream(&upstream, head) ? git_reference_shorthand(upstream) : NULL));
   git_reference_free(head);
-  return build_list(4, "path", path, "head", headref, "shorthand", shorthand, "reflist", refs);
+  return build_list(6, "path", path, "head", headref, "shorthand", shorthand, "commit", target, "upstream", remote, "reflist", refs);
 }
 
 SEXP R_git_repository_ls(SEXP ptr){
