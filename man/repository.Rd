@@ -19,6 +19,7 @@
 \alias{git_log}
 \alias{git_reset}
 \alias{git_fast_forward}
+\alias{git_pull}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, password = askpass,
@@ -56,6 +57,8 @@ git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
   repo = ".")
 
 git_fast_forward(ref, repo = ".")
+
+git_pull(repo = ".")
 }
 \arguments{
 \item{url}{remote url. Typically starts with \code{https://github.com/} for public

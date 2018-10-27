@@ -200,6 +200,19 @@ git_fast_forward <- function(ref, repo = '.'){
 }
 
 #' @export
+#' @rdname repository
+git_pull <- function(repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  info <- git_info(repo)
+  if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
+    stop("No upstream configured for current HEAD")
+  remote <- strsplit(info$upstream, "/")[[1]][1]
+  git_fetch(remote, repo = repo)
+  git_fast_forward(info$upstream, repo = repo)
+}
+
+#' @export
 print.git_repository <- function(x, ...){
   info <- git_info(x)
   cat(sprintf("<git_repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))
