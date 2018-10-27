@@ -14,7 +14,7 @@ test_that("private ssh remotes with key", {
   target <- file.path(tempdir(), basename(remote))
 
   # Also test password as a callback function
-  repo <- git_clone(remote, path = target, ssh_key = 'key.pem', password = function(){ 'testingjerry'})
+  repo <- git_clone(remote, path = target, ssh_key = 'key.pem', password = function(...){ 'testingjerry'})
   expect_true(file.exists(file.path(target, 'hello')))
 })
 
