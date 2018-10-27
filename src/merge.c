@@ -34,7 +34,7 @@ SEXP R_git_merge_fast_forward(SEXP ptr, SEXP ref){
     bail_if(git_reference_set_target(&target, head, git_object_id(revision), NULL), "git_reference_set_target");
     git_reference_free(target);
   } else {
-    Rf_error("Fast forward not possible\n");
+    Rprintf("Fast forward not possible\n");
   }
 
 done:

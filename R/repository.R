@@ -192,7 +192,7 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
 #' @export
 #' @rdname repository
 #' @useDynLib gert R_git_merge_fast_forward
-git_merge <- function(ref, repo = '.'){
+git_fast_forward <- function(ref, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   ref <- as.character(ref)

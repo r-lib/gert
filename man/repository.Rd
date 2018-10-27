@@ -18,7 +18,7 @@
 \alias{git_branch}
 \alias{git_log}
 \alias{git_reset}
-\alias{git_merge}
+\alias{git_fast_forward}
 \title{Git Repository}
 \usage{
 git_clone(url, path = NULL, branch = NULL, password = askpass,
@@ -55,7 +55,7 @@ git_log(max = 100, ref = "HEAD", repo = ".")
 git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
   repo = ".")
 
-git_merge(ref, repo = ".")
+git_fast_forward(ref, repo = ".")
 }
 \arguments{
 \item{url}{remote url. Typically starts with \code{https://github.com/} for public
