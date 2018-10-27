@@ -274,13 +274,33 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   return new_git_repository(repo);
 }
 
+/* From: https://github.com/libgit2/libgit2/blob/master/examples/network/fetch.c */
+static int update_cb(const char *refname, const git_oid *a, const git_oid *b, void *data){
+  char a_str[GIT_OID_HEXSZ+1], b_str[GIT_OID_HEXSZ+1];
+  git_oid_fmt(b_str, b);
+  b_str[GIT_OID_HEXSZ] = '\0';
+  if (git_oid_iszero(a)) {
+    Rprintf("[new]     %.20s %s\n", b_str, refname);
+  } else {
+    git_oid_fmt(a_str, a);
+    a_str[GIT_OID_HEXSZ] = '\0';
+    Rprintf("[updated] %.10s..%.10s %s\n", a_str, b_str, refname);
+  }
+  return 0;
+}
+
 SEXP R_git_remote_fetch(SEXP ptr, SEXP name){
   git_remote *remote = NULL;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))), "git_remote_lookup");
+  if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
+    if(git_remote_create_anonymous(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0)
+      Rf_error("Remote must either be an existing remote or URL");
+  }
   git_fetch_options opts = GIT_FETCH_OPTIONS_INIT;
+  opts.download_tags = GIT_REMOTE_DOWNLOAD_TAGS_ALL;
   opts.update_fetchhead = 1;
   opts.callbacks.transfer_progress = fetch_progress;
+  opts.callbacks.update_tips = &update_cb;
   bail_if(git_remote_fetch(remote, NULL, &opts, NULL), "git_remote_fetch");
   git_remote_free(remote);
   return ptr;
