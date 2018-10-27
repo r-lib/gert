@@ -190,6 +190,16 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
 }
 
 #' @export
+#' @rdname repository
+#' @useDynLib gert R_git_merge_fast_forward
+git_merge <- function(ref, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  ref <- as.character(ref)
+  .Call(R_git_merge_fast_forward, repo, ref)
+}
+
+#' @export
 print.git_repository <- function(x, ...){
   info <- git_info(x)
   cat(sprintf("<git_repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))
