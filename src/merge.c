@@ -29,7 +29,7 @@ SEXP R_git_merge_fast_forward(SEXP ptr, SEXP ref){
   if (analysis & GIT_MERGE_ANALYSIS_UP_TO_DATE){
     Rprintf("Already up-to-date\n");
     goto done;
-  } else if(analysis & GIT_MERGE_ANALYSIS_FASTFORWARD){
+  } else if(analysis & GIT_MERGE_ANALYSIS_FASTFORWARD || analysis & GIT_MERGE_ANALYSIS_UNBORN){
     Rprintf("Performing fast forward\n");
     bail_if(git_checkout_tree(repo, revision, &opts), "git_checkout_tree");
     bail_if(git_reference_set_target(&target, head, git_object_id(revision), NULL), "git_reference_set_target");
@@ -43,4 +43,3 @@ done:
   git_object_free(revision);
   return ptr;
 }
-
