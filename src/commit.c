@@ -29,6 +29,43 @@ static SEXP make_author(const git_signature *p){
   return safe_char(buf);
 }
 
+SEXP R_git_signature_default(SEXP ptr){
+  git_signature *sig;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_signature_default(&sig, repo), "git_signature_default");
+  SEXP out = Rf_ScalarString(make_author(sig));
+  git_signature_free(sig);
+  return out;
+}
+
+SEXP R_git_commit_create(SEXP ptr, SEXP message){
+  git_tree *tree;
+  git_index *index;
+  git_signature *me;
+  git_commit *commit;
+  git_reference *head;
+  git_oid tree_id, commit_id;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_signature_default(&me, repo), "git_signature_default");
+  bail_if(git_repository_head(&head, repo), "git_repository_head");
+  bail_if(git_commit_lookup(&commit, repo, git_reference_target(head)), "git_commit_lookup");
+
+  // Setup tree, see: https://libgit2.org/docs/examples/init/
+  const git_commit *parents[1] = {commit};
+  bail_if(git_repository_index(&index, repo), "git_repository_index");
+  bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
+  bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");
+  bail_if(git_commit_create(&commit_id, repo, "HEAD", me, me, "UTF-8",
+                            Rf_translateCharUTF8(STRING_ELT(message, 0)),
+                            tree, 1, parents), "git_commit_create");
+  git_tree_free(tree);
+  git_index_free(index);
+  git_signature_free(me);
+  git_commit_free(commit);
+  git_reference_free(head);
+  return safe_string(git_oid_tostr_s(&commit_id));
+}
+
 SEXP R_git_commit_log(SEXP ptr, SEXP max, SEXP ref){
   git_commit *head = NULL;
   git_commit *commit = NULL;
