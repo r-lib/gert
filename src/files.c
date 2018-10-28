@@ -12,8 +12,9 @@ static git_strarray *files_to_array(SEXP files){
 }
 
 SEXP R_git_repository_info(SEXP ptr){
+  git_buf buf = {0};
   git_strarray ref_list;
-  git_reference *upstream = NULL;
+  git_reference *ref_upstream = NULL;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_reference_list(&ref_list, repo), "git_reference_list");
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, ref_list.count));
@@ -21,14 +22,26 @@ SEXP R_git_repository_info(SEXP ptr){
     SET_STRING_ELT(refs, i, Rf_mkChar(ref_list.strings[i]));
   git_strarray_free(&ref_list);
   SEXP path = PROTECT(safe_string(git_repository_workdir(repo)));
+  SEXP headref = PROTECT(safe_string(NULL));
+  SEXP shorthand = PROTECT(safe_string(NULL));
+  SEXP target = PROTECT(safe_string(NULL));
+  SEXP upstream = PROTECT(safe_string(NULL));
+  SEXP remote = PROTECT(safe_string(NULL));
   git_reference *head = NULL;
-  int err = git_repository_head(&head, repo) == 0;
-  SEXP headref = PROTECT(safe_string(err ? git_reference_name(head) : NULL));
-  SEXP shorthand = PROTECT(safe_string(err ? git_reference_shorthand(head) : NULL));
-  SEXP target = PROTECT(safe_string(err ? git_oid_tostr_s(git_reference_target(head)) : NULL));
-  SEXP remote = PROTECT(safe_string(err && !git_branch_upstream(&upstream, head) ? git_reference_shorthand(upstream) : NULL));
-  git_reference_free(head);
-  return build_list(6, "path", path, "head", headref, "shorthand", shorthand, "commit", target, "upstream", remote, "reflist", refs);
+  if(git_repository_head(&head, repo) == 0){
+    SET_STRING_ELT(headref, 0, safe_char(git_reference_name(head)));
+    SET_STRING_ELT(shorthand, 0, safe_char(git_reference_shorthand(head)));
+    SET_STRING_ELT(target, 0, safe_char(git_oid_tostr_s(git_reference_target(head))));
+    if(git_branch_upstream(&ref_upstream, head) == 0){
+      SET_STRING_ELT(upstream, 0, safe_char(git_reference_shorthand(ref_upstream)));
+      if(git_branch_remote_name(&buf, repo, git_reference_name(ref_upstream)) == 0){
+        SET_STRING_ELT(remote, 0, safe_char(buf.ptr));
+        git_buf_free(&buf);
+      }
+    }
+    git_reference_free(head);
+  }
+  return build_list(7, "path", path, "head", headref, "shorthand", shorthand, "commit", target, "remote", remote, "upstream", upstream, "reflist", refs);
 }
 
 SEXP R_git_repository_ls(SEXP ptr){
