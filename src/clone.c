@@ -77,14 +77,14 @@ static void fin_git_repository(SEXP ptr){
 static SEXP new_git_repository(git_repository *repo){
   SEXP ptr = PROTECT(R_MakeExternalPtr(repo, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(ptr, fin_git_repository, 1);
-  Rf_setAttrib(ptr, R_ClassSymbol, Rf_mkString("git_repository"));
+  Rf_setAttrib(ptr, R_ClassSymbol, Rf_mkString("git_repo_ptr"));
   UNPROTECT(1);
   return ptr;
 }
 
 git_repository *get_git_repository(SEXP ptr){
-  if(TYPEOF(ptr) != EXTPTRSXP || !Rf_inherits(ptr, "git_repository"))
-    Rf_error("handle is not a git_repository");
+  if(TYPEOF(ptr) != EXTPTRSXP || !Rf_inherits(ptr, "git_repo_ptr"))
+    Rf_error("handle is not a git_repo_ptr");
   if(!R_ExternalPtrAddr(ptr))
     Rf_error("pointer is dead");
   return R_ExternalPtrAddr(ptr);
