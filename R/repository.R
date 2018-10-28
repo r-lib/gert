@@ -85,7 +85,7 @@ git_rm <- function(files, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   info <- git_info(repo)
-  normalizePath(file.path(info$path, files), mustWork = TRUE)
+  normalizePath(file.path(info$path, files), mustWork = FALSE)
   .Call(R_git_repository_rm, repo, files)
 }
 

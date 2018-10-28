@@ -23,10 +23,13 @@ git_commit <- function(message, all = FALSE, repo = '.'){
     repo <- git_open(repo)
   stopifnot(is.character(message), length(message) == 1)
   if(isTRUE(all)){
-    status <- git_status(repo)
-    changed_files <- status$file[status$status %in% c("modified", "renamed", "deleted", "typechange")]
-    if(length(changed_files))
-      git_add(changed_files, repo = repo)
+    stat <- git_status(repo)
+    changes <- stat$file[!stat$staged && stat$status %in% c("modified", "renamed", "typechange")]
+    if(length(changes))
+      git_add(changes, repo = repo)
+    deleted <- stat$file[!stat$staged && stat$status == "deleted"]
+    if(length(deleted))
+      git_rm(deleted, repo = repo)
   }
   status <- git_status(repo)
   if(!any(status$staged))
