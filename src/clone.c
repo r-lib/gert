@@ -289,19 +289,20 @@ static int update_cb(const char *refname, const git_oid *a, const git_oid *b, vo
   return 0;
 }
 
-SEXP R_git_remote_fetch(SEXP ptr, SEXP name){
+SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec){
   git_remote *remote = NULL;
   git_repository *repo = get_git_repository(ptr);
   if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
     if(git_remote_create_anonymous(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0)
       Rf_error("Remote must either be an existing remote or URL");
   }
+  git_strarray *rs = Rf_length(refspec) ? files_to_array(refspec) : NULL;
   git_fetch_options opts = GIT_FETCH_OPTIONS_INIT;
   opts.download_tags = GIT_REMOTE_DOWNLOAD_TAGS_ALL;
   opts.update_fetchhead = 1;
   opts.callbacks.transfer_progress = fetch_progress;
   opts.callbacks.update_tips = &update_cb;
-  bail_if(git_remote_fetch(remote, NULL, &opts, NULL), "git_remote_fetch");
+  bail_if(git_remote_fetch(remote, rs, &opts, NULL), "git_remote_fetch");
   git_remote_free(remote);
   return ptr;
 }

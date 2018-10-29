@@ -111,11 +111,13 @@ git_remotes <- function(repo = '.'){
 #' @rdname repository
 #' @useDynLib gert R_git_remote_fetch
 #' @param remote name of a remote listed in [git_remotes()]
-git_fetch <- function(remote = "origin", repo = '.'){
+#' @param refspec string with mapping between remote and local refs
+git_fetch <- function(remote = "origin", refspec = NULL, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   remote <- as.character(remote)
-  .Call(R_git_remote_fetch, repo, remote)
+  refspec <- as.character(refspec)
+  .Call(R_git_remote_fetch, repo, remote, refspec)
 }
 
 #' @export
