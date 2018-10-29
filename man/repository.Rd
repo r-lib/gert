@@ -11,6 +11,7 @@
 \alias{git_rm}
 \alias{git_status}
 \alias{git_remotes}
+\alias{git_refspecs}
 \alias{git_fetch}
 \alias{git_branches}
 \alias{git_tags}
@@ -41,7 +42,9 @@ git_status(repo = ".")
 
 git_remotes(repo = ".")
 
-git_fetch(remote = "origin", repo = ".", refspec = NULL)
+git_refspecs(repo = ".")
+
+git_fetch(remote = "origin", refspec = NULL, repo = ".")
 
 git_branches(repo = ".")
 

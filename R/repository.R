@@ -109,6 +109,19 @@ git_remotes <- function(repo = '.'){
 
 #' @export
 #' @rdname repository
+git_refspecs <- function(repo = '.'){
+  remotes <- git_remotes()
+  lens <- vapply(remotes$refspecs, length, numeric(1))
+  indexes <- rep(seq_len(nrow(remotes)), lens)
+  out <- remotes[indexes,]
+  out$refspecs <- unlist(remotes$refspecs)
+  names(out) <- c("remote", "url", "refspec")
+  out
+
+}
+
+#' @export
+#' @rdname repository
 #' @useDynLib gert R_git_remote_fetch
 #' @param remote name of a remote listed in [git_remotes()]
 #' @param refspec string with mapping between remote and local refs
