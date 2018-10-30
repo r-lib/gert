@@ -9,10 +9,10 @@
 \alias{git_refspecs}
 \title{Git Remotes}
 \usage{
-git_fetch(remote = "origin", refspec = NULL, password = askpass,
+git_fetch(remote = NULL, refspec = NULL, password = askpass,
   ssh_key = my_key(), verbose = interactive(), repo = ".")
 
-git_push(remote = "origin", refspec = NULL, password = askpass,
+git_push(remote = NULL, refspec = NULL, password = askpass,
   ssh_key = my_key(), verbose = interactive(), repo = ".")
 
 git_pull(repo = ".", ...)

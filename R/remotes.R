@@ -11,10 +11,17 @@
 #' @useDynLib gert R_git_remote_fetch
 #' @param remote name of a remote listed in [git_remotes()]
 #' @param refspec string with mapping between remote and local refs
-git_fetch <- function(remote = "origin", refspec = NULL, password = askpass, ssh_key = my_key(), verbose = interactive(), repo = '.'){
+git_fetch <- function(remote = NULL, refspec = NULL, password = askpass, ssh_key = my_key(), verbose = interactive(), repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
+  info <- git_info(repo)
+  if(!length(remote))
+    remote <- info$remote
   remote <- as.character(remote)
+  if(!length(remote) || is.na(remote))
+    stop("No remote is set for this branch")
+  if(!length(refspec))
+    refspec <- info$head
   refspec <- as.character(refspec)
   verbose <- as.logical(verbose)
   key_cb <- make_key_cb(ssh_key, password = password)
@@ -24,10 +31,17 @@ git_fetch <- function(remote = "origin", refspec = NULL, password = askpass, ssh
 #' @export
 #' @rdname remotes
 #' @useDynLib gert R_git_remote_push
-git_push <- function(remote = "origin", refspec = NULL, password = askpass, ssh_key = my_key(), verbose = interactive(), repo = '.'){
+git_push <- function(remote = NULL, refspec = NULL, password = askpass, ssh_key = my_key(), verbose = interactive(), repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
+  info <- git_info(repo)
+  if(!length(remote))
+    remote <- info$remote
   remote <- as.character(remote)
+  if(!length(remote) || is.na(remote))
+    stop("No remote is set for this branch")
+  if(!length(refspec))
+    refspec <- info$head
   refspec <- as.character(refspec)
   verbose <- as.logical(verbose)
   key_cb <- make_key_cb(ssh_key, password = password)
