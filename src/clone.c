@@ -95,7 +95,7 @@ static int print_progress(unsigned int cur, unsigned int tot, size_t bytes, void
   static size_t prev = 0;
   if(prev != cur){
     prev = cur;
-    REprintf("\rReceived %d of %d objects...", cur, tot);
+    REprintf("\rTransferred %d of %d objects...", cur, tot);
     if(cur == tot)
       REprintf("done!\n");
   }
@@ -104,6 +104,11 @@ static int print_progress(unsigned int cur, unsigned int tot, size_t bytes, void
 
 static int fetch_progress(const git_transfer_progress *stats, void *payload){
   return print_progress(stats->received_objects, stats->total_objects, 0, NULL);
+}
+
+static int remote_message(const char *refname, const char *status, void *data){
+  Rprintf("[status] %s: %s\n", refname, status ? status : "unchaged");
+  return 0;
 }
 
 static void checkout_progress(const char *path, size_t cur, size_t tot, void *payload){
@@ -335,6 +340,7 @@ SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP askp
     opts.callbacks.update_tips = &update_cb;
     opts.callbacks.transfer_progress = fetch_progress;
     opts.callbacks.push_transfer_progress = print_progress;
+    opts.callbacks.push_update_reference = remote_message;
   }
   bail_if(git_remote_push(remote, rs, &opts), "git_remote_fetch");
   git_remote_free(remote);
