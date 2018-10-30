@@ -8,7 +8,7 @@ typedef struct {
   int retries;
   SEXP getkey;
   SEXP askpass;
-} auth_callback_data;
+} auth_callback_data_t;
 
 typedef struct {
   const char *key_path;
@@ -139,7 +139,7 @@ static int url_is_github(const char *url, const char *user){
 static int auth_callback(git_cred **cred, const char *url, const char *username,
                                unsigned int allowed_types, void *payload){
   /* First get a username */
-  auth_callback_data *cb_data = payload;
+  auth_callback_data_t *cb_data = payload;
   const char * ssh_user = username ? username : "git";
   int verbose = cb_data->verbose;
 
@@ -219,6 +219,15 @@ cred_fail:
   return GIT_EUSER;
 }
 
+static auth_callback_data_t auth_callback_data(SEXP getkey, SEXP askpass, int verbose){
+  auth_callback_data_t data_cb;
+  data_cb.verbose = verbose;
+  data_cb.retries = 0;
+  data_cb.askpass = askpass;
+  data_cb.getkey = getkey;
+  return data_cb;
+}
+
 static git_strarray *files_to_array(SEXP files){
   int len = Rf_length(files);
   git_strarray *paths = malloc(sizeof *paths);
@@ -245,23 +254,15 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   git_repository *repo = NULL;
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
+  auth_callback_data_t data_cb = auth_callback_data(getkey, askpass, Rf_asLogical(verbose));
+  clone_opts.fetch_opts.callbacks.payload = &data_cb;
+  clone_opts.fetch_opts.callbacks.credentials = auth_callback;
 
-#if AT_LEAST_LIBGIT2(0, 23)
-    auth_callback_data data_cb;
-    data_cb.verbose = Rf_asLogical(verbose);
-    data_cb.retries = 0;
-    data_cb.askpass = askpass;
-    data_cb.getkey = getkey;
-    clone_opts.fetch_opts.callbacks.payload = &data_cb;
-    clone_opts.fetch_opts.callbacks.credentials = auth_callback;
-
-    /* Enables download progress and user interrupt */
-    if(Rf_asLogical(verbose)){
-      clone_opts.checkout_opts.progress_cb = checkout_progress;
-      clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
-    }
-
-#endif
+  /* Also enables download progress and user interrupt */
+  if(Rf_asLogical(verbose)){
+    clone_opts.checkout_opts.progress_cb = checkout_progress;
+    clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
+  }
 
   /* specify branch to checkout */
   if(Rf_length(branch))
@@ -289,7 +290,7 @@ static int update_cb(const char *refname, const git_oid *a, const git_oid *b, vo
   return 0;
 }
 
-SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec){
+SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP askpass, SEXP verbose){
   git_remote *remote = NULL;
   git_repository *repo = get_git_repository(ptr);
   if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
@@ -300,9 +301,39 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec){
   git_fetch_options opts = GIT_FETCH_OPTIONS_INIT;
   opts.download_tags = GIT_REMOTE_DOWNLOAD_TAGS_ALL;
   opts.update_fetchhead = 1;
-  opts.callbacks.transfer_progress = fetch_progress;
-  opts.callbacks.update_tips = &update_cb;
+  auth_callback_data_t data_cb = auth_callback_data(getkey, askpass, Rf_asLogical(verbose));
+  opts.callbacks.payload = &data_cb;
+  opts.callbacks.credentials = auth_callback;
+
+  /* Also enables download progress and user interrupt */
+  if(Rf_asLogical(verbose)){
+    opts.callbacks.update_tips = &update_cb;
+    opts.callbacks.transfer_progress = fetch_progress;
+  }
   bail_if(git_remote_fetch(remote, rs, &opts, NULL), "git_remote_fetch");
+  git_remote_free(remote);
+  return ptr;
+}
+
+SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP askpass, SEXP verbose){
+  git_remote *remote = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
+    if(git_remote_create_anonymous(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0)
+      Rf_error("Remote must either be an existing remote or URL");
+  }
+  git_strarray *rs = Rf_length(refspec) ? files_to_array(refspec) : NULL;
+  git_push_options opts = GIT_PUSH_OPTIONS_INIT;
+  auth_callback_data_t data_cb = auth_callback_data(getkey, askpass, Rf_asLogical(verbose));
+  opts.callbacks.payload = &data_cb;
+  opts.callbacks.credentials = auth_callback;
+
+  /* Also enables download progress and user interrupt */
+  if(Rf_asLogical(verbose)){
+    opts.callbacks.update_tips = &update_cb;
+    opts.callbacks.transfer_progress = fetch_progress;
+  }
+  bail_if(git_remote_push(remote, rs, &opts), "git_remote_fetch");
   git_remote_free(remote);
   return ptr;
 }

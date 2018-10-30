@@ -5,7 +5,9 @@
 #' command line tool.
 #'
 #' @export
-#' @rdname ssh_keys
+#' @family git
+#' @rdname ssh
+#' @name ssh
 #' @param file destination path of the private key. For the public key, `.pub`
 #' is appended to the filename.
 #' @param open_github automatically open a browser window to let the user

@@ -2,75 +2,29 @@
 % Please edit documentation in R/repository.R
 \name{repository}
 \alias{repository}
-\alias{git_clone}
 \alias{git_init}
 \alias{git_open}
+\alias{git_clone}
 \alias{git_info}
-\alias{git_ls}
-\alias{git_add}
-\alias{git_rm}
-\alias{git_status}
-\alias{git_remotes}
-\alias{git_refspecs}
-\alias{git_fetch}
-\alias{git_branches}
-\alias{git_tags}
-\alias{git_checkout}
-\alias{git_branch}
-\alias{git_log}
-\alias{git_reset}
-\alias{git_fast_forward}
-\alias{git_pull}
-\title{Git Repository}
+\title{Create or open a git repository}
 \usage{
-git_clone(url, path = NULL, branch = NULL, password = askpass,
-  ssh_key = my_key(), verbose = interactive())
-
 git_init(path = ".")
 
 git_open(path = ".")
 
+git_clone(url, path = NULL, branch = NULL, password = askpass,
+  ssh_key = my_key(), verbose = interactive())
+
 git_info(repo = ".")
-
-git_ls(repo = ".")
-
-git_add(files, force = FALSE, repo = ".")
-
-git_rm(files, repo = ".")
-
-git_status(repo = ".")
-
-git_remotes(repo = ".")
-
-git_refspecs(repo = ".")
-
-git_fetch(remote = "origin", refspec = NULL, repo = ".")
-
-git_branches(repo = ".")
-
-git_tags(match = "*", repo = ".")
-
-git_checkout(branch, force = FALSE, repo = ".")
-
-git_branch(name, ref = "HEAD", checkout = TRUE, repo = ".")
-
-git_log(max = 100, ref = "HEAD", repo = ".")
-
-git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
-  repo = ".")
-
-git_fast_forward(ref, repo = ".")
-
-git_pull(repo = ".")
 }
 \arguments{
+\item{path}{local path, must be a non-existing or empty directory}
+
 \item{url}{remote url. Typically starts with \code{https://github.com/} for public
 repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
 private repos. You will be prompted for a password or pat when needed.}
 
-\item{path}{local path, must be a non-existing or empty directory}
-
-\item{branch}{name of branch or commit to check out}
+\item{branch}{name of branch to check out locally}
 
 \item{password}{a string or a callback function to get passwords for authentication
 or password proctected ssh keys.}
@@ -81,29 +35,14 @@ or password proctected ssh keys.}
 
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
-
-\item{files}{vector of paths relative to the git root directory}
-
-\item{force}{add files even if in gitignore}
-
-\item{remote}{name of a remote listed in \code{\link[=git_remotes]{git_remotes()}}}
-
-\item{refspec}{string with mapping between remote and local refs}
-
-\item{match}{pattern to filter tags (use \code{*} for wildcard)}
-
-\item{name}{string with name of the branch / tag / etc}
-
-\item{ref}{string with a branch/tag/commit}
-
-\item{checkout}{switch HEAD to the newly created branch}
-
-\item{max}{lookup at most latest n parent commits}
-
-\item{type}{must be one of \code{"soft"}, \code{"hard"}, or \code{"mixed"}}
 }
 \description{
-First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.
-Then read data with \link{git_info} or \link{git_ls}.
+Use \code{\link[=git_init]{git_init()}} to start a new repository or \code{\link[=git_clone]{git_clone()}} to download a
+repository from a remote.
+}
+\seealso{
+Other git: \code{\link{branch}}, \code{\link{commit}},
+  \code{\link{config}}, \code{\link{remotes}},
+  \code{\link{ssh}}
 }
 \concept{git}

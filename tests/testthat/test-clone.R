@@ -1,7 +1,7 @@
 context("cloning from remote")
 
 test_that("cloning repositories works", {
-  skip_if_not(git_libgit2_config()$https, "Your libgit2 does not support HTTPS remotes")
+  skip_if_not(git_config()$https, "Your libgit2 does not support HTTPS remotes")
   path <- file.path(tempdir(), 'jsonlite')
   repo <- git_clone('https://github.com/jeroen/jsonlite', path = path)
   expect_true(file.exists(file.path(path, 'DESCRIPTION')))
