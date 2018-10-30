@@ -95,12 +95,12 @@ git_ls <- function(repo = '.'){
 #' @useDynLib gert R_git_commit_log
 #' @param ref string with a branch/tag/commit
 #' @param max lookup at most latest n parent commits
-git_log <- function(max = 100, ref = "HEAD", repo = "."){
+git_log <- function(ref = "HEAD", max = 100, repo = "."){
   if(is.character(repo))
     repo <- git_open(repo)
   ref <- as.character(ref)
   max <- as.integer(max)
-  .Call(R_git_commit_log, repo, max, ref)
+  .Call(R_git_commit_log, repo, ref, max)
 }
 
 #' @export

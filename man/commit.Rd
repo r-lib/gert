@@ -24,7 +24,7 @@ git_status(repo = ".")
 
 git_ls(repo = ".")
 
-git_log(max = 100, ref = "HEAD", repo = ".")
+git_log(ref = "HEAD", max = 100, repo = ".")
 
 git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
   repo = ".")
@@ -41,9 +41,9 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{force}{add files even if in gitignore}
 
-\item{max}{lookup at most latest n parent commits}
-
 \item{ref}{string with a branch/tag/commit}
+
+\item{max}{lookup at most latest n parent commits}
 
 \item{type}{must be one of \code{"soft"}, \code{"hard"}, or \code{"mixed"}}
 }

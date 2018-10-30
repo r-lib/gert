@@ -68,7 +68,7 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message){
   return safe_string(git_oid_tostr_s(&commit_id));
 }
 
-SEXP R_git_commit_log(SEXP ptr, SEXP max, SEXP ref){
+SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
   git_commit *head = NULL;
   git_commit *commit = NULL;
   git_object *revision = NULL;
