@@ -90,10 +90,8 @@ git_repository *get_git_repository(SEXP ptr){
   return R_ExternalPtrAddr(ptr);
 }
 
-static int fetch_progress(const git_transfer_progress *stats, void *payload){
+static int print_progress(unsigned int cur, unsigned int tot, size_t bytes, void *payload){
   R_CheckUserInterrupt();
-  unsigned int tot = stats->total_objects;
-  unsigned int cur = stats->received_objects;
   static size_t prev = 0;
   if(prev != cur){
     prev = cur;
@@ -102,6 +100,10 @@ static int fetch_progress(const git_transfer_progress *stats, void *payload){
       REprintf("done!\n");
   }
   return 0;
+}
+
+static int fetch_progress(const git_transfer_progress *stats, void *payload){
+  return print_progress(stats->received_objects, stats->total_objects, 0, NULL);
 }
 
 static void checkout_progress(const char *path, size_t cur, size_t tot, void *payload){
@@ -332,6 +334,7 @@ SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP askp
   if(Rf_asLogical(verbose)){
     opts.callbacks.update_tips = &update_cb;
     opts.callbacks.transfer_progress = fetch_progress;
+    opts.callbacks.push_transfer_progress = print_progress;
   }
   bail_if(git_remote_push(remote, rs, &opts), "git_remote_fetch");
   git_remote_free(remote);
