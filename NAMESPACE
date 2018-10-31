@@ -2,6 +2,7 @@
 
 S3method(print,git_repo_ptr)
 export(askpass)
+export(get_git_credential)
 export(git_add)
 export(git_branch)
 export(git_branches)
