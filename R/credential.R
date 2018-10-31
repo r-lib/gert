@@ -8,15 +8,13 @@
 #' @param host hostname to authenticate with
 #' @param git path of the `git` command line program
 get_git_credential <- function(host = "github.com", git = "git"){
-  out <- tempfile()
-  on.exit(unlink(out))
-  status <- suppressWarnings({
-    system2(git, c("credential", "fill"), input =
-              c("protocol=https", paste0("host=", host), ""), stdout = out, stderr = FALSE)
-  })
-  if(status != 0)
-    return(NULL)
-  data <- strsplit(readLines(out), "=", fixed = TRUE)
+  input <- tempfile()
+  on.exit(unlink(input))
+  writeBin(charToRaw(sprintf("protocol=https\nhost=%s\n", host)), con = input)
+  out <- system2(git, c("credential", "fill"), stdin = input, stdout = TRUE)
+  if(length(attr(out, "status")))
+    stop(out)
+  data <- strsplit(out, "=", fixed = TRUE)
   key <- vapply(data, `[`, character(1), 1)
   val <- vapply(data, `[`, character(1), 2)
   as.list(structure(val, names = key))
