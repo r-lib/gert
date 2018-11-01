@@ -27,7 +27,7 @@ git_credential_exec <- function(input, git){
     rs_path <- sub("rpostback", 'postback', rs_path)
     Sys.setenv(PATH = paste(old_path, rs_path, sep = .Platform$path.sep))
   }
-  exec_git(git, c("credential", "fill"), input)
+  out <- exec_git(git, c("credential", "fill"), input)
   if(!identical(out$status, 0L)){
     stop(sprintf("Failure in 'git credential' %s", rawToChar(out$stderr)))
   }
