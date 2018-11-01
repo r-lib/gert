@@ -12,7 +12,7 @@ get_git_credential <- function(host = "github.com", git = "git"){
   input <- tempfile()
   on.exit(unlink(input))
   writeBin(charToRaw(sprintf("protocol=https\nhost=%s\n", host)), con = input)
-  if(is_windows()){
+  if(is_windows() || !interactive()){
     Sys.setenv(GIT_TERMINAL_PROMPT=0)
   }
   out <- git_credential_exec(input, git)
