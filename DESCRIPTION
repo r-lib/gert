@@ -16,6 +16,7 @@ RoxygenNote: 6.1.0
 Roxygen: list(markdown = TRUE)
 Imports:
     openssl,
-    sys
+    sys (>= 1.6.9000)
 Suggests: 
     testthat
+Remotes: jeroen/sys
