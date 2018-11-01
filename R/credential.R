@@ -28,14 +28,21 @@ git_credential_exec <- function(input, git){
     Sys.setenv(PATH = paste(old_path, rs_path, sep = .Platform$path.sep))
   }
   out <- if(.Platform$OS.type == "windows"){
-    sys::exec_internal("cmd", c("/C", git, "credential", "fill", "<", input), error = FALSE)
+    exec_git("cmd", c("/C", git, "credential", "fill", "<", input))
   } else {
-    sys::exec_internal("sh", c("-c", paste(git, "credential", "fill", "<", input)), error = FALSE)
+    exec_git("sh", c("-c", paste(git, "credential", "fill", "<", input)))
   }
   if(!identical(out$status, 0L)){
-    stop(sprintf("Failure in 'git credential': %s", rawToChar(out$stderr)))
+    stop(sprintf("Failure in 'git credential' %s", rawToChar(out$stderr)))
   }
   strsplit(rawToChar(out$stdout), "\n", fixed = TRUE)[[1]]
+}
+
+exec_git <- function (cmd, args = NULL) {
+  outcon <- rawConnection(raw(0), "r+")
+  on.exit(close(outcon), add = TRUE)
+  status <- sys::exec_wait(cmd, args, std_out = outcon, std_err = stderr())
+  list(status = status, stdout = rawConnectionValue(outcon), stderr = raw(0))
 }
 
 find_git_cmd <- function(git = "git"){
