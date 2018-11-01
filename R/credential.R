@@ -5,9 +5,11 @@
 #' store.
 #'
 #' @export
+#' @rdname credentials
+#' @family git
 #' @param host hostname to authenticate with
 #' @param git path of the `git` command line program
-get_git_credential <- function(host = "github.com", git = "git"){
+git_credentials <- function(host = "github.com", git = "git"){
   git <- find_git_cmd(git)
   input <- tempfile()
   on.exit(unlink(input))
@@ -22,7 +24,7 @@ get_git_credential <- function(host = "github.com", git = "git"){
   c(as.list(structure(val, names = key)), list(git=git))
 }
 
-git_credential_exec <- function(input, git){
+git_credential_exec <- function(input, git, verbose = TRUE){
   rs_path <- Sys.getenv('RS_RPOSTBACK_PATH')
   if(nchar(rs_path)){
     old_path <- Sys.getenv("PATH")
@@ -30,11 +32,14 @@ git_credential_exec <- function(input, git){
     rs_path <- sub("rpostback", 'postback', rs_path)
     Sys.setenv(PATH = paste(old_path, rs_path, sep = .Platform$path.sep))
   }
-  out <- exec_git(git, c("credential", "fill"), input)
-  if(!identical(out$status, 0L)){
-    stop(sprintf("Failure in 'git credential' %s", rawToChar(out$stderr)))
+  outcon <- rawConnection(raw(0), "r+")
+  on.exit(close(outcon), add = TRUE)
+  status <- sys::exec_wait(git, c("credential", "fill"),
+                           std_out = outcon, std_err = verbose, std_in = input)
+  if(!identical(status, 0L)){
+    stop(sprintf("Failed to call 'git credential'"))
   }
-  strsplit(rawToChar(out$stdout), "\n", fixed = TRUE)[[1]]
+  strsplit(rawToChar(rawConnectionValue(outcon)), "\n", fixed = TRUE)[[1]]
 }
 
 exec_git <- function (cmd, args = NULL, input) {

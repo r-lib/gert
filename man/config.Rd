@@ -12,7 +12,7 @@ Shows the version of libgit2 and which features have been enabled.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{remotes}}, \code{\link{repository}},
-  \code{\link{ssh}}
+  \code{\link{git_credentials}}, \code{\link{remotes}},
+  \code{\link{repository}}, \code{\link{ssh}}
 }
 \concept{git}

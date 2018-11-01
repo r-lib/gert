@@ -42,7 +42,7 @@ repository from a remote.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{config}}, \code{\link{remotes}},
-  \code{\link{ssh}}
+  \code{\link{config}}, \code{\link{git_credentials}},
+  \code{\link{remotes}}, \code{\link{ssh}}
 }
 \concept{git}

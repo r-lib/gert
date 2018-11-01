@@ -44,7 +44,7 @@ Then read data with \link{git_info} or \link{git_ls}.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{config}}, \code{\link{repository}},
-  \code{\link{ssh}}
+  \code{\link{config}}, \code{\link{git_credentials}},
+  \code{\link{repository}}, \code{\link{ssh}}
 }
 \concept{git}

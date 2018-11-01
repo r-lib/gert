@@ -21,7 +21,7 @@ command line tool.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{config}}, \code{\link{remotes}},
-  \code{\link{repository}}
+  \code{\link{config}}, \code{\link{git_credentials}},
+  \code{\link{remotes}}, \code{\link{repository}}
 }
 \concept{git}
