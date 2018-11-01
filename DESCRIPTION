@@ -15,6 +15,7 @@ Encoding: UTF-8
 RoxygenNote: 6.1.0
 Roxygen: list(markdown = TRUE)
 Imports:
-    openssl
+    openssl,
+    sys
 Suggests: 
     testthat
