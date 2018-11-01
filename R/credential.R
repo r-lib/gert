@@ -14,7 +14,8 @@ git_credentials <- function(host = "github.com", git = "git"){
   input <- tempfile()
   on.exit(unlink(input))
   writeBin(charToRaw(sprintf("protocol=https\nhost=%s\n", host)), con = input)
-  if(is_windows() || !interactive()){
+  if(is_windows() || !interactive() || !isatty(stdin())){
+    # Note: isatty(stdin()) = TRUE in RGUI on Windows :/
     Sys.setenv(GIT_TERMINAL_PROMPT=0)
   }
   out <- git_credential_exec(input, git)
