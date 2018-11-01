@@ -12,6 +12,9 @@ get_git_credential <- function(host = "github.com", git = "git"){
   input <- tempfile()
   on.exit(unlink(input))
   writeBin(charToRaw(sprintf("protocol=https\nhost=%s\n", host)), con = input)
+  if(is_windows()){
+    Sys.setenv(GIT_TERMINAL_PROMPT=0)
+  }
   out <- git_credential_exec(input, git)
   data <- strsplit(out, "=", fixed = TRUE)
   key <- vapply(data, `[`, character(1), 1)
@@ -45,7 +48,7 @@ find_git_cmd <- function(git = "git"){
   if(cmd_exists(git)){
     return(git)
   }
-  if(.Platform$OS.type == "windows"){
+  if(is_windows()){
     locations <- c("C:\\PROGRA~1\\Git\\cmd\\git.exe",
       "C:\\Program Files\\Git\\cmd\\git.exe")
     for(i in locations){
@@ -59,4 +62,8 @@ find_git_cmd <- function(git = "git"){
 
 cmd_exists <- function(cmd){
   nchar(Sys.which(cmd)) > 0
+}
+
+is_windows <- function(){
+  identical(.Platform$OS.type, "windows")
 }
