@@ -12,8 +12,7 @@ get_git_credential <- function(host = "github.com", git = "git"){
   input <- tempfile()
   on.exit(unlink(input))
   writeBin(charToRaw(sprintf("protocol=https\nhost=%s\n", host)), con = input)
-  res <- git_credential_exec(input, git)
-  out <- strsplit(rawToChar(res$stdout), "\n", fixed = TRUE)[[1]]
+  out <- git_credential_exec(input, git)
   data <- strsplit(out, "=", fixed = TRUE)
   key <- vapply(data, `[`, character(1), 1)
   val <- vapply(data, `[`, character(1), 2)
@@ -21,11 +20,22 @@ get_git_credential <- function(host = "github.com", git = "git"){
 }
 
 git_credential_exec <- function(input, git){
-  if(.Platform$OS.type == "windows"){
-    sys::exec_internal("cmd", c("/C", git, "credential", "fill", "<", input))
-  } else {
-    sys::exec_internal("sh", c("-c", git, "credential", "fill", "<", input))
+  rs_path <- Sys.getenv('RS_RPOSTBACK_PATH')
+  if(nchar(rs_path)){
+    old_path <- Sys.getenv("PATH")
+    on.exit(Sys.setenv(PATH = old_path))
+    rs_path <- sub("rpostback", 'postback', rs_path)
+    Sys.setenv(PATH = paste(old_path, rs_path, sep = .Platform$path.sep))
   }
+  out <- if(.Platform$OS.type == "windows"){
+    sys::exec_internal("cmd", c("/C", git, "credential", "fill", "<", input), error = FALSE)
+  } else {
+    sys::exec_internal("sh", c("-c", paste(git, "credential", "fill", "<", input)), error = FALSE)
+  }
+  if(!identical(out$status, 0L)){
+    stop(sprintf("Failure in 'git credential': %s", rawToChar(out$stderr)))
+  }
+  strsplit(rawToChar(out$stdout), "\n", fixed = TRUE)[[1]]
 }
 
 find_git_cmd <- function(git = "git"){
