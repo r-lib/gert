@@ -4,12 +4,14 @@
 \alias{git_credentials}
 \title{Lookup passwords from the git credential store}
 \usage{
-git_credentials(host = "github.com", git = "git")
+git_credentials(host = "github.com", git = "git", verbose = TRUE)
 }
 \arguments{
 \item{host}{hostname to authenticate with}
 
 \item{git}{path of the \code{git} command line program}
+
+\item{verbose}{print errors from \code{git credetial} to stdout}
 }
 \description{
 If you have the \code{git} command line program installed, this function

@@ -9,7 +9,8 @@
 #' @family git
 #' @param host hostname to authenticate with
 #' @param git path of the `git` command line program
-git_credentials <- function(host = "github.com", git = "git"){
+#' @param verbose print errors from `git credetial` to stdout
+git_credentials <- function(host = "github.com", git = "git", verbose = TRUE){
   git <- find_git_cmd(git)
   input <- tempfile()
   on.exit(unlink(input))
@@ -18,7 +19,7 @@ git_credentials <- function(host = "github.com", git = "git"){
     # Note: isatty(stdin()) = TRUE in RGUI on Windows :/
     Sys.setenv(GIT_TERMINAL_PROMPT=0)
   }
-  out <- git_credential_exec(input, git)
+  out <- git_credential_exec(input = input, git = git, verbose = verbose)
   data <- strsplit(out, "=", fixed = TRUE)
   key <- vapply(data, `[`, character(1), 1)
   val <- vapply(data, `[`, character(1), 2)
@@ -33,6 +34,25 @@ git_credential_exec <- function(input, git, verbose = TRUE){
     rs_path <- sub("rpostback", 'postback', rs_path)
     Sys.setenv(PATH = paste(old_path, rs_path, sep = .Platform$path.sep))
   }
+  if(is_windows() || is_macos() || !isatty(stdin())){
+    git_with_sys(input = input, git = git, verbose = verbose)
+  } else {
+    # base::system can freeze RStudio Desktop or Windows
+    git_with_base(input = input, git = git, verbose = verbose)
+  }
+}
+
+git_with_base <- function(input, git, verbose = TRUE){
+  res <- system2(git, c("credential", "fill"), stdin = input,
+                 stdout = TRUE, stderr = ifelse(isTRUE(verbose), "", TRUE))
+  status <- attr(res, "status")
+  if(length(status) && !identical(status, 0L)){
+    stop(paste(res, collapse = "\n"))
+  }
+  res
+}
+
+git_with_sys <- function(input, git, verbose = TRUE){
   outcon <- rawConnection(raw(0), "r+")
   on.exit(close(outcon), add = TRUE)
   status <- sys::exec_wait(git, c("credential", "fill"),
@@ -41,13 +61,6 @@ git_credential_exec <- function(input, git, verbose = TRUE){
     stop(sprintf("Failed to call 'git credential'"))
   }
   strsplit(rawToChar(rawConnectionValue(outcon)), "\n", fixed = TRUE)[[1]]
-}
-
-exec_git <- function (cmd, args = NULL, input) {
-  outcon <- rawConnection(raw(0), "r+")
-  on.exit(close(outcon), add = TRUE)
-  status <- sys::exec_wait(cmd, args, std_out = outcon, std_err = stderr(), std_in = input)
-  list(status = status, stdout = rawConnectionValue(outcon), stderr = raw(0))
 }
 
 find_git_cmd <- function(git = "git"){
@@ -72,4 +85,8 @@ cmd_exists <- function(cmd){
 
 is_windows <- function(){
   identical(.Platform$OS.type, "windows")
+}
+
+is_macos <- function(){
+  identical(tolower(Sys.info()[['sysname']]), "darwin")
 }
