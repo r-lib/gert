@@ -1,8 +1,10 @@
 #' @importFrom openssl write_ssh write_pem read_key write_pkcs1
 #' @importFrom credentials my_ssh_key
-make_key_cb <- function(ssh_key = NULL, host = "github.com", password = askpass){
+make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
   function(){
     if(is.null(ssh_key)){
+      if(is.null(host))
+        host <- "github.com"
       ssh_key <- try(my_ssh_key(host = host, password = password, auto_keygen = FALSE))
       if(inherits(ssh_key, "try-error"))
         return(NULL)
@@ -16,6 +18,18 @@ make_key_cb <- function(ssh_key = NULL, host = "github.com", password = askpass)
     }
     c(tmp_pub, tmp_key, "")
   }
+}
+
+remote_to_host <- function(repo, remote){
+  rms <- git_remotes(repo = repo)
+  url <- rms[rms$name == remote, ]$url
+  if(length(url)){
+    url_to_host(url)
+  }
+}
+
+url_to_host <- function(url){
+  credentials:::parse_url(url, allow_ssh = TRUE)[['host']]
 }
 
 #' @export

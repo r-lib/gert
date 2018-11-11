@@ -42,7 +42,8 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
   stopifnot(is.null(branch) || is.character(branch))
   verbose <- as.logical(verbose)
   path <- normalizePath(path.expand(path), mustWork = FALSE)
-  key_cb <- make_key_cb(ssh_key, password = password)
+  host <- url_to_host(url)
+  key_cb <- make_key_cb(ssh_key, host = host, password = password)
   .Call(R_git_repository_clone, url, path, branch, key_cb, password, verbose)
 }
 
