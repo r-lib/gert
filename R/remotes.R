@@ -11,7 +11,8 @@
 #' @useDynLib gert R_git_remote_fetch
 #' @param remote name of a remote listed in [git_remotes()]
 #' @param refspec string with mapping between remote and local refs
-git_fetch <- function(remote = NULL, refspec = NULL, password = askpass, ssh_key = my_key(), verbose = interactive(), repo = '.'){
+git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
+                      ssh_key = NULL, verbose = interactive(), repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   info <- git_info(repo)
@@ -31,7 +32,8 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass, ssh_key
 #' @export
 #' @rdname remotes
 #' @useDynLib gert R_git_remote_push
-git_push <- function(remote = NULL, refspec = NULL, password = askpass, ssh_key = my_key(), verbose = interactive(), repo = '.'){
+git_push <- function(remote = NULL, refspec = NULL, password = askpass,
+                     ssh_key = NULL, verbose = interactive(), repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   info <- git_info(repo)

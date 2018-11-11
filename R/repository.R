@@ -33,7 +33,8 @@ git_open <- function(path = '.'){
 #' @param password a string or a callback function to get passwords for authentication
 #' or password proctected ssh keys.
 #' @param verbose display some progress info while downloading
-git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_key = my_key(), verbose = interactive()){
+git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
+                      ssh_key = NULL, verbose = interactive()){
   stopifnot(is.character(url))
   if(!length(path))
     path <- file.path(getwd(), basename(url))

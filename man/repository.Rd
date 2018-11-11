@@ -13,7 +13,7 @@ git_init(path = ".")
 git_open(path = ".")
 
 git_clone(url, path = NULL, branch = NULL, password = askpass,
-  ssh_key = my_key(), verbose = interactive())
+  ssh_key = NULL, verbose = interactive())
 
 git_info(repo = ".")
 }
@@ -42,7 +42,6 @@ repository from a remote.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{config}}, \code{\link{git_credentials}},
-  \code{\link{remotes}}, \code{\link{ssh}}
+  \code{\link{config}}, \code{\link{remotes}}
 }
 \concept{git}

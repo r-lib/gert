@@ -58,7 +58,6 @@ all the files that are being tracked in the repository.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{config}},
-  \code{\link{git_credentials}}, \code{\link{remotes}},
-  \code{\link{repository}}, \code{\link{ssh}}
+  \code{\link{remotes}}, \code{\link{repository}}
 }
 \concept{git}

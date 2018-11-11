@@ -10,10 +10,10 @@
 \title{Git Remotes}
 \usage{
 git_fetch(remote = NULL, refspec = NULL, password = askpass,
-  ssh_key = my_key(), verbose = interactive(), repo = ".")
+  ssh_key = NULL, verbose = interactive(), repo = ".")
 
 git_push(remote = NULL, refspec = NULL, password = askpass,
-  ssh_key = my_key(), verbose = interactive(), repo = ".")
+  ssh_key = NULL, verbose = interactive(), repo = ".")
 
 git_pull(repo = ".", ...)
 
@@ -44,7 +44,6 @@ Then read data with \link{git_info} or \link{git_ls}.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{config}}, \code{\link{git_credentials}},
-  \code{\link{repository}}, \code{\link{ssh}}
+  \code{\link{config}}, \code{\link{repository}}
 }
 \concept{git}

@@ -15,8 +15,8 @@ Encoding: UTF-8
 RoxygenNote: 6.1.0
 Roxygen: list(markdown = TRUE)
 Imports:
-    openssl,
-    sys (>= 1.6.9000)
+    credentials,
+    openssl
 Suggests: 
     testthat
-Remotes: jeroen/sys
+Remotes: jeroen/credentials

@@ -40,7 +40,6 @@ Create, and checkout branches.
 }
 \seealso{
 Other git: \code{\link{commit}}, \code{\link{config}},
-  \code{\link{git_credentials}}, \code{\link{remotes}},
-  \code{\link{repository}}, \code{\link{ssh}}
+  \code{\link{remotes}}, \code{\link{repository}}
 }
 \concept{git}
