@@ -1,5 +1,6 @@
 #' @importFrom openssl write_ssh write_pem read_key write_pkcs1
 #' @importFrom credentials my_ssh_key
+#' @importFrom openssl askpass
 make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
   function(){
     if(is.null(ssh_key)){
@@ -31,19 +32,3 @@ remote_to_host <- function(repo, remote){
 url_to_host <- function(url){
   credentials:::parse_url(url, allow_ssh = TRUE)[['host']]
 }
-
-#' @export
-#' @importFrom credentials git_credential_read
-credentials::git_credential_read
-
-#' @export
-#' @importFrom credentials git_credential_update
-credentials::git_credential_update
-
-#' @export
-#' @importFrom credentials my_ssh_key
-credentials::my_ssh_key
-
-#' @export
-#' @importFrom openssl askpass
-openssl::askpass

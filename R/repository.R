@@ -28,10 +28,12 @@ git_open <- function(path = '.'){
 #' @param url remote url. Typically starts with `https://github.com/` for public
 #' repositories, and `https://yourname@github.com/` or `git@github.com/` for
 #' private repos. You will be prompted for a password or pat when needed.
-#' @param ssh_key path or object containing your ssh private key
+#' @param ssh_key path or object containing your ssh private key. By default we
+#' look for keys in `ssh-agent` and [credentials::my_ssh_key].
 #' @param branch name of branch to check out locally
 #' @param password a string or a callback function to get passwords for authentication
-#' or password proctected ssh keys.
+#' or password proctected ssh keys. Defaults to [openssl::askpass] which
+#' checks `getOption('askpass')`.
 #' @param verbose display some progress info while downloading
 git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
                       ssh_key = NULL, verbose = interactive()){
