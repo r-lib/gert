@@ -4,12 +4,12 @@
 make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
   function(){
     if(is.null(ssh_key)){
-      if(is.null(host))
-        host <- "github.com"
-      ssh_key <- try(my_ssh_key(host = host, password = password, auto_keygen = FALSE))
+      ssh_key <- try(my_ssh_key(host = host, password = password, auto_keygen = FALSE)$key)
       if(inherits(ssh_key, "try-error"))
         return(NULL)
     }
+    if(!file.exists(ssh_key))
+      stop(sprintf("Unable to load key: %s", ssh_key), call. = FALSE)
     key <- read_key(ssh_key, password = password)
     tmp_pub <- write_ssh(key$pubkey, tempfile())
     tmp_key <- write_pkcs1(key, tempfile())
