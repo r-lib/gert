@@ -50,7 +50,7 @@ static const char *prompt_user_password(SEXP rpass, const char *prompt){
   Rf_errorcall(R_NilValue, "unsupported password type (must be string or function)");
 }
 
-static const auth_key_data *get_key_files(SEXP cb, auth_key_data *out){
+static int get_key_files(SEXP cb, auth_key_data *out){
   if(!Rf_isFunction(cb))
     Rf_error("cb must be a function");
   int err;
@@ -58,14 +58,14 @@ static const auth_key_data *get_key_files(SEXP cb, auth_key_data *out){
   SEXP res = PROTECT(R_tryEval(call, R_GlobalEnv, &err));
   if(err || !Rf_isString(res)){
     UNPROTECT(2);
-    return NULL;
+    return -1;
   }
   /* Todo: Maybe strdup() in case res gets collected */
   out->pubkey_path = CHAR(STRING_ELT(res, 0));
   out->key_path = CHAR(STRING_ELT(res, 1));
   out->pass_phrase = CHAR(STRING_ELT(res, 2));
   UNPROTECT(2);
-  return out;
+  return 0;
 }
 
 static void fin_git_repository(SEXP ptr){
@@ -171,14 +171,12 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
     // Second try is with the user provided key
     if(cb_data->retries == 1) {
       cb_data->retries++;
-      auth_key_data data;
-      const auth_key_data *key_data = get_key_files(cb_data->getkey, &data);
-      if(key_data && !git_cred_ssh_key_new(cred, ssh_user, key_data->pubkey_path,
-                                                 key_data->key_path, key_data->pass_phrase)){
+      auth_key_data key_data = {0};
+      if(!get_key_files(cb_data->getkey, &key_data) &&
+         !git_cred_ssh_key_new(cred, ssh_user, key_data.pubkey_path,
+                               key_data.key_path, key_data.pass_phrase)){
         print_if_verbose("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
-      } else {
-        print_if_verbose("Failed to load ssh-key: %s\n", giterr_last()->message);
       }
     }
 

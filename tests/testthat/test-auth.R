@@ -16,6 +16,10 @@ test_that("private ssh remotes with key", {
   # Also test password as a callback function
   repo <- git_clone(remote, path = target, ssh_key = 'key.pem', password = function(...){ 'testingjerry'})
   expect_true(file.exists(file.path(target, 'hello')))
+
+  # Test errors
+  expect_error(git_clone(remote, path = target, ssh_key = 'doesnotexist'))
+  expect_error(git_clone(remote, path = target, ssh_key = 'pat.bin'))
 })
 
 # Access token for dummy account with minimal rights
