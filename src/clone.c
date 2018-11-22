@@ -7,7 +7,7 @@ typedef struct {
   int verbose;
   int retries;
   SEXP getkey;
-  SEXP askpass;
+  SEXP getcred;
 } auth_callback_data_t;
 
 typedef struct {
@@ -34,20 +34,23 @@ static const char *session_keyphrase(const char *set){
   return key;
 }
 
-static const char *prompt_user_password(SEXP rpass, const char *prompt){
-  if(Rf_isString(rpass) && Rf_length(rpass)) {
-    return CHAR(STRING_ELT(rpass, 0));
-  } else if(Rf_isFunction(rpass)){
-    int err;
-    SEXP call = PROTECT(Rf_lcons(rpass, Rf_lcons(safe_string(prompt), R_NilValue)));
-    SEXP res = PROTECT(R_tryEval(call, R_GlobalEnv, &err));
-    if(err || !Rf_isString(res)){
-      UNPROTECT(2);
-      return NULL;
-    }
-    return CHAR(STRING_ELT(res, 0));
-  } //should never happen
-  Rf_errorcall(R_NilValue, "unsupported password type (must be string or function)");
+static char* get_password(SEXP cb, const char *url, const char **username, int force_forget){
+  if(!Rf_isFunction(cb))
+    Rf_error("cb must be a function");
+  int err;
+  SEXP call = PROTECT(Rf_lcons(cb, Rf_lcons(safe_string(url),
+                                   Rf_lcons(safe_string(*username),
+                                   Rf_lcons(Rf_ScalarLogical(force_forget),
+                                   R_NilValue)))));
+  SEXP res = PROTECT(R_tryEval(call, R_GlobalEnv, &err));
+  if(err || !Rf_isString(res) || Rf_length(res) < 2){
+    UNPROTECT(2);
+    return NULL;
+  }
+  if(*username == NULL){
+    *username = strdup(CHAR(STRING_ELT(res, 0)));
+  }
+  return strdup(CHAR(STRING_ELT(res, 1)));
 }
 
 static int get_key_files(SEXP cb, auth_key_data *out){
@@ -194,7 +197,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   /* This is for HTTP remotes */
   if(allowed_types & GIT_CREDTYPE_USERPASS_PLAINTEXT){
     if(cb_data->retries > 3){
-      print_if_verbose("Failed password authentiation %d times. Giving up\n", cb_data->retries);
+      print_if_verbose("Failed password authentiation %d times. Giving up\n", cb_data->retries - 1);
       cb_data->retries = 0;
     } else {
       if(cb_data->retries == 0){
@@ -205,30 +208,25 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
         }
       }
       cb_data->retries++;
-      if(username == NULL)
-        username = prompt_user_password(cb_data->askpass, "Please enter USERNAME");
-      if(!username)
-        goto cred_fail;
-      print_if_verbose("Trying plaintext auth for user '%s' (attempt #%d)\n", username, cb_data->retries);
-      char buf[1000];
-      snprintf(buf, 999, "Enter PASSWORD or PAT for user '%s'", username);
-      const char *pass = prompt_user_password(cb_data->askpass, buf);
-      if(!pass)
-        goto cred_fail;
-      return git_cred_userpass_plaintext_new(cred, username, pass);
+      print_if_verbose("Asking HTTPS credentials for %s\n", url);
+      char *pass = get_password(cb_data->getcred, url, &username, cb_data->retries > 2);
+      if(!username || !pass){
+        print_if_verbose("Credential lookup failed\n");
+        return GIT_EUSER;
+      } else {
+        return git_cred_userpass_plaintext_new(cred, username, pass);
+      }
     }
   }
-
-cred_fail:
   print_if_verbose("All authentication methods failed\n");
   return GIT_EUSER;
 }
 
-static auth_callback_data_t auth_callback_data(SEXP getkey, SEXP askpass, int verbose){
+static auth_callback_data_t auth_callback_data(SEXP getkey, SEXP getcred, int verbose){
   auth_callback_data_t data_cb;
   data_cb.verbose = verbose;
   data_cb.retries = 0;
-  data_cb.askpass = askpass;
+  data_cb.getcred = getcred;
   data_cb.getkey = getkey;
   return data_cb;
 }
@@ -255,11 +253,11 @@ SEXP R_git_repository_open(SEXP path){
   return new_git_repository(repo);
 }
 
-SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP askpass, SEXP verbose){
+SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP getcred, SEXP verbose){
   git_repository *repo = NULL;
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
-  auth_callback_data_t data_cb = auth_callback_data(getkey, askpass, Rf_asLogical(verbose));
+  auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   clone_opts.fetch_opts.callbacks.payload = &data_cb;
   clone_opts.fetch_opts.callbacks.credentials = auth_callback;
 
@@ -295,7 +293,7 @@ static int update_cb(const char *refname, const git_oid *a, const git_oid *b, vo
   return 0;
 }
 
-SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP askpass, SEXP verbose){
+SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP getcred, SEXP verbose){
   git_remote *remote = NULL;
   git_repository *repo = get_git_repository(ptr);
   if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
@@ -306,7 +304,7 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP ask
   git_fetch_options opts = GIT_FETCH_OPTIONS_INIT;
   opts.download_tags = GIT_REMOTE_DOWNLOAD_TAGS_ALL;
   opts.update_fetchhead = 1;
-  auth_callback_data_t data_cb = auth_callback_data(getkey, askpass, Rf_asLogical(verbose));
+  auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;
   opts.callbacks.credentials = auth_callback;
 
@@ -320,7 +318,7 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP ask
   return ptr;
 }
 
-SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP askpass, SEXP verbose){
+SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP getcred, SEXP verbose){
   git_remote *remote = NULL;
   git_repository *repo = get_git_repository(ptr);
   if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
@@ -329,7 +327,7 @@ SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP askp
   }
   git_strarray *rs = Rf_length(refspec) ? files_to_array(refspec) : NULL;
   git_push_options opts = GIT_PUSH_OPTIONS_INIT;
-  auth_callback_data_t data_cb = auth_callback_data(getkey, askpass, Rf_asLogical(verbose));
+  auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;
   opts.callbacks.credentials = auth_callback;
 

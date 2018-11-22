@@ -27,7 +27,8 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
   verbose <- as.logical(verbose)
   host <- remote_to_host(repo, info$remote)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
-  .Call(R_git_remote_fetch, repo, remote, refspec, key_cb, password, verbose)
+  cred_cb <- make_cred_cb(password = password, verbose = verbose)
+  .Call(R_git_remote_fetch, repo, remote, refspec, key_cb, cred_cb, verbose)
 }
 
 #' @export
@@ -49,7 +50,8 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
   verbose <- as.logical(verbose)
   host <- remote_to_host(repo, info$remote)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
-  .Call(R_git_remote_push, repo, remote, refspec, key_cb, password, verbose)
+  cred_cb <- make_cred_cb(password = password, verbose = verbose)
+  .Call(R_git_remote_push, repo, remote, refspec, key_cb, cred_cb, verbose)
 }
 
 #' @export
