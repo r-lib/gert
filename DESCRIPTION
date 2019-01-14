@@ -12,7 +12,7 @@ SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb)
 URL: http://github.com/jeroen/gert (devel), https://libgit2.org (upstream)
 BugReports: http://github.com/jeroen/gert/issues
 Encoding: UTF-8
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 Imports:
     credentials,
