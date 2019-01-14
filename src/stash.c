@@ -16,3 +16,17 @@ SEXP R_git_stash_save(SEXP ptr, SEXP message, SEXP keep_index,
   return safe_string(git_oid_tostr_s(&out));
 }
 
+SEXP R_git_stash_pop(SEXP ptr, SEXP index){
+  size_t i = Rf_asInteger(index);
+  git_repository *repo = get_git_repository(ptr);
+  git_stash_apply_options opts = GIT_STASH_APPLY_OPTIONS_INIT;
+  bail_if(git_stash_pop(repo, i, &opts), "git_stash_pop");
+  return R_NilValue;
+}
+
+SEXP R_git_stash_drop(SEXP ptr, SEXP index){
+  size_t i = Rf_asInteger(index);
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_stash_drop(repo, i), "git_stash_drop");
+  return R_NilValue;
+}

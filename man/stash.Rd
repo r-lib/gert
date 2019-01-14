@@ -3,10 +3,16 @@
 \name{stash}
 \alias{stash}
 \alias{git_stash_save}
+\alias{git_stash_pop}
+\alias{git_stash_drop}
 \title{Stashing changes}
 \usage{
 git_stash_save(message = "", keep_index = FALSE,
   include_untracked = FALSE, include_ignored = FALSE, repo = ".")
+
+git_stash_pop(index = 0, repo = ".")
+
+git_stash_drop(index = 0, repo = ".")
 }
 \arguments{
 \item{message}{optional message to store the stash}
@@ -22,6 +28,9 @@ up from the working directory}
 
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
+
+\item{index}{The position within the stash list. 0 points to the
+most recent stashed state.}
 }
 \description{
 Temporary stash away changed from the working directory.

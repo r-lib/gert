@@ -23,3 +23,23 @@ git_stash_save <- function(message = "", keep_index = FALSE, include_untracked =
   include_ignored <- as.logical(include_ignored)
   .Call(R_git_stash_save, repo, message, keep_index, include_untracked, include_ignored)
 }
+
+#' @export
+#' @rdname stash
+#' @useDynLib gert R_git_stash_pop
+#' @param index The position within the stash list. 0 points to the
+#' most recent stashed state.
+git_stash_pop <- function(index = 0, repo = "."){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  .Call(R_git_stash_pop, repo, index)
+}
+
+#' @export
+#' @rdname stash
+#' @useDynLib gert R_git_stash_drop
+git_stash_drop <- function(index = 0, repo = "."){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  .Call(R_git_stash_drop, repo, index)
+}
