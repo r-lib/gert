@@ -43,3 +43,12 @@ git_stash_drop <- function(index = 0, repo = "."){
     repo <- git_open(repo)
   .Call(R_git_stash_drop, repo, index)
 }
+
+#' @export
+#' @rdname stash
+#' @useDynLib gert R_git_stash_list
+git_stash_list <- function(repo = "."){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  .Call(R_git_stash_list, repo)
+}

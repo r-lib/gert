@@ -5,6 +5,7 @@
 \alias{git_stash_save}
 \alias{git_stash_pop}
 \alias{git_stash_drop}
+\alias{git_stash_list}
 \title{Stashing changes}
 \usage{
 git_stash_save(message = "", keep_index = FALSE,
@@ -13,6 +14,8 @@ git_stash_save(message = "", keep_index = FALSE,
 git_stash_pop(index = 0, repo = ".")
 
 git_stash_drop(index = 0, repo = ".")
+
+git_stash_list(repo = ".")
 }
 \arguments{
 \item{message}{optional message to store the stash}
