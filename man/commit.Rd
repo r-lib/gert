@@ -37,7 +37,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{all}{if TRUE automatically adds all modified (but not new) files}
 
-\item{files}{vector of paths relative to the git root directory}
+\item{files}{vector of paths relative to the git root directory.
+Use \code{"."} to stage all changed files.}
 
 \item{force}{add files even if in gitignore}
 

@@ -49,14 +49,15 @@ git_commit <- function(message, all = FALSE, repo = '.'){
 
 #' @export
 #' @rdname commit
-#' @param files vector of paths relative to the git root directory
+#' @param files vector of paths relative to the git root directory.
+#' Use `"."` to stage all changed files.
 #' @param force add files even if in gitignore
 #' @useDynLib gert R_git_repository_add
 git_add <- function(files, force = FALSE, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   info <- git_info(repo)
-  normalizePath(file.path(info$path, files), mustWork = TRUE)
+  normalizePath(file.path(info$path, files), mustWork = FALSE)
   force <- as.logical(force)
   .Call(R_git_repository_add, repo, files, force)
 }
