@@ -50,6 +50,7 @@ static char* get_password(SEXP cb, const char *url, const char **username, int f
   if(*username == NULL){
     *username = strdup(CHAR(STRING_ELT(res, 0)));
   }
+  UNPROTECT(2);
   return strdup(CHAR(STRING_ELT(res, 1)));
 }
 
