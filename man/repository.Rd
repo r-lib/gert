@@ -31,7 +31,7 @@ or password proctected ssh keys. Defaults to \link[openssl:askpass]{openssl::ask
 checks \code{getOption('askpass')}.}
 
 \item{ssh_key}{path or object containing your ssh private key. By default we
-look for keys in \code{ssh-agent} and \link[credentials:my_ssh_key]{credentials::my_ssh_key}.}
+look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credentials::ssh_key_info}.}
 
 \item{verbose}{display some progress info while downloading}
 

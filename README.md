@@ -41,3 +41,4 @@ path <- file.path(tempdir(), "ggplot2")
 repo <- git_clone("https://github.com/hadley/ggplot2", path)
 print(repo)
 ```
+

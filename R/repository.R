@@ -29,7 +29,7 @@ git_open <- function(path = '.'){
 #' repositories, and `https://yourname@github.com/` or `git@github.com/` for
 #' private repos. You will be prompted for a password or pat when needed.
 #' @param ssh_key path or object containing your ssh private key. By default we
-#' look for keys in `ssh-agent` and [credentials::my_ssh_key].
+#' look for keys in `ssh-agent` and [credentials::ssh_key_info].
 #' @param branch name of branch to check out locally
 #' @param password a string or a callback function to get passwords for authentication
 #' or password proctected ssh keys. Defaults to [openssl::askpass] which

@@ -1,10 +1,10 @@
 #' @importFrom openssl write_ssh write_pem read_key write_pkcs1
-#' @importFrom credentials my_ssh_key
+#' @importFrom credentials ssh_key_info
 #' @importFrom openssl askpass
 make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
   function(){
     if(is.null(ssh_key)){
-      ssh_key <- try(my_ssh_key(host = host, password = password, auto_keygen = FALSE)$key)
+      ssh_key <- try(ssh_key_info(host = host, password = password, auto_keygen = FALSE)$key)
       if(inherits(ssh_key, "try-error"))
         return(NULL)
     }
