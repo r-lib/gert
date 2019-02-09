@@ -4,7 +4,7 @@
 make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
   function(){
     if(is.null(ssh_key)){
-      ssh_key <- try(ssh_key_info(host = host, password = password, auto_keygen = FALSE)$key)
+      ssh_key <- try(ssh_key_info(host = host, auto_keygen = FALSE)$key)
       if(inherits(ssh_key, "try-error"))
         return(NULL)
     }
