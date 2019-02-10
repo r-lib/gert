@@ -8,7 +8,7 @@ make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
       if(inherits(ssh_key, "try-error"))
         return(NULL)
     }
-    key <- tryCatch(read_key(ssh_key, password = password), function(e){
+    key <- tryCatch(read_key(ssh_key, password = password), error = function(e){
       stop(sprintf("Unable to load key: %s", ssh_key), call. = FALSE)
     })
     tmp_pub <- write_ssh(key$pubkey, tempfile())

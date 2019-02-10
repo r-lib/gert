@@ -26,6 +26,6 @@ git_config <- function(){
   if(interactive() && is.null(.getNamespace('tibble'))){
     tryCatch({
       getNamespace('tibble')
-    }, error= function(e){})
+    }, error = function(e){})
   }
 }
