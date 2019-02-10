@@ -27,7 +27,15 @@ make_cred_cb <- function(password = askpass, verbose = TRUE){
     stop("Password parameter must be string or callback function")
   }
   function(url, username, force_forget){
-    # This is the preferred method
+    # Case of hardcoded (string) password
+    if(is.character(password)){
+      if(!length(username) || is.na(username)){
+        stop("To use a hardcoded password, include your username in the URL like 'https://jerry@github.com")
+      }
+      return(c(username, password))
+    }
+
+    # Retrieve a password from the credential manager
     if(isTRUE(force_forget)){
       try(git_credential_forget(url))
     }
@@ -38,18 +46,10 @@ make_cred_cb <- function(password = askpass, verbose = TRUE){
 
     # If that doesn't work try to manually prompt
     if(!length(username) || is.na(username)){
-      username <- if(is.function(password)){
-        password(sprintf("Please enter username for %s", url))
-      } else {
-        stop("Please include your username in the URL like 'https://jerry@github.com")
-      }
+      password(sprintf("Please enter username for %s", url))
     }
-    pwd <- if(is.function(password)){
-      password(sprintf("Please enter a PAT or password for %s", url))
-    } else {
-      password
-    }
-    c(username, pwd)
+    pwd <- password(sprintf("Please enter a PAT or password for %s", url))
+    as.character(c(username, pwd))
   }
 }
 
