@@ -35,6 +35,12 @@ test_that("HTTP user/pass auth", {
                     path = target2, password = rawToChar(dec))
   expect_true(file.exists(file.path(target2, 'hello')))
 
+  # Test with password in URL
+  unlink(target2, recursive = TRUE)
+  repo <- git_clone(sprintf('https://testingjerry:%s@github.com/ropensci/testprivate',
+                            rawToChar(dec)), path = target2)
+  expect_true(file.exists(file.path(target2, 'hello')))
+
   # Test that repo is private
   expect_error(git_clone('https://github.com/ropensci/testprivate', password = "bla"))
 
