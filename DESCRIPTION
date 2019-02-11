@@ -4,13 +4,13 @@ Title: Simple Git Client
 Version: 0.1
 Author: Jeroen Ooms
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
-Description: Simple git client for R based on 'libgit2' <https://libgit2.org/>. This
-    package requires that a somewhat recent version of 'libgit2' is installed on the
-    system.
+Description: Minimal git client for R based on 'libgit2' <https://libgit2.org/>. 
+    This package requires a somewhat recent version of 'libgit2' is installed 
+    on the system.
 License: MIT + file LICENSE
 SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb)
-URL: http://github.com/jeroen/gert (devel), https://libgit2.org (upstream)
-BugReports: http://github.com/jeroen/gert/issues
+URL: http://github.com/r-lib/gert (devel), https://libgit2.org (upstream)
+BugReports: http://github.com/r-lib/gert/issues
 Encoding: UTF-8
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
@@ -19,4 +19,4 @@ Imports:
     openssl
 Suggests: 
     testthat
-Remotes: jeroen/credentials
+Remotes: r-lib/credentials
