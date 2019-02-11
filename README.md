@@ -17,11 +17,10 @@ remotes::install_github("r-lib/gert")
 
 On Linux you need somewhat recent version of libgit2:
 
- - Ubuntu (18.04): [libgit2-dev](https://packages.ubuntu.com/bionic/libgit2-dev)
  - Debian: [libgit2-dev](https://packages.debian.org/buster/libgit2-dev)
  - Fedora: [libgit2-devel](https://apps.fedoraproject.org/packages/libgit2-devel)
  
-On Ubuntu 18.04 and up, the stock version of libgit2 is fine. If you are running ubuntu __Xenial__ or __Trusty__ you need libgit2 backports from [my ppa](https://launchpad.net/~opencpu/+archive/ubuntu/libgit2):
+For Ubuntu Trusty, Xenial, and Bionic, you can use libgit2 backports from [this ppa](https://launchpad.net/~opencpu/+archive/ubuntu/libgit2):
 
 ```sh
 sudo add-apt-repository ppa:opencpu/libgit2
