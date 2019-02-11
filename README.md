@@ -1,10 +1,10 @@
 # gert
 
-> Simple Git Client for R
+> Minimal Git Client for R
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Build Status](https://travis-ci.org/jeroen/gert.svg?branch=master)](https://travis-ci.org/jeroen/gert)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jeroen/gert?branch=master)](https://ci.appveyor.com/project/jeroen/gert)
+[![Build Status](https://travis-ci.org/r-lib/gert.svg?branch=master)](https://travis-ci.org/r-lib/gert)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/r-lib/gert?branch=master)](https://ci.appveyor.com/project/jeroen/gert)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/gert)](https://cran.r-project.org/package=av)
 
 ## Installation
@@ -12,7 +12,7 @@
 To install the development version:
 
 ``` r
-remotes::install_github("jeroen/gert")
+remotes::install_github("r-lib/gert")
 ```
 
 On Linux you need somewhat recent version of libgit2:
