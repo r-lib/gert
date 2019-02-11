@@ -36,10 +36,10 @@ test_that("HTTP user/pass auth", {
   expect_true(file.exists(file.path(target2, 'hello')))
 
   # Test with password in URL
-  unlink(target2, recursive = TRUE)
+  target3 <- file.path(tempdir(), 'testprivate3')
   repo <- git_clone(sprintf('https://testingjerry:%s@github.com/ropensci/testprivate',
-                            rawToChar(dec)), path = target2)
-  expect_true(file.exists(file.path(target2, 'hello')))
+                            rawToChar(dec)), path = target3)
+  expect_true(file.exists(file.path(target3, 'hello')))
 
   # Test that repo is private
   expect_error(git_clone('https://github.com/ropensci/testprivate', password = "bla"))
@@ -47,12 +47,12 @@ test_that("HTTP user/pass auth", {
   # Test with PAT
   Sys.setenv(GITHUB_PAT = rawToChar(dec))
   on.exit(Sys.unsetenv("GITHUB_PAT"))
-  target3 <- file.path(tempdir(), 'testprivate3')
-  repo <- git_clone('https://github.com/ropensci/testprivate', path = target3)
-  expect_true(file.exists(file.path(target3, 'hello')))
+  target4 <- file.path(tempdir(), 'testprivate4')
+  repo <- git_clone('https://github.com/ropensci/testprivate', path = target4)
+  expect_true(file.exists(file.path(target4, 'hello')))
 
   # Try with user in URL
-  target4 <- file.path(tempdir(), 'testprivate4')
-  repo <- git_clone('https://nobody@github.com/ropensci/testprivate', path = target4)
-  expect_true(file.exists(file.path(target4, 'hello')))
+  target5 <- file.path(tempdir(), 'testprivate5')
+  repo <- git_clone('https://nobody@github.com/ropensci/testprivate', path = target5)
+  expect_true(file.exists(file.path(target5, 'hello')))
 })
