@@ -2,23 +2,12 @@
 % Please edit documentation in R/remotes.R
 \name{remotes}
 \alias{remotes}
-\alias{git_fetch}
-\alias{git_push}
-\alias{git_pull}
 \alias{git_remote_list}
 \alias{git_remote_add}
 \alias{git_remote_remove}
 \alias{git_refspecs}
 \title{Git Remotes}
 \usage{
-git_fetch(remote = NULL, refspec = NULL, password = askpass,
-  ssh_key = NULL, verbose = interactive(), repo = ".")
-
-git_push(remote = NULL, refspec = NULL, password = askpass,
-  ssh_key = NULL, verbose = interactive(), repo = ".")
-
-git_pull(repo = ".", ...)
-
 git_remote_list(repo = ".")
 
 git_remote_add(name, url, repo = ".")
@@ -28,34 +17,13 @@ git_remote_remove(name, repo = ".")
 git_refspecs(repo = ".")
 }
 \arguments{
-\item{remote}{name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}}
-
-\item{refspec}{string with mapping between remote and local refs}
-
-\item{password}{a string or a callback function to get passwords for authentication
-or password proctected ssh keys. Defaults to \link[openssl:askpass]{openssl::askpass} which
-checks \code{getOption('askpass')}.}
-
-\item{ssh_key}{path or object containing your ssh private key. By default we
-look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credentials::ssh_key_info}.}
-
-\item{verbose}{display some progress info while downloading}
-
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
-\item{...}{arguments passed to \link{git_fetch}}
+\item{name}{unique name of the remote}
 
-\item{url}{remote url. Typically starts with \code{https://github.com/} for public
-repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
-private repos. You will be prompted for a password or pat when needed.}
+\item{url}{server url (https or ssh)}
 }
 \description{
-First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.
-Then read data with \link{git_info} or \link{git_ls}.
+Add, remove and list remotes.
 }
-\seealso{
-Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{config}}, \code{\link{repository}}
-}
-\concept{git}
