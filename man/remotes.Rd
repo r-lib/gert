@@ -5,8 +5,9 @@
 \alias{git_fetch}
 \alias{git_push}
 \alias{git_pull}
-\alias{git_remotes}
+\alias{git_remote_list}
 \alias{git_remote_add}
+\alias{git_remote_remove}
 \alias{git_refspecs}
 \title{Git Remotes}
 \usage{
@@ -18,14 +19,16 @@ git_push(remote = NULL, refspec = NULL, password = askpass,
 
 git_pull(repo = ".", ...)
 
-git_remotes(repo = ".")
+git_remote_list(repo = ".")
 
 git_remote_add(name, url, repo = ".")
+
+git_remote_remove(name, repo = ".")
 
 git_refspecs(repo = ".")
 }
 \arguments{
-\item{remote}{name of a remote listed in \code{\link[=git_remotes]{git_remotes()}}}
+\item{remote}{name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}}
 
 \item{refspec}{string with mapping between remote and local refs}
 

@@ -10,6 +10,6 @@ test_that("adding and removing files", {
   expect_equal(git_ls(tempdir())$path, c('cars.csv', 'iris.csv'))
   git_rm(c('cars.csv', 'iris.csv'), repo = repo)
   expect_equal(nrow(git_ls(repo)), 0)
-  remotes <- git_remotes(repo)
+  remotes <- git_remote_list(repo)
   expect_equal(nrow(remotes), 0)
 })

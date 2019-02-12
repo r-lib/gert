@@ -14,7 +14,7 @@ test_that("cloning repositories works", {
   expect_is(git_log(repo = repo), 'data.frame')
 
   # Test remotes
-  remotes <- git_remotes(repo)
+  remotes <- git_remote_list(repo)
   expect_equal(remotes$name, "origin")
   expect_equal(remotes$url, "https://github.com/jeroen/jsonlite")
 })

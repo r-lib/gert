@@ -54,7 +54,7 @@ make_cred_cb <- function(password = askpass, verbose = TRUE){
 }
 
 remote_to_host <- function(repo, remote){
-  rms <- git_remotes(repo = repo)
+  rms <- git_remote_list(repo = repo)
   url <- rms[rms$name == remote, ]$url
   if(length(url)){
     url_to_host(url)

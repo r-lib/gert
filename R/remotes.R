@@ -9,7 +9,7 @@
 #' @rdname remotes
 #' @inheritParams repository
 #' @useDynLib gert R_git_remote_fetch
-#' @param remote name of a remote listed in [git_remotes()]
+#' @param remote name of a remote listed in [git_remote_list()]
 #' @param refspec string with mapping between remote and local refs
 git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
                       ssh_key = NULL, verbose = interactive(), repo = '.'){
@@ -69,11 +69,11 @@ git_pull <- function(repo = '.', ...){
 
 #' @export
 #' @rdname remotes
-#' @useDynLib gert R_git_remotes_list
-git_remotes <- function(repo = '.'){
+#' @useDynLib gert R_git_remote_list
+git_remote_list <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
-  .Call(R_git_remotes_list, repo)
+  .Call(R_git_remote_list, repo)
 }
 
 #' @export
@@ -89,8 +89,19 @@ git_remote_add <- function(name, url, repo = '.'){
 
 #' @export
 #' @rdname remotes
+#' @useDynLib gert R_git_remote_remove
+git_remote_remove <- function(name, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  name <- as.character(name)
+  .Call(R_git_remote_remove, repo, name)
+  invisible()
+}
+
+#' @export
+#' @rdname remotes
 git_refspecs <- function(repo = '.'){
-  remotes <- git_remotes()
+  remotes <- git_remote_list()
   lens <- vapply(remotes$refspecs, length, numeric(1))
   indexes <- rep(seq_len(nrow(remotes)), lens)
   out <- remotes[indexes,]

@@ -141,7 +141,7 @@ static SEXP make_refspecs(git_remote *remote){
   return out;
 }
 
-SEXP R_git_remotes_list(SEXP ptr){
+SEXP R_git_remote_list(SEXP ptr){
   git_strarray remotes = {0};
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_remote_list(&remotes, repo), "git_remote_list");
@@ -171,4 +171,11 @@ SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url){
   git_remote *remote = NULL;
   bail_if(git_remote_create(&remote,repo, cname, curl), "git_remote_create");
   return make_refspecs(remote);
+}
+
+SEXP R_git_remote_remove(SEXP ptr, SEXP name){
+  const char *cname = CHAR(STRING_ELT(name, 0));
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_remote_delete(repo, cname), "git_remote_delete");
+  return R_NilValue;
 }
