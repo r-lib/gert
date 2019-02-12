@@ -78,6 +78,17 @@ git_remotes <- function(repo = '.'){
 
 #' @export
 #' @rdname remotes
+#' @useDynLib gert R_git_remote_add
+git_remote_add <- function(name, url, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  name <- as.character(name)
+  url <- as.character(url)
+  .Call(R_git_remote_add, repo, name, url)
+}
+
+#' @export
+#' @rdname remotes
 git_refspecs <- function(repo = '.'){
   remotes <- git_remotes()
   lens <- vapply(remotes$refspecs, length, numeric(1))

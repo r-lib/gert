@@ -6,6 +6,7 @@
 \alias{git_push}
 \alias{git_pull}
 \alias{git_remotes}
+\alias{git_remote_add}
 \alias{git_refspecs}
 \title{Git Remotes}
 \usage{
@@ -18,6 +19,8 @@ git_push(remote = NULL, refspec = NULL, password = askpass,
 git_pull(repo = ".", ...)
 
 git_remotes(repo = ".")
+
+git_remote_add(name, url, repo = ".")
 
 git_refspecs(repo = ".")
 }
@@ -39,6 +42,10 @@ look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credential
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{...}{arguments passed to \link{git_fetch}}
+
+\item{url}{remote url. Typically starts with \code{https://github.com/} for public
+repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
+private repos. You will be prompted for a password or pat when needed.}
 }
 \description{
 First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.

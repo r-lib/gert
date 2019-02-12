@@ -161,3 +161,14 @@ SEXP R_git_remotes_list(SEXP ptr){
   }
   return build_tibble(3, "name", names, "url", url, "refspecs", refspecs);
 }
+
+SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url){
+  const char *curl = CHAR(STRING_ELT(url, 0));
+  const char *cname = CHAR(STRING_ELT(name, 0));
+  git_repository *repo = get_git_repository(ptr);
+  if(!git_remote_is_valid_name(cname))
+    Rf_error("Invalid remote name %s", cname);
+  git_remote *remote = NULL;
+  bail_if(git_remote_create(&remote,repo, cname, curl), "git_remote_create");
+  return make_refspecs(remote);
+}
