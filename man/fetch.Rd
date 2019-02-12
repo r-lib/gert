@@ -5,7 +5,7 @@
 \alias{git_fetch}
 \alias{git_push}
 \alias{git_pull}
-\title{Git Remotes}
+\title{Push and Pull}
 \usage{
 git_fetch(remote = NULL, refspec = NULL, password = askpass,
   ssh_key = NULL, verbose = interactive(), repo = ".")
@@ -13,7 +13,7 @@ git_fetch(remote = NULL, refspec = NULL, password = askpass,
 git_push(remote = NULL, refspec = NULL, password = askpass,
   ssh_key = NULL, verbose = interactive(), repo = ".")
 
-git_pull(repo = ".", ...)
+git_pull(..., repo = ".")
 }
 \arguments{
 \item{remote}{name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}}
@@ -35,8 +35,9 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{...}{arguments passed to \link{git_fetch}}
 }
 \description{
-First create a repository object via \link{git_clone}, \link{git_open}, or \link{git_init}.
-Then read data with \link{git_info} or \link{git_ls}.
+Use \link{git_fetch} and \link{git_push} to sync a local branch with a remote.
+Here \link{git_pull} is a wrapper that tries to fast-forward the local
+branch after fetching.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},

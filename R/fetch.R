@@ -1,7 +1,8 @@
-#' Git Remotes
+#' Push and Pull
 #'
-#' First create a repository object via [git_clone], [git_open], or [git_init].
-#' Then read data with [git_info] or [git_ls].
+#' Use [git_fetch] and [git_push] to sync a local branch with a remote.
+#' Here [git_pull] is a wrapper that tries to fast-forward the local
+#' branch after fetching.
 #'
 #' @export
 #' @family git
@@ -57,7 +58,7 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' @export
 #' @rdname fetch
 #' @param ... arguments passed to [git_fetch]
-git_pull <- function(repo = '.', ...){
+git_pull <- function(..., repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   info <- git_info(repo)
