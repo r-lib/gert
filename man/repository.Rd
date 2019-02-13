@@ -27,7 +27,7 @@ private repos. You will be prompted for a password or pat when needed.}
 \item{branch}{name of branch to check out locally}
 
 \item{password}{a string or a callback function to get passwords for authentication
-or password proctected ssh keys. Defaults to \link[openssl:askpass]{openssl::askpass} which
+or password proctected ssh keys. Defaults to \link[askpass:askpass]{askpass} which
 checks \code{getOption('askpass')}.}
 
 \item{ssh_key}{path or object containing your ssh private key. By default we
