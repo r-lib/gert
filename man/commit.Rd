@@ -4,6 +4,7 @@
 \alias{commit}
 \alias{git_signature_default}
 \alias{git_commit}
+\alias{git_commit_all}
 \alias{git_add}
 \alias{git_rm}
 \alias{git_status}
@@ -15,6 +16,8 @@
 git_signature_default(repo = ".")
 
 git_commit(message, repo = ".")
+
+git_commit_all(message, repo = ".")
 
 git_add(files, force = FALSE, repo = ".")
 
@@ -47,10 +50,13 @@ Use \code{"."} to stage all changed files.}
 \item{type}{must be one of \code{"soft"}, \code{"hard"}, or \code{"mixed"}}
 }
 \description{
-To commit changes, start with \emph{staging} the files to be included in the
-commit using \code{\link[=git_add]{git_add()}} (new/modified) and \code{\link[=git_rm]{git_rm()}} (deletions).
-Use \code{\link[=git_status]{git_status()}} to get an overview of staged and unstaged changes, and
-finally \code{\link[=git_commit]{git_commit()}} creates a new commit with currently staged files.
+To commit changes, start with \emph{staging} the files to be included
+in the commit using \code{\link[=git_add]{git_add()}} or \code{\link[=git_rm]{git_rm()}}. Use \code{\link[=git_status]{git_status()}} to see an
+overview of staged and unstaged changes, and finally \code{\link[=git_commit]{git_commit()}} creates
+a new commit with currently staged files.
+
+\link{git_commit_all} is a shorthand that will automatically stage all new and
+modified files and then commit.
 
 Also \code{\link[=git_log]{git_log()}} shows the most recent commits and \code{\link[=git_ls]{git_ls()}} lists
 all the files that are being tracked in the repository.

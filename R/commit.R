@@ -1,14 +1,15 @@
 #' Stage and commit changes
 #'
-#' @description To commit changes, start with *staging* the files to be included in the
-#' commit using [git_add()] (new/modified) and [git_rm()] (deletions).
-#' Use [git_status()] to get an overview of staged and unstaged changes, and
-#' finally [git_commit()] creates a new commit with currently staged files.
+#' @description To commit changes, start with *staging* the files to be included
+#' in the commit using [git_add()] or [git_rm()]. Use [git_status()] to see an
+#' overview of staged and unstaged changes, and finally [git_commit()] creates
+#' a new commit with currently staged files.
+#'
+#' [git_commit_all] is a shorthand that will automatically stage all new and
+#' modified files and then commit.
 #'
 #' Also [git_log()] shows the most recent commits and [git_ls()] lists
 #' all the files that are being tracked in the repository.
-#'
-#'
 #'
 #' @export
 #' @rdname commit
@@ -38,6 +39,7 @@ git_commit <- function(message, repo = '.'){
 }
 
 #' @export
+#' @rdname commit
 git_commit_all <- function(message, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
