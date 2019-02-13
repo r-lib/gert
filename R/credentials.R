@@ -1,5 +1,5 @@
-#' @importFrom openssl write_ssh write_pem read_key write_pkcs1
-#' @importFrom credentials ssh_key_info git_credential_forget
+#' @importFrom openssl write_ssh write_pem write_pkcs1
+#' @importFrom credentials ssh_key_info git_credential_forget ssh_read_key
 #' @importFrom openssl askpass
 make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
   function(){
@@ -8,7 +8,7 @@ make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
       if(inherits(ssh_key, "try-error"))
         return(NULL)
     }
-    key <- tryCatch(read_key(ssh_key, password = password), error = function(e){
+    key <- tryCatch(ssh_read_key(ssh_key, password = password), error = function(e){
       stop(sprintf("Unable to load key: %s", ssh_key), call. = FALSE)
     })
     tmp_pub <- write_ssh(key$pubkey, tempfile())
