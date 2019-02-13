@@ -1,4 +1,4 @@
-#' GIt Tag
+#' Git Tag
 #'
 #' Create and list tags.
 #'

@@ -5,7 +5,7 @@
 \alias{git_tag_create}
 \alias{git_tag_delete}
 \alias{git_tag_push}
-\title{GIt Tag}
+\title{Git Tag}
 \usage{
 git_tag_list(match = "*", repo = ".")
 
