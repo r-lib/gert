@@ -22,7 +22,7 @@ SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
 }
 
 SEXP R_git_tag_create(SEXP ptr, SEXP name, SEXP message, SEXP ref){
-  git_oid tag = {0};
+  git_oid tag;
   git_signature *me = NULL;
   git_object *revision = NULL;
   const char *cname = CHAR(STRING_ELT(name, 0));
