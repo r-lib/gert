@@ -3,11 +3,14 @@
 \name{git_tag_list}
 \alias{git_tag_list}
 \alias{git_tag_create}
+\alias{git_tag_delete}
 \title{GIt Tag}
 \usage{
 git_tag_list(match = "*", repo = ".")
 
 git_tag_create(name, message, ref = "HEAD", repo = ".")
+
+git_tag_delete(name, repo = ".")
 }
 \arguments{
 \item{match}{pattern to filter tags (use \code{*} for wildcard)}

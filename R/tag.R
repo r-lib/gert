@@ -26,3 +26,13 @@ git_tag_create <- function(name, message, ref = "HEAD", repo = '.'){
   message <- as.character(message)
   .Call(R_git_tag_create, repo, name, message, ref)
 }
+
+#' @export
+#' @rdname git_tag
+#' @useDynLib gert R_git_tag_delete
+git_tag_delete <- function(name, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  name <- as.character(name)
+  .Call(R_git_tag_delete, repo, name)
+}

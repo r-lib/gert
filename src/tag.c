@@ -35,3 +35,10 @@ SEXP R_git_tag_create(SEXP ptr, SEXP name, SEXP message, SEXP ref){
   git_object_free(revision);
   return safe_string(git_oid_tostr_s(&tag));
 }
+
+SEXP R_git_tag_delete(SEXP ptr, SEXP name){
+  const char *cname = CHAR(STRING_ELT(name, 0));
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_tag_delete(repo, cname), "git_tag_delete");
+  return R_NilValue;
+}
