@@ -36,3 +36,11 @@ git_tag_delete <- function(name, repo = '.'){
   name <- as.character(name)
   .Call(R_git_tag_delete, repo, name)
 }
+
+#' @export
+#' @rdname git_tag
+#' @param ... other arguments passed to [git_push]
+git_tag_push <- function(name, ..., repo = '.'){
+  ref <- paste0('refs/tags/', name)
+  git_push(refspec = ref, ..., repo = repo)
+}

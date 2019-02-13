@@ -4,6 +4,7 @@
 \alias{git_tag_list}
 \alias{git_tag_create}
 \alias{git_tag_delete}
+\alias{git_tag_push}
 \title{GIt Tag}
 \usage{
 git_tag_list(match = "*", repo = ".")
@@ -11,6 +12,8 @@ git_tag_list(match = "*", repo = ".")
 git_tag_create(name, message, ref = "HEAD", repo = ".")
 
 git_tag_delete(name, repo = ".")
+
+git_tag_push(name, ..., repo = ".")
 }
 \arguments{
 \item{match}{pattern to filter tags (use \code{*} for wildcard)}
@@ -20,6 +23,8 @@ git_tag_delete(name, repo = ".")
 \item{message}{tag message}
 
 \item{ref}{target reference to tag}
+
+\item{...}{other arguments passed to \link{git_push}}
 }
 \description{
 Create and list tags.
