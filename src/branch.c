@@ -170,6 +170,7 @@ SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url){
     Rf_error("Invalid remote name %s", cname);
   git_remote *remote = NULL;
   bail_if(git_remote_create(&remote,repo, cname, curl), "git_remote_create");
+  git_remote_free(remote);
   return make_refspecs(remote);
 }
 
