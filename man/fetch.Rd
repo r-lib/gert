@@ -4,6 +4,7 @@
 \alias{fetch}
 \alias{git_fetch}
 \alias{git_push}
+\alias{git_clone}
 \alias{git_pull}
 \title{Push and Pull}
 \usage{
@@ -12,6 +13,9 @@ git_fetch(remote = NULL, refspec = NULL, password = askpass,
 
 git_push(remote = NULL, refspec = NULL, password = askpass,
   ssh_key = NULL, verbose = interactive(), repo = ".")
+
+git_clone(url, path = NULL, branch = NULL, password = askpass,
+  ssh_key = NULL, verbose = interactive())
 
 git_pull(..., repo = ".")
 }
@@ -32,12 +36,20 @@ look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credential
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
+\item{url}{remote url. Typically starts with \code{https://github.com/} for public
+repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
+private repos. You will be prompted for a password or pat when needed.}
+
+\item{path}{local path, must be a non-existing or empty directory}
+
+\item{branch}{name of branch to check out locally}
+
 \item{...}{arguments passed to \link{git_fetch}}
 }
 \description{
 Use \link{git_fetch} and \link{git_push} to sync a local branch with a remote.
-Here \link{git_pull} is a wrapper that tries to fast-forward the local
-branch after fetching.
+Here \link{git_pull} is a wrapper for \link{git_fetch} which that tries to
+\link[=git_branch_fast_forward]{fast-forward} the local branch after fetching.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},

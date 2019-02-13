@@ -2,22 +2,22 @@
 % Please edit documentation in R/branch.R
 \name{branch}
 \alias{branch}
-\alias{git_branches}
-\alias{git_tags}
-\alias{git_checkout}
-\alias{git_branch}
-\alias{git_fast_forward}
+\alias{git_branch_list}
+\alias{git_tag_list}
+\alias{git_branch_checkout}
+\alias{git_branch_create}
+\alias{git_branch_fast_forward}
 \title{Git Branch}
 \usage{
-git_branches(repo = ".")
+git_branch_list(repo = ".")
 
-git_tags(match = "*", repo = ".")
+git_tag_list(match = "*", repo = ".")
 
-git_checkout(branch, force = FALSE, repo = ".")
+git_branch_checkout(branch, force = FALSE, repo = ".")
 
-git_branch(name, ref = "HEAD", checkout = TRUE, repo = ".")
+git_branch_create(name, ref = "HEAD", checkout = TRUE, repo = ".")
 
-git_fast_forward(ref, repo = ".")
+git_branch_fast_forward(ref, repo = ".")
 }
 \arguments{
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
@@ -36,7 +36,7 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{checkout}{move HEAD to the newly created branch}
 }
 \description{
-Create, and checkout branches.
+Create, list, and checkout branches.
 }
 \seealso{
 Other git: \code{\link{commit}}, \code{\link{config}},

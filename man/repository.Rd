@@ -4,7 +4,6 @@
 \alias{repository}
 \alias{git_init}
 \alias{git_open}
-\alias{git_clone}
 \alias{git_info}
 \title{Create or open a git repository}
 \usage{
@@ -12,28 +11,10 @@ git_init(path = ".")
 
 git_open(path = ".")
 
-git_clone(url, path = NULL, branch = NULL, password = askpass,
-  ssh_key = NULL, verbose = interactive())
-
 git_info(repo = ".")
 }
 \arguments{
 \item{path}{local path, must be a non-existing or empty directory}
-
-\item{url}{remote url. Typically starts with \code{https://github.com/} for public
-repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
-private repos. You will be prompted for a password or pat when needed.}
-
-\item{branch}{name of branch to check out locally}
-
-\item{password}{a string or a callback function to get passwords for authentication
-or password proctected ssh keys. Defaults to \link[askpass:askpass]{askpass} which
-checks \code{getOption('askpass')}.}
-
-\item{ssh_key}{path or object containing your ssh private key. By default we
-look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credentials::ssh_key_info}.}
-
-\item{verbose}{display some progress info while downloading}
 
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}

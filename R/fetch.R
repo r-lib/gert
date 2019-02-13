@@ -1,8 +1,8 @@
 #' Push and Pull
 #'
 #' Use [git_fetch] and [git_push] to sync a local branch with a remote.
-#' Here [git_pull] is a wrapper that tries to fast-forward the local
-#' branch after fetching.
+#' Here [git_pull] is a wrapper for [git_fetch] which that tries to
+#' [fast-forward][git_branch_fast_forward] the local branch after fetching.
 #'
 #' @export
 #' @family git
@@ -57,6 +57,34 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 
 #' @export
 #' @rdname fetch
+#' @useDynLib gert R_git_repository_clone
+#' @param url remote url. Typically starts with `https://github.com/` for public
+#' repositories, and `https://yourname@github.com/` or `git@github.com/` for
+#' private repos. You will be prompted for a password or pat when needed.
+#' @param ssh_key path or object containing your ssh private key. By default we
+#' look for keys in `ssh-agent` and [credentials::ssh_key_info].
+#' @param branch name of branch to check out locally
+#' @param password a string or a callback function to get passwords for authentication
+#' or password proctected ssh keys. Defaults to [askpass][askpass::askpass] which
+#' checks `getOption('askpass')`.
+#' @param verbose display some progress info while downloading
+git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
+                      ssh_key = NULL, verbose = interactive()){
+  stopifnot(is.character(url))
+  if(!length(path))
+    path <- file.path(getwd(), basename(url))
+  stopifnot(is.character(path))
+  stopifnot(is.null(branch) || is.character(branch))
+  verbose <- as.logical(verbose)
+  path <- normalizePath(path.expand(path), mustWork = FALSE)
+  host <- url_to_host(url)
+  key_cb <- make_key_cb(ssh_key, host = host, password = password)
+  cred_cb <- make_cred_cb(password = password, verbose = verbose)
+  .Call(R_git_repository_clone, url, path, branch, key_cb, cred_cb, verbose)
+}
+
+#' @export
+#' @rdname fetch
 #' @param ... arguments passed to [git_fetch]
 git_pull <- function(..., repo = '.'){
   if(is.character(repo))
@@ -64,6 +92,6 @@ git_pull <- function(..., repo = '.'){
   info <- git_info(repo)
   if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
     stop("No upstream configured for current HEAD")
-  git_fetch(info$remote, repo = repo, ...)
-  git_fast_forward(info$upstream, repo = repo)
+  git_fetch(info$remote, ..., repo = repo)
+  git_branch_fast_forward(info$upstream, repo = repo)
 }
