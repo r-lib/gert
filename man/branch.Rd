@@ -3,7 +3,6 @@
 \name{branch}
 \alias{branch}
 \alias{git_branch_list}
-\alias{git_tag_list}
 \alias{git_branch_checkout}
 \alias{git_branch_create}
 \alias{git_branch_delete}
@@ -11,8 +10,6 @@
 \title{Git Branch}
 \usage{
 git_branch_list(repo = ".")
-
-git_tag_list(match = "*", repo = ".")
 
 git_branch_checkout(branch, force = FALSE, repo = ".")
 
@@ -25,8 +22,6 @@ git_branch_fast_forward(ref, repo = ".")
 \arguments{
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
-
-\item{match}{pattern to filter tags (use \code{*} for wildcard)}
 
 \item{branch}{name of branch to check out}
 

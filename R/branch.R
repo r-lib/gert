@@ -16,17 +16,6 @@ git_branch_list <- function(repo = '.'){
 
 #' @export
 #' @rdname branch
-#' @param match pattern to filter tags (use `*` for wildcard)
-#' @useDynLib gert R_git_tag_list
-git_tag_list <- function(match = "*", repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
-  match <- as.character(match)
-  .Call(R_git_tag_list, repo, match)
-}
-
-#' @export
-#' @rdname branch
 #' @param branch name of branch to check out
 #' @param force ignore conflicts and overwrite modified files
 #' @useDynLib gert R_git_checkout_branch
@@ -62,7 +51,6 @@ git_branch_delete <- function(name, repo = '.'){
   name <- as.character(name)
   .Call(R_git_delete_branch, repo, name)
 }
-
 
 #' @export
 #' @rdname branch
