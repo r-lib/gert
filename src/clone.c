@@ -111,7 +111,7 @@ static int fetch_progress(const git_transfer_progress *stats, void *payload){
 }
 
 static int remote_message(const char *refname, const char *status, void *data){
-  Rprintf("[status] %s: %s\n", refname, status ? status : "unchaged");
+  REprintf("[status] %s: %s\n", refname, status ? status : "unchaged");
   return 0;
 }
 
@@ -285,11 +285,11 @@ static int update_cb(const char *refname, const git_oid *a, const git_oid *b, vo
   git_oid_fmt(b_str, b);
   b_str[GIT_OID_HEXSZ] = '\0';
   if (git_oid_iszero(a)) {
-    Rprintf("[new]     %.20s %s\n", b_str, refname);
+    REprintf("[new]     %.20s %s\n", b_str, refname);
   } else {
     git_oid_fmt(a_str, a);
     a_str[GIT_OID_HEXSZ] = '\0';
-    Rprintf("[updated] %.10s..%.10s %s\n", a_str, b_str, refname);
+    REprintf("[updated] %.10s..%.10s %s\n", a_str, b_str, refname);
   }
   return 0;
 }

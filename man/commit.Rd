@@ -14,7 +14,7 @@
 \usage{
 git_signature_default(repo = ".")
 
-git_commit(message, all = FALSE, repo = ".")
+git_commit(message, repo = ".")
 
 git_add(files, force = FALSE, repo = ".")
 
@@ -34,8 +34,6 @@ git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{message}{a commit message}
-
-\item{all}{if TRUE automatically adds all modified (but not new) files}
 
 \item{files}{vector of paths relative to the git root directory.
 Use \code{"."} to stage all changed files.}
