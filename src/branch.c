@@ -39,6 +39,15 @@ SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
   return ptr;
 }
 
+SEXP R_git_delete_branch(SEXP ptr, SEXP branch){
+  git_reference *ref;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_branch_lookup(&ref, repo, CHAR(STRING_ELT(branch, 0)), GIT_BRANCH_LOCAL), "git_branch_lookup");
+  bail_if(git_branch_delete(ref), "git_branch_delete");
+  git_reference_free(ref);
+  return R_NilValue;
+}
+
 SEXP R_git_checkout_branch(SEXP ptr, SEXP branch, SEXP force){
   git_reference *ref;
   git_repository *repo = get_git_repository(ptr);

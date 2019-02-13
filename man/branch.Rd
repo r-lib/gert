@@ -6,6 +6,7 @@
 \alias{git_tag_list}
 \alias{git_branch_checkout}
 \alias{git_branch_create}
+\alias{git_branch_delete}
 \alias{git_branch_fast_forward}
 \title{Git Branch}
 \usage{
@@ -16,6 +17,8 @@ git_tag_list(match = "*", repo = ".")
 git_branch_checkout(branch, force = FALSE, repo = ".")
 
 git_branch_create(name, ref = "HEAD", checkout = TRUE, repo = ".")
+
+git_branch_delete(name, repo = ".")
 
 git_branch_fast_forward(ref, repo = ".")
 }

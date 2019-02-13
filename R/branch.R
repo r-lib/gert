@@ -53,6 +53,16 @@ git_branch_create <- function(name, ref = "HEAD", checkout = TRUE, repo = '.'){
   .Call(R_git_create_branch,repo, name, ref, checkout)
 }
 
+#' @export
+#' @rdname branch
+#' @useDynLib gert R_git_delete_branch
+git_branch_delete <- function(name, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  name <- as.character(name)
+  .Call(R_git_delete_branch, repo, name)
+}
+
 
 #' @export
 #' @rdname branch
