@@ -209,7 +209,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
         }
       }
       cb_data->retries++;
-      print_if_verbose("Asking HTTPS credentials for %s\n", url);
+      print_if_verbose("Looking up https credentials for %s\n", url);
       char *pass = get_password(cb_data->getcred, url, &username, cb_data->retries > 2);
       if(!username || !pass){
         print_if_verbose("Credential lookup failed\n");
