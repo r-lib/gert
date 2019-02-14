@@ -16,27 +16,34 @@ libgit2_config <- function(){
 
 #' @export
 #' @rdname git_config
-#' @useDynLib gert R_git_config_default
-git_config_default <- function(){
-  .Call(R_git_config_default)
-}
-
-#' @export
-#' @rdname git_config
 #' @inheritParams repository
-#' @useDynLib gert R_git_config_repo
-git_config_repo <- function(repo = '.'){
+#' @useDynLib gert R_git_config_list
+git_config_local <- function(repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
-  .Call(R_git_config_repo, repo)
+  .Call(R_git_config_list, repo)
 }
 
 #' @export
 #' @rdname git_config
-#' @useDynLib gert R_git_config_default_set
+#' @useDynLib gert R_git_config_set
 #' @param name setting name
-#' @param value setting value, must be string, bool or number
-git_config_default_set <- function(name, value){
+#' @param value setting value, must be string, bool, number or NULL
+git_config_local_set <- function(name, value, repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
   name <- as.character(name)
-  .Call(R_git_config_default_set, name, value)
+  .Call(R_git_config_set, repo, name, value)
+}
+
+#' @export
+#' @rdname git_config
+git_config_global <- function(){
+  git_config_local(repo = NULL)
+}
+
+#' @export
+#' @rdname git_config
+git_config_global_set <- function(name, value){
+  git_config_local_set(name = name, value = value, repo = NULL)
 }

@@ -6,7 +6,7 @@
     "Linking to libgit2 v%s, ssh support: %s, https support: %s",
     as.character(config$version), ssh, https))
   try({
-    settings <- git_config_default()
+    settings <- git_config_global()
     name <- subset(settings, name == 'user.name')$value
     email <- subset(settings, name == 'user.email')$value
     if(length(name) && length(email)){

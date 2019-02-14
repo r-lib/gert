@@ -3,18 +3,21 @@
 \name{git_config}
 \alias{git_config}
 \alias{libgit2_config}
-\alias{git_config_default}
-\alias{git_config_repo}
-\alias{git_config_default_set}
+\alias{git_config_local}
+\alias{git_config_local_set}
+\alias{git_config_global}
+\alias{git_config_global_set}
 \title{Version info}
 \usage{
 libgit2_config()
 
-git_config_default()
+git_config_local(repo = ".")
 
-git_config_repo(repo = ".")
+git_config_local_set(name, value, repo = ".")
 
-git_config_default_set(name, value)
+git_config_global()
+
+git_config_global_set(name, value)
 }
 \arguments{
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
@@ -22,7 +25,7 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{name}{setting name}
 
-\item{value}{setting value, must be string, bool or number}
+\item{value}{setting value, must be string, bool, number or NULL}
 }
 \description{
 Shows the version of libgit2 and which features have been enabled.

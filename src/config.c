@@ -11,14 +11,14 @@ static int count_config_iter(git_config *cfg){
   return count;
 }
 
-static SEXP R_git_config_list(git_repository *repo){
+SEXP R_git_config_list(SEXP ptr){
   git_config_iterator *iter = NULL;
   git_config_entry *entry = NULL;
   git_config *cfg = NULL;
-  if(repo == NULL) {
+  if(Rf_isNull(ptr)) {
     bail_if(git_config_open_default(&cfg), "git_config_open_default");
   } else {
-    bail_if(git_repository_config(&cfg, repo),"git_repository_config");
+    bail_if(git_repository_config(&cfg, get_git_repository(ptr)),"git_repository_config");
   }
   int count = count_config_iter(cfg);
   SEXP names = PROTECT(Rf_allocVector(STRSXP, count));
@@ -35,19 +35,15 @@ static SEXP R_git_config_list(git_repository *repo){
   return build_tibble(2, "name", names, "value", values);
 }
 
-SEXP R_git_config_repo(SEXP ptr){
-  return R_git_config_list(get_git_repository(ptr));
-}
-
-SEXP R_git_config_default(){
-  return R_git_config_list(NULL);
-}
-
-SEXP R_git_config_default_set(SEXP name, SEXP value){
+SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value){
   double val;
   git_config *cfg = NULL;
   const char *cname = CHAR(STRING_ELT(name, 0));
-  bail_if(git_config_open_default(&cfg), "git_config_open_default");
+  if(Rf_isNull(ptr)) {
+    bail_if(git_config_open_default(&cfg), "git_config_open_default");
+  } else {
+    bail_if(git_repository_config(&cfg, get_git_repository(ptr)),"git_repository_config");
+  }
   switch(TYPEOF(value)){
     case STRSXP:
       bail_if(git_config_set_string(cfg, cname, CHAR(STRING_ELT(value, 0))), "git_config_set_string");
@@ -66,8 +62,11 @@ SEXP R_git_config_default_set(SEXP name, SEXP value){
         bail_if(git_config_set_int64(cfg, cname, (int64_t) val), "git_config_set_int64");
       }
       break;
+    case NILSXP:
+      bail_if(git_config_delete_entry(cfg, cname), "git_config_delete_entry");
+      break;
     default:
-      Rf_error("Option value must be string, boolean, or number");
+      Rf_error("Option value must be string, boolean, number, or NULL");
   }
-  return R_git_config_default();
+  return R_NilValue;
 }
