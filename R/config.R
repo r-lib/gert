@@ -30,3 +30,13 @@ git_config_repo <- function(repo = '.'){
     repo <- git_open(repo)
   .Call(R_git_config_repo, repo)
 }
+
+#' @export
+#' @rdname git_config
+#' @useDynLib gert R_git_config_default_set
+#' @param name setting name
+#' @param value setting value, must be string, bool or number
+git_config_default_set <- function(name, value){
+  name <- as.character(name)
+  .Call(R_git_config_default_set, name, value)
+}
