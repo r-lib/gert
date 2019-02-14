@@ -42,3 +42,32 @@ SEXP R_git_config_repo(SEXP ptr){
 SEXP R_git_config_default(){
   return R_git_config_list(NULL);
 }
+
+SEXP R_git_config_default_set(SEXP name, SEXP value){
+  double val;
+  git_config *cfg = NULL;
+  const char *cname = CHAR(STRING_ELT(name, 0));
+  bail_if(git_config_open_default(&cfg), "git_config_open_default");
+  switch(TYPEOF(value)){
+    case STRSXP:
+      bail_if(git_config_set_string(cfg, cname, CHAR(STRING_ELT(value, 0))), "git_config_set_string");
+      break;
+    case LGLSXP:
+      bail_if(git_config_set_bool(cfg, cname, Rf_asLogical(value)), "git_config_set_bool");
+      break;
+    case INTSXP:
+      bail_if(git_config_set_int32(cfg, cname, Rf_asInteger(value)), "git_config_set_int32");
+      break;
+    case REALSXP:
+      val = Rf_asReal(value);
+      if(val <= INT_MAX){
+        bail_if(git_config_set_int32(cfg, cname, (int32_t) val), "git_config_set_int32");
+      } else {
+        bail_if(git_config_set_int64(cfg, cname, (int64_t) val), "git_config_set_int64");
+      }
+      break;
+    default:
+      Rf_error("Option value must be string, boolean, or number");
+  }
+  return R_git_config_default();
+}

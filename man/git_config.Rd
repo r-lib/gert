@@ -5,6 +5,7 @@
 \alias{libgit2_config}
 \alias{git_config_default}
 \alias{git_config_repo}
+\alias{git_config_default_set}
 \title{Version info}
 \usage{
 libgit2_config()
@@ -12,10 +13,16 @@ libgit2_config()
 git_config_default()
 
 git_config_repo(repo = ".")
+
+git_config_default_set(name, value)
 }
 \arguments{
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
+
+\item{name}{setting name}
+
+\item{value}{setting value, must be string, bool or number}
 }
 \description{
 Shows the version of libgit2 and which features have been enabled.
