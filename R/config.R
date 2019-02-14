@@ -4,28 +4,29 @@
 #'
 #' @export
 #' @family git
-#' @rdname config
-#' @name config
+#' @rdname git_config
+#' @name git_config
 #' @useDynLib gert R_libgit2_config
-git_config <- function(){
+libgit2_config <- function(){
   res <- .Call(R_libgit2_config)
   names(res) <- c("version", "ssh", "https", "threads")
   res$version <- as.numeric_version(res$version)
   res
 }
 
-.onAttach <- function(libname, pkgname){
-  config <- git_config()
-  ssh <- ifelse(config$ssh, "YES", "NO")
-  https <- ifelse(config$https, "YES", "NO")
-  packageStartupMessage(sprintf(
-    "Linking to libgit2 v%s, ssh support: %s, https support: %s",
-    as.character(config$version), ssh, https))
+#' @export
+#' @rdname git_config
+#' @useDynLib gert R_git_config_default
+git_config_default <- function(){
+  .Call(R_git_config_default)
+}
 
-  # Load tibble (if available) for pretty printing
-  if(interactive() && is.null(.getNamespace('tibble'))){
-    tryCatch({
-      getNamespace('tibble')
-    }, error = function(e){})
-  }
+#' @export
+#' @rdname git_config
+#' @inheritParams repository
+#' @useDynLib gert R_git_config_repo
+git_config_repo <- function(repo = '.'){
+  if(is.character(repo))
+    repo <- git_open(repo)
+  .Call(R_git_config_repo, repo)
 }

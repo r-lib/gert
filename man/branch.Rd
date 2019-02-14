@@ -37,7 +37,7 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 Create, list, and checkout branches.
 }
 \seealso{
-Other git: \code{\link{commit}}, \code{\link{config}},
-  \code{\link{fetch}}, \code{\link{repository}}
+Other git: \code{\link{commit}}, \code{\link{fetch}},
+  \code{\link{git_config}}, \code{\link{repository}}
 }
 \concept{git}

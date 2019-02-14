@@ -25,6 +25,6 @@ repository from a remote.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{config}}, \code{\link{fetch}}
+  \code{\link{fetch}}, \code{\link{git_config}}
 }
 \concept{git}

@@ -53,6 +53,6 @@ Here \link{git_pull} is a wrapper for \link{git_fetch} which that tries to
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{config}}, \code{\link{repository}}
+  \code{\link{git_config}}, \code{\link{repository}}
 }
 \concept{git}

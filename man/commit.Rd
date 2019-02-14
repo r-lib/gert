@@ -62,7 +62,7 @@ Also \code{\link[=git_log]{git_log()}} shows the most recent commits and \code{\
 all the files that are being tracked in the repository.
 }
 \seealso{
-Other git: \code{\link{branch}}, \code{\link{config}},
-  \code{\link{fetch}}, \code{\link{repository}}
+Other git: \code{\link{branch}}, \code{\link{fetch}},
+  \code{\link{git_config}}, \code{\link{repository}}
 }
 \concept{git}
