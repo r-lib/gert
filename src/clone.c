@@ -111,7 +111,7 @@ static int fetch_progress(const git_transfer_progress *stats, void *payload){
 }
 
 static int remote_message(const char *refname, const char *status, void *data){
-  REprintf("[status] %s: %s\n", refname, status ? status : "unchaged");
+  REprintf("[status] %s: %s\n", refname, status ? status : "unchanged");
   return 0;
 }
 
