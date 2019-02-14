@@ -15,7 +15,7 @@ Encoding: UTF-8
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 Imports:
-    credentials,
+    credentials (>= 0.2),
     openssl
 Suggests: 
     testthat
