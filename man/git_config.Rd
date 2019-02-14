@@ -3,17 +3,16 @@
 \name{git_config}
 \alias{git_config}
 \alias{libgit2_config}
-\alias{git_config_local}
-\alias{git_config_local_set}
+\alias{git_config_set}
 \alias{git_config_global}
 \alias{git_config_global_set}
 \title{Version info}
 \usage{
 libgit2_config()
 
-git_config_local(repo = ".")
+git_config(repo = ".")
 
-git_config_local_set(name, value, repo = ".")
+git_config_set(name, value, repo = ".")
 
 git_config_global()
 
