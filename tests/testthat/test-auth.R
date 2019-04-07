@@ -42,7 +42,8 @@ test_that("HTTP user/pass auth", {
   expect_true(file.exists(file.path(target3, 'hello')))
 
   # Test that repo is private
-  expect_error(git_clone('https://github.com/ropensci/testprivate', password = "bla"))
+  expect_error(git_clone('https://nobody@github.com/ropensci/testprivate',
+                         password = "bla", path = tempfile()))
 
   # Test with PAT
   Sys.setenv(GITHUB_PAT = rawToChar(dec))

@@ -1,6 +1,6 @@
 #' @importFrom openssl write_ssh write_pem write_pkcs1
 #' @importFrom credentials ssh_key_info git_credential_forget ssh_read_key
-#' @importFrom openssl askpass
+#' @importFrom askpass askpass
 make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
   function(){
     if(is.null(ssh_key)){

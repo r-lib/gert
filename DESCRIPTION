@@ -16,6 +16,7 @@ RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 Imports:
     credentials (>= 1.0),
+    askpass,
     openssl
 Suggests: 
     testthat
