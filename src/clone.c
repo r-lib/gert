@@ -242,25 +242,6 @@ static git_strarray *files_to_array(SEXP files){
   return paths;
 }
 
-/* For WinBuilder: skip ssl cert check because Vista problems */
-int skip_cert_check(git_cert *cert, int valid, const char *host, void *payload){
-  return 0;
-}
-
-static void set_default_callbacks(git_remote_callbacks *callbacks){
-  callbacks->credentials = auth_callback;
-
-  //Disable
-#ifdef _WIN32
-  DWORD dwBuild = 0;
-  DWORD dwVersion = GetVersion();
-  if (dwVersion < 0x80000000)
-    dwBuild = (DWORD)(HIWORD(dwVersion));
-  if(dwBuild < 7600) // Older than Windows 7
-    callbacks->certificate_check = skip_cert_check;
-#endif
-}
-
 SEXP R_git_repository_init(SEXP path){
   git_repository *repo = NULL;
   bail_if(git_repository_init(&repo, CHAR(STRING_ELT(path, 0)), 0), "git_repository_init");
@@ -279,7 +260,7 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   clone_opts.fetch_opts.callbacks.payload = &data_cb;
-  set_default_callbacks(&clone_opts.fetch_opts.callbacks);
+  clone_opts.fetch_opts.callbacks.credentials = auth_callback;
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
@@ -326,7 +307,7 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP get
   opts.update_fetchhead = 1;
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;
-  set_default_callbacks(&opts.callbacks);
+  opts.callbacks.credentials = auth_callback;
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
@@ -349,7 +330,7 @@ SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP getc
   git_push_options opts = GIT_PUSH_OPTIONS_INIT;
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;
-  set_default_callbacks(&opts.callbacks);
+  opts.callbacks.credentials = auth_callback;
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
