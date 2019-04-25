@@ -43,13 +43,14 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message){
   git_tree *tree;
   git_index *index;
   git_signature *me;
-  git_commit *commit;
-  git_reference *head;
+  git_commit *commit = NULL;
+  git_reference *head = NULL;
   git_oid tree_id, commit_id;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_signature_default(&me, repo), "git_signature_default");
-  bail_if(git_repository_head(&head, repo), "git_repository_head");
-  bail_if(git_commit_lookup(&commit, repo, git_reference_target(head)), "git_commit_lookup");
+  if(git_repository_head(&head, repo) == 0){
+    bail_if(git_commit_lookup(&commit, repo, git_reference_target(head)), "git_commit_lookup");
+  }
   bail_if(git_message_prettify(&msg, Rf_translateCharUTF8(STRING_ELT(message, 0)), 0, 0), "git_message_prettify");
 
   // Setup tree, see: https://libgit2.org/docs/examples/init/
@@ -58,7 +59,7 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message){
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
   bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");
   bail_if(git_commit_create(&commit_id, repo, "HEAD", me, me, "UTF-8", msg.ptr,
-                            tree, 1, parents), "git_commit_create");
+                            tree, commit ? 1 : 0, parents), "git_commit_create");
   git_buf_free(&msg);
   git_tree_free(tree);
   git_index_free(index);
