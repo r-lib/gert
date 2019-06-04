@@ -88,7 +88,7 @@ if [ $? -ne 0 ]; then
     echo "Configuration failed because $PKG_CONFIG_NAME is too old."
     echo "Please install it from the following PPA for Ubuntu Trusty or Xenial:"
     echo ""
-    echo "  sudo add-apt-repository ppa:opencpu/libgit2"
+    echo "  sudo add-apt-repository ppa:jeroen/libgit2"
     echo "  sudo apt-get update"
     echo "  sudo apt-get install libssh2-1-dev libgit2-dev"
     echo ""
