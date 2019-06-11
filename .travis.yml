@@ -22,7 +22,7 @@ addons:
     update: true
     packages: libgit2-dev
     sources:
-      - sourceline: 'ppa:jeroen/libgit2'
+      - sourceline: 'ppa:cran/libgit2'
 
 notifications:
   email:
