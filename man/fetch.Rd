@@ -51,6 +51,26 @@ Use \link{git_fetch} and \link{git_push} to sync a local branch with a remote.
 Here \link{git_pull} is a wrapper for \link{git_fetch} which that tries to
 \link[=git_branch_fast_forward]{fast-forward} the local branch after fetching.
 }
+\examples{
+{# Clone a small repository
+git_dir <- file.path(tempdir(), 'antiword')
+git_clone('https://github.com/ropensci/antiword', git_dir)
+setwd(git_dir)
+
+# Show some stuff
+git_log()
+git_branch_list()
+git_remote_list()
+
+# Add a file
+write.csv(iris, 'iris.csv')
+git_add('iris.csv')
+git_commit('added the iris file')
+
+# Now in the log:
+git_log()
+}
+}
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
   \code{\link{git_config}}, \code{\link{repository}}

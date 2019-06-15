@@ -68,6 +68,24 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' or password proctected ssh keys. Defaults to [askpass][askpass::askpass] which
 #' checks `getOption('askpass')`.
 #' @param verbose display some progress info while downloading
+#' @examples {# Clone a small repository
+#' git_dir <- file.path(tempdir(), 'antiword')
+#' git_clone('https://github.com/ropensci/antiword', git_dir)
+#' setwd(git_dir)
+#'
+#' # Show some stuff
+#' git_log()
+#' git_branch_list()
+#' git_remote_list()
+#'
+#' # Add a file
+#' write.csv(iris, 'iris.csv')
+#' git_add('iris.csv')
+#' git_commit('added the iris file')
+#'
+#' # Now in the log:
+#' git_log()
+#' }
 git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
                       ssh_key = NULL, verbose = interactive()){
   stopifnot(is.character(url))
