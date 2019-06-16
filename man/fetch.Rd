@@ -55,6 +55,9 @@ Here \link{git_pull} is a wrapper for \link{git_fetch} which that tries to
 {# Clone a small repository
 git_dir <- file.path(tempdir(), 'antiword')
 git_clone('https://github.com/ropensci/antiword', git_dir)
+
+# Change into the repo directory
+olddir <- getwd()
 setwd(git_dir)
 
 # Show some stuff
@@ -74,7 +77,7 @@ git_commit('added the iris file', author = jerry)
 git_log()
 
 # Cleanup
-setwd("~")
+setwd(olddir)
 unlink(git_dir, recursive = TRUE)
 }
 }

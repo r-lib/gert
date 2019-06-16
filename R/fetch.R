@@ -71,6 +71,9 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' @examples {# Clone a small repository
 #' git_dir <- file.path(tempdir(), 'antiword')
 #' git_clone('https://github.com/ropensci/antiword', git_dir)
+#'
+#' # Change into the repo directory
+#' olddir <- getwd()
 #' setwd(git_dir)
 #'
 #' # Show some stuff
@@ -90,7 +93,7 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' git_log()
 #'
 #' # Cleanup
-#' setwd("~")
+#' setwd(olddir)
 #' unlink(git_dir, recursive = TRUE)
 #' }
 git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
