@@ -72,6 +72,10 @@ git_commit('added the iris file', author = jerry)
 
 # Now in the log:
 git_log()
+
+# Cleanup
+setwd("~")
+unlink(git_dir, recursive = TRUE)
 }
 }
 \seealso{

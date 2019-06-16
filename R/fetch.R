@@ -88,6 +88,10 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #'
 #' # Now in the log:
 #' git_log()
+#'
+#' # Cleanup
+#' setwd("~")
+#' unlink(git_dir, recursive = TRUE)
 #' }
 git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
                       ssh_key = NULL, verbose = interactive()){
