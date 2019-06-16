@@ -74,9 +74,11 @@ SEXP R_git_signature_create(SEXP name, SEXP email, SEXP time, SEXP offset){
 
 SEXP R_git_signature_info(SEXP ptr){
   git_signature *sig = get_signature(ptr);
-  return build_list(3, "author", PROTECT(Rf_ScalarString(make_author(sig))),
-                    "time", PROTECT(Rf_ScalarReal(sig->when.time)),
-                    "offset", PROTECT(Rf_ScalarInteger(sig->when.offset)));
+  SEXP author = PROTECT(Rf_ScalarString(make_author(sig)));
+  SEXP time = PROTECT(Rf_ScalarReal(sig->when.time));
+  SEXP offset = PROTECT(Rf_ScalarInteger(sig->when.offset));
+  Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  return build_list(3, "author", author, "time", time, "offset", offset);
 }
 
 SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer){

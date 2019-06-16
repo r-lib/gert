@@ -119,8 +119,7 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
 #' @useDynLib gert R_git_signature_info
 print.git_sig_ptr <- function(x, ...){
   info <- git_signature_info(x)
-  time <- structure(info$time, class = c("POSIXct", "POSIXt"))
-  cat(sprintf("<git signature>: %s at %s\n", info$author, as.character(time)))
+  cat(sprintf("<git signature>: %s at %s\n", info$author, as.character(info$time)))
 }
 
 git_signature_info <- function(signature){

@@ -9,13 +9,13 @@ test_that("creating signatures", {
   sig <- git_signature(name, email)
   info <- git_signature_info(sig)
   expect_equal(info$author, author)
-  expect_equal(info$time, unclass(now))
+  expect_lt(difftime(info$time, now, 'secs'), 1)
 
   yesterday <- now - 24*60*60
   sig <- git_signature(name, email, time = yesterday)
   info <- git_signature_info(sig)
   expect_equal(info$author, author)
-  expect_equal(info$time, unclass(yesterday))
+  expect_lt(difftime(info$time, yesterday, 'secs'), 1)
 })
 
 test_that("adding and removing files", {
