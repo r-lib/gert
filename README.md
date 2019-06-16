@@ -23,7 +23,7 @@ On Linux you need somewhat recent version of libgit2:
 For Ubuntu Trusty, Xenial, and Bionic, you can use libgit2 backports from [this ppa](https://launchpad.net/~jeroen/+archive/ubuntu/libgit2):
 
 ```sh
-sudo add-apt-repository ppa:jeroen/libgit2
+sudo add-apt-repository ppa:cran/libgit2
 sudo apt-get update
 sudo apt-get install libgit2-dev
 ```
