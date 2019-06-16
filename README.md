@@ -20,7 +20,7 @@ On Linux you need somewhat recent version of libgit2:
  - Debian: [libgit2-dev](https://packages.debian.org/buster/libgit2-dev)
  - Fedora: [libgit2-devel](https://apps.fedoraproject.org/packages/libgit2-devel)
  
-For Ubuntu Trusty, Xenial, and Bionic, you can use libgit2 backports from [this ppa](https://launchpad.net/~jeroen/+archive/ubuntu/libgit2):
+For Ubuntu Trusty and Xenial, you can use libgit2 backports from [this ppa](https://launchpad.net/~cran/+archive/ubuntu/libgit2):
 
 ```sh
 sudo add-apt-repository ppa:cran/libgit2
