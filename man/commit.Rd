@@ -2,7 +2,6 @@
 % Please edit documentation in R/commit.R
 \name{commit}
 \alias{commit}
-\alias{git_signature_default}
 \alias{git_commit}
 \alias{git_commit_all}
 \alias{git_add}
@@ -13,11 +12,10 @@
 \alias{git_reset}
 \title{Stage and commit changes}
 \usage{
-git_signature_default(repo = ".")
+git_commit(message, author = NULL, committer = author, repo = ".")
 
-git_commit(message, repo = ".")
-
-git_commit_all(message, repo = ".")
+git_commit_all(message, author = NULL, committer = author,
+  repo = ".")
 
 git_add(files, force = FALSE, repo = ".")
 
@@ -33,10 +31,14 @@ git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
   repo = ".")
 }
 \arguments{
+\item{message}{a commit message}
+
+\item{author}{A \link{git_signature} value, default is \link{git_signature_default}.}
+
+\item{committer}{A \link{git_signature} value.}
+
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
-
-\item{message}{a commit message}
 
 \item{files}{vector of paths relative to the git root directory.
 Use \code{"."} to stage all changed files.}
@@ -63,6 +65,7 @@ all the files that are being tracked in the repository.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{fetch}},
-  \code{\link{git_config}}, \code{\link{repository}}
+  \code{\link{git_config}}, \code{\link{repository}},
+  \code{\link{signature}}
 }
 \concept{git}

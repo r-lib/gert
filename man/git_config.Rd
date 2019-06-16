@@ -31,6 +31,7 @@ Shows the version of libgit2 and which features have been enabled.
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{fetch}}, \code{\link{repository}}
+  \code{\link{fetch}}, \code{\link{repository}},
+  \code{\link{signature}}
 }
 \concept{git}

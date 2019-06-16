@@ -81,7 +81,10 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' # Add a file
 #' write.csv(iris, 'iris.csv')
 #' git_add('iris.csv')
-#' git_commit('added the iris file')
+#'
+#' # Commit the change
+#' jerry <- git_signature("Jerry", "jerry@hotmail.com")
+#' git_commit('added the iris file', author = jerry)
 #'
 #' # Now in the log:
 #' git_log()

@@ -65,7 +65,10 @@ git_remote_list()
 # Add a file
 write.csv(iris, 'iris.csv')
 git_add('iris.csv')
-git_commit('added the iris file')
+
+# Commit the change
+jerry <- git_signature("Jerry", "jerry@hotmail.com")
+git_commit('added the iris file', author = jerry)
 
 # Now in the log:
 git_log()
@@ -73,6 +76,7 @@ git_log()
 }
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{git_config}}, \code{\link{repository}}
+  \code{\link{git_config}}, \code{\link{repository}},
+  \code{\link{signature}}
 }
 \concept{git}

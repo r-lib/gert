@@ -29,25 +29,66 @@ static SEXP make_author(const git_signature *p){
   return safe_char(buf);
 }
 
+static git_signature *get_signature(SEXP ptr){
+  if(TYPEOF(ptr) != EXTPTRSXP || !Rf_inherits(ptr, "git_sig_ptr"))
+    Rf_error("handle is not a git_sig_ptr");
+  if(!R_ExternalPtrAddr(ptr))
+    Rf_error("pointer is dead");
+  return R_ExternalPtrAddr(ptr);
+}
+
+static void fin_git_sig(SEXP ptr){
+  if(!R_ExternalPtrAddr(ptr)) return;
+  git_signature_free(R_ExternalPtrAddr(ptr));
+  R_ClearExternalPtr(ptr);
+}
+
+static SEXP new_git_sig(git_signature *repo){
+  SEXP ptr = PROTECT(R_MakeExternalPtr(repo, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(ptr, fin_git_sig, 1);
+  Rf_setAttrib(ptr, R_ClassSymbol, Rf_mkString("git_sig_ptr"));
+  UNPROTECT(1);
+  return ptr;
+}
+
 SEXP R_git_signature_default(SEXP ptr){
   git_signature *sig;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_signature_default(&sig, repo), "git_signature_default");
-  SEXP out = Rf_ScalarString(make_author(sig));
-  git_signature_free(sig);
-  return out;
+  return new_git_sig(sig);
 }
 
-SEXP R_git_commit_create(SEXP ptr, SEXP message){
+SEXP R_git_signature_create(SEXP name, SEXP email, SEXP time, SEXP offset){
+  const char *cname = CHAR(STRING_ELT(name, 0));
+  const char *cmail = CHAR(STRING_ELT(email, 0));
+  git_signature *sig;
+  if(!Rf_length(time)){
+    bail_if(git_signature_now(&sig, cname, cmail), "git_signature_now");
+  } else {
+    double ctime = Rf_asReal(time);
+    int coff = Rf_asInteger(offset);
+    bail_if(git_signature_new(&sig, cname, cmail, ctime, coff), "git_signature_new");
+  }
+  return new_git_sig(sig);
+}
+
+SEXP R_git_signature_info(SEXP ptr){
+  git_signature *sig = get_signature(ptr);
+  return build_list(3, "author", PROTECT(Rf_ScalarString(make_author(sig))),
+                    "time", PROTECT(Rf_ScalarReal(sig->when.time)),
+                    "offset", PROTECT(Rf_ScalarInteger(sig->when.offset)));
+}
+
+SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer){
   git_buf msg = {0};
   git_tree *tree;
   git_index *index;
-  git_signature *me;
   git_commit *commit = NULL;
   git_reference *head = NULL;
   git_oid tree_id, commit_id;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_signature_default(&me, repo), "git_signature_default");
+  git_signature *authsig = get_signature(author);
+  git_signature *commitsig = get_signature(committer);
   if(git_repository_head(&head, repo) == 0){
     bail_if(git_commit_lookup(&commit, repo, git_reference_target(head)), "git_commit_lookup");
   }
@@ -58,12 +99,11 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message){
   bail_if(git_repository_index(&index, repo), "git_repository_index");
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
   bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");
-  bail_if(git_commit_create(&commit_id, repo, "HEAD", me, me, "UTF-8", msg.ptr,
-                            tree, commit ? 1 : 0, parents), "git_commit_create");
+  bail_if(git_commit_create(&commit_id, repo, "HEAD", authsig, commitsig, "UTF-8",
+                            msg.ptr, tree, commit ? 1 : 0, parents), "git_commit_create");
   git_buf_free(&msg);
   git_tree_free(tree);
   git_index_free(index);
-  git_signature_free(me);
   git_commit_free(commit);
   git_reference_free(head);
   return safe_string(git_oid_tostr_s(&commit_id));

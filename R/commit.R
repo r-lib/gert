@@ -10,37 +10,30 @@
 #'
 #' Also [git_log()] shows the most recent commits and [git_ls()] lists
 #' all the files that are being tracked in the repository.
-#'
 #' @export
 #' @rdname commit
 #' @name commit
 #' @family git
 #' @inheritParams repository
-#' @useDynLib gert R_git_signature_default
-git_signature_default <- function(repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
-  .Call(R_git_signature_default, repo)
-}
-
-#' @export
-#' @rdname commit
-#' @inheritParams repository
 #' @param message a commit message
+#' @param author A [git_signature] value, default is [git_signature_default].
+#' @param committer A [git_signature] value.
 #' @useDynLib gert R_git_commit_create
-git_commit <- function(message, repo = '.'){
+git_commit <- function(message, author = NULL, committer = author, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
+  if(!length(author))
+    author <- git_signature_default()
   stopifnot(is.character(message), length(message) == 1)
   status <- git_status(repo)
   if(!any(status$staged))
     stop("No staged files to commit. Run git_add() to select files.")
-  .Call(R_git_commit_create, repo, message)
+  .Call(R_git_commit_create, repo, message, author, committer)
 }
 
 #' @export
 #' @rdname commit
-git_commit_all <- function(message, repo = '.'){
+git_commit_all <- function(message, author = NULL, committer = author, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   stat <- git_status(repo)
@@ -50,7 +43,7 @@ git_commit_all <- function(message, repo = '.'){
   deleted <- stat$file[!stat$staged && stat$status == "deleted"]
   if(length(deleted))
     git_rm(deleted, repo = repo)
-  git_commit(message = message, repo = repo)
+  git_commit(message = message, author = author, committer = committer, repo = repo)
 }
 
 #' @export
@@ -120,4 +113,22 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
     repo <- git_open(repo)
   ref <- as.character(ref)
   .Call(R_git_reset, repo, ref, typenum)
+}
+
+#' @export
+#' @useDynLib gert R_git_signature_info
+print.git_sig_ptr <- function(x, ...){
+  info <- git_signature_info(x)
+  time <- structure(info$time, class = c("POSIXct", "POSIXt"))
+  cat(sprintf("<git signature>: %s at %s\n", info$author, as.character(time)))
+}
+
+git_signature_info <- function(signature){
+  stopifnot(inherits(signature, 'git_sig_ptr'))
+  .Call(R_git_signature_info, signature)
+}
+
+assert_string <- function(x){
+  if(!is.character(x) || !length(x))
+    stop("Argument must be a string of length 1")
 }
