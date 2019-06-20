@@ -9,7 +9,14 @@
 
 ## Installation
 
-To install the development version:
+Get the latest version from CRAN:
+
+```r
+install.packages("gert")
+
+```
+
+Or install the development version:
 
 ``` r
 remotes::install_github("r-lib/gert")
