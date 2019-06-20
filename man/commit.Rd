@@ -12,10 +12,9 @@
 \alias{git_reset}
 \title{Stage and commit changes}
 \usage{
-git_commit(message, author = NULL, committer = author, repo = ".")
+git_commit(message, author = NULL, committer = NULL, repo = ".")
 
-git_commit_all(message, author = NULL, committer = author,
-  repo = ".")
+git_commit_all(message, author = NULL, committer = NULL, repo = ".")
 
 git_add(files, force = FALSE, repo = ".")
 
@@ -35,7 +34,7 @@ git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
 
 \item{author}{A \link{git_signature} value, default is \link{git_signature_default}.}
 
-\item{committer}{A \link{git_signature} value.}
+\item{committer}{A \link{git_signature} value, default is same as \code{author}}
 
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}

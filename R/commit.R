@@ -17,13 +17,15 @@
 #' @inheritParams repository
 #' @param message a commit message
 #' @param author A [git_signature] value, default is [git_signature_default].
-#' @param committer A [git_signature] value.
+#' @param committer A [git_signature] value, default is same as `author`
 #' @useDynLib gert R_git_commit_create
-git_commit <- function(message, author = NULL, committer = author, repo = '.'){
+git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   if(!length(author))
     author <- git_signature_default()
+  if(!length(committer))
+    committer <- author
   stopifnot(is.character(message), length(message) == 1)
   status <- git_status(repo)
   if(!any(status$staged))
@@ -33,7 +35,7 @@ git_commit <- function(message, author = NULL, committer = author, repo = '.'){
 
 #' @export
 #' @rdname commit
-git_commit_all <- function(message, author = NULL, committer = author, repo = '.'){
+git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   stat <- git_status(repo)
