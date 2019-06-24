@@ -86,6 +86,8 @@ void R_init_gert(DllInfo *dll) {
 #else
   git_libgit2_init();
 #endif
-  R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-  R_useDynamicSymbols(dll, FALSE);
+  R_registerRoutines(dll, NULL, NULL, NULL, NULL);
+  R_useDynamicSymbols(dll, TRUE);
+  //R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+  //R_useDynamicSymbols(dll, FALSE);
 }

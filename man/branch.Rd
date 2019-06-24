@@ -7,6 +7,7 @@
 \alias{git_branch_create}
 \alias{git_branch_delete}
 \alias{git_branch_fast_forward}
+\alias{git_branch_set_upstream}
 \title{Git Branch}
 \usage{
 git_branch_list(repo = ".")
@@ -18,6 +19,8 @@ git_branch_create(name, ref = "HEAD", checkout = TRUE, repo = ".")
 git_branch_delete(name, repo = ".")
 
 git_branch_fast_forward(ref, repo = ".")
+
+git_branch_set_upstream(remote = "origin", repo = ".")
 }
 \arguments{
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
@@ -32,6 +35,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{ref}{string with a branch/tag/commit}
 
 \item{checkout}{move HEAD to the newly created branch}
+
+\item{remote}{name of existing remote from \link{git_remote_list}}
 }
 \description{
 Create, list, and checkout branches.

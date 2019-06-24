@@ -10,7 +10,7 @@
 \usage{
 git_remote_list(repo = ".")
 
-git_remote_add(name, url, repo = ".")
+git_remote_add(name, url, refspec = NULL, repo = ".")
 
 git_remote_remove(name, repo = ".")
 
@@ -23,6 +23,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{name}{unique name of the remote}
 
 \item{url}{server url (https or ssh)}
+
+\item{refspec}{optional string with the remote fetch value}
 }
 \description{
 Add, remove and list remotes.

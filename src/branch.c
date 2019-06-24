@@ -151,14 +151,15 @@ SEXP R_git_remote_list(SEXP ptr){
   return build_tibble(3, "name", names, "url", url, "refspecs", refspecs);
 }
 
-SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url){
+SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url, SEXP refspec){
   const char *curl = CHAR(STRING_ELT(url, 0));
   const char *cname = CHAR(STRING_ELT(name, 0));
+  const char *crefspec = Rf_length(refspec) ? CHAR(STRING_ELT(refspec, 0)) : NULL;
   git_repository *repo = get_git_repository(ptr);
   if(!git_remote_is_valid_name(cname))
     Rf_error("Invalid remote name %s", cname);
   git_remote *remote = NULL;
-  bail_if(git_remote_create(&remote,repo, cname, curl), "git_remote_create");
+  bail_if(git_remote_create_with_fetchspec(&remote,repo, cname, curl, crefspec), "git_remote_create");
   git_remote_free(remote);
   return make_refspecs(remote);
 }
@@ -168,4 +169,17 @@ SEXP R_git_remote_remove(SEXP ptr, SEXP name){
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_remote_delete(repo, cname), "git_remote_delete");
   return R_NilValue;
+}
+
+SEXP R_git_branch_set_upsteam(SEXP ptr, SEXP remote, SEXP branch){
+  git_reference *ref;
+  git_repository *repo = get_git_repository(ptr);
+  if(Rf_length(branch)){
+    bail_if(git_branch_lookup(&ref, repo, CHAR(STRING_ELT(branch, 0)), GIT_BRANCH_LOCAL), "git_branch_lookup");
+  } else {
+    bail_if(git_repository_head(&ref, repo), "git_repository_head");
+  }
+  bail_if(git_branch_set_upstream(ref, CHAR(STRING_ELT(remote, 0))), "git_branch_set_upstream");
+  git_reference_free(ref);
+  return ptr;
 }
