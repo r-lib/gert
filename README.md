@@ -7,6 +7,8 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/r-lib/gert?branch=master)](https://ci.appveyor.com/project/jeroen/gert)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/gert)](https://cran.r-project.org/package=gert)
 
+Gert is still in early development with limited documenation. Have a look at the [slides](https://jeroen.github.io/gert2019/#1).
+
 ## Installation
 
 Get the latest version from CRAN:
@@ -22,7 +24,7 @@ Or install the development version:
 remotes::install_github("r-lib/gert")
 ```
 
-On Linux you need somewhat recent version of libgit2:
+On Linux you need to install libgit2:
 
  - Debian: [libgit2-dev](https://packages.debian.org/buster/libgit2-dev)
  - Fedora: [libgit2-devel](https://apps.fedoraproject.org/packages/libgit2-devel)
