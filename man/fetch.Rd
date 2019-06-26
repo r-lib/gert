@@ -25,7 +25,7 @@ git_pull(..., repo = ".")
 \item{refspec}{string with mapping between remote and local refs}
 
 \item{password}{a string or a callback function to get passwords for authentication
-or password proctected ssh keys. Defaults to \link[askpass:askpass]{askpass} which
+or password protected ssh keys. Defaults to \link[askpass:askpass]{askpass} which
 checks \code{getOption('askpass')}.}
 
 \item{ssh_key}{path or object containing your ssh private key. By default we

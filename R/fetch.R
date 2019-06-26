@@ -65,7 +65,7 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' look for keys in `ssh-agent` and [credentials::ssh_key_info].
 #' @param branch name of branch to check out locally
 #' @param password a string or a callback function to get passwords for authentication
-#' or password proctected ssh keys. Defaults to [askpass][askpass::askpass] which
+#' or password protected ssh keys. Defaults to [askpass][askpass::askpass] which
 #' checks `getOption('askpass')`.
 #' @param verbose display some progress info while downloading
 #' @examples {# Clone a small repository
