@@ -50,3 +50,17 @@ test_that("creating a commit", {
   expect_equal(log$author[2], author)
   expect_equal(log$time[1], timestamp)
 })
+
+
+test_that("creating a commit in another directory without author works", {
+  path <- tempfile()
+  dir.create(path)
+  repo <- git_init(path)
+  writeLines("content", file.path(path, "file"))
+  git_add("file", repo = path)
+  git_commit("Added file", repo = repo)
+
+  log <- git_log(repo = repo)
+  sig <- git_signature_default(repo)
+  expect_equal(log$author, git_signature_info(sig)$author)
+})
