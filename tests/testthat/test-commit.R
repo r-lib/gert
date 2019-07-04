@@ -56,6 +56,8 @@ test_that("creating a commit in another directory without author works", {
   path <- tempfile()
   dir.create(path)
   repo <- git_init(path)
+  git_config_set('user.name', "Jerry Johnson", repo = repo)
+  git_config_set('user.email', "jerry@gmail.com", repo = repo)
   writeLines("content", file.path(path, "file"))
   git_add("file", repo = path)
   git_commit("Added file", repo = repo)
