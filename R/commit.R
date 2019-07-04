@@ -23,7 +23,7 @@ git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   if(is.character(repo))
     repo <- git_open(repo)
   if(!length(author))
-    author <- git_signature_default()
+    author <- git_signature_default(repo)
   if(!length(committer))
     committer <- author
   stopifnot(is.character(message), length(message) == 1)
