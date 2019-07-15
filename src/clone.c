@@ -250,7 +250,7 @@ SEXP R_git_repository_init(SEXP path){
 
 SEXP R_git_repository_open(SEXP path){
   git_repository *repo = NULL;
-  bail_if(git_repository_open(&repo, CHAR(STRING_ELT(path, 0))), "git_repository_open");
+  bail_if(git_repository_open_ext(&repo, CHAR(STRING_ELT(path, 0)), 0, NULL), "git_repository_open");
   return new_git_repository(repo);
 }
 
