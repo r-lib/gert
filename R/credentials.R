@@ -11,7 +11,8 @@ make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
     key <- tryCatch(ssh_read_key(ssh_key, password = password), error = function(e){
       stop(sprintf("Unable to load key: %s", ssh_key), call. = FALSE)
     })
-    tmp_pub <- write_ssh(key$pubkey, tempfile())
+    # NB: old libssh2 is buggy, this is the only format that always works
+    writeLines(paste(write_ssh(key$pubkey), "git@localhost"), tmp_pub <- tempfile())
     tmp_key <- write_pkcs1(key, tempfile())
     if(.Platform$OS.type == "unix"){
       Sys.chmod(tmp_pub, '0644')
