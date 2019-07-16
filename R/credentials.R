@@ -11,9 +11,15 @@ make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
     key <- tryCatch(ssh_read_key(ssh_key, password = password), error = function(e){
       stop(sprintf("Unable to load key: %s", ssh_key), call. = FALSE)
     })
-    # NB: old libssh2 is buggy, this is the only format that always works
+    # NB: need to add ID for buggy libssh2: https://github.com/libgit2/libgit2/issues/5162
     writeLines(paste(write_ssh(key$pubkey), "git@localhost"), tmp_pub <- tempfile())
-    tmp_key <- write_pkcs1(key, tempfile())
+
+    # NB: pkcs1 is the only format that works on all libssh2 configurations
+    tmp_key <- if(inherits(key, c("rsa", "dsa", "ecdsa"))){
+      write_pkcs1(key, tempfile())
+    } else {
+      write_pem(key, tempfile())
+    }
     if(.Platform$OS.type == "unix"){
       Sys.chmod(tmp_pub, '0644')
       Sys.chmod(tmp_key, '0400')
