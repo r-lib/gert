@@ -4,12 +4,15 @@
 \alias{repository}
 \alias{git_init}
 \alias{git_open}
+\alias{git_find}
 \alias{git_info}
 \title{Create or open a git repository}
 \usage{
 git_init(path = ".")
 
 git_open(path = ".")
+
+git_find(path = ".")
 
 git_info(repo = ".")
 }

@@ -248,10 +248,22 @@ SEXP R_git_repository_init(SEXP path){
   return new_git_repository(repo);
 }
 
-SEXP R_git_repository_open(SEXP path){
+SEXP R_git_repository_open(SEXP path, SEXP search){
   git_repository *repo = NULL;
-  bail_if(git_repository_open_ext(&repo, CHAR(STRING_ELT(path, 0)), 0, NULL), "git_repository_open");
+  if(Rf_asLogical(search)){
+    bail_if(git_repository_open_ext(&repo, CHAR(STRING_ELT(path, 0)), 0, NULL), "git_repository_open_ext");
+  } else {
+    bail_if(git_repository_open(&repo, CHAR(STRING_ELT(path, 0))), "git_repository_open");
+  }
   return new_git_repository(repo);
+}
+
+SEXP R_git_repository_find(SEXP path){
+  git_buf buf = {0};
+  bail_if(git_repository_discover(&buf, CHAR(STRING_ELT(path, 0)), 0, NULL), "git_repository_discover");
+  SEXP out = Rf_ScalarString(Rf_mkCharLenCE(buf.ptr, buf.size, CE_UTF8));
+  git_buf_free(&buf);
+  return out;
 }
 
 SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP getcred, SEXP verbose){

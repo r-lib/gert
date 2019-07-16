@@ -19,7 +19,16 @@ git_init <- function(path = '.'){
 #' @useDynLib gert R_git_repository_open
 git_open <- function(path = '.'){
   path <- normalizePath(path.expand(path), mustWork = FALSE)
-  .Call(R_git_repository_open, path)
+  search <- !inherits(path, 'AsIs')
+  .Call(R_git_repository_open, path, search)
+}
+
+#' @export
+#' @rdname repository
+#' @useDynLib gert R_git_repository_find
+git_find <- function(path = '.'){
+  path <- normalizePath(path.expand(path), mustWork = FALSE)
+  .Call(R_git_repository_find, path)
 }
 
 #' @export
