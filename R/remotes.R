@@ -23,6 +23,8 @@ git_remote_add <- function(name, url, refspec = NULL, repo = '.'){
   name <- as.character(name)
   url <- as.character(url)
   refspec <- as.character(refspec)
+  if(!length(refspec))
+    refspec <- sprintf('+refs/heads/*:refs/remotes/%s/*', name)
   .Call(R_git_remote_add, repo, name, url, refspec)
 }
 
