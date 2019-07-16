@@ -26,6 +26,11 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 Use \code{\link[=git_init]{git_init()}} to start a new repository or \code{\link[=git_clone]{git_clone()}} to download a
 repository from a remote.
 }
+\details{
+You may use \code{\link[=git_find]{git_find()}} and \code{\link[=git_open]{git_open()}} to explicitly discover and open
+existing git repositories, but this is usually not needed because all gert
+functions also take a path argument which implicitly opens the repo.
+}
 \seealso{
 Other git: \code{\link{branch}}, \code{\link{commit}},
   \code{\link{fetch}}, \code{\link{git_config}},

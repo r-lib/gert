@@ -3,6 +3,10 @@
 #' Use [git_init()] to start a new repository or [git_clone()] to download a
 #' repository from a remote.
 #'
+#' You may use [git_find()] and [git_open()] to explicitly discover and open
+#' existing git repositories, but this is usually not needed because all gert
+#' functions also take a path argument which implicitly opens the repo.
+#'
 #' @export
 #' @rdname repository
 #' @name repository
