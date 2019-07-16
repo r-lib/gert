@@ -19,7 +19,8 @@ libgit2_config <- function(){
 #' @inheritParams repository
 #' @useDynLib gert R_git_config_list
 git_config <- function(repo = '.'){
-  repo <- git_open(repo)
+  if(length(repo))
+    repo <- git_open(repo)
   .Call(R_git_config_list, repo)
 }
 
