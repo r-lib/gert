@@ -11,7 +11,8 @@
 #' @rdname repository
 #' @name repository
 #' @family git
-#' @param path local path, must be a non-existing or empty directory
+#' @param path directory of the git repository. For `git_init` or `git_clone`
+#' this must be a non-existing or empty directory.
 #' @useDynLib gert R_git_repository_init
 git_init <- function(path = '.'){
   path <- normalizePath(path.expand(path), mustWork = FALSE)

@@ -17,7 +17,8 @@ git_find(path = ".")
 git_info(repo = ".")
 }
 \arguments{
-\item{path}{local path, must be a non-existing or empty directory}
+\item{path}{directory of the git repository. For \code{git_init} or \code{git_clone}
+this must be a non-existing or empty directory.}
 
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}

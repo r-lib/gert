@@ -40,7 +40,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
 private repos. You will be prompted for a password or pat when needed.}
 
-\item{path}{local path, must be a non-existing or empty directory}
+\item{path}{directory of the git repository. For \code{git_init} or \code{git_clone}
+this must be a non-existing or empty directory.}
 
 \item{branch}{name of branch to check out locally}
 
