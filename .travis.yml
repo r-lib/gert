@@ -28,6 +28,3 @@ notifications:
   email:
     on_success: change
     on_failure: change
-
-github_packages:
-  - jeroen/openssl

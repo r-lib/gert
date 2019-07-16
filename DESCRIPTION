@@ -22,3 +22,5 @@ Imports:
     askpass
 Suggests: 
     testthat
+Remotes: 
+    jeroen/openssl
