@@ -20,8 +20,7 @@
 #' @param committer A [git_signature] value, default is same as `author`
 #' @useDynLib gert R_git_commit_create
 git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   if(!length(author))
     author <- git_signature_default(repo)
   if(!length(committer))
@@ -36,8 +35,7 @@ git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
 #' @export
 #' @rdname commit
 git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   stat <- git_status(repo)
   changes <- stat$file[!stat$staged && stat$status %in% c("modified", "renamed", "typechange")]
   if(length(changes))
@@ -55,8 +53,7 @@ git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.')
 #' @param force add files even if in gitignore
 #' @useDynLib gert R_git_repository_add
 git_add <- function(files, force = FALSE, repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   info <- git_info(repo)
   normalizePath(file.path(info$path, files), mustWork = FALSE)
   force <- as.logical(force)
@@ -67,8 +64,7 @@ git_add <- function(files, force = FALSE, repo = '.'){
 #' @rdname commit
 #' @useDynLib gert R_git_repository_rm
 git_rm <- function(files, repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   info <- git_info(repo)
   normalizePath(file.path(info$path, files), mustWork = FALSE)
   .Call(R_git_repository_rm, repo, files)
@@ -78,8 +74,7 @@ git_rm <- function(files, repo = '.'){
 #' @rdname commit
 #' @useDynLib gert R_git_status_list
 git_status <- function(repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   .Call(R_git_status_list, repo)
 }
 
@@ -87,8 +82,7 @@ git_status <- function(repo = '.'){
 #' @rdname commit
 #' @useDynLib gert R_git_repository_ls
 git_ls <- function(repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   .Call(R_git_repository_ls, repo)
 }
 
@@ -98,8 +92,7 @@ git_ls <- function(repo = '.'){
 #' @param ref string with a branch/tag/commit
 #' @param max lookup at most latest n parent commits
 git_log <- function(ref = "HEAD", max = 100, repo = "."){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   ref <- as.character(ref)
   max <- as.integer(max)
   .Call(R_git_commit_log, repo, ref, max)
@@ -111,8 +104,7 @@ git_log <- function(ref = "HEAD", max = 100, repo = "."){
 #' @param type must be one of `"soft"`, `"hard"`, or `"mixed"`
 git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = "."){
   typenum <- switch(match.arg(type), soft = 1L, mixed = 2L, hard = 3L)
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   ref <- as.character(ref)
   .Call(R_git_reset, repo, ref, typenum)
 }

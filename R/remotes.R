@@ -10,8 +10,7 @@
 #' @param url server url (https or ssh)
 #' @useDynLib gert R_git_remote_list
 git_remote_list <- function(repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   .Call(R_git_remote_list, repo)
 }
 
@@ -20,8 +19,7 @@ git_remote_list <- function(repo = '.'){
 #' @param refspec optional string with the remote fetch value
 #' @useDynLib gert R_git_remote_add
 git_remote_add <- function(name, url, refspec = NULL, repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   name <- as.character(name)
   url <- as.character(url)
   refspec <- as.character(refspec)
@@ -32,8 +30,7 @@ git_remote_add <- function(name, url, refspec = NULL, repo = '.'){
 #' @rdname remotes
 #' @useDynLib gert R_git_remote_remove
 git_remote_remove <- function(name, repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   name <- as.character(name)
   .Call(R_git_remote_remove, repo, name)
   invisible()

@@ -10,8 +10,7 @@
 #' @inheritParams repository
 #' @useDynLib gert R_git_signature_default
 git_signature_default <- function(repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   .Call(R_git_signature_default, repo)
 }
 

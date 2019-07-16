@@ -14,8 +14,7 @@
 #' @param refspec string with mapping between remote and local refs
 git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
                       ssh_key = NULL, verbose = interactive(), repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   info <- git_info(repo)
   if(!length(remote))
     remote <- info$remote
@@ -37,8 +36,7 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
 #' @useDynLib gert R_git_remote_push
 git_push <- function(remote = NULL, refspec = NULL, password = askpass,
                      ssh_key = NULL, verbose = interactive(), repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   info <- git_info(repo)
   if(!length(remote))
     remote <- info$remote
@@ -115,8 +113,7 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
 #' @rdname fetch
 #' @param ... arguments passed to [git_fetch]
 git_pull <- function(..., repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   info <- git_info(repo)
   if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
     stop("No upstream configured for current HEAD")

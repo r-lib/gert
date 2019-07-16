@@ -23,6 +23,11 @@ git_init <- function(path = '.'){
 #' @rdname repository
 #' @useDynLib gert R_git_repository_open
 git_open <- function(path = '.'){
+  if(inherits(path, 'git_repo_ptr')){
+    return(path)
+  } else if(!is.character(path)){
+    stop("repo argument must be a path or an existing repository object")
+  }
   path <- normalizePath(path.expand(path), mustWork = FALSE)
   search <- !inherits(path, 'AsIs')
   .Call(R_git_repository_open, path, search)
@@ -43,8 +48,7 @@ git_find <- function(path = '.'){
 #' returned by [git_open],  [git_init] or [git_clone].
 #' @useDynLib gert R_git_repository_info
 git_info <- function(repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   .Call(R_git_repository_info, repo)
 }
 

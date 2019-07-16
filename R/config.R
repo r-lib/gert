@@ -19,8 +19,7 @@ libgit2_config <- function(){
 #' @inheritParams repository
 #' @useDynLib gert R_git_config_list
 git_config <- function(repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   .Call(R_git_config_list, repo)
 }
 
@@ -30,8 +29,7 @@ git_config <- function(repo = '.'){
 #' @param name setting name
 #' @param value setting value, must be string, bool, number or NULL
 git_config_set <- function(name, value, repo = '.'){
-  if(is.character(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   name <- as.character(name)
   .Call(R_git_config_set, repo, name, value)
 }
