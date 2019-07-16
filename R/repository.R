@@ -28,7 +28,8 @@ git_open <- function(path = '.'){
 #' @useDynLib gert R_git_repository_find
 git_find <- function(path = '.'){
   path <- normalizePath(path.expand(path), mustWork = FALSE)
-  .Call(R_git_repository_find, path)
+  out <- .Call(R_git_repository_find, path)
+  dirname(out)
 }
 
 #' @export
