@@ -1,0 +1,8 @@
+0.2
+  - git_open() now searches parent directories for .git repository
+  - git_push() sets upstream if unset
+  - workaround for ASAN problem in libssh2
+  - lots of tweaks and bug fixes
+
+0.1
+  - Initial CRAN release.
