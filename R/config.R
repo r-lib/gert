@@ -19,8 +19,7 @@ libgit2_config <- function(){
 #' @inheritParams repository
 #' @useDynLib gert R_git_config_list
 git_config <- function(repo = '.'){
-  if(length(repo))
-    repo <- git_open(repo)
+  repo <- git_open(repo)
   .Call(R_git_config_list, repo)
 }
 
@@ -38,7 +37,7 @@ git_config_set <- function(name, value, repo = '.'){
 #' @export
 #' @rdname git_config
 git_config_global <- function(){
-  git_config(repo = NULL)
+  .Call(R_git_config_list, NULL)
 }
 
 #' @export
