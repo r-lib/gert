@@ -17,10 +17,8 @@ Encoding: UTF-8
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 Imports:
-    openssl (>= 1.4.1),
+    openssl (>= 1.4),
     credentials (>= 1.0),
     askpass
 Suggests: 
     testthat
-Remotes: 
-    jeroen/openssl
