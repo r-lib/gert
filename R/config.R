@@ -25,6 +25,12 @@ git_config <- function(repo = '.'){
 
 #' @export
 #' @rdname git_config
+git_config_global <- function(){
+  .Call(R_git_config_list, NULL)
+}
+
+#' @export
+#' @rdname git_config
 #' @useDynLib gert R_git_config_set
 #' @param name setting name
 #' @param value setting value, must be string, bool, number or NULL
@@ -36,12 +42,7 @@ git_config_set <- function(name, value, repo = '.'){
 
 #' @export
 #' @rdname git_config
-git_config_global <- function(){
-  .Call(R_git_config_list, NULL)
+git_config_global_set <- function(name, value){
+  .Call(R_git_config_set, NULL, name, value)
 }
 
-#' @export
-#' @rdname git_config
-git_config_global_set <- function(name, value){
-  git_config_set(name = name, value = value, repo = NULL)
-}
