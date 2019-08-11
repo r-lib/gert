@@ -51,8 +51,8 @@ This is a basic example:
 
 ``` r
 library(gert)
-path <- file.path(tempdir(), "ggplot2")
-repo <- git_clone("https://github.com/hadley/ggplot2", path)
+path <- file.path(tempdir(), "gert")
+repo <- git_clone("https://github.com/r-lib/gert", path)
 print(repo)
 ```
 
