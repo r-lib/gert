@@ -52,7 +52,7 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
   .Call(R_git_remote_push, repo, remote, refspec, key_cb, cred_cb, verbose)
   if(isTRUE(is.na(info$upstream))){
-    git_branch_set_upstream(paste0(remote, "/", info$shorthand))
+    git_branch_set_upstream(paste0(remote, "/", info$shorthand), repo)
   }
   repo
 }
