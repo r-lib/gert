@@ -12,7 +12,8 @@ git_fetch(remote = NULL, refspec = NULL, password = askpass,
   ssh_key = NULL, verbose = interactive(), repo = ".")
 
 git_push(remote = NULL, refspec = NULL, password = askpass,
-  ssh_key = NULL, verbose = interactive(), repo = ".")
+  ssh_key = NULL, mirror = FALSE, force = FALSE,
+  verbose = interactive(), repo = ".")
 
 git_clone(url, path = NULL, branch = NULL, password = askpass,
   ssh_key = NULL, bare = FALSE, mirror = FALSE,
