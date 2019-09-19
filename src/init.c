@@ -22,7 +22,7 @@ extern SEXP R_git_remote_list(SEXP);
 extern SEXP R_git_remote_push(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_remove(SEXP, SEXP);
 extern SEXP R_git_repository_add(SEXP, SEXP, SEXP);
-extern SEXP R_git_repository_clone(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_repository_clone(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_repository_info(SEXP);
 extern SEXP R_git_repository_init(SEXP);
 extern SEXP R_git_repository_ls(SEXP);
