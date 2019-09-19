@@ -266,7 +266,34 @@ SEXP R_git_repository_find(SEXP path){
   return out;
 }
 
-SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP getcred, SEXP verbose){
+/* Based on code provided https://libgit2.org/docs/guides/101-samples/#repositories_clone_mirror */
+int create_remote_mirror(git_remote **out, git_repository *repo, const char *name, const char *url, void *payload){
+  int error = git_remote_create_with_fetchspec(out, repo, name, url, "+refs/*:refs/*");
+  if (error < 0)
+    return(error);
+
+  git_config *cfg;
+  error = git_repository_config(&cfg, repo);
+  if (error < 0)
+    return(error);
+
+  char *mirror_config;
+  if (asprintf(&mirror_config, "remote.%s.mirror", name) == -1) {
+    giterr_set_str(GITERR_OS, "asprintf failed");
+    git_config_free(cfg);
+    return -1;
+  }
+
+  error = git_config_set_bool(cfg, mirror_config, TRUE);
+
+  free(mirror_config);
+  git_config_free(cfg);
+
+  return error;
+}
+
+SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP getcred,
+                            SEXP bare, SEXP mirror, SEXP verbose){
   git_repository *repo = NULL;
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
@@ -279,6 +306,12 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
     clone_opts.checkout_opts.progress_cb = checkout_progress;
     clone_opts.fetch_opts.callbacks.transfer_progress = fetch_progress;
   }
+
+  if(Rf_asLogical(bare) || Rf_asLogical(mirror))
+    clone_opts.bare = TRUE;
+
+  if(Rf_asLogical(mirror))
+    clone_opts.remote_cb = create_remote_mirror;
 
   /* specify branch to checkout */
   if(Rf_length(branch))

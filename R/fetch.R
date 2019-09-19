@@ -98,8 +98,8 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' setwd(olddir)
 #' unlink(git_dir, recursive = TRUE)
 #' }
-git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
-                      ssh_key = NULL, verbose = interactive()){
+git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_key = NULL,
+                      bare = FALSE, mirror = FALSE, verbose = interactive()){
   stopifnot(is.character(url))
   if(!length(path))
     path <- file.path(getwd(), basename(url))
@@ -110,7 +110,7 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
   host <- url_to_host(url)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
-  .Call(R_git_repository_clone, url, path, branch, key_cb, cred_cb, verbose)
+  .Call(R_git_repository_clone, url, path, branch, key_cb, cred_cb, bare, mirror, verbose)
 }
 
 #' @export

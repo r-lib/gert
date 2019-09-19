@@ -22,7 +22,7 @@ extern SEXP R_git_remote_list(SEXP);
 extern SEXP R_git_remote_push(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_remove(SEXP, SEXP);
 extern SEXP R_git_repository_add(SEXP, SEXP, SEXP);
-extern SEXP R_git_repository_clone(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_repository_clone(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_repository_info(SEXP);
 extern SEXP R_git_repository_init(SEXP);
 extern SEXP R_git_repository_ls(SEXP);
@@ -58,7 +58,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_remote_push",        (DL_FUNC) &R_git_remote_push,        6},
   {"R_git_remote_remove",      (DL_FUNC) &R_git_remote_remove,      2},
   {"R_git_repository_add",     (DL_FUNC) &R_git_repository_add,     3},
-  {"R_git_repository_clone",   (DL_FUNC) &R_git_repository_clone,   6},
+  {"R_git_repository_clone",   (DL_FUNC) &R_git_repository_clone,   8},
   {"R_git_repository_info",    (DL_FUNC) &R_git_repository_info,    1},
   {"R_git_repository_init",    (DL_FUNC) &R_git_repository_init,    1},
   {"R_git_repository_ls",      (DL_FUNC) &R_git_repository_ls,      1},
