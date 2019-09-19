@@ -12,6 +12,10 @@
 #' @useDynLib gert R_git_remote_fetch
 #' @param remote name of a remote listed in [git_remote_list()]
 #' @param refspec string with mapping between remote and local refs
+#' @param mirror use the `--mirror` flag
+#' @param bare use the `--bare` flag
+#' @param force use the `--force` flag
+
 git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
                       ssh_key = NULL, verbose = interactive(), repo = '.'){
   repo <- git_open(repo)
