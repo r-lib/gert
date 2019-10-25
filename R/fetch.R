@@ -61,10 +61,8 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
   if(!length(refspec))
     refspec <- info$head
   refspec <- as.character(refspec)
-  if(isTRUE(force)) {
-    refspec = paste0("+",refspec)
-    refspec = sub("^\\++","+", refspec)
-  }
+  if(isTRUE(force))
+    refspec <- sub("^\\+?","+", refspec)
 
   verbose <- as.logical(verbose)
 
