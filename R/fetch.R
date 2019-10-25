@@ -12,6 +12,10 @@
 #' @useDynLib gert R_git_remote_fetch
 #' @param remote name of a remote listed in [git_remote_list()]
 #' @param refspec string with mapping between remote and local refs
+#' @param mirror use the `--mirror` flag
+#' @param bare use the `--bare` flag
+#' @param force use the `--force` flag
+
 git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
                       ssh_key = NULL, verbose = interactive(), repo = '.'){
   repo <- git_open(repo)
@@ -35,25 +39,45 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
 #' @rdname fetch
 #' @useDynLib gert R_git_remote_push
 git_push <- function(remote = NULL, refspec = NULL, password = askpass,
-                     ssh_key = NULL, verbose = interactive(), repo = '.'){
+                     ssh_key = NULL, mirror = FALSE, force = FALSE,
+                     verbose = interactive(), repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
+
   if(!length(remote))
     remote <- info$remote
+
   remote <- as.character(remote)
+
   if(!length(remote) || is.na(remote))
     stop("No remote is set for this branch")
+
+  if(isTRUE(mirror)) {
+    refs <- info$reflist
+    # Ignore github's special refs
+    refs <- refs[!grepl("^refs/pull", refs)]
+    refspec <- paste0(refs, ":", refs)
+  }
   if(!length(refspec))
     refspec <- info$head
   refspec <- as.character(refspec)
+  if(isTRUE(force)) {
+    refspec = paste0("+",refspec)
+    refspec = sub("^\\++","+", refspec)
+  }
+
   verbose <- as.logical(verbose)
+
   host <- remote_to_host(repo, remote)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
+
   .Call(R_git_remote_push, repo, remote, refspec, key_cb, cred_cb, verbose)
-  if(isTRUE(is.na(info$upstream))){
+
+  if(isTRUE(is.na(info$upstream)) && isFALSE(info$bare)){
     git_branch_set_upstream(paste0(remote, "/", info$shorthand), repo)
   }
+
   repo
 }
 
@@ -98,8 +122,8 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' setwd(olddir)
 #' unlink(git_dir, recursive = TRUE)
 #' }
-git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
-                      ssh_key = NULL, verbose = interactive()){
+git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_key = NULL,
+                      bare = FALSE, mirror = FALSE, verbose = interactive()){
   stopifnot(is.character(url))
   if(!length(path))
     path <- file.path(getwd(), basename(url))
@@ -110,7 +134,7 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass,
   host <- url_to_host(url)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
-  .Call(R_git_repository_clone, url, path, branch, key_cb, cred_cb, verbose)
+  .Call(R_git_repository_clone, url, path, branch, key_cb, cred_cb, bare, mirror, verbose)
 }
 
 #' @export

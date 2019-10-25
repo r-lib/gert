@@ -55,5 +55,11 @@ git_info <- function(repo = '.'){
 #' @export
 print.git_repo_ptr <- function(x, ...){
   info <- git_info(x)
-  cat(sprintf("<git repository>: %s[@%s]\n", normalizePath(info$path), info$shorthand))
+
+  type = "git repository"
+  if(info$bare){
+    type = paste(type, "(bare)")
+  }
+
+  cat(sprintf("<%s>: %s[@%s]\n", type, normalizePath(info$path), info$shorthand))
 }

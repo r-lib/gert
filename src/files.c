@@ -16,17 +16,26 @@ SEXP R_git_repository_info(SEXP ptr){
   git_strarray ref_list;
   git_reference *ref_upstream = NULL;
   git_repository *repo = get_git_repository(ptr);
+
   bail_if(git_reference_list(&ref_list, repo), "git_reference_list");
+
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, ref_list.count));
   for(int i = 0; i < ref_list.count; i++)
     SET_STRING_ELT(refs, i, Rf_mkChar(ref_list.strings[i]));
   git_strarray_free(&ref_list);
-  SEXP path = PROTECT(safe_string(git_repository_workdir(repo)));
+
+  int is_bare = git_repository_is_bare(repo);
+
+  SEXP bare = PROTECT(Rf_ScalarLogical(is_bare));
+  SEXP path = PROTECT(safe_string(
+    is_bare ? git_repository_path(repo) : git_repository_workdir(repo)
+  ));
   SEXP headref = PROTECT(safe_string(NULL));
   SEXP shorthand = PROTECT(safe_string(NULL));
   SEXP target = PROTECT(safe_string(NULL));
   SEXP upstream = PROTECT(safe_string(NULL));
   SEXP remote = PROTECT(safe_string(NULL));
+
   git_reference *head = NULL;
   if(git_repository_head(&head, repo) == 0){
     SET_STRING_ELT(headref, 0, safe_char(git_reference_name(head)));
@@ -41,7 +50,8 @@ SEXP R_git_repository_info(SEXP ptr){
     }
     git_reference_free(head);
   }
-  return build_list(7, "path", path, "head", headref, "shorthand", shorthand, "commit", target, "remote", remote, "upstream", upstream, "reflist", refs);
+
+  return build_list(8, "path", path, "bare", bare, "head", headref, "shorthand", shorthand, "commit", target, "remote", remote, "upstream", upstream, "reflist", refs);
 }
 
 SEXP R_git_repository_ls(SEXP ptr){

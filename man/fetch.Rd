@@ -12,10 +12,12 @@ git_fetch(remote = NULL, refspec = NULL, password = askpass,
   ssh_key = NULL, verbose = interactive(), repo = ".")
 
 git_push(remote = NULL, refspec = NULL, password = askpass,
-  ssh_key = NULL, verbose = interactive(), repo = ".")
+  ssh_key = NULL, mirror = FALSE, force = FALSE,
+  verbose = interactive(), repo = ".")
 
 git_clone(url, path = NULL, branch = NULL, password = askpass,
-  ssh_key = NULL, verbose = interactive())
+  ssh_key = NULL, bare = FALSE, mirror = FALSE,
+  verbose = interactive())
 
 git_pull(..., repo = ".")
 }
@@ -36,6 +38,10 @@ look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credential
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
 returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
+\item{mirror}{use the \code{--mirror} flag}
+
+\item{force}{use the \code{--force} flag}
+
 \item{url}{remote url. Typically starts with \code{https://github.com/} for public
 repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
 private repos. You will be prompted for a password or pat when needed.}
@@ -44,6 +50,8 @@ private repos. You will be prompted for a password or pat when needed.}
 this must be a non-existing or empty directory.}
 
 \item{branch}{name of branch to check out locally}
+
+\item{bare}{use the \code{--bare} flag}
 
 \item{...}{arguments passed to \link{git_fetch}}
 }
