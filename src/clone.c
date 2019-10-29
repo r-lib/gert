@@ -1,5 +1,8 @@
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE 1
+#endif
+
 #include <string.h>
-#include <stdio.h>
 #include "utils.h"
 
 #define print_if_verbose(...) print_log(verbose, __VA_ARGS__)
