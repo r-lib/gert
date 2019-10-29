@@ -1,7 +1,7 @@
 Package: gert
 Type: Package
 Title: Simple Git Client for R
-Version: 0.2.0.9000
+Version: 0.3
 Author: Jeroen Ooms
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
 Description: Simple git client based on 'libgit2' with user-friendly authentication
@@ -11,7 +11,9 @@ Description: Simple git client based on 'libgit2' with user-friendly authenticat
     required.
 License: MIT + file LICENSE
 SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb)
-URL: http://github.com/r-lib/gert (devel), https://libgit2.org (upstream)
+URL: https://jeroen.cran.dev/gert (website),
+    httsp://github.com/r-lib/gert (devel), 
+    https://libgit2.org (upstream)
 BugReports: http://github.com/r-lib/gert/issues
 Encoding: UTF-8
 RoxygenNote: 6.1.1
