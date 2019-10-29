@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 #include "utils.h"
 
 #define print_if_verbose(...) print_log(verbose, __VA_ARGS__)
