@@ -1,0 +1,22 @@
+reference:
+- title: Local operations
+  desc: Functions that work with local repositories.
+  contents:
+  - '`commit`'
+  - '`branch`'
+  - '`tag`'
+  - '`stash`'
+  - '`repository`'
+
+- title: Remote operations
+  desc: Functions that work with local repositories.
+  contents:
+  - '`remotes`'
+  - '`fetch`'
+  - '`git_checkout_pull_request`'
+
+- title: Configuration
+  desc: Functions that tweak Git options.
+  contents:
+  - '`git_config`'
+  - '`signature`'
