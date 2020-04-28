@@ -14,6 +14,7 @@ install:
 
 environment:
   R_CHECK_ARGS: '--no-manual --run-donttest'
+  PKGTYPE: 'both'
   matrix:
     - R_VERSION: oldrel
     - R_VERSION: release
