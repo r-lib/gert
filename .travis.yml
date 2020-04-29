@@ -4,8 +4,7 @@ latex: false
 fortran: false
 pandoc: false
 
-env:
-  _R_CHECK_BASHISMS_=0
+r_check_args: ''
 
 matrix:
   include:
