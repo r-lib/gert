@@ -21,6 +21,7 @@ matrix:
       osx_image: xcode7.3
       r: 3.6
       disable_homebrew: true
+      before_install: sed -i.bak 's/-isysroot /-I/g' $(R RHOME)/etc/Makeconf
 
 addons:
   apt:
