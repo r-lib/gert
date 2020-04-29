@@ -5,7 +5,7 @@ fortran: false
 pandoc: false
 
 env:
-  _R_CHECK_BASHISMS_: false
+  _R_CHECK_BASHISMS_=0
 
 matrix:
   include:
