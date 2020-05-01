@@ -3,8 +3,8 @@
   ssh <- ifelse(config$ssh, "YES", "NO")
   https <- ifelse(config$https, "YES", "NO")
   packageStartupMessage(sprintf(
-    "Linking to libgit2 v%s, ssh support: %s, https support: %s",
-    as.character(config$version), ssh, https))
+    "Linking to libgit2 v%s, ssh support: %s",
+    as.character(config$version), ssh))
   try({
     settings <- git_config_global()
     name <- subset(settings, name == 'user.name')$value
