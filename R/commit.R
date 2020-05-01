@@ -37,10 +37,10 @@ git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
 git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
   stat <- git_status(repo)
-  changes <- stat$file[!stat$staged && stat$status %in% c("modified", "renamed", "typechange")]
+  changes <- stat$file[!stat$staged & stat$status %in% c("modified", "renamed", "typechange")]
   if(length(changes))
     git_add(changes, repo = repo)
-  deleted <- stat$file[!stat$staged && stat$status == "deleted"]
+  deleted <- stat$file[!stat$staged & stat$status == "deleted"]
   if(length(deleted))
     git_rm(deleted, repo = repo)
   git_commit(message = message, author = author, committer = committer, repo = repo)

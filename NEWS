@@ -1,5 +1,8 @@
-0.4
-  - Windows: update to libgit2 1.0.0
+1.0
+  - Windows and MacOS now ship with libgit2-1.0.0
+  - Do not advertise HTTPS support in startup message because it should
+    always be supported.
+
 
 0.3
   - Support for clone --mirror and push --mirror (#12)
