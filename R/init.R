@@ -5,6 +5,13 @@
   packageStartupMessage(sprintf(
     "Linking to libgit2 v%s, ssh support: %s",
     as.character(config$version), ssh))
+  if(length(config$config.global) && nchar(config$config.global)){
+    packageStartupMessage(paste0("Global config: ", config$config.global))
+  } else {
+    packageStartupMessage("No global config found in ~/.gitconfig")
+  }
+  if(length(config$config.system) && nchar(config$config.system))
+    packageStartupMessage(paste0("System config: ", config$config.system))
   try({
     settings <- git_config_global()
     name <- subset(settings, name == 'user.name')$value

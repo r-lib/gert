@@ -57,7 +57,7 @@ git_config_global_set <- function(name, value){
 #' @useDynLib gert R_libgit2_config
 libgit2_config <- function(){
   res <- .Call(R_libgit2_config)
-  names(res) <- c("version", "ssh", "https", "threads")
+  names(res) <- c("version", "ssh", "https", "threads", "config.global", "config.system")
   res$version <- as.numeric_version(res$version)
   res
 }
