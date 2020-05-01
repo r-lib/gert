@@ -8,8 +8,13 @@
 \alias{git_stash_list}
 \title{Stashing changes}
 \usage{
-git_stash_save(message = "", keep_index = FALSE,
-  include_untracked = FALSE, include_ignored = FALSE, repo = ".")
+git_stash_save(
+  message = "",
+  keep_index = FALSE,
+  include_untracked = FALSE,
+  include_ignored = FALSE,
+  repo = "."
+)
 
 git_stash_pop(index = 0, repo = ".")
 

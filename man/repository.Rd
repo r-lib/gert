@@ -33,8 +33,11 @@ existing git repositories, but this is usually not needed because all gert
 functions also take a path argument which implicitly opens the repo.
 }
 \seealso{
-Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{fetch}}, \code{\link{git_config}},
-  \code{\link{signature}}
+Other git: 
+\code{\link{branch}},
+\code{\link{commit}},
+\code{\link{fetch}},
+\code{\link{git_config}()},
+\code{\link{signature}}
 }
 \concept{git}

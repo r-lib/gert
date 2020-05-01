@@ -25,8 +25,11 @@ A signature contains the author and timestamp of a commit.
 This is needed by the \link{git_commit} function.
 }
 \seealso{
-Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{fetch}}, \code{\link{git_config}},
-  \code{\link{repository}}
+Other git: 
+\code{\link{branch}},
+\code{\link{commit}},
+\code{\link{fetch}},
+\code{\link{git_config}()},
+\code{\link{repository}}
 }
 \concept{git}

@@ -26,8 +26,7 @@ git_ls(repo = ".")
 
 git_log(ref = "HEAD", max = 100, repo = ".")
 
-git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD",
-  repo = ".")
+git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".")
 }
 \arguments{
 \item{message}{a commit message}
@@ -63,8 +62,11 @@ Also \code{\link[=git_log]{git_log()}} shows the most recent commits and \code{\
 all the files that are being tracked in the repository.
 }
 \seealso{
-Other git: \code{\link{branch}}, \code{\link{fetch}},
-  \code{\link{git_config}}, \code{\link{repository}},
-  \code{\link{signature}}
+Other git: 
+\code{\link{branch}},
+\code{\link{fetch}},
+\code{\link{git_config}()},
+\code{\link{repository}},
+\code{\link{signature}}
 }
 \concept{git}

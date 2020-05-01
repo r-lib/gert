@@ -2,14 +2,12 @@
 % Please edit documentation in R/config.R
 \name{git_config}
 \alias{git_config}
-\alias{libgit2_config}
 \alias{git_config_global}
 \alias{git_config_set}
 \alias{git_config_global_set}
-\title{Version info}
+\alias{libgit2_config}
+\title{Version info and configurations}
 \usage{
-libgit2_config()
-
 git_config(repo = ".")
 
 git_config_global()
@@ -17,6 +15,8 @@ git_config_global()
 git_config_set(name, value, repo = ".")
 
 git_config_global_set(name, value)
+
+libgit2_config()
 }
 \arguments{
 \item{repo}{a path to an existing repository, or a \code{git_repository} object as
@@ -27,11 +27,32 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 \item{value}{setting value, must be string, bool, number or NULL}
 }
 \description{
-Shows the version of libgit2 and which features have been enabled.
+Get and set git configurations like the \code{'git config'} command line.
+}
+\details{
+The \code{git_config} and \code{git_config_set} functions get/set options for
+a given git repository, whereas \code{git_config_global} and \code{git_config_global_set}
+are for global (user level) git settings, such as your username.
+
+Use \code{libgit2_config()} to show the version of libgit2 and which features
+are supported in your version of gert (such as ssh remotes).
+}
+\examples{
+\dontrun{
+# Set global git settings
+git_config_global_set("user.name", "Your Name")
+git_config_global_set("user.email", "your@email.com")
+git_config_global()
+}
+# Show your libgit2 configuration:
+libgit2_config()
 }
 \seealso{
-Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{fetch}}, \code{\link{repository}},
-  \code{\link{signature}}
+Other git: 
+\code{\link{branch}},
+\code{\link{commit}},
+\code{\link{fetch}},
+\code{\link{repository}},
+\code{\link{signature}}
 }
 \concept{git}

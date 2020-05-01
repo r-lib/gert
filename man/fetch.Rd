@@ -8,16 +8,36 @@
 \alias{git_pull}
 \title{Push and Pull}
 \usage{
-git_fetch(remote = NULL, refspec = NULL, password = askpass,
-  ssh_key = NULL, verbose = interactive(), repo = ".")
+git_fetch(
+  remote = NULL,
+  refspec = NULL,
+  password = askpass,
+  ssh_key = NULL,
+  verbose = interactive(),
+  repo = "."
+)
 
-git_push(remote = NULL, refspec = NULL, password = askpass,
-  ssh_key = NULL, mirror = FALSE, force = FALSE,
-  verbose = interactive(), repo = ".")
+git_push(
+  remote = NULL,
+  refspec = NULL,
+  password = askpass,
+  ssh_key = NULL,
+  mirror = FALSE,
+  force = FALSE,
+  verbose = interactive(),
+  repo = "."
+)
 
-git_clone(url, path = NULL, branch = NULL, password = askpass,
-  ssh_key = NULL, bare = FALSE, mirror = FALSE,
-  verbose = interactive())
+git_clone(
+  url,
+  path = NULL,
+  branch = NULL,
+  password = askpass,
+  ssh_key = NULL,
+  bare = FALSE,
+  mirror = FALSE,
+  verbose = interactive()
+)
 
 git_pull(..., repo = ".")
 }
@@ -42,8 +62,8 @@ returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
 
 \item{force}{use the \code{--force} flag}
 
-\item{url}{remote url. Typically starts with \code{https://github.com/} for public
-repositories, and \code{https://yourname@github.com/} or \code{git@github.com/} for
+\item{url}{remote url. Typically starts with \verb{https://github.com/} for public
+repositories, and \verb{https://yourname@github.com/} or \verb{git@github.com/} for
 private repos. You will be prompted for a password or pat when needed.}
 
 \item{path}{directory of the git repository. For \code{git_init} or \code{git_clone}
@@ -91,8 +111,11 @@ unlink(git_dir, recursive = TRUE)
 }
 }
 \seealso{
-Other git: \code{\link{branch}}, \code{\link{commit}},
-  \code{\link{git_config}}, \code{\link{repository}},
-  \code{\link{signature}}
+Other git: 
+\code{\link{branch}},
+\code{\link{commit}},
+\code{\link{git_config}()},
+\code{\link{repository}},
+\code{\link{signature}}
 }
 \concept{git}
