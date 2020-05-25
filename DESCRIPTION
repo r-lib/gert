@@ -11,12 +11,12 @@ Description: Simple git client based on 'libgit2' with user-friendly authenticat
     required.
 License: MIT + file LICENSE
 SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb)
-URL: https://jeroen.cran.dev/gert (website),
+URL: https://docs.ropensci.org/gert (website),
     https://github.com/r-lib/gert (devel), 
     https://libgit2.org (upstream)
 BugReports: http://github.com/r-lib/gert/issues
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Roxygen: list(markdown = TRUE)
 Imports:
     openssl (>= 1.4.1),
