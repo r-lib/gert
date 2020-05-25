@@ -16,7 +16,7 @@ URL: https://jeroen.cran.dev/gert (website),
     https://libgit2.org (upstream)
 BugReports: http://github.com/r-lib/gert/issues
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Roxygen: list(markdown = TRUE)
 Imports:
     openssl (>= 1.4.1),
