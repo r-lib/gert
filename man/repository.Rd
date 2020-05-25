@@ -23,6 +23,13 @@ git_info(repo = ".")
 \item{repo}{a path to an existing repository, or a git repository object as
 returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
 }
+\value{
+\itemize{
+\item \code{git_find()}: path to the git repository
+\item \code{git_init()}, \code{git_open()}: a git repository object
+\item \code{git_info()}: a list
+}
+}
 \description{
 Use \code{git_init()} to start a new repository or \code{git_clone()} to download a
 repository from a remote.

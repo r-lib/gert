@@ -14,6 +14,10 @@
 #' @family git
 #' @param path directory of the git repository. For [git_init()] or
 #'   [git_clone()] this must be a non-existing or empty directory.
+#' @return
+#' * `git_find()`: path to the git repository
+#' * `git_init()`, `git_open()`: a git repository object
+#' * `git_info()`: a list
 #' @useDynLib gert R_git_repository_init
 git_init <- function(path = '.'){
   path <- normalizePath(path.expand(path), mustWork = FALSE)
