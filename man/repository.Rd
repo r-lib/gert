@@ -17,18 +17,17 @@ git_find(path = ".")
 git_info(repo = ".")
 }
 \arguments{
-\item{path}{directory of the git repository. For \code{git_init} or \code{git_clone}
-this must be a non-existing or empty directory.}
+\item{path}{directory of the git repository. For \code{\link[=git_init]{git_init()}} or
+\code{\link[=git_clone]{git_clone()}} this must be a non-existing or empty directory.}
 
-\item{repo}{a path to an existing repository, or a \code{git_repository} object as
-returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
+\item{repo}{a path to an existing repository, or a git repository object as
+returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
 }
 \description{
-Use \code{\link[=git_init]{git_init()}} to start a new repository or \code{\link[=git_clone]{git_clone()}} to download a
+Use \code{git_init()} to start a new repository or \code{git_clone()} to download a
 repository from a remote.
-}
-\details{
-You may use \code{\link[=git_find]{git_find()}} and \code{\link[=git_open]{git_open()}} to explicitly discover and open
+
+You may use \code{git_find()} and \code{git_open()} to explicitly discover and open
 existing git repositories, but this is usually not needed because all gert
 functions also take a path argument which implicitly opens the repo.
 }

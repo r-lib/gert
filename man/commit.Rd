@@ -35,8 +35,8 @@ git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".")
 
 \item{committer}{A \link{git_signature} value, default is same as \code{author}}
 
-\item{repo}{a path to an existing repository, or a \code{git_repository} object as
-returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
+\item{repo}{a path to an existing repository, or a git repository object as
+returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
 
 \item{files}{vector of paths relative to the git root directory.
 Use \code{"."} to stage all changed files.}
