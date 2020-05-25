@@ -11,8 +11,8 @@ git_checkout_pull_request(pr = 1, remote = "origin", repo = ".")
 
 \item{remote}{name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}}
 
-\item{repo}{a path to an existing repository, or a \code{git_repository} object as
-returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
+\item{repo}{a path to an existing repository, or a git repository object as
+returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
 }
 \description{
 Some wrappers for working with Github.

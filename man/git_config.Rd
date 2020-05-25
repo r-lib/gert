@@ -19,8 +19,8 @@ git_config_global_set(name, value)
 libgit2_config()
 }
 \arguments{
-\item{repo}{a path to an existing repository, or a \code{git_repository} object as
-returned by \link{git_open},  \link{git_init} or \link{git_clone}.}
+\item{repo}{a path to an existing repository, or a git repository object as
+returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
 
 \item{name}{setting name}
 
