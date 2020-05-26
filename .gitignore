@@ -10,3 +10,4 @@ src/Makevars
 .Rhistory
 windows
 configure.log
+docs/
