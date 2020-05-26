@@ -19,8 +19,10 @@ git_tag_push(name, ..., repo = ".")
 \arguments{
 \item{match}{pattern to filter tags (use \code{*} for wildcard)}
 
-\item{repo}{a path to an existing repository, or a git repository object as
-returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
+\item{repo}{Path to the repository. If \code{path} is itself not a
+repository, its parents are recursively considered, similar to
+\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
+through.}
 
 \item{name}{tag name}
 

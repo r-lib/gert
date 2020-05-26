@@ -55,8 +55,10 @@ look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credential
 
 \item{verbose}{display some progress info while downloading}
 
-\item{repo}{a path to an existing repository, or a git repository object as
-returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
+\item{repo}{Path to the repository. If \code{path} is itself not a
+repository, its parents are recursively considered, similar to
+\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
+through.}
 
 \item{mirror}{use the \code{--mirror} flag}
 
@@ -66,8 +68,10 @@ returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init
 repositories, and \verb{https://yourname@github.com/} or \verb{git@github.com/} for
 private repos. You will be prompted for a password or pat when needed.}
 
-\item{path}{directory of the git repository. For \code{\link[=git_init]{git_init()}} or
-\code{\link[=git_clone]{git_clone()}} this must be a non-existing or empty directory.}
+\item{path}{Path to the repository. If \code{path} is itself not a
+repository, its parents are recursively considered, similar to
+\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
+through.}
 
 \item{branch}{name of branch to check out locally}
 
@@ -115,6 +119,7 @@ Other git:
 \code{\link{branch}},
 \code{\link{commit}},
 \code{\link{git_config}()},
+\code{\link{git_open}()},
 \code{\link{repository}},
 \code{\link{signature}}
 }

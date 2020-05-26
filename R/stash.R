@@ -5,7 +5,7 @@
 #' @export
 #' @rdname stash
 #' @name stash
-#' @inheritParams repository
+#' @inheritParams git_open
 #' @useDynLib gert R_git_stash_save
 #' @param message optional message to store the stash
 #' @param keep_index changes already added to the index are left intact in

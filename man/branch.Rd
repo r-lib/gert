@@ -23,8 +23,10 @@ git_branch_fast_forward(ref, repo = ".")
 git_branch_set_upstream(remote = "origin", repo = ".")
 }
 \arguments{
-\item{repo}{a path to an existing repository, or a git repository object as
-returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
+\item{repo}{Path to the repository. If \code{path} is itself not a
+repository, its parents are recursively considered, similar to
+\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
+through.}
 
 \item{branch}{name of branch to check out}
 
@@ -46,6 +48,7 @@ Other git:
 \code{\link{commit}},
 \code{\link{fetch}},
 \code{\link{git_config}()},
+\code{\link{git_open}()},
 \code{\link{repository}},
 \code{\link{signature}}
 }

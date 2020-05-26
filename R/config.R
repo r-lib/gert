@@ -20,7 +20,7 @@
 #' libgit2_config()
 #' @export
 #' @rdname git_config
-#' @inheritParams repository
+#' @inheritParams git_open
 #' @useDynLib gert R_git_config_list
 git_config <- function(repo = '.'){
   repo <- git_open(repo)

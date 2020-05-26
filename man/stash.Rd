@@ -34,8 +34,10 @@ cleaned up from the working directory}
 \item{include_ignored}{ignored files are also stashed and then cleaned
 up from the working directory}
 
-\item{repo}{a path to an existing repository, or a git repository object as
-returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
+\item{repo}{Path to the repository. If \code{path} is itself not a
+repository, its parents are recursively considered, similar to
+\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
+through.}
 
 \item{index}{The position within the stash list. 0 points to the
 most recent stashed state.}

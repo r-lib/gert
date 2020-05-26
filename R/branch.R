@@ -6,7 +6,7 @@
 #' @rdname branch
 #' @name branch
 #' @family git
-#' @inheritParams repository
+#' @inheritParams git_open
 #' @useDynLib gert R_git_branch_list
 git_branch_list <- function(repo = '.'){
   repo <- git_open(repo)
