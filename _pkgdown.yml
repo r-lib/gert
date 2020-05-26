@@ -1,4 +1,9 @@
 reference:
+- title: Create or learn about local repositories.
+  contents:
+  - '`repository`'
+  - '`git_open`'
+
 - title: Local operations
   desc: Functions that work with local repositories.
   contents:
@@ -6,10 +11,9 @@ reference:
   - '`branch`'
   - '`tag`'
   - '`stash`'
-  - '`repository`'
 
 - title: Remote operations
-  desc: Functions that work with local repositories.
+  desc: Functions that work with remote repositories.
   contents:
   - '`remotes`'
   - '`fetch`'

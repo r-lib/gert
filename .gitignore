@@ -11,3 +11,4 @@ src/Makevars
 windows
 configure.log
 inst/doc
+docs/
