@@ -7,7 +7,7 @@
 #' @rdname signature
 #' @name signature
 #' @family git
-#' @inheritParams repository
+#' @inheritParams git_open
 #' @useDynLib gert R_git_signature_default
 git_signature_default <- function(repo = '.'){
   repo <- git_open(repo)

@@ -11,8 +11,10 @@ git_signature_default(repo = ".")
 git_signature(name, email, time = NULL)
 }
 \arguments{
-\item{repo}{a path to an existing repository, or a git repository object as
-returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
+\item{repo}{Path to the repository. If \code{path} is itself not a
+repository, its parents are recursively considered, similar to
+\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
+through.}
 
 \item{name}{Real name of the committer}
 
@@ -30,6 +32,7 @@ Other git:
 \code{\link{commit}},
 \code{\link{fetch}},
 \code{\link{git_config}()},
+\code{\link{git_open}()},
 \code{\link{repository}}
 }
 \concept{git}

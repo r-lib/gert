@@ -14,7 +14,7 @@
 #' @rdname commit
 #' @name commit
 #' @family git
-#' @inheritParams repository
+#' @inheritParams git_open
 #' @param message a commit message
 #' @param author A [git_signature] value, default is [git_signature_default].
 #' @param committer A [git_signature] value, default is same as `author`

@@ -8,7 +8,7 @@
 #' @family git
 #' @name fetch
 #' @rdname fetch
-#' @inheritParams repository
+#' @inheritParams git_open
 #' @useDynLib gert R_git_remote_fetch
 #' @param remote name of a remote listed in [git_remote_list()]
 #' @param refspec string with mapping between remote and local refs

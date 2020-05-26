@@ -3,40 +3,53 @@
 \name{repository}
 \alias{repository}
 \alias{git_init}
-\alias{git_open}
 \alias{git_find}
-\alias{git_info}
-\title{Create or open a git repository}
+\title{Create or discover a local git repository}
 \usage{
 git_init(path = ".")
 
-git_open(path = ".")
-
 git_find(path = ".")
-
-git_info(repo = ".")
 }
 \arguments{
-\item{path}{directory of the git repository. For \code{\link[=git_init]{git_init()}} or
-\code{\link[=git_clone]{git_clone()}} this must be a non-existing or empty directory.}
-
-\item{repo}{a path to an existing repository, or a git repository object as
-returned by \code{\link[=git_open]{git_open()}}, \code{\link[=git_init]{git_init()}} or \code{\link[=git_clone]{git_clone()}}.}
+\item{path}{\itemize{
+\item For \code{git_init()}: directory of the git repository to create. If
+this directory already exists, it must be empty. If it does not exist, it
+is created, along with any intermediate directories that don't yet exist.
+\item For \code{git_find()}: directory at which to start the search for a git
+repository. If it is not a git repository, then its parent directory is
+consulted, then the parent's parent, and so on.
+}}
 }
 \value{
-\itemize{
-\item \code{git_find()}: path to the git repository
-\item \code{git_init()}, \code{git_open()}: a git repository object
-\item \code{git_info()}: a list
-}
+The path to the git repository.
 }
 \description{
-Use \code{git_init()} to start a new repository or \code{git_clone()} to download a
-repository from a remote.
+Use \code{git_init()} to create a new repository or \code{git_find()} to discover an
+existing local repository. Each has some ability to recurse down or up, as
+appropriate.
+}
+\examples{
+# directory does not yet exist
+r <- tempfile(pattern = "gert")
+git_init(r)
+git_find(r)
 
-You may use \code{git_find()} and \code{git_open()} to explicitly discover and open
-existing git repositories, but this is usually not needed because all gert
-functions also take a path argument which implicitly opens the repo.
+# create a child directory, then a grandchild, then search
+r_grandchild_dir <- file.path(r, "aaa", "bbb")
+dir.create(r_grandchild_dir, recursive = TRUE)
+git_find(r_grandchild_dir)
+
+# cleanup
+unlink(r, recursive = TRUE)
+
+# directory exists but is empty
+r <- tempfile(pattern = "gert")
+dir.create(r)
+git_init(r)
+git_find(r)
+
+# cleanup
+unlink(r, recursive = TRUE)
 }
 \seealso{
 Other git: 
@@ -44,6 +57,7 @@ Other git:
 \code{\link{commit}},
 \code{\link{fetch}},
 \code{\link{git_config}()},
+\code{\link{git_open}()},
 \code{\link{signature}}
 }
 \concept{git}

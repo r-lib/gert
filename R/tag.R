@@ -5,7 +5,7 @@
 #' @export
 #' @rdname tag
 #' @name tag
-#' @inheritParams repository
+#' @inheritParams git_open
 #' @param match pattern to filter tags (use `*` for wildcard)
 #' @useDynLib gert R_git_tag_list
 git_tag_list <- function(match = "*", repo = '.'){

@@ -5,7 +5,7 @@
 #' @export
 #' @rdname remotes
 #' @name remotes
-#' @inheritParams repository
+#' @inheritParams git_open
 #' @param name unique name of the remote
 #' @param url server url (https or ssh)
 #' @useDynLib gert R_git_remote_list
