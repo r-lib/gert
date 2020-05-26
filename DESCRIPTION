@@ -23,4 +23,7 @@ Imports:
     credentials (>= 1.0),
     askpass
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat
+VignetteBuilder: knitr
