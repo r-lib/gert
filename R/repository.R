@@ -15,7 +15,7 @@
 #'   is created, along with any intermediate directories that don't yet exist.
 #' * For `git_find()`: directory at which to start the search for a Git
 #'   repository. If it is not a Git repository, then its parent directory is
-#'   consulted, then the parent's parent, and so on.
+#'   consulted, then the parent's parent, and so on, similar to [git_open()].
 #' @return The path to the Git repository.
 #'
 #' @examples
@@ -57,18 +57,21 @@ git_find <- function(path = '.'){
 
 #' Open or get metadata about a local repository
 #'
+#' @description
 #' `git_open()` returns a reference to a local repository, which is a
 #' prerequisite for Git operations. However, most users do not need to make an
 #' explicit call to `git_open()` and nor do they need to handle such references.
 #' Most gert functions accept the target repo as a path and open it internally,
-#' as necessary. `git_info()` reveals information about a repository, such as
-#' the SHA of the most recent commit or its refs.
+#' as necessary.
+#'
+#' `git_info()` reveals information about a repository, such as the SHA of the
+#' most recent commit or its refs.
 #'
 #' @family git
-#' @param repo,path Path to the repository. If `path` is itself not a
-#'   repository, its parents are recursively considered, similar to
-#'   [git_find()]. An object of class `git_repo_ptr` is also accepted and passed
-#'   through.
+#' @param repo The repository to target, either as a filepath or as an object of
+#'   class `git_repo_ptr`. If `repo` is a filepath and is not a repository, then
+#'   its parent directory is considered, then the parent's parent, and so on. To
+#'   prevent this recursive search, provide a filepath protected with [I()].
 #' @return
 #' * `git_open()`: An object of class `git_repo_ptr`.
 #' * `git_info()`: A named list.
@@ -85,13 +88,13 @@ git_find <- function(path = '.'){
 #'
 #' # cleanup
 #' unlink(r, recursive = TRUE)
-git_open <- function(path = '.'){
-  if(inherits(path, 'git_repo_ptr')){
-    return(path)
-  } else if(!is.character(path)){
-    stop("repo argument must be a path or an existing repository object")
+git_open <- function(repo = '.'){
+  if(inherits(repo, 'git_repo_ptr')){
+    return(repo)
+  } else if(!is.character(repo)){
+    stop("repo argument must be a filepath or an existing repository object")
   }
-  path <- normalizePath(path.expand(path), mustWork = FALSE)
+  path <- normalizePath(path.expand(repo), mustWork = FALSE)
   search <- !inherits(path, 'AsIs')
   .Call(R_git_repository_open, path, search)
 }

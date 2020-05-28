@@ -85,6 +85,7 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 #' @param url remote url. Typically starts with `https://github.com/` for public
 #' repositories, and `https://yourname@github.com/` or `git@github.com/` for
 #' private repos. You will be prompted for a password or pat when needed.
+#' @param path Directory of the Git repository to create.
 #' @param ssh_key path or object containing your ssh private key. By default we
 #' look for keys in `ssh-agent` and [credentials::ssh_key_info].
 #' @param branch name of branch to check out locally

@@ -35,10 +35,10 @@ git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".")
 
 \item{committer}{A \link{git_signature} value, default is same as \code{author}}
 
-\item{repo}{Path to the repository. If \code{path} is itself not a
-repository, its parents are recursively considered, similar to
-\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
-through.}
+\item{repo}{The repository to target, either as a filepath or as an object of
+class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository, then
+its parent directory is considered, then the parent's parent, and so on. To
+prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
 
 \item{files}{vector of paths relative to the git root directory.
 Use \code{"."} to stage all changed files.}

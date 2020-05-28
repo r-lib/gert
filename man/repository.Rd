@@ -17,7 +17,7 @@ this directory already exists, it must be empty. If it does not exist, it
 is created, along with any intermediate directories that don't yet exist.
 \item For \code{git_find()}: directory at which to start the search for a Git
 repository. If it is not a Git repository, then its parent directory is
-consulted, then the parent's parent, and so on.
+consulted, then the parent's parent, and so on, similar to \code{\link[=git_open]{git_open()}}.
 }}
 }
 \value{

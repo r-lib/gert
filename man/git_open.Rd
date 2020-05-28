@@ -5,15 +5,15 @@
 \alias{git_info}
 \title{Open or get metadata about a local repository}
 \usage{
-git_open(path = ".")
+git_open(repo = ".")
 
 git_info(repo = ".")
 }
 \arguments{
-\item{repo, path}{Path to the repository. If \code{path} is itself not a
-repository, its parents are recursively considered, similar to
-\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
-through.}
+\item{repo}{The repository to target, either as a filepath or as an object of
+class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository, then
+its parent directory is considered, then the parent's parent, and so on. To
+prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
 }
 \value{
 \itemize{
@@ -26,8 +26,10 @@ through.}
 prerequisite for Git operations. However, most users do not need to make an
 explicit call to \code{git_open()} and nor do they need to handle such references.
 Most gert functions accept the target repo as a path and open it internally,
-as necessary. \code{git_info()} reveals information about a repository, such as
-the SHA of the most recent commit or its refs.
+as necessary.
+
+\code{git_info()} reveals information about a repository, such as the SHA of the
+most recent commit or its refs.
 }
 \examples{
 r <- tempfile(pattern = "gert")

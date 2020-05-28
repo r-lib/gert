@@ -55,10 +55,10 @@ look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credential
 
 \item{verbose}{display some progress info while downloading}
 
-\item{repo}{Path to the repository. If \code{path} is itself not a
-repository, its parents are recursively considered, similar to
-\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
-through.}
+\item{repo}{The repository to target, either as a filepath or as an object of
+class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository, then
+its parent directory is considered, then the parent's parent, and so on. To
+prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
 
 \item{mirror}{use the \code{--mirror} flag}
 
@@ -68,10 +68,7 @@ through.}
 repositories, and \verb{https://yourname@github.com/} or \verb{git@github.com/} for
 private repos. You will be prompted for a password or pat when needed.}
 
-\item{path}{Path to the repository. If \code{path} is itself not a
-repository, its parents are recursively considered, similar to
-\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
-through.}
+\item{path}{Directory of the Git repository to create.}
 
 \item{branch}{name of branch to check out locally}
 

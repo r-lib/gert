@@ -17,10 +17,10 @@ git_remote_remove(name, repo = ".")
 git_refspecs(repo = ".")
 }
 \arguments{
-\item{repo}{Path to the repository. If \code{path} is itself not a
-repository, its parents are recursively considered, similar to
-\code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
-through.}
+\item{repo}{The repository to target, either as a filepath or as an object of
+class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository, then
+its parent directory is considered, then the parent's parent, and so on. To
+prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
 
 \item{name}{unique name of the remote}
 
