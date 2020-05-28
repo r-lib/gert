@@ -1,29 +1,32 @@
-Package: gert
 Type: Package
+Package: gert
 Title: Simple Git Client for R
 Version: 0.3.9000
 Author: Jeroen Ooms
 Maintainer: Jeroen Ooms <jeroen@berkeley.edu>
-Description: Simple git client based on 'libgit2' with user-friendly authentication
-    and support for both SSH and HTTPS remotes on all platforms. User credentials
-    are shared with command line 'git' through the git-credential store and ssh keys
-    stored on disk or ssh-agent. On Linux, a somewhat recent  version of 'libgit2' is
+Description: Simple git client based on 'libgit2' with
+    user-friendly authentication and support for both SSH and HTTPS
+    remotes on all platforms. User credentials are shared with command
+    line 'git' through the git-credential store and ssh keys stored on
+    disk or ssh-agent. On Linux, a somewhat recent version of 'libgit2' is
     required.
 License: MIT + file LICENSE
-SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb)
 URL: https://docs.ropensci.org/gert (website),
-    https://github.com/r-lib/gert (devel), 
-    https://libgit2.org (upstream)
+    https://github.com/r-lib/gert (devel), https://libgit2.org
+    (upstream)
 BugReports: http://github.com/r-lib/gert/issues
-Encoding: UTF-8
-RoxygenNote: 7.1.0
-Roxygen: list(markdown = TRUE)
 Imports:
-    openssl (>= 1.4.1),
+    askpass,
     credentials (>= 1.0),
-    askpass
+    openssl (>= 1.4.1)
 Suggests: 
     knitr,
     rmarkdown,
     testthat
-VignetteBuilder: knitr
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or
+    libgit2-dev (deb)
