@@ -1,25 +1,57 @@
-#' Version info and configurations
+#' Get or set Git configuration
 #'
-#' Get and set git configurations like the `'git config'` command line.
+#' @description
+#' Get or set Git options, as `git config` does on the command line. **Global**
+#' settings affect all of a user's Git operations (`git config --global`),
+#' whereas **local** settings are scoped to a specific repository (`git config
+#' --local`). When both exist, local options always win. Four functions address
+#' the four possible combinations of getting vs setting and global vs. local.
 #'
-#' The `git_config` and `git_config_set` functions get/set options for
-#' a given git repository, whereas `git_config_global` and `git_config_global_set`
-#' are for global (user level) git settings, such as your username.
-#'
-#' Use `libgit2_config()` to show the version of libgit2 and which features
-#' are supported in your version of gert (such as ssh remotes).
+#' ```{r echo = FALSE, results = "asis"}
+#' dat <- data.frame(
+#'   local = c("`git_config()`", "`git_config_set()`"),
+#'   global = c("`git_config_global()`", "`git_config_global_set()`"),
+#'   row.names = c("get", "set")
+#' )
+#' knitr::kable(dat, col.names = paste0("**", colnames(dat), "**"))
+#' ```
+#' @return
+#' * `git_config()`: a `data.frame` of the Git options "in force" in the context
+#'   of `repo`, one row per option. The `level` column reveals whether the
+#'   option is determined from global or local config.
+#' * `git_config_global()`: a `data.frame`, as for `git_config()`, except only
+#'   for global Git options.
+#' * `git_config_set()`, `git_config_global_set()`: The previous value of
+#'   `name` in local or global config, respectively. If this option was
+#'   previously unset, returns `NULL`. Returns invisibly.
 #'
 #' @examples
+#' # Set and inspect a local, custom Git option
+#' r <- file.path(tempdir(), "gert-demo")
+#' git_init(r)
+#'
+#' previous <- git_config_set("aaa.bbb", "ccc", repo = r)
+#' previous
+#' cfg <- git_config(repo = r)
+#' subset(cfg, level == "local")
+#' cfg$value[cfg$name == "aaa.bbb"]
+#'
+#' previous <- git_config_set("aaa.bbb", NULL, repo = r)
+#' previous
+#' cfg <- git_config(repo = r)
+#' subset(cfg, level == "local")
+#' cfg$value[cfg$name == "aaa.bbb"]
+#'
+#' unlink(r, recursive = TRUE)
+#'
 #' \dontrun{
-#' # Set global git settings
+#' # Set global Git options
 #' git_config_global_set("user.name", "Your Name")
 #' git_config_global_set("user.email", "your@email.com")
 #' git_config_global()
 #' }
-#' # Show your libgit2 configuration:
-#' libgit2_config()
 #' @export
-#' @rdname git_config
+#' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_config_list
 git_config <- function(repo = '.'){
@@ -36,25 +68,44 @@ git_config_global <- function(){
 #' @export
 #' @rdname git_config
 #' @useDynLib gert R_git_config_set
-#' @param name setting name
-#' @param value setting value, must be string, bool, number or NULL
+#' @param name Name of the option to set
+#' @param value Value to set. Must be a string, logical, number or `NULL` (to
+#'   unset).
 git_config_set <- function(name, value, repo = '.'){
   repo <- git_open(repo)
   name <- as.character(name)
+  orig_cfg <- git_config(repo = repo)
+  out <- orig_cfg$value[orig_cfg$name == name & orig_cfg$level == "local"]
   .Call(R_git_config_set, repo, name, value)
+  if (length(out) > 0) {
+    invisible(out)
+  } else {
+    invisible(NULL)
+  }
 }
 
 #' @export
 #' @rdname git_config
 git_config_global_set <- function(name, value){
+  orig_cfg <- git_config_global()
+  out <- orig_cfg$value[orig_cfg$name == name]
   .Call(R_git_config_set, NULL, name, value)
+  if (length(out) > 0) {
+    invisible(out)
+  } else {
+    invisible(NULL)
+  }
 }
 
+#' Show libgit2 version and capabilities
+#'
+#' `libgit2_config()` reveals which version of libgit2 gert is using and which
+#' features are supported, such whether you are able to use ssh remotes.
+#'
 #' @export
-#' @family git
-#' @rdname git_config
-#' @name git_config
 #' @useDynLib gert R_libgit2_config
+#' @examples
+#' libgit2_config()
 libgit2_config <- function(){
   res <- .Call(R_libgit2_config)
   names(res) <- c("version", "ssh", "https", "threads", "config.global", "config.system")

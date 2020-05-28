@@ -29,6 +29,31 @@ Let's attach gert.
 library(gert)
 ```
 
+## Introduce yourself to Git
+
+Before you can do anything with Git, you must first configure your user name and email. You can do this with `git_config_global_set()`:
+
+```{r eval = FALSE}
+git_config_global_set("user.name", "Jane Doe")
+git_config_global_set("user.email", "jane@example.com")
+```
+
+We can verify our success (and see all global options) with `git_config_global()`.
+
+```{r}
+git_config_global()
+```
+
+This is equivalent to these commands in command line Git:
+
+```
+git config --global user.name 'Jane Doe'
+git config --global user.email 'jane@example.com'
+git config --global --list
+```
+
+To inspect and change local Git config, i.e. options specific to one repository, use `git_config()` and `git_config_set()`.
+
 ## Local repository basics
 
 `gert::git_init()` is essentially `git init`; it's how we create a new local repository. You provide the path to the repository you want to create.
@@ -63,7 +88,7 @@ dir.create(r2)
 git_init(r2)
 ```
 
-Cleanup and restore working directory.
+Cleanup.
 
 ```{r}
 unlink(r, recursive = TRUE)

@@ -2,6 +2,7 @@
   - Windows and MacOS now ship with libgit2-1.0.0
   - Do not advertise HTTPS support in startup message because it should
     always be supported.
+  - Config setters return previous value invisibly (#37)
 
 
 0.3
