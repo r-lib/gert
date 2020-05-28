@@ -33,8 +33,9 @@ of \code{repo}, one row per option. The \code{level} column reveals whether the
 option is determined from global or local config.
 \item \code{git_config_global()}: a \code{data.frame}, as for \code{git_config()}, except only
 for global Git options.
-\item \code{git_config_global_set()}: TBD
-\item \code{git_config_set()}: TBD
+\item \code{git_config_set()}, \code{git_config_global_set()}: The previous value of
+\code{name} in local or global config, respectively. If this option was
+previously unset, returns \code{NULL}. Returns invisibly.
 }
 }
 \description{
@@ -52,7 +53,14 @@ the four possible combinations of getting vs setting and global vs. local.\tabul
 r <- file.path(tempdir(), "gert-demo")
 git_init(r)
 
-git_config_set("aaa.bbb", "ccc", repo = r)
+previous <- git_config_set("aaa.bbb", "ccc", repo = r)
+previous
+cfg <- git_config(repo = r)
+subset(cfg, level == "local")
+cfg$value[cfg$name == "aaa.bbb"]
+
+previous <- git_config_set("aaa.bbb", NULL, repo = r)
+previous
 cfg <- git_config(repo = r)
 subset(cfg, level == "local")
 cfg$value[cfg$name == "aaa.bbb"]

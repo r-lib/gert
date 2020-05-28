@@ -21,15 +21,23 @@
 #'   option is determined from global or local config.
 #' * `git_config_global()`: a `data.frame`, as for `git_config()`, except only
 #'   for global Git options.
-#' * `git_config_global_set()`: TBD
-#' * `git_config_set()`: TBD
+#' * `git_config_set()`, `git_config_global_set()`: The previous value of
+#'   `name` in local or global config, respectively. If this option was
+#'   previously unset, returns `NULL`. Returns invisibly.
 #'
 #' @examples
 #' # Set and inspect a local, custom Git option
 #' r <- file.path(tempdir(), "gert-demo")
 #' git_init(r)
 #'
-#' git_config_set("aaa.bbb", "ccc", repo = r)
+#' previous <- git_config_set("aaa.bbb", "ccc", repo = r)
+#' previous
+#' cfg <- git_config(repo = r)
+#' subset(cfg, level == "local")
+#' cfg$value[cfg$name == "aaa.bbb"]
+#'
+#' previous <- git_config_set("aaa.bbb", NULL, repo = r)
+#' previous
 #' cfg <- git_config(repo = r)
 #' subset(cfg, level == "local")
 #' cfg$value[cfg$name == "aaa.bbb"]
@@ -66,13 +74,27 @@ git_config_global <- function(){
 git_config_set <- function(name, value, repo = '.'){
   repo <- git_open(repo)
   name <- as.character(name)
+  orig_cfg <- git_config(repo = repo)
+  out <- orig_cfg$value[orig_cfg$name == name & orig_cfg$level == "local"]
   .Call(R_git_config_set, repo, name, value)
+  if (length(out) > 0) {
+    invisible(out)
+  } else {
+    invisible(NULL)
+  }
 }
 
 #' @export
 #' @rdname git_config
 git_config_global_set <- function(name, value){
+  orig_cfg <- git_config_global()
+  out <- orig_cfg$value[orig_cfg$name == name]
   .Call(R_git_config_set, NULL, name, value)
+  if (length(out) > 0) {
+    invisible(out)
+  } else {
+    invisible(NULL)
+  }
 }
 
 #' Show libgit2 version and capabilities
