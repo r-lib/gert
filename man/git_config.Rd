@@ -5,8 +5,7 @@
 \alias{git_config_global}
 \alias{git_config_set}
 \alias{git_config_global_set}
-\alias{libgit2_config}
-\title{Version info and configurations}
+\title{Get or set Git configuration}
 \usage{
 git_config(repo = ".")
 
@@ -15,8 +14,6 @@ git_config_global()
 git_config_set(name, value, repo = ".")
 
 git_config_global_set(name, value)
-
-libgit2_config()
 }
 \arguments{
 \item{repo}{Path to the repository. If \code{path} is itself not a
@@ -24,30 +21,50 @@ repository, its parents are recursively considered, similar to
 \code{\link[=git_find]{git_find()}}. An object of class \code{git_repo_ptr} is also accepted and passed
 through.}
 
-\item{name}{setting name}
+\item{name}{Name of the option to set}
 
-\item{value}{setting value, must be string, bool, number or NULL}
+\item{value}{Value to set. Must be a string, logical, number or \code{NULL} (to
+unset).}
+}
+\value{
+\itemize{
+\item \code{git_config()}: a \code{data.frame} of the Git options "in force" in the context
+of \code{repo}, one row per option. The \code{level} column reveals whether the
+option is determined from global or local config.
+\item \code{git_config_global()}: a \code{data.frame}, as for \code{git_config()}, except only
+for global Git options.
+\item \code{git_config_global_set()}: TBD
+\item \code{git_config_set()}: TBD
+}
 }
 \description{
-Get and set git configurations like the \code{'git config'} command line.
+Get or set Git options, as \verb{git config} does on the command line. \strong{Global}
+settings affect all of a user's Git operations (\verb{git config --global}),
+whereas \strong{local} settings are scoped to a specific repository (\verb{git config --local}). When both exist, local options always win. Four functions address
+the four possible combinations of getting vs setting and global vs. local.\tabular{lll}{
+    \tab \strong{local} \tab \strong{global} \cr
+   get \tab \code{git_config()} \tab \code{git_config_global()} \cr
+   set \tab \code{git_config_set()} \tab \code{git_config_global_set()} \cr
 }
-\details{
-The \code{git_config} and \code{git_config_set} functions get/set options for
-a given git repository, whereas \code{git_config_global} and \code{git_config_global_set}
-are for global (user level) git settings, such as your username.
-
-Use \code{libgit2_config()} to show the version of libgit2 and which features
-are supported in your version of gert (such as ssh remotes).
 }
 \examples{
+# Set and inspect a local, custom Git option
+r <- file.path(tempdir(), "gert-demo")
+git_init(r)
+
+git_config_set("aaa.bbb", "ccc", repo = r)
+cfg <- git_config(repo = r)
+subset(cfg, level == "local")
+cfg$value[cfg$name == "aaa.bbb"]
+
+unlink(r, recursive = TRUE)
+
 \dontrun{
-# Set global git settings
+# Set global Git options
 git_config_global_set("user.name", "Your Name")
 git_config_global_set("user.email", "your@email.com")
 git_config_global()
 }
-# Show your libgit2 configuration:
-libgit2_config()
 }
 \seealso{
 Other git: 
