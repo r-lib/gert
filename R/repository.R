@@ -94,8 +94,8 @@ git_open <- function(repo = '.'){
   } else if(!is.character(repo)){
     stop("repo argument must be a filepath or an existing repository object")
   }
+  search <- !inherits(repo, 'AsIs')
   path <- normalizePath(path.expand(repo), mustWork = FALSE)
-  search <- !inherits(path, 'AsIs')
   .Call(R_git_repository_open, path, search)
 }
 
