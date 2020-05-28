@@ -4,7 +4,7 @@
 \alias{repository}
 \alias{git_init}
 \alias{git_find}
-\title{Create or discover a local git repository}
+\title{Create or discover a local Git repository}
 \usage{
 git_init(path = ".")
 
@@ -12,20 +12,20 @@ git_find(path = ".")
 }
 \arguments{
 \item{path}{\itemize{
-\item For \code{git_init()}: directory of the git repository to create. If
+\item For \code{git_init()}: directory of the Git repository to create. If
 this directory already exists, it must be empty. If it does not exist, it
 is created, along with any intermediate directories that don't yet exist.
-\item For \code{git_find()}: directory at which to start the search for a git
-repository. If it is not a git repository, then its parent directory is
+\item For \code{git_find()}: directory at which to start the search for a Git
+repository. If it is not a Git repository, then its parent directory is
 consulted, then the parent's parent, and so on.
 }}
 }
 \value{
-The path to the git repository.
+The path to the Git repository.
 }
 \description{
 Use \code{git_init()} to create a new repository or \code{git_find()} to discover an
-existing local repository. Each has some ability to recurse down or up, as
+existing local repository. Each has the ability to recurse down or up, as
 appropriate.
 }
 \examples{

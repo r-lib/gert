@@ -23,7 +23,7 @@ through.}
 }
 \description{
 \code{git_open()} returns a reference to a local repository, which is a
-prerequisite for git operations. However, most users do not need to make an
+prerequisite for Git operations. However, most users do not need to make an
 explicit call to \code{git_open()} and nor do they need to handle such references.
 Most gert functions accept the target repo as a path and open it internally,
 as necessary. \code{git_info()} reveals information about a repository, such as

@@ -1,7 +1,7 @@
-#' Create or discover a local git repository
+#' Create or discover a local Git repository
 #'
 #' Use `git_init()` to create a new repository or `git_find()` to discover an
-#' existing local repository. Each has some ability to recurse down or up, as
+#' existing local repository. Each has the ability to recurse down or up, as
 #' appropriate.
 #'
 #' @export
@@ -10,13 +10,13 @@
 #' @family git
 #' @useDynLib gert R_git_repository_init
 #' @param path
-#' * For `git_init()`: directory of the git repository to create. If
+#' * For `git_init()`: directory of the Git repository to create. If
 #'   this directory already exists, it must be empty. If it does not exist, it
 #'   is created, along with any intermediate directories that don't yet exist.
-#' * For `git_find()`: directory at which to start the search for a git
-#'   repository. If it is not a git repository, then its parent directory is
+#' * For `git_find()`: directory at which to start the search for a Git
+#'   repository. If it is not a Git repository, then its parent directory is
 #'   consulted, then the parent's parent, and so on.
-#' @return The path to the git repository.
+#' @return The path to the Git repository.
 #'
 #' @examples
 #' # directory does not yet exist
@@ -58,7 +58,7 @@ git_find <- function(path = '.'){
 #' Open or get metadata about a local repository
 #'
 #' `git_open()` returns a reference to a local repository, which is a
-#' prerequisite for git operations. However, most users do not need to make an
+#' prerequisite for Git operations. However, most users do not need to make an
 #' explicit call to `git_open()` and nor do they need to handle such references.
 #' Most gert functions accept the target repo as a path and open it internally,
 #' as necessary. `git_info()` reveals information about a repository, such as
