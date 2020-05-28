@@ -1,5 +1,3 @@
-context("authentication")
-
 # Even for public repos, Github only allows keys that it knows.
 test_that("public ssh remotes with random key", {
   skip_if_offline()

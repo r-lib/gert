@@ -1,5 +1,3 @@
-context("cloning from remote")
-
 test_that("cloning repositories works", {
   skip_if_offline()
   path <- file.path(tempdir(), 'gert')

@@ -1,5 +1,3 @@
-context("committing")
-
 name <- 'Testing Jerry'
 email <- 'test@jerry.com'
 author <- sprintf("%s <%s>", name, email)
@@ -19,13 +17,15 @@ test_that("creating signatures", {
 })
 
 test_that("adding and removing files", {
-  repo <- git_init(tempdir())
+  repo <- git_init(tempfile("gert-tests-commit"))
+  on.exit(unlink(repo, recursive = TRUE))
+
   expect_equal(nrow(git_ls(repo)), 0)
-  write.csv(iris, file.path(tempdir(), 'iris.csv'))
-  write.csv(cars, file.path(tempdir(), 'cars.csv'))
+  write.csv(iris, file.path(repo, 'iris.csv'))
+  write.csv(cars, file.path(repo, 'cars.csv'))
   git_add(c('cars.csv', 'iris.csv'), repo = repo)
   expect_equal(nrow(git_ls(repo)), 2)
-  expect_equal(git_ls(tempdir())$path, c('cars.csv', 'iris.csv'))
+  expect_equal(git_ls(repo)$path, c('cars.csv', 'iris.csv'))
   git_rm(c('cars.csv', 'iris.csv'), repo = repo)
   expect_equal(nrow(git_ls(repo)), 0)
   remotes <- git_remote_list(repo)
@@ -33,13 +33,17 @@ test_that("adding and removing files", {
 })
 
 test_that("creating a commit", {
-  repo <- tempdir()
+  repo <- git_init(tempfile("gert-tests-commit"))
+  on.exit(unlink(repo, recursive = TRUE))
+
   expect_equal(nrow(git_ls(repo)), 0)
+  write.csv(cars, file.path(repo, 'cars.csv'))
   git_add('cars.csv', repo = repo)
   sig1 <- git_signature(name, email)
   git_commit("Added cars.csv file", author = sig1, repo = repo)
 
   # Another commit before that
+  write.csv(iris, file.path(repo, 'iris.csv'))
   git_add("iris.csv", repo = repo)
   timestamp <- round(Sys.time() - 48*60*60)
   sig2 <- git_signature('nobody', 'nobody@gmail.com', time = timestamp)
@@ -53,7 +57,9 @@ test_that("creating a commit", {
 
 
 test_that("creating a commit in another directory without author works", {
-  path <- tempfile()
+  path <- tempfile("gert-tests-commit")
+  on.exit(unlink(path, recursive = TRUE))
+
   dir.create(path)
   repo <- git_init(path)
   git_config_set('user.name', "Jerry Johnson", repo = repo)

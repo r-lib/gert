@@ -1,5 +1,5 @@
 test_that("local, custom config roundtrip", {
-  repo <- git_init(tempdir())
+  repo <- git_init(tempfile("gert-tests-config"))
   on.exit(unlink(repo, recursive = TRUE))
 
   orig <- git_config_set("aaa.bbb", "ccc", repo)
