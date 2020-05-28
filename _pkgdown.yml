@@ -20,7 +20,8 @@ reference:
   - '`git_checkout_pull_request`'
 
 - title: Configuration
-  desc: Functions that tweak Git options.
+  desc: See or change configuration.
   contents:
   - '`git_config`'
   - '`signature`'
+  - '`libgit2_config`'
