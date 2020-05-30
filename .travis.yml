@@ -14,6 +14,7 @@ matrix:
       brew_packages: libgit2
     - os: osx
       disable_homebrew: true
+      osx_image: xcode11.4
     - os: osx
       disable_homebrew: true
       osx_image: xcode10.1
