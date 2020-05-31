@@ -17,7 +17,7 @@ SEXP R_libgit2_config(){
   SET_VECTOR_ELT(out, 2, Rf_ScalarLogical(NA_LOGICAL));
   SET_VECTOR_ELT(out, 3, Rf_ScalarLogical(NA_LOGICAL));
 #endif
-  git_buf buf = {};
+  git_buf buf = {0};
   git_config_find_global(&buf);
   SET_VECTOR_ELT(out, 4, safe_string(buf.ptr));
   git_buf_free(&buf);
