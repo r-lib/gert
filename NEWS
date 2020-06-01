@@ -3,7 +3,7 @@
   - Do not advertise HTTPS support in startup message because it should
     always be supported.
   - Config setters return previous value invisibly (#37)
-  - Conflicted files are reported by git_status() (#XX)
+  - Conflicted files are reported by git_status() (#40)
 
 
 0.3
