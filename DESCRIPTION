@@ -23,6 +23,7 @@ Imports:
     credentials (>= 1.0),
     openssl (>= 1.4.1)
 Suggests: 
+    git2r,
     knitr,
     rmarkdown,
     testthat
