@@ -72,3 +72,35 @@ test_that("creating a commit in another directory without author works", {
   sig <- git_signature_default(repo)
   expect_equal(log$author, git_signature_info(sig)$author)
 })
+
+test_that("status reports a conflicted file", {
+  # temporary measure until gert can do a non fast forward merge
+  skip_if_not_installed("git2r")
+
+  repo <- git_init(tempfile("gert-test-conflicts"))
+  on.exit(unlink(repo, recursive = TRUE))
+
+  foo_path <- file.path(repo, "foo.txt")
+
+  writeLines("cranky-crab-legs", foo_path)
+  git_add("foo.txt", repo = repo)
+  git_commit("Add a file", repo = repo)
+
+  git_branch_create("my-branch", repo = repo)
+  writeLines("cranky-CRAB-LEGS", foo_path)
+  git_add("foo.txt", repo = repo)
+  git_commit("Uppercase last 2 words", repo = repo)
+
+  git_branch_checkout("master", repo = repo)
+  writeLines("CRANKY-CRAB-legs", foo_path)
+  git_add("foo.txt", repo = repo)
+  git_commit("Uppercase first 2 words", repo = repo)
+
+  # TODO: gert needs the ability to merge with conflicts
+  git2r::merge(x = repo, y = "my-branch")
+
+  status <- git_status(repo)
+  expect_equal(status$file, "foo.txt")
+  expect_equal(status$status, "conflicted")
+  expect_false(status$staged)
+})
