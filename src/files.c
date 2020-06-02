@@ -134,7 +134,7 @@ static void extract_entry_data(const git_status_entry *file, char *status, char 
     } else if(s & GIT_STATUS_INDEX_DELETED){
       strcpy(status, "deleted");
     }
-  } else if(s & (GIT_STATUS_WT_DELETED | GIT_STATUS_WT_MODIFIED | GIT_STATUS_WT_NEW | GIT_STATUS_WT_RENAMED | GIT_STATUS_WT_TYPECHANGE)){
+  } else if(s & (GIT_STATUS_WT_DELETED | GIT_STATUS_WT_MODIFIED | GIT_STATUS_WT_NEW | GIT_STATUS_WT_RENAMED | GIT_STATUS_WT_TYPECHANGE | GIT_STATUS_CONFLICTED)){
     strcpy(filename, guess_filename(file->index_to_workdir));
     *isstaged = 0;
     if(s & GIT_STATUS_WT_NEW){
@@ -147,6 +147,8 @@ static void extract_entry_data(const git_status_entry *file, char *status, char 
       strcpy(status, "typechange");
     } else if(s & GIT_STATUS_WT_DELETED){
       strcpy(status, "deleted");
+    } else if(s &  GIT_STATUS_CONFLICTED){
+      strcpy(status, "conflicted");
     }
   }
 }
