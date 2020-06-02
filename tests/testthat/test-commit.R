@@ -1,9 +1,9 @@
-name <- 'Testing Jerry'
-email <- 'test@jerry.com'
-author <- sprintf("%s <%s>", name, email)
-
 test_that("creating signatures", {
   now <- Sys.time()
+  name <- 'Testing Jerry'
+  email <- 'test@jerry.com'
+  author <- sprintf("%s <%s>", name, email)
+
   sig <- git_signature(name, email)
   info <- git_signature_info(sig)
   expect_equal(info$author, author)
@@ -39,8 +39,7 @@ test_that("creating a commit", {
   expect_equal(nrow(git_ls(repo)), 0)
   write.csv(cars, file.path(repo, 'cars.csv'))
   git_add('cars.csv', repo = repo)
-  sig1 <- git_signature(name, email)
-  git_commit("Added cars.csv file", author = sig1, repo = repo)
+  git_commit("Added cars.csv file", author = gert_testing_signature, repo = repo)
 
   # Another commit before that
   write.csv(iris, file.path(repo, 'iris.csv'))
@@ -51,7 +50,7 @@ test_that("creating a commit", {
 
   # Inspect the log file
   log <- git_log(repo = repo)
-  expect_equal(log$author[2], author)
+  expect_equal(log$author[2], git_signature_info(gert_testing_signature)$author)
   expect_equal(log$time[1], timestamp)
 })
 
@@ -84,19 +83,20 @@ test_that("status reports a conflicted file", {
 
   writeLines("cranky-crab-legs", foo_path)
   git_add("foo.txt", repo = repo)
-  git_commit("Add a file", repo = repo)
+  git_commit("Add a file", author = gert_testing_signature, repo = repo)
 
   git_branch_create("my-branch", repo = repo)
   writeLines("cranky-CRAB-LEGS", foo_path)
   git_add("foo.txt", repo = repo)
-  git_commit("Uppercase last 2 words", repo = repo)
+  git_commit("Uppercase last 2 words", author = gert_testing_signature, repo = repo)
 
   git_branch_checkout("master", repo = repo)
   writeLines("CRANKY-CRAB-legs", foo_path)
   git_add("foo.txt", repo = repo)
-  git_commit("Uppercase first 2 words", repo = repo)
+  git_commit("Uppercase first 2 words", author = gert_testing_signature, repo = repo)
 
-  # TODO: gert needs the ability to merge with conflicts
+  # TODO: switch to a gert function when possible
+  # https://github.com/r-lib/gert/issues/41
   git2r::merge(x = repo, y = "my-branch")
 
   status <- git_status(repo)
