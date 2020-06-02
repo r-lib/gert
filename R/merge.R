@@ -17,7 +17,7 @@ git_merge_base <- function(ref, target = "HEAD", repo = '.'){
 #' @export
 #' @rdname merge
 #' @useDynLib gert R_git_merge_analysis
-git_merge_analysis <- function(ref, target = "HEAD", repo = '.'){
+git_merge_analysis <- function(ref, repo = '.'){
   repo <- git_open(repo)
-  .Call(R_git_merge_analysis, repo, ref, target)
+  .Call(R_git_merge_analysis, repo, ref)
 }

@@ -78,11 +78,9 @@ static const char *analysis_to_str(git_merge_analysis_t x){
   return none;
 }
 
-SEXP R_git_merge_analysis(SEXP ptr, SEXP refs, SEXP target){
-  git_reference *t = NULL;
-  git_repository *repo = get_git_repository(ptr);
-  bail_if(git_reference_lookup(&t, repo, CHAR(STRING_ELT(target, 0))), "git_reference_lookup");
+SEXP R_git_merge_analysis(SEXP ptr, SEXP refs){
   int n = Rf_length(refs);
+  git_repository *repo = get_git_repository(ptr);
   git_annotated_commit *commits[n];
   for(int i = 0; i < n; i++){
     bail_if(git_annotated_commit_from_revspec(&commits[i], repo, CHAR(STRING_ELT(refs, i))),
@@ -90,7 +88,7 @@ SEXP R_git_merge_analysis(SEXP ptr, SEXP refs, SEXP target){
   }
   git_merge_analysis_t analysis_out;
   git_merge_preference_t preference_out;
-  int res = git_merge_analysis_for_ref(&analysis_out, &preference_out, repo, t, (const git_annotated_commit**) commits, n);
+  int res = git_merge_analysis(&analysis_out, &preference_out, repo, (const git_annotated_commit**) commits, n);
   for(int i = 0; i < n; i++)
     git_annotated_commit_free(commits[i]);
   bail_if(res, "git_merge_analysis");

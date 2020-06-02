@@ -7,7 +7,7 @@
 \usage{
 git_merge_base(ref, target = "HEAD", repo = ".")
 
-git_merge_analysis(ref, target = "HEAD", repo = ".")
+git_merge_analysis(ref, repo = ".")
 }
 \arguments{
 \item{ref}{branch or commit that you want to merge}
