@@ -31,11 +31,13 @@ library(gert)
 
 ## Introduce yourself to Git
 
-Before you can do anything with Git, you must first configure your user name and email. You can do this with `git_config_global_set()`:
+Before you can do anything with Git, you must first configure your user name and email. When you attach gert, it actually reveals whether you've already done this and, above, you can see that we have.
+
+But what if you have not already configured your user name and email? Do this with `git_config_global_set()`:
 
 ```{r eval = FALSE}
-git_config_global_set("user.name", "Jane Doe")
-git_config_global_set("user.email", "jane@example.com")
+git_config_global_set("user.name", "Jerry Johnson")
+git_config_global_set("user.email", "jerry@gmail.com")
 ```
 
 We can verify our success (and see all global options) with `git_config_global()`.
@@ -47,8 +49,8 @@ git_config_global()
 This is equivalent to these commands in command line Git:
 
 ```
-git config --global user.name 'Jane Doe'
-git config --global user.email 'jane@example.com'
+git config --global user.name 'Jerry Johnson'
+git config --global user.email 'jerry@gmail.com'
 git config --global --list
 ```
 
