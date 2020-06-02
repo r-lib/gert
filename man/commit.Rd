@@ -63,6 +63,33 @@ modified files and then commit.
 Also \code{\link[=git_log]{git_log()}} shows the most recent commits and \code{\link[=git_ls]{git_ls()}} lists
 all the files that are being tracked in the repository.
 }
+\examples{
+if (user_is_configured()) {
+r <- tempfile(pattern = "gert")
+git_init(r)
+
+writeLines(letters[1:6], file.path(r, "alphabet.txt"))
+git_status(repo = r)
+
+git_add("alphabet.txt", repo = r)
+git_status(repo = r)
+
+git_commit("Start alphabet file", repo = r)
+git_status(repo = r)
+
+git_ls(repo = r)
+
+git_log(repo = r)
+
+cat(letters[7:9], file = file.path(r, "alphabet.txt"), sep = "\n", append = TRUE)
+git_status(repo = r)
+
+git_commit_all("Add more letters", repo = r)
+
+# cleanup
+unlink(r, recursive = TRUE)
+}
+}
 \seealso{
 Other git: 
 \code{\link{branch}},

@@ -19,6 +19,33 @@
 #' @param author A [git_signature] value, default is [git_signature_default].
 #' @param committer A [git_signature] value, default is same as `author`
 #' @useDynLib gert R_git_commit_create
+#'
+#' @examples
+#' if (user_is_configured()) {
+#' r <- tempfile(pattern = "gert")
+#' git_init(r)
+#'
+#' writeLines(letters[1:6], file.path(r, "alphabet.txt"))
+#' git_status(repo = r)
+#'
+#' git_add("alphabet.txt", repo = r)
+#' git_status(repo = r)
+#'
+#' git_commit("Start alphabet file", repo = r)
+#' git_status(repo = r)
+#'
+#' git_ls(repo = r)
+#'
+#' git_log(repo = r)
+#'
+#' cat(letters[7:9], file = file.path(r, "alphabet.txt"), sep = "\n", append = TRUE)
+#' git_status(repo = r)
+#'
+#' git_commit_all("Add more letters", repo = r)
+#'
+#' # cleanup
+#' unlink(r, recursive = TRUE)
+#' }
 git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
   if(!length(author))
