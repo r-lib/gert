@@ -64,8 +64,10 @@ Also \code{\link[=git_log]{git_log()}} shows the most recent commits and \code{\
 all the files that are being tracked in the repository.
 }
 \examples{
-git_init("testrepo")
-setwd("testrepo")
+home <- getwd()
+repo <- tempfile("tmprepo")
+git_init(repo)
+setwd(repo)
 
 # Set a user if no default
 if(!user_is_configured()){
@@ -92,8 +94,8 @@ git_status()
 git_commit_all("Add more letters")
 
 # cleanup
-setwd("..")
-unlink("testrepo", recursive = TRUE)
+setwd(home)
+unlink(repo, recursive = TRUE)
 }
 \seealso{
 Other git: 

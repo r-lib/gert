@@ -21,8 +21,10 @@
 #' @useDynLib gert R_git_commit_create
 #'
 #' @examples
-#' git_init("testrepo")
-#' setwd("testrepo")
+#' home <- getwd()
+#' repo <- tempfile("tmprepo")
+#' git_init(repo)
+#' setwd(repo)
 #'
 #' # Set a user if no default
 #' if(!user_is_configured()){
@@ -49,8 +51,8 @@
 #' git_commit_all("Add more letters")
 #'
 #' # cleanup
-#' setwd("..")
-#' unlink("testrepo", recursive = TRUE)
+#' setwd(home)
+#' unlink(repo, recursive = TRUE)
 git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
   if(!length(author))
