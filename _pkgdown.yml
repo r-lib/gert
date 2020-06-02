@@ -25,4 +25,4 @@ reference:
   - '`git_config`'
   - '`signature`'
   - '`libgit2_config`'
-  - '`user_is_configured'`
+  - '`user_is_configured`'
