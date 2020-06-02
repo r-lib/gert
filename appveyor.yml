@@ -14,11 +14,9 @@ install:
 
 environment:
   R_CHECK_ARGS: '--no-manual --run-donttest'
-  PKGTYPE: 'both'
   matrix:
     - R_VERSION: oldrel
     - R_VERSION: release
-    - R_VERSION: devel
 
 build_script:
   - travis-tool.sh install_deps

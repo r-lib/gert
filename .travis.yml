@@ -4,8 +4,6 @@ latex: false
 fortran: false
 pandoc: false
 
-r_check_args: '--no-manual'
-
 matrix:
   include:
     - dist: trusty
@@ -18,11 +16,11 @@ matrix:
     - os: osx
       disable_homebrew: true
       osx_image: xcode10.1
-    - os: osx
-      osx_image: xcode7.3
-      r: 3.6
-      disable_homebrew: true
-      before_install: sed -i.bak 's/-isysroot /-I/g' $(R RHOME)/etc/Makeconf
+#    - os: osx
+#      osx_image: xcode7.3
+#      r: 3.6
+#      disable_homebrew: true
+#      before_install: sed -i.bak 's/-isysroot /-I/g' $(R RHOME)/etc/Makeconf
 
 addons:
   apt:
@@ -30,8 +28,3 @@ addons:
     packages: libgit2-dev
     sources:
       - sourceline: 'ppa:cran/libgit2'
-
-notifications:
-  email:
-    on_success: change
-    on_failure: change
