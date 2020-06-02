@@ -97,7 +97,12 @@ test_that("status reports a conflicted file", {
 
   # TODO: switch to a gert function when possible
   # https://github.com/r-lib/gert/issues/41
-  git2r::merge(x = repo, y = "my-branch")
+  when <- structure(list(time = 1395567947, offset = 60), class = "git_time")
+  git2r_sig <- structure(
+    list(name = "Testing Jerry", email = "test@jerry.com", when = when),
+    class = "git_signature"
+  )
+  git2r::merge(x = repo, y = "my-branch", merger = git2r_sig)
 
   status <- git_status(repo)
   expect_equal(status$file, "foo.txt")
