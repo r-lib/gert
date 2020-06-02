@@ -64,8 +64,8 @@ Also \code{\link[=git_log]{git_log()}} shows the most recent commits and \code{\
 all the files that are being tracked in the repository.
 }
 \examples{
-home <- getwd()
-repo <- tempfile("tmprepo")
+oldwd <- getwd()
+repo <- file.path(tempdir(), "myrepo")
 git_init(repo)
 setwd(repo)
 
@@ -94,7 +94,7 @@ git_status()
 git_commit_all("Add more letters")
 
 # cleanup
-setwd(home)
+setwd(oldwd)
 unlink(repo, recursive = TRUE)
 }
 \seealso{

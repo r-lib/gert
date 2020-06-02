@@ -21,8 +21,8 @@
 #' @useDynLib gert R_git_commit_create
 #'
 #' @examples
-#' home <- getwd()
-#' repo <- tempfile("tmprepo")
+#' oldwd <- getwd()
+#' repo <- file.path(tempdir(), "myrepo")
 #' git_init(repo)
 #' setwd(repo)
 #'
@@ -51,7 +51,7 @@
 #' git_commit_all("Add more letters")
 #'
 #' # cleanup
-#' setwd(home)
+#' setwd(oldwd)
 #' unlink(repo, recursive = TRUE)
 git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
