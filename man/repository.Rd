@@ -54,9 +54,10 @@ unlink(r, recursive = TRUE)
 \seealso{
 Other git: 
 \code{\link{branch}},
-\code{\link{commit}()},
-\code{\link{fetch}()},
+\code{\link{commit}},
+\code{\link{fetch}},
 \code{\link{git_config}()},
+\code{\link{git_merge_base}()},
 \code{\link{git_open}()},
 \code{\link{signature}}
 }

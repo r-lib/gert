@@ -66,10 +66,11 @@ all the files that are being tracked in the repository.
 \seealso{
 Other git: 
 \code{\link{branch}},
-\code{\link{fetch}()},
+\code{\link{fetch}},
 \code{\link{git_config}()},
+\code{\link{git_merge_base}()},
 \code{\link{git_open}()},
-\code{\link{repository}()},
+\code{\link{repository}},
 \code{\link{signature}}
 }
 \concept{git}
