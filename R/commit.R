@@ -21,31 +21,36 @@
 #' @useDynLib gert R_git_commit_create
 #'
 #' @examples
-#' if (user_is_configured()) {
-#' r <- tempfile(pattern = "gert")
-#' git_init(r)
+#' git_init("testrepo")
+#' setwd("testrepo")
 #'
-#' writeLines(letters[1:6], file.path(r, "alphabet.txt"))
-#' git_status(repo = r)
+#' # Set a user if no default
+#' if(!user_is_configured()){
+#'   git_config_set("user.name", "Jerry")
+#'   git_config_set("user.email", "jerry@gmail.com")
+#' }
 #'
-#' git_add("alphabet.txt", repo = r)
-#' git_status(repo = r)
+#' writeLines(letters[1:6], "alphabet.txt")
+#' git_status()
 #'
-#' git_commit("Start alphabet file", repo = r)
-#' git_status(repo = r)
+#' git_add("alphabet.txt")
+#' git_status()
 #'
-#' git_ls(repo = r)
+#' git_commit("Start alphabet file")
+#' git_status()
 #'
-#' git_log(repo = r)
+#' git_ls()
 #'
-#' cat(letters[7:9], file = file.path(r, "alphabet.txt"), sep = "\n", append = TRUE)
-#' git_status(repo = r)
+#' git_log()
 #'
-#' git_commit_all("Add more letters", repo = r)
+#' cat(letters[7:9], file = "alphabet.txt", sep = "\n", append = TRUE)
+#' git_status()
+#'
+#' git_commit_all("Add more letters")
 #'
 #' # cleanup
-#' unlink(r, recursive = TRUE)
-#' }
+#' setwd("..")
+#' unlink("testrepo", recursive = TRUE)
 git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
   if(!length(author))
