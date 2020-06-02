@@ -45,10 +45,10 @@ unlink(r, recursive = TRUE)
 \seealso{
 Other git: 
 \code{\link{branch}},
-\code{\link{commit}},
-\code{\link{fetch}},
+\code{\link{commit}()},
+\code{\link{fetch}()},
 \code{\link{git_config}()},
-\code{\link{repository}},
+\code{\link{repository}()},
 \code{\link{signature}}
 }
 \concept{git}

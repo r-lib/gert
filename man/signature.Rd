@@ -29,10 +29,10 @@ This is needed by the \link{git_commit} function.
 \seealso{
 Other git: 
 \code{\link{branch}},
-\code{\link{commit}},
-\code{\link{fetch}},
+\code{\link{commit}()},
+\code{\link{fetch}()},
 \code{\link{git_config}()},
 \code{\link{git_open}()},
-\code{\link{repository}}
+\code{\link{repository}()}
 }
 \concept{git}

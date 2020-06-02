@@ -43,3 +43,16 @@ done:
   git_object_free(revision);
   return ptr;
 }
+
+SEXP R_git_merge_base(SEXP ptr, SEXP ref1, SEXP ref2){
+  git_object *t1 = NULL;
+  git_object *t2 = NULL;
+  git_oid base = {0};
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_revparse_single(&t1, repo, CHAR(STRING_ELT(ref1, 0))), "git_revparse_single");
+  bail_if(git_revparse_single(&t2, repo, CHAR(STRING_ELT(ref2, 0))), "git_revparse_single");
+  bail_if(git_merge_base(&base, repo, git_object_id(t1), git_object_id(t2)), "git_merge_base");
+  git_object_free(t1);
+  git_object_free(t2);
+  return Rf_mkString(git_oid_tostr_s(&base));
+}

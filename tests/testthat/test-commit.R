@@ -82,7 +82,7 @@ test_that("status reports a conflicted file", {
 
   writeLines("cranky-crab-legs", foo_path)
   git_add("foo.txt", repo = repo)
-  git_commit("Add a file", repo = repo)
+  base <- git_commit("Add a file", repo = repo)
 
   git_branch_create("my-branch", repo = repo)
   writeLines("cranky-CRAB-LEGS", foo_path)
@@ -93,6 +93,8 @@ test_that("status reports a conflicted file", {
   writeLines("CRANKY-CRAB-legs", foo_path)
   git_add("foo.txt", repo = repo)
   git_commit("Uppercase first 2 words", repo = repo)
+
+  expect_equal(base, git_merge_base("my-branch", repo = repo))
 
   # TODO: switch to a gert function when possible
   # https://github.com/r-lib/gert/issues/41
