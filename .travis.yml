@@ -13,9 +13,11 @@ matrix:
     - os: osx
       disable_homebrew: true
       osx_image: xcode11.4
+      r_check_args: ""
     - os: osx
       disable_homebrew: true
       osx_image: xcode10.1
+      r_check_args: ""
 #    - os: osx
 #      osx_image: xcode7.3
 #      r: 3.6
