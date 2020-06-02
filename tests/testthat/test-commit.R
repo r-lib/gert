@@ -35,11 +35,12 @@ test_that("adding and removing files", {
 test_that("creating a commit", {
   repo <- git_init(tempfile("gert-tests-commit"))
   on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
 
   expect_equal(nrow(git_ls(repo)), 0)
   write.csv(cars, file.path(repo, 'cars.csv'))
   git_add('cars.csv', repo = repo)
-  git_commit("Added cars.csv file", author = gert_testing_signature, repo = repo)
+  git_commit("Added cars.csv file", repo = repo)
 
   # Another commit before that
   write.csv(iris, file.path(repo, 'iris.csv'))
@@ -50,10 +51,9 @@ test_that("creating a commit", {
 
   # Inspect the log file
   log <- git_log(repo = repo)
-  expect_equal(log$author[2], git_signature_info(gert_testing_signature)$author)
+  expect_equal(log$author[2], local_author(repo))
   expect_equal(log$time[1], timestamp)
 })
-
 
 test_that("creating a commit in another directory without author works", {
   path <- tempfile("gert-tests-commit")
@@ -61,15 +61,13 @@ test_that("creating a commit in another directory without author works", {
 
   dir.create(path)
   repo <- git_init(path)
-  git_config_set('user.name', "Jerry Johnson", repo = repo)
-  git_config_set('user.email', "jerry@gmail.com", repo = repo)
+  configure_local_user(repo)
   writeLines("content", file.path(path, "file"))
   git_add("file", repo = path)
   git_commit("Added file", repo = repo)
 
   log <- git_log(repo = repo)
-  sig <- git_signature_default(repo)
-  expect_equal(log$author, git_signature_info(sig)$author)
+  expect_equal(log$author, local_author(repo))
 })
 
 test_that("status reports a conflicted file", {
@@ -78,31 +76,27 @@ test_that("status reports a conflicted file", {
 
   repo <- git_init(tempfile("gert-test-conflicts"))
   on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
 
   foo_path <- file.path(repo, "foo.txt")
 
   writeLines("cranky-crab-legs", foo_path)
   git_add("foo.txt", repo = repo)
-  git_commit("Add a file", author = gert_testing_signature, repo = repo)
+  git_commit("Add a file", repo = repo)
 
   git_branch_create("my-branch", repo = repo)
   writeLines("cranky-CRAB-LEGS", foo_path)
   git_add("foo.txt", repo = repo)
-  git_commit("Uppercase last 2 words", author = gert_testing_signature, repo = repo)
+  git_commit("Uppercase last 2 words", repo = repo)
 
   git_branch_checkout("master", repo = repo)
   writeLines("CRANKY-CRAB-legs", foo_path)
   git_add("foo.txt", repo = repo)
-  git_commit("Uppercase first 2 words", author = gert_testing_signature, repo = repo)
+  git_commit("Uppercase first 2 words", repo = repo)
 
   # TODO: switch to a gert function when possible
   # https://github.com/r-lib/gert/issues/41
-  when <- structure(list(time = 1395567947, offset = 60), class = "git_time")
-  git2r_sig <- structure(
-    list(name = "Testing Jerry", email = "test@jerry.com", when = when),
-    class = "git_signature"
-  )
-  git2r::merge(x = repo, y = "my-branch", merger = git2r_sig)
+  git2r::merge(x = repo, y = "my-branch")
 
   status <- git_status(repo)
   expect_equal(status$file, "foo.txt")
