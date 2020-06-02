@@ -112,3 +112,52 @@ libgit2_config <- function(){
   res$version <- as.numeric_version(res$version)
   res
 }
+
+# helpers used in tests
+configure_local_user <- function(repo = ".") {
+  git_config_set('user.name', "Jerry Johnson", repo = repo)
+  git_config_set('user.email', "jerry@gmail.com", repo = repo)
+}
+
+local_author <- function(repo = ".") {
+  git_signature_info(git_signature_default(repo))$author
+}
+
+# helpers used in pkgdown setup
+configure_global_user <- function() {
+  git_config_global_set('user.name', "Jerry Johnson")
+  git_config_global_set('user.email', "jerry@gmail.com")
+}
+
+global_user_is_configured <- function() {
+  cfg <- git_config_global()
+  user_name_exists <- any(cfg$name == "user.name")
+  user_email_exists <- any(cfg$name == "user.email")
+  user_name_exists && user_email_exists
+}
+
+# helpers used in examples
+
+#' Test if a Git user is configured
+#'
+#' This function exists mostly to guard examples that rely on having a user
+#' configured, in order to make commits. `user_is_configured()` makes no
+#' distinction between local or global user config.
+#'
+#' @param repo An optional `repo`, in the sense of [git_open()].
+#'
+#' @return `TRUE` if `user.name` and `user.email` are set locally or globally,
+#'   `FALSE` otherwise.
+#'
+#' @export
+#' @examples
+#' user_is_configured()
+user_is_configured <- function(repo = ".") {
+  cfg <- tryCatch(
+    git_config(repo),
+    error = function(e) git_config_global()
+  )
+  user_name_exists <- any(cfg$name == "user.name")
+  user_email_exists <- any(cfg$name == "user.email")
+  user_name_exists && user_email_exists
+}
