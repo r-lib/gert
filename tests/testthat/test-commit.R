@@ -87,6 +87,8 @@ test_that("status reports a conflicted file", {
   git_commit("Uppercase last 2 words", repo = repo)
 
   git_branch_checkout("master", repo = repo)
+  expect_equal(git_merge_analysis("my-branch", repo = repo), "fastforward")
+
   writeLines("CRANKY-CRAB-legs", foo_path)
   git_add("foo.txt", repo = repo)
   git_commit("Uppercase first 2 words", repo = repo)

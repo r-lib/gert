@@ -57,25 +57,24 @@ SEXP R_git_merge_base(SEXP ptr, SEXP ref1, SEXP ref2){
   return Rf_mkString(git_oid_tostr_s(&base));
 }
 
-static const char *analysis_to_str(git_merge_analysis_t x){
+static const char *analysis_to_str(git_merge_analysis_t analysis, git_merge_preference_t preference){
   static const char *none = "none";
   static const char *normal = "normal";
   static const char *uptodate = "up_to_date";
   static const char *fastforward = "fastforward";
-  static const char *unborn = "unborn";
-  switch(x){
-  case GIT_MERGE_ANALYSIS_NONE:
-    return none;
-  case GIT_MERGE_ANALYSIS_NORMAL:
-    return normal;
-  case GIT_MERGE_ANALYSIS_UP_TO_DATE:
+  if(analysis & GIT_MERGE_ANALYSIS_UP_TO_DATE){
     return uptodate;
-  case GIT_MERGE_ANALYSIS_FASTFORWARD:
-    return fastforward;
-  case GIT_MERGE_ANALYSIS_UNBORN:
-    return unborn;
   }
-  return none;
+  if (analysis & GIT_MERGE_ANALYSIS_UNBORN || (analysis & GIT_MERGE_ANALYSIS_FASTFORWARD && !(preference & GIT_MERGE_PREFERENCE_NO_FASTFORWARD))){
+    return fastforward;
+  }
+  if (analysis & GIT_MERGE_ANALYSIS_NORMAL){
+    return normal;
+  }
+  if (analysis & GIT_MERGE_ANALYSIS_NONE){
+    return none;
+  }
+  return NULL;
 }
 
 static git_annotated_commit** refs_to_git(SEXP refs, git_repository *repo){
@@ -103,7 +102,7 @@ SEXP R_git_merge_analysis(SEXP ptr, SEXP refs){
   int res = git_merge_analysis(&analysis_out, &preference_out, repo, (const git_annotated_commit**) commits, n);
   free_commit_list(commits, n);
   bail_if(res, "git_merge_analysis");
-  return Rf_mkString(analysis_to_str(analysis_out));
+  return safe_string(analysis_to_str(analysis_out, preference_out));
 }
 
 SEXP R_git_merge_stage(SEXP ptr, SEXP refs){
