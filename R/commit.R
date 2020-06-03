@@ -1,22 +1,26 @@
 #' Stage and commit changes
 #'
-#' @description To commit changes, start with *staging* the files to be included
-#' in the commit using [git_add()] or [git_rm()]. Use [git_status()] to see an
-#' overview of staged and unstaged changes, and finally [git_commit()] creates
-#' a new commit with currently staged files.
+#' @description
+#' To commit changes, start by *staging* the files to be included in the commit
+#' using `git_add()` or `git_rm()`. Use `git_status()` to see an overview of
+#' staged and unstaged changes, and finally `git_commit()` creates a new commit
+#' with currently staged files.
 #'
-#' [git_commit_all] is a shorthand that will automatically stage all new and
-#' modified files and then commit.
+#' `git_commit_all()` is a convenience function that automatically stages and
+#' commits all modified files. Note that `git_commit_all()` does **not** add
+#' new, untracked files to the repository. You need to make an explicit call to
+#' `git_add()` to start tracking new files.
 #'
-#' Also [git_log()] shows the most recent commits and [git_ls()] lists
-#' all the files that are being tracked in the repository.
+#' `git_log()` shows the most recent commits and `git_ls()` lists all the files
+#' that are being tracked in the repository.
+#'
 #' @export
 #' @rdname commit
 #' @name commit
 #' @family git
 #' @inheritParams git_open
 #' @param message a commit message
-#' @param author A [git_signature] value, default is [git_signature_default].
+#' @param author A [git_signature] value, default is [git_signature_default()].
 #' @param committer A [git_signature] value, default is same as `author`
 #' @useDynLib gert R_git_commit_create
 #'
@@ -70,14 +74,25 @@ git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
 #' @rdname commit
 git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
-  stat <- git_status(repo)
-  changes <- stat$file[!stat$staged & stat$status %in% c("modified", "renamed", "typechange")]
+  unstaged <- subset(git_status(repo), subset = !staged)
+
+  changes <- unstaged$file[unstaged$status %in% c("modified", "renamed", "typechange")]
   if(length(changes))
     git_add(changes, repo = repo)
-  deleted <- stat$file[!stat$staged & stat$status == "deleted"]
+
+  deleted <- unstaged$file[unstaged$status == "deleted"]
   if(length(deleted))
     git_rm(deleted, repo = repo)
-  git_commit(message = message, author = author, committer = committer, repo = repo)
+
+  new_files <- unstaged$file[unstaged$status == "new"]
+  if (length(new_files)) {
+    message("New, untracked files found, which won't be committed. Use git_add() instead.")
+  }
+
+  staged <- subset(git_status(repo), subset = staged)
+  if (nrow(staged)) {
+    git_commit(message = message, author = author, committer = committer, repo = repo)
+  }
 }
 
 #' @export
