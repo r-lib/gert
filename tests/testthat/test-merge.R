@@ -2,7 +2,7 @@ test_that("merge analysis works", {
   repo <- git_init(tempfile("gert-tests-merge"))
   on.exit(unlink(repo, recursive = TRUE))
   oldwd <- getwd()
-  on.exit(setwd(oldwd))
+  on.exit(setwd(oldwd), add = TRUE)
   setwd(repo)
   configure_local_user()
   for(i in 1:5){
