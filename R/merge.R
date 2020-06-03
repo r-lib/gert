@@ -1,6 +1,20 @@
 #' Merging tools
 #'
-#' Tools for preparing and performing merge operations. Under construction.
+#' Use `git_merge` to merge a branch into the current head. Based on how the branches
+#' have diverged, the function will select a fast-forward or merge-commit strategy.
+#'
+#' By default `git_merge` will automatically commit the merge. However if
+#' `commit_on_success` is set to `FALSE` or if the merge fails with
+#' merge-conflicts, the changes are staged but you have to run [git_commit] manually.
+#'
+#' Other functions are more low-level tools that are used by `git_merge`. `git_merge_base`
+#' finds the commit where two branches have diverged (i.e. the youngest common ancestor).
+#'
+#' Use `git_merge_analysis` to test what strategy would be needed to merge a branch.
+#' Possible outcomes are `"fastforward"`, `"normal"`, or `"up-to-date"`.
+#'
+#' The `git_merge_stage` function applies and stages changes from another branch in the
+#' current one, without committing anything.
 #'
 #' @export
 #' @family git

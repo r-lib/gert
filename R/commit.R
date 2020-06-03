@@ -19,7 +19,6 @@
 #' @param author A [git_signature] value, default is [git_signature_default].
 #' @param committer A [git_signature] value, default is same as `author`
 #' @useDynLib gert R_git_commit_create
-#'
 #' @examples
 #' oldwd <- getwd()
 #' repo <- file.path(tempdir(), "myrepo")

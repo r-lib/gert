@@ -32,7 +32,22 @@ prevent this recursive search, provide a filepath protected with \code{\link[=I]
 \item{target}{the branch where you want to merge into. Defaults to current \code{HEAD}.}
 }
 \description{
-Tools for preparing and performing merge operations. Under construction.
+Use \code{git_merge} to merge a branch into the current head. Based on how the branches
+have diverged, the function will select a fast-forward or merge-commit strategy.
+}
+\details{
+By default \code{git_merge} will automatically commit the merge. However if
+\code{commit_on_success} is set to \code{FALSE} or if the merge fails with
+merge-conflicts, the changes are staged but you have to run \link{git_commit} manually.
+
+Other functions are more low-level tools that are used by \code{git_merge}. \code{git_merge_base}
+finds the commit where two branches have diverged (i.e. the youngest common ancestor).
+
+Use \code{git_merge_analysis} to test what strategy would be needed to merge a branch.
+Possible outcomes are \code{"fastforward"}, \code{"normal"}, or \code{"up-to-date"}.
+
+The \code{git_merge_stage} function applies and stages changes from another branch in the
+current one, without committing anything.
 }
 \seealso{
 Other git: 
