@@ -71,9 +71,6 @@ test_that("creating a commit in another directory without author works", {
 })
 
 test_that("status reports a conflicted file", {
-  # temporary measure until gert can do a non fast forward merge
-  skip_if_not_installed("git2r")
-
   repo <- git_init(tempfile("gert-test-conflicts"))
   on.exit(unlink(repo, recursive = TRUE))
   configure_local_user(repo)
