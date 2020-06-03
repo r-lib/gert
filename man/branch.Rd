@@ -48,7 +48,7 @@ Other git:
 \code{\link{commit}},
 \code{\link{fetch}},
 \code{\link{git_config}()},
-\code{\link{git_merge_base}()},
+\code{\link{git_merge}()},
 \code{\link{git_open}()},
 \code{\link{repository}},
 \code{\link{signature}}

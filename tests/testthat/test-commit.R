@@ -98,9 +98,8 @@ test_that("status reports a conflicted file", {
   expect_equal(git_merge_analysis(base, repo = repo), "up_to_date")
   expect_equal(git_merge_analysis('my-branch', repo = repo), "normal")
 
-  # TODO: switch to a gert function when possible
-  # https://github.com/r-lib/gert/issues/41
-  git2r::merge(x = repo, y = "my-branch")
+  # Merge returns FALSE due to conflicts
+  git_merge("my-branch", repo = repo)
 
   status <- git_status(repo)
   expect_equal(status$file, "foo.txt")

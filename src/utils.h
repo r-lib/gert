@@ -19,3 +19,8 @@ git_repository *get_git_repository(SEXP ptr);
 #if !AT_LEAST_LIBGIT2(0, 22)
 #define git_remote_lookup(a,b,c) git_remote_load(a,b,c)
 #endif
+
+#if ! AT_LEAST_LIBGIT2(0, 21)
+#define git_checkout_options git_checkout_opts
+#define GIT_CHECKOUT_OPTIONS_INIT GIT_CHECKOUT_OPTS_INIT
+#endif

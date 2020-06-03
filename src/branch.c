@@ -1,11 +1,6 @@
 #include <string.h>
 #include "utils.h"
 
-#if ! AT_LEAST_LIBGIT2(0, 21)
-#define git_checkout_options git_checkout_opts
-#define GIT_CHECKOUT_OPTIONS_INIT GIT_CHECKOUT_OPTS_INIT
-#endif
-
 SEXP R_git_reset(SEXP ptr, SEXP ref, SEXP typenum){
   git_object *revision = NULL;
   git_repository *repo = get_git_repository(ptr);

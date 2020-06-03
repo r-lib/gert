@@ -78,19 +78,58 @@ static const char *analysis_to_str(git_merge_analysis_t x){
   return none;
 }
 
-SEXP R_git_merge_analysis(SEXP ptr, SEXP refs){
+static git_annotated_commit** refs_to_git(SEXP refs, git_repository *repo){
   int n = Rf_length(refs);
-  git_repository *repo = get_git_repository(ptr);
-  git_annotated_commit *commits[n];
+  git_annotated_commit **commits = malloc(n);
   for(int i = 0; i < n; i++){
     bail_if(git_annotated_commit_from_revspec(&commits[i], repo, CHAR(STRING_ELT(refs, i))),
             "git_annotated_commit_from_revspec");
   }
+  return commits;
+}
+
+static void free_commit_list(git_annotated_commit** commits, int n){
+  for(int i = 0; i < n; i++)
+    git_annotated_commit_free(commits[i]);
+  free(commits);
+}
+
+SEXP R_git_merge_analysis(SEXP ptr, SEXP refs){
+  int n = Rf_length(refs);
+  git_repository *repo = get_git_repository(ptr);
+  git_annotated_commit **commits = refs_to_git(refs, repo);
   git_merge_analysis_t analysis_out;
   git_merge_preference_t preference_out;
   int res = git_merge_analysis(&analysis_out, &preference_out, repo, (const git_annotated_commit**) commits, n);
-  for(int i = 0; i < n; i++)
-    git_annotated_commit_free(commits[i]);
+  free_commit_list(commits, n);
   bail_if(res, "git_merge_analysis");
   return Rf_mkString(analysis_to_str(analysis_out));
+}
+
+SEXP R_git_merge_stage(SEXP ptr, SEXP refs){
+  int n = Rf_length(refs);
+  git_repository *repo = get_git_repository(ptr);
+  git_annotated_commit **commits = refs_to_git(refs, repo);
+  git_checkout_options checkout_opts = GIT_CHECKOUT_OPTIONS_INIT;
+  git_merge_options merge_opts = GIT_MERGE_OPTIONS_INIT;
+  merge_opts.flags = 0;
+  merge_opts.file_flags = GIT_MERGE_FILE_STYLE_DIFF3;
+  checkout_opts.checkout_strategy = GIT_CHECKOUT_FORCE | GIT_CHECKOUT_ALLOW_CONFLICTS;
+  int res = git_merge(repo, (const git_annotated_commit**) commits, n, &merge_opts, &checkout_opts);
+  free_commit_list(commits, n);
+  bail_if(res, "git_merge");
+
+  /* Merge success! Now look if we had any conflicts. */
+  git_index *index = NULL;
+  bail_if(git_repository_index(&index, repo), "git_repository_index");
+  int conflicted = git_index_has_conflicts(index);
+  git_index_free(index);
+  return Rf_ScalarLogical(conflicted == 0);
+}
+
+/* Need to call cleanup both after committing or aborting a merge state */
+SEXP R_git_merge_cleanup(SEXP ptr){
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
+  return ptr;
 }
