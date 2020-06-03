@@ -20,7 +20,9 @@ git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
     # TODO: should we not cleanup upon conflicts and leave the merging-state?
     on.exit(git_merge_cleanup(repo = repo))
     merged_without_conflict <- git_merge_stage(ref = ref, repo = repo)
-    if(isTRUE(merged_without_conflict)){
+    if(!nrow(git_status(repo = repo))){
+      message("Merge did not result in any changes")
+    } else if(isTRUE(merged_without_conflict)){
       if(isTRUE(commit_on_success)){
         commit_message <- sprintf("Merged %s into %s", ref, git_info()$shorthand)
         git_commit(commit_message, repo = repo)
