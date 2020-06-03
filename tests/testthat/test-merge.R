@@ -1,5 +1,4 @@
 test_that("merge analysis works", {
-  getNamespace('tibble')
   repo <- git_init(tempfile("gert-tests-merge"))
   on.exit(unlink(repo, recursive = TRUE))
   oldwd <- getwd()
@@ -15,7 +14,7 @@ test_that("merge analysis works", {
   first_commit <- tail(master_log$commit, 1)
   git_branch_create('new', first_commit)
   git_branch_checkout('new')
-  expect_equal(git_log(), tail(master_log,1))
+  expect_equal(git_log()$commit, tail(master_log,1)$commit)
   expect_equal(git_merge_analysis('master'), 'fastforward')
 
   # Expect no merge commit (ffwd)
