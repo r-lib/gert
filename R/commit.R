@@ -22,6 +22,11 @@
 #' @param message a commit message
 #' @param author A [git_signature] value, default is [git_signature_default()].
 #' @param committer A [git_signature] value, default is same as `author`
+#' @return
+#' * `git_status()`, `git_ls()`: A data frame with one row per file
+#' * `git_log()`: A data frame with one row per commit
+#' * `git_add()`, `git_rm()`, `git_reset()`: An object of class `git_repo_ptr`
+#' * `git_commit()`, `git_commit_all()`: A SHA
 #' @useDynLib gert R_git_commit_create
 #'
 #' @examples

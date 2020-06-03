@@ -51,6 +51,14 @@ Use \code{"."} to stage all changed files.}
 
 \item{type}{must be one of \code{"soft"}, \code{"hard"}, or \code{"mixed"}}
 }
+\value{
+\itemize{
+\item \code{git_status()}, \code{git_ls()}: A data frame with one row per file
+\item \code{git_log()}: A data frame with one row per commit
+\item \code{git_add()}, \code{git_rm()}, \code{git_reset()}: An object of class \code{git_repo_ptr}
+\item \code{git_commit()}, \code{git_commit_all()}: A SHA
+}
+}
 \description{
 To commit changes, start by \emph{staging} the files to be included in the commit
 using \code{git_add()} or \code{git_rm()}. Use \code{git_status()} to see an overview of
