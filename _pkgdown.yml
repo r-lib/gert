@@ -1,28 +1,28 @@
 reference:
 - title: Create or learn about local repositories.
   contents:
-  - '`repository`'
-  - '`git_open`'
+  - repository
+  - git_open
 
 - title: Local operations
   desc: Functions that work with local repositories.
   contents:
-  - '`commit`'
-  - '`branch`'
-  - '`tag`'
-  - '`stash`'
+  - commit
+  - branch
+  - tag
+  - stash
 
 - title: Remote operations
   desc: Functions that work with remote repositories.
   contents:
-  - '`remotes`'
-  - '`fetch`'
-  - '`git_checkout_pull_request`'
+  - remotes
+  - fetch
+  - git_checkout_pull_request
 
 - title: Configuration
   desc: See or change configuration.
   contents:
-  - '`git_config`'
-  - '`signature`'
-  - '`libgit2_config`'
-  - '`user_is_configured`'
+  - git_config
+  - signature
+  - libgit2_config
+  - user_is_configured
