@@ -6,7 +6,7 @@
     "Linking to libgit2 v%s, ssh support: %s",
     as.character(config$version), ssh))
   if(length(config$config.global) && nchar(config$config.global)){
-    packageStartupMessage(paste0("Global config: ", config$config.global))
+    packageStartupMessage(paste0("Global config: ", normalizePath(config$config.global, mustWork = FALSE)))
   } else {
     packageStartupMessage("No global config found in ~/.gitconfig")
   }
