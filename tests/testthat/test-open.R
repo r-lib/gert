@@ -4,5 +4,5 @@ test_that("can opt out of recursive search", {
 
   grandchild <- file.path(repo, "aaa", "bbb")
   dir.create(grandchild, recursive = TRUE)
-  expect_error(git_open(I(grandchild)), "libgit2 error in git_repository_open")
+  expect_error(git_open(I(grandchild)), class = "GIT_ENOTFOUND")
 })

@@ -3,11 +3,13 @@
 void bail_if(int err, const char *what){
   if (err) {
     const git_error *info = giterr_last();
-    if (info){
-      Rf_error("libgit2 error in %s: %s (%d)\n", what, info->message, info->klass);
-    } else {
-      Rf_error("Unknown libgit2 error in %s", what);
-    }
+    SEXP code = PROTECT(Rf_ScalarInteger(err));
+    SEXP kclass = PROTECT(Rf_ScalarInteger(info ? info->klass : NA_INTEGER));
+    SEXP message = PROTECT(safe_string(info ? info->message : "Unknown error message"));
+    SEXP expr = PROTECT(Rf_install("raise_libgit2_error"));
+    SEXP call = PROTECT(Rf_lang4(expr, code, message, kclass));
+    Rf_eval(call, R_FindNamespace(Rf_mkString("gert")));
+    UNPROTECT(5);
   }
 }
 
