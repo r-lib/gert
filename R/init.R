@@ -16,8 +16,8 @@
     settings <- git_config_global()
     name <- subset(settings, name == 'user.name')$value
     email <- subset(settings, name == 'user.email')$value
-    if(length(name) && length(email)){
-      packageStartupMessage(sprintf("Default user: %s <%s>", name, email))
+    if(length(name) || length(email)){
+      packageStartupMessage(sprintf("Default user: %s <%s>", as_string(name), as_string(email)))
     } else {
       packageStartupMessage("No default user configured")
     }
@@ -39,4 +39,8 @@
   }
 
   invisible()
+}
+
+as_string <- function(x){
+  ifelse(length(x) > 0, x[1], NA_character_)
 }
