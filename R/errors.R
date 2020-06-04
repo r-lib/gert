@@ -3,7 +3,7 @@
 raise_libgit2_error <- function(code, message, kclass = 0){
   e <- structure(
     class = c(libgit2_error_name(code), "libgit2_error", "error", "condition"),
-    list(message = message, call = substitute(libgit2))
+    list(message = message, call = substitute(gert/libgit2)) #call must be an R expression
   )
   stop(e)
 }

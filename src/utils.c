@@ -10,6 +10,7 @@ void bail_if(int err, const char *what){
     SEXP call = PROTECT(Rf_lang4(expr, code, message, kclass));
     Rf_eval(call, R_FindNamespace(Rf_mkString("gert")));
     UNPROTECT(5);
+    Rf_error("Failed to raise gert S3 error (%s)", info->message);
   }
 }
 
