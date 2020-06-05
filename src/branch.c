@@ -159,6 +159,14 @@ SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url, SEXP refspec){
   return make_refspecs(remote);
 }
 
+SEXP R_git_remote_set_url(SEXP ptr, SEXP name, SEXP url){
+  const char *curl = CHAR(STRING_ELT(url, 0));
+  const char *cname = CHAR(STRING_ELT(name, 0));
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_remote_set_url(repo, cname, curl), "git_remote_set_url");
+  return R_NilValue;
+}
+
 SEXP R_git_remote_remove(SEXP ptr, SEXP name){
   const char *cname = CHAR(STRING_ELT(name, 0));
   git_repository *repo = get_git_repository(ptr);

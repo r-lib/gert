@@ -40,6 +40,17 @@ git_remote_remove <- function(name, repo = '.'){
 
 #' @export
 #' @rdname remotes
+#' @useDynLib gert R_git_remote_set_url
+git_remote_set_url <- function(name, url, repo = '.'){
+  repo <- git_open(repo)
+  name <- as.character(name)
+  url <- as.character(url)
+  .Call(R_git_remote_set_url, repo, name, url)
+  invisible()
+}
+
+#' @export
+#' @rdname remotes
 git_refspecs <- function(repo = '.'){
   remotes <- git_remote_list()
   lens <- vapply(remotes$refspecs, length, numeric(1))
