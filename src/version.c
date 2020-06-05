@@ -19,10 +19,14 @@ SEXP R_libgit2_config(){
   git_buf buf = {0};
   git_config_find_global(&buf);
   SEXP config_global = PROTECT(safe_string(buf.ptr));
-  git_buf_free(&buf);
+  git_buf_dispose(&buf);
   git_config_find_system(&buf);
   SEXP config_system = PROTECT(safe_string(buf.ptr));
-  git_buf_free(&buf);
-  return build_list(6, "version", version, "ssh", ssh, "https", https, "threads", threads,
-                    "config.global", config_global, "config.system", config_system);
+  git_buf_dispose(&buf);
+  git_libgit2_opts(GIT_OPT_GET_SEARCH_PATH, GIT_CONFIG_LEVEL_GLOBAL, &buf);
+  SEXP config_search_path = Rf_ScalarString(Rf_mkCharLen(buf.ptr, buf.size));
+  git_buf_dispose(&buf);
+  return build_list(7, "version", version, "ssh", ssh, "https", https, "threads", threads,
+                    "config.global", config_global, "config.system", config_system,
+                    "config.home", config_search_path);
 }

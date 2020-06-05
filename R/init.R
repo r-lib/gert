@@ -8,7 +8,7 @@
   if(length(config$config.global) && nchar(config$config.global)){
     packageStartupMessage(paste0("Global config: ", normalizePath(config$config.global, mustWork = FALSE)))
   } else {
-    packageStartupMessage("No global config found in ~/.gitconfig")
+    packageStartupMessage(paste("No global .gitconfig found in:", config$config.home))
   }
   if(length(config$config.system) && nchar(config$config.system))
     packageStartupMessage(paste0("System config: ", config$config.system))
