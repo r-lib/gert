@@ -78,6 +78,7 @@ git_config_global()
 Other git: 
 \code{\link{branch}},
 \code{\link{commit}},
+\code{\link{diff}()},
 \code{\link{fetch}},
 \code{\link{git_merge}()},
 \code{\link{git_open}()},

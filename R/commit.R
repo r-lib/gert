@@ -64,11 +64,11 @@
 git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
   if(!length(author))
-    author <- git_signature_default(repo)
+    author <- git_signature_default(repo = repo)
   if(!length(committer))
     committer <- author
   stopifnot(is.character(message), length(message) == 1)
-  status <- git_status(repo)
+  status <- git_status(repo = repo)
   if(!any(status$staged))
     stop("No staged files to commit. Run git_add() to select files.")
   .Call(R_git_commit_create, repo, message, author, committer)
@@ -78,7 +78,7 @@ git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
 #' @rdname commit
 git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
-  unstaged <- subset(git_status(repo), subset = !staged)
+  unstaged <- git_status(staged = FALSE, repo = repo)
 
   changes <- unstaged$file[unstaged$status %in% c("modified", "renamed", "typechange")]
   if(length(changes))
@@ -89,6 +89,14 @@ git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.')
     git_rm(deleted, repo = repo)
 
   git_commit(message = message, author = author, committer = committer, repo = repo)
+}
+
+#' @export
+#' @rdname commit
+#' @useDynLib gert R_git_commit_info
+git_commit_info <- function(ref = "HEAD", repo = '.'){
+  repo <- git_open(repo)
+  .Call(R_git_commit_info, repo, ref)
 }
 
 #' @export
@@ -118,9 +126,12 @@ git_rm <- function(files, repo = '.'){
 #' @export
 #' @rdname commit
 #' @useDynLib gert R_git_status_list
-git_status <- function(repo = '.'){
+#' @param staged return only staged (TRUE) or unstaged files (FALSE).
+#' Use `NULL` or `NA` to show both (default).
+git_status <- function(staged = NULL, repo = '.'){
   repo <- git_open(repo)
-  .Call(R_git_status_list, repo)
+  staged <- as.logical(staged)
+  .Call(R_git_status_list, repo, staged)
 }
 
 #' @export

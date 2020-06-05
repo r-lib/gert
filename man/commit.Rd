@@ -4,6 +4,7 @@
 \alias{commit}
 \alias{git_commit}
 \alias{git_commit_all}
+\alias{git_commit_info}
 \alias{git_add}
 \alias{git_rm}
 \alias{git_status}
@@ -16,11 +17,13 @@ git_commit(message, author = NULL, committer = NULL, repo = ".")
 
 git_commit_all(message, author = NULL, committer = NULL, repo = ".")
 
+git_commit_info(ref = "HEAD", repo = ".")
+
 git_add(files, force = FALSE, repo = ".")
 
 git_rm(files, repo = ".")
 
-git_status(repo = ".")
+git_status(staged = NULL, repo = ".")
 
 git_ls(repo = ".")
 
@@ -40,12 +43,15 @@ class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository,
 its parent directory is considered, then the parent's parent, and so on. To
 prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
 
+\item{ref}{string with a branch/tag/commit}
+
 \item{files}{vector of paths relative to the git root directory.
 Use \code{"."} to stage all changed files.}
 
 \item{force}{add files even if in gitignore}
 
-\item{ref}{string with a branch/tag/commit}
+\item{staged}{return only staged (TRUE) or unstaged files (FALSE).
+Use \code{NULL} or \code{NA} to show both (default).}
 
 \item{max}{lookup at most latest n parent commits}
 
@@ -110,6 +116,7 @@ unlink(repo, recursive = TRUE)
 \seealso{
 Other git: 
 \code{\link{branch}},
+\code{\link{diff}()},
 \code{\link{fetch}},
 \code{\link{git_config}()},
 \code{\link{git_merge}()},

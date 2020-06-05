@@ -12,7 +12,9 @@ extern SEXP R_git_branch_list(SEXP);
 extern SEXP R_git_branch_set_upsteam(SEXP, SEXP, SEXP);
 extern SEXP R_git_checkout_branch(SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_create(SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_diff_patch(SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_log(SEXP, SEXP, SEXP);
+extern SEXP R_git_commit_info(SEXP, SEXP);
 extern SEXP R_git_config_list(SEXP);
 extern SEXP R_git_config_set(SEXP, SEXP, SEXP);
 extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP);
@@ -43,7 +45,7 @@ extern SEXP R_git_stash_drop(SEXP, SEXP);
 extern SEXP R_git_stash_list(SEXP);
 extern SEXP R_git_stash_pop(SEXP, SEXP);
 extern SEXP R_git_stash_save(SEXP, SEXP, SEXP, SEXP, SEXP);
-extern SEXP R_git_status_list(SEXP);
+extern SEXP R_git_status_list(SEXP, SEXP);
 extern SEXP R_git_tag_create(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_delete(SEXP, SEXP);
 extern SEXP R_git_tag_list(SEXP, SEXP);
@@ -54,7 +56,9 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_branch_set_upsteam", (DL_FUNC) &R_git_branch_set_upsteam, 3},
   {"R_git_checkout_branch",    (DL_FUNC) &R_git_checkout_branch,    3},
   {"R_git_commit_create",      (DL_FUNC) &R_git_commit_create,      4},
+  {"R_git_diff_patch",         (DL_FUNC) &R_git_diff_patch,         3},
   {"R_git_commit_log",         (DL_FUNC) &R_git_commit_log,         3},
+  {"R_git_commit_info",        (DL_FUNC) &R_git_commit_info,        2},
   {"R_git_config_list",        (DL_FUNC) &R_git_config_list,        1},
   {"R_git_config_set",         (DL_FUNC) &R_git_config_set,         3},
   {"R_git_create_branch",      (DL_FUNC) &R_git_create_branch,      4},
@@ -85,7 +89,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_stash_list",         (DL_FUNC) &R_git_stash_list,         1},
   {"R_git_stash_pop",          (DL_FUNC) &R_git_stash_pop,          2},
   {"R_git_stash_save",         (DL_FUNC) &R_git_stash_save,         5},
-  {"R_git_status_list",        (DL_FUNC) &R_git_status_list,        1},
+  {"R_git_status_list",        (DL_FUNC) &R_git_status_list,        2},
   {"R_git_tag_create",         (DL_FUNC) &R_git_tag_create,         4},
   {"R_git_tag_delete",         (DL_FUNC) &R_git_tag_delete,         2},
   {"R_git_tag_list",           (DL_FUNC) &R_git_tag_list,           2},

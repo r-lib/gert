@@ -51,6 +51,15 @@ static SEXP new_git_sig(git_signature *repo){
   return ptr;
 }
 
+static git_commit *find_commit_from_string(git_repository *repo, const char * ref){
+  git_commit *commit = NULL;
+  git_object *revision = NULL;
+  bail_if(git_revparse_single(&revision, repo, ref), "git_revparse_single");
+  bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
+  git_object_free(revision);
+  return commit;
+}
+
 SEXP R_git_signature_default(SEXP ptr){
   git_signature *sig;
   git_repository *repo = get_git_repository(ptr);
@@ -112,13 +121,9 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer){
 }
 
 SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
-  git_commit *head = NULL;
   git_commit *commit = NULL;
-  git_object *revision = NULL;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
-  bail_if(git_commit_lookup(&head, repo, git_object_id(revision)), "git_commit_lookup");
-  git_object_free(revision);
+  git_commit *head = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
 
   /* Find out how many ancestors we have */
   int len = count_commit_parents(head, Rf_asInteger(max));
@@ -141,4 +146,42 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
   }
   Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   return build_tibble(4, "commit", ids, "author", author, "time", time, "message", msg);
+}
+
+SEXP R_git_commit_info(SEXP ptr, SEXP ref){
+  git_repository *repo = get_git_repository(ptr);
+  git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+  SEXP id = PROTECT(safe_string(git_oid_tostr_s(git_commit_id(commit))));
+  SEXP parent = PROTECT(safe_string(git_oid_tostr_s(git_commit_parent_id(commit, 0))));
+  SEXP author = PROTECT(Rf_ScalarString(make_author(git_commit_author(commit))));
+  SEXP committer = PROTECT(Rf_ScalarString(make_author(git_commit_committer(commit))));
+  SEXP message = PROTECT(safe_string(git_commit_message(commit)));
+  return build_list(5, "id", id, "parent", parent, "author", author, "committer", committer,
+                    "message", message);
+}
+
+SEXP R_git_diff_patch(SEXP ptr, SEXP ref, SEXP parent){
+  git_diff *diff = NULL;
+  git_tree *tree_x = NULL;
+  git_tree *tree_y = NULL;
+  git_patch *patch = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  git_commit *x = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+  git_commit *y = find_commit_from_string(repo, CHAR(STRING_ELT(parent, 0)));
+  bail_if(git_commit_tree(&tree_x, x), "git_commit_tree");
+  bail_if(git_commit_tree(&tree_y, y), "git_commit_tree");
+  git_commit_free(x);
+  git_commit_free(y);
+  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
+  bail_if(git_diff_tree_to_tree(&diff, repo, tree_x, tree_y, &opt), "git_diff_tree_to_tree");
+  git_tree_free(tree_x);
+  git_tree_free(tree_y);
+  bail_if(git_patch_from_diff(&patch, diff, 0), "git_patch_from_diff");
+  git_diff_free(diff);
+  git_buf buf = {0};
+  bail_if(git_patch_to_buf(&buf, patch), "git_patch_to_buf");
+  git_patch_free(patch);
+  SEXP out = Rf_mkCharLenCE(buf.ptr, buf.size, CE_UTF8);
+  git_buf_dispose(&buf);
+  return Rf_ScalarString(out);
 }
