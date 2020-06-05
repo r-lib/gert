@@ -60,6 +60,24 @@ static git_commit *find_commit_from_string(git_repository *repo, const char * re
   return commit;
 }
 
+static int count_commit_changes(git_repository *repo, git_commit *commit){
+  git_diff *diff = NULL;
+  git_tree *tree_x = NULL;
+  git_tree *tree_y = NULL;
+  git_commit *parent = NULL;
+  bail_if(git_commit_parent(&parent, commit, 0), "git_commit_parent");
+  bail_if(git_commit_tree(&tree_x, commit), "git_commit_tree");
+  bail_if(git_commit_tree(&tree_y, parent), "git_commit_tree");
+  git_commit_free(parent);
+  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
+  bail_if(git_diff_tree_to_tree(&diff, repo, tree_x, tree_y, &opt), "git_diff_tree_to_tree");
+  git_tree_free(tree_x);
+  git_tree_free(tree_y);
+  int count = git_diff_num_deltas(diff);
+  git_diff_free(diff);
+  return count;
+}
+
 SEXP R_git_signature_default(SEXP ptr){
   git_signature *sig;
   git_repository *repo = get_git_repository(ptr);
@@ -131,12 +149,14 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
   SEXP msg = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP author = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP time = PROTECT(Rf_allocVector(REALSXP, len));
+  SEXP deltas = PROTECT(Rf_allocVector(INTSXP, len));
 
   for(int i = 0; i < len; i++){
     SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(head))));
     SET_STRING_ELT(msg, i, safe_char(git_commit_message(head)));
     SET_STRING_ELT(author, i, make_author(git_commit_author(head)));
     REAL(time)[i] = git_commit_time(head);
+    INTEGER(deltas)[i] = count_commit_changes(repo, head);
 
     /* traverse to next commit (except for the final one) */
     if(i < len-1)
@@ -145,7 +165,8 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
     head = commit;
   }
   Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_tibble(4, "commit", ids, "author", author, "time", time, "message", msg);
+  return build_tibble(5, "commit", ids, "author", author, "time", time,
+                      "deltas", deltas, "message", msg);
 }
 
 SEXP R_git_commit_info(SEXP ptr, SEXP ref){
