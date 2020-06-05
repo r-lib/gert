@@ -1,6 +1,6 @@
 # Classed error handling
 # Todo: kclass is ignored right now, would this be useful to report?
-raise_libgit2_error <- function(code, message, kclass = 0){
+raise_libgit2_error <- function(code, message, where = "", kclass = 0){
   e <- structure(
     class = c(libgit2_error_name(code), "libgit2_error", "error", "condition"),
     list(message = message, call = substitute(gert/libgit2)) #call must be an R expression

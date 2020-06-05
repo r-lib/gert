@@ -6,10 +6,11 @@ void bail_if(int err, const char *what){
     SEXP code = PROTECT(Rf_ScalarInteger(err));
     SEXP kclass = PROTECT(Rf_ScalarInteger(info ? info->klass : NA_INTEGER));
     SEXP message = PROTECT(safe_string(info ? info->message : "Unknown error message"));
+    SEXP wheregit = PROTECT(safe_string(what));
     SEXP expr = PROTECT(Rf_install("raise_libgit2_error"));
-    SEXP call = PROTECT(Rf_lang4(expr, code, message, kclass));
+    SEXP call = PROTECT(Rf_lang5(expr, code, message, wheregit, kclass));
     Rf_eval(call, R_FindNamespace(Rf_mkString("gert")));
-    UNPROTECT(5);
+    UNPROTECT(6);
     Rf_error("Failed to raise gert S3 error (%s)", info->message);
   }
 }
