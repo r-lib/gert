@@ -62,17 +62,19 @@ static git_commit *find_commit_from_string(git_repository *repo, const char * re
 
 static int count_commit_changes(git_repository *repo, git_commit *commit){
   git_diff *diff = NULL;
-  git_tree *tree_x = NULL;
-  git_tree *tree_y = NULL;
+  git_tree *old_tree = NULL;
+  git_tree *new_tree = NULL;
   git_commit *parent = NULL;
-  bail_if(git_commit_parent(&parent, commit, 0), "git_commit_parent");
-  bail_if(git_commit_tree(&tree_x, commit), "git_commit_tree");
-  bail_if(git_commit_tree(&tree_y, parent), "git_commit_tree");
-  git_commit_free(parent);
+  bail_if(git_commit_tree(&new_tree, commit), "git_commit_tree");
+  if(git_commit_parentcount(commit) > 0){
+    bail_if(git_commit_parent(&parent, commit, 0), "git_commit_parent");
+    bail_if(git_commit_tree(&old_tree, parent), "git_commit_tree");
+    git_commit_free(parent);
+  }
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
-  bail_if(git_diff_tree_to_tree(&diff, repo, tree_x, tree_y, &opt), "git_diff_tree_to_tree");
-  git_tree_free(tree_x);
-  git_tree_free(tree_y);
+  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
+  git_tree_free(old_tree);
+  git_tree_free(new_tree);
   int count = git_diff_num_deltas(diff);
   git_diff_free(diff);
   return count;
@@ -183,20 +185,24 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
 
 SEXP R_git_diff_patch(SEXP ptr, SEXP ref, SEXP parent){
   git_diff *diff = NULL;
-  git_tree *tree_x = NULL;
-  git_tree *tree_y = NULL;
+  git_tree *old_tree = NULL;
+  git_tree *new_tree = NULL;
   git_patch *patch = NULL;
   git_repository *repo = get_git_repository(ptr);
-  git_commit *x = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
-  git_commit *y = find_commit_from_string(repo, CHAR(STRING_ELT(parent, 0)));
-  bail_if(git_commit_tree(&tree_x, x), "git_commit_tree");
-  bail_if(git_commit_tree(&tree_y, y), "git_commit_tree");
-  git_commit_free(x);
-  git_commit_free(y);
+  if(Rf_length(ref)){
+    git_commit *x = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+    bail_if(git_commit_tree(&new_tree, x), "git_commit_tree");
+    git_commit_free(x);
+  }
+  if(Rf_length(parent)){
+    git_commit *y = find_commit_from_string(repo, CHAR(STRING_ELT(parent, 0)));
+    bail_if(git_commit_tree(&old_tree, y), "git_commit_tree");
+    git_commit_free(y);
+  }
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
-  bail_if(git_diff_tree_to_tree(&diff, repo, tree_x, tree_y, &opt), "git_diff_tree_to_tree");
-  git_tree_free(tree_x);
-  git_tree_free(tree_y);
+  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
+  git_tree_free(old_tree);
+  git_tree_free(new_tree);
   bail_if(git_patch_from_diff(&patch, diff, 0), "git_patch_from_diff");
   git_diff_free(diff);
   git_buf buf = {0};
