@@ -89,15 +89,7 @@ git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.')
   if(length(deleted))
     git_rm(deleted, repo = repo)
 
-  new <- unstaged$file[unstaged$status == "new"]
-  if (length(new)) {
-    message("New, untracked files found, which won't be committed. Use git_add() instead.")
-  }
-
-  staged <- subset(git_status(repo), subset = staged)
-  if (nrow(staged)) {
-    git_commit(message = message, author = author, committer = committer, repo = repo)
-  }
+  git_commit(message = message, author = author, committer = committer, repo = repo)
 }
 
 #' @export
