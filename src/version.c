@@ -24,7 +24,7 @@ SEXP R_libgit2_config(){
   SEXP config_system = PROTECT(safe_string(buf.ptr));
   git_buf_dispose(&buf);
   git_libgit2_opts(GIT_OPT_GET_SEARCH_PATH, GIT_CONFIG_LEVEL_GLOBAL, &buf);
-  SEXP config_search_path = Rf_ScalarString(Rf_mkCharLen(buf.ptr, buf.size));
+  SEXP config_search_path = PROTECT(Rf_ScalarString(Rf_mkCharLen(buf.ptr, buf.size)));
   git_buf_dispose(&buf);
   return build_list(7, "version", version, "ssh", ssh, "https", https, "threads", threads,
                     "config.global", config_global, "config.system", config_system,
