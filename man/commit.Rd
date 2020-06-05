@@ -31,7 +31,7 @@ git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".")
 \arguments{
 \item{message}{a commit message}
 
-\item{author}{A \link{git_signature} value, default is \link{git_signature_default}.}
+\item{author}{A \link{git_signature} value, default is \code{\link[=git_signature_default]{git_signature_default()}}.}
 
 \item{committer}{A \link{git_signature} value, default is same as \code{author}}
 
@@ -51,17 +51,27 @@ Use \code{"."} to stage all changed files.}
 
 \item{type}{must be one of \code{"soft"}, \code{"hard"}, or \code{"mixed"}}
 }
+\value{
+\itemize{
+\item \code{git_status()}, \code{git_ls()}: A data frame with one row per file
+\item \code{git_log()}: A data frame with one row per commit
+\item \code{git_add()}, \code{git_rm()}, \code{git_reset()}: An object of class \code{git_repo_ptr}
+\item \code{git_commit()}, \code{git_commit_all()}: A SHA
+}
+}
 \description{
-To commit changes, start with \emph{staging} the files to be included
-in the commit using \code{\link[=git_add]{git_add()}} or \code{\link[=git_rm]{git_rm()}}. Use \code{\link[=git_status]{git_status()}} to see an
-overview of staged and unstaged changes, and finally \code{\link[=git_commit]{git_commit()}} creates
-a new commit with currently staged files.
+To commit changes, start by \emph{staging} the files to be included in the commit
+using \code{git_add()} or \code{git_rm()}. Use \code{git_status()} to see an overview of
+staged and unstaged changes, and finally \code{git_commit()} creates a new commit
+with currently staged files.
 
-\link{git_commit_all} is a shorthand that will automatically stage all new and
-modified files and then commit.
+\code{git_commit_all()} is a convenience function that automatically stages and
+commits all modified files. Note that \code{git_commit_all()} does \strong{not} add
+new, untracked files to the repository. You need to make an explicit call to
+\code{git_add()} to start tracking new files.
 
-Also \code{\link[=git_log]{git_log()}} shows the most recent commits and \code{\link[=git_ls]{git_ls()}} lists
-all the files that are being tracked in the repository.
+\code{git_log()} shows the most recent commits and \code{git_ls()} lists all the files
+that are being tracked in the repository.
 }
 \examples{
 oldwd <- getwd()
