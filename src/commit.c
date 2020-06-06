@@ -184,8 +184,9 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   SEXP author = PROTECT(Rf_ScalarString(make_author(git_commit_author(commit))));
   SEXP committer = PROTECT(Rf_ScalarString(make_author(git_commit_committer(commit))));
   SEXP message = PROTECT(safe_string(git_commit_message(commit)));
-  return build_list(5, "id", id, "parent", parent, "author", author, "committer", committer,
-                    "message", message);
+  SEXP changes = PROTECT(Rf_ScalarInteger(count_commit_changes(repo, commit)));
+  return build_list(6, "id", id, "parent", parent, "author", author, "committer", committer,
+                    "message", message, "changes", changes);
 }
 
 SEXP R_git_commit_diff(SEXP ptr, SEXP ref){
