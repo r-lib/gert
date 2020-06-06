@@ -209,6 +209,6 @@ SEXP R_git_diff_patch(SEXP ptr, SEXP ref, SEXP parent){
   bail_if(git_patch_to_buf(&buf, patch), "git_patch_to_buf");
   git_patch_free(patch);
   SEXP out = Rf_mkCharLenCE(buf.ptr, buf.size, CE_UTF8);
-  git_buf_dispose(&buf);
+  git_buf_free(&buf);
   return Rf_ScalarString(out);
 }
