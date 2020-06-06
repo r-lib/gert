@@ -29,7 +29,7 @@ Suggests:
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
+Roxygen: list(load = "installed", markdown = TRUE)
 RoxygenNote: 7.1.0
 SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or
     libgit2-dev (deb)

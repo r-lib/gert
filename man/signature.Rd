@@ -30,7 +30,6 @@ This is needed by the \link{git_commit} function.
 Other git: 
 \code{\link{branch}},
 \code{\link{commit}},
-\code{\link{diff}()},
 \code{\link{fetch}},
 \code{\link{git_config}()},
 \code{\link{git_merge}()},

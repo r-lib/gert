@@ -60,7 +60,7 @@ static git_commit *find_commit_from_string(git_repository *repo, const char * re
   return commit;
 }
 
-static int count_commit_changes(git_repository *repo, git_commit *commit){
+static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
   git_diff *diff = NULL;
   git_tree *old_tree = NULL;
   git_tree *new_tree = NULL;
@@ -75,6 +75,11 @@ static int count_commit_changes(git_repository *repo, git_commit *commit){
   bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
   git_tree_free(old_tree);
   git_tree_free(new_tree);
+  return diff;
+}
+
+static int count_commit_changes(git_repository *repo, git_commit *commit){
+  git_diff *diff = commit_to_diff(repo, commit);
   int count = git_diff_num_deltas(diff);
   git_diff_free(diff);
   return count;
@@ -183,26 +188,11 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
                     "message", message);
 }
 
-SEXP R_git_diff_patch(SEXP ptr, SEXP ref, SEXP parent){
-  git_diff *diff = NULL;
-  git_tree *old_tree = NULL;
-  git_tree *new_tree = NULL;
+SEXP R_git_commit_diff(SEXP ptr, SEXP ref){
   git_patch *patch = NULL;
   git_repository *repo = get_git_repository(ptr);
-  if(Rf_length(ref)){
-    git_commit *x = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
-    bail_if(git_commit_tree(&new_tree, x), "git_commit_tree");
-    git_commit_free(x);
-  }
-  if(Rf_length(parent)){
-    git_commit *y = find_commit_from_string(repo, CHAR(STRING_ELT(parent, 0)));
-    bail_if(git_commit_tree(&old_tree, y), "git_commit_tree");
-    git_commit_free(y);
-  }
-  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
-  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
-  git_tree_free(old_tree);
-  git_tree_free(new_tree);
+  git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+  git_diff *diff = commit_to_diff(repo, commit);
   bail_if(git_patch_from_diff(&patch, diff, 0), "git_patch_from_diff");
   git_diff_free(diff);
   git_buf buf = {0};
