@@ -193,12 +193,17 @@ SEXP R_git_commit_diff(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
   git_diff *diff = commit_to_diff(repo, commit);
-  bail_if(git_patch_from_diff(&patch, diff, 0), "git_patch_from_diff");
+  int n = git_diff_num_deltas(diff);
+  SEXP vec = PROTECT(Rf_allocVector(STRSXP, n));
+  for(int i = 0; i < n ; i++){
+    git_buf buf = {0};
+    bail_if(git_patch_from_diff(&patch, diff, i), "git_patch_from_diff");
+    bail_if(git_patch_to_buf(&buf, patch), "git_patch_to_buf");
+    SET_STRING_ELT(vec, i, Rf_mkCharLenCE(buf.ptr, buf.size, CE_UTF8));
+    git_patch_free(patch);
+    git_buf_free(&buf);
+  }
   git_diff_free(diff);
-  git_buf buf = {0};
-  bail_if(git_patch_to_buf(&buf, patch), "git_patch_to_buf");
-  git_patch_free(patch);
-  SEXP out = Rf_mkCharLenCE(buf.ptr, buf.size, CE_UTF8);
-  git_buf_free(&buf);
-  return Rf_ScalarString(out);
+  UNPROTECT(1);
+  return vec;
 }
