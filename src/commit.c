@@ -1,19 +1,18 @@
 #include <string.h>
 #include "utils.h"
 
-static int count_commit_parents(git_commit *input, int max){
-  git_commit *x = NULL;
+static int count_commit_ancestors(git_commit *x, int max){
   git_commit *y = NULL;
-  git_commit_dup(&x, input);
   for(int i = 1; i < max; i++){
     int res = git_commit_parent(&y, x, 0);
-    git_commit_free(x);
+    if(i > 1)
+      git_commit_free(x);
     if(res == GIT_ENOTFOUND)
       return i;
     bail_if(res, "git_commit_parent");
     x = y;
-  }
-  git_commit_free(x);
+  } //reached max
+  git_commit_free(y);
   return max;
 }
 
@@ -151,7 +150,7 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
   git_commit *head = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
 
   /* Find out how many ancestors we have */
-  int len = count_commit_parents(head, Rf_asInteger(max));
+  int len = count_commit_ancestors(head, Rf_asInteger(max));
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP msg = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP author = PROTECT(Rf_allocVector(STRSXP, len));
