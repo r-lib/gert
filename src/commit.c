@@ -105,6 +105,18 @@ SEXP R_git_signature_create(SEXP name, SEXP email, SEXP time, SEXP offset){
   return new_git_sig(sig);
 }
 
+SEXP R_git_signature_parse(SEXP str){
+  git_signature *sig = NULL;
+  bail_if(git_signature_from_buffer(&sig, CHAR(STRING_ELT(str, 0))), "git_signature_from_buffer");
+  if(sig->when.time > 0){
+    return new_git_sig(sig);
+  }
+  git_signature *now = NULL;
+  bail_if(git_signature_now(&now, sig->name, sig->email), "git_signature_now");
+  git_signature_free(sig);
+  return new_git_sig(now);
+}
+
 SEXP R_git_signature_info(SEXP ptr){
   git_signature *sig = get_signature(ptr);
   SEXP author = PROTECT(Rf_ScalarString(make_author(sig)));

@@ -42,6 +42,7 @@ extern SEXP R_git_reset(SEXP, SEXP, SEXP);
 extern SEXP R_git_signature_create(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_signature_default(SEXP);
 extern SEXP R_git_signature_info(SEXP);
+extern SEXP R_git_signature_parse(SEXP);
 extern SEXP R_git_stash_drop(SEXP, SEXP);
 extern SEXP R_git_stash_list(SEXP);
 extern SEXP R_git_stash_pop(SEXP, SEXP);
@@ -87,6 +88,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_signature_create",   (DL_FUNC) &R_git_signature_create,   4},
   {"R_git_signature_default",  (DL_FUNC) &R_git_signature_default,  1},
   {"R_git_signature_info",     (DL_FUNC) &R_git_signature_info,     1},
+  {"R_git_signature_parse",    (DL_FUNC) &R_git_signature_parse,    1},
   {"R_git_stash_drop",         (DL_FUNC) &R_git_stash_drop,         2},
   {"R_git_stash_list",         (DL_FUNC) &R_git_stash_list,         1},
   {"R_git_stash_pop",          (DL_FUNC) &R_git_stash_pop,          2},

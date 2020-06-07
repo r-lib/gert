@@ -16,6 +16,14 @@ git_signature_default <- function(repo = '.'){
 
 #' @export
 #' @rdname signature
+#' @useDynLib gert R_git_signature_parse
+git_signature_parse <- function(sig){
+  sig <- as.character(sig)
+  .Call(R_git_signature_parse, sig)
+}
+
+#' @export
+#' @rdname signature
 #' @useDynLib gert R_git_signature_create
 #' @param name Real name of the committer
 #' @param email Email address of the commmitter

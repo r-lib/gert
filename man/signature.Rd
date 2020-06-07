@@ -3,10 +3,13 @@
 \name{signature}
 \alias{signature}
 \alias{git_signature_default}
+\alias{git_signature_parse}
 \alias{git_signature}
 \title{Author Signature}
 \usage{
 git_signature_default(repo = ".")
+
+git_signature_parse(sig)
 
 git_signature(name, email, time = NULL)
 }
