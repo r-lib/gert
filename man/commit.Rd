@@ -6,6 +6,7 @@
 \alias{git_commit_all}
 \alias{git_commit_info}
 \alias{git_commit_diff}
+\alias{git_commit_patch}
 \alias{git_add}
 \alias{git_rm}
 \alias{git_status}
@@ -21,6 +22,8 @@ git_commit_all(message, author = NULL, committer = NULL, repo = ".")
 git_commit_info(ref = "HEAD", repo = ".")
 
 git_commit_diff(ref = "HEAD", repo = ".")
+
+git_commit_patch(ref = "HEAD", repo = ".")
 
 git_add(files, force = FALSE, repo = ".")
 

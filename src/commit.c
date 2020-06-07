@@ -176,6 +176,34 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
                       "deltas", deltas, "message", msg);
 }
 
+SEXP R_git_commit_diff(SEXP ptr, SEXP ref){
+  git_repository *repo = get_git_repository(ptr);
+  git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+  git_diff *diff = commit_to_diff(repo, commit);
+  int n = git_diff_num_deltas(diff);
+  SEXP patches = PROTECT(Rf_allocVector(STRSXP, n));
+  SEXP oldfiles = PROTECT(Rf_allocVector(STRSXP, n));
+  SEXP newfiles = PROTECT(Rf_allocVector(STRSXP, n));
+  SEXP status = PROTECT(Rf_allocVector(STRSXP, n));
+  for(int i = 0; i < n ; i++){
+    git_buf buf = {0};
+    git_patch *patch = NULL;
+    const git_diff_delta *delta = git_diff_get_delta(diff, i);
+    SET_STRING_ELT(oldfiles, i, safe_char(delta->old_file.path));
+    SET_STRING_ELT(newfiles, i, safe_char(delta->new_file.path));
+    char s = git_diff_status_char(delta->status);
+    SET_STRING_ELT(status, i, Rf_mkCharLen(&s, 1));
+    if(!git_patch_from_diff(&patch, diff, i) && patch){
+      bail_if(git_patch_to_buf(&buf, patch), "git_patch_to_buf");
+      SET_STRING_ELT(patches, i, Rf_mkCharLenCE(buf.ptr, buf.size, CE_UTF8));
+      git_patch_free(patch);
+      git_buf_free(&buf);
+    }
+  }
+  git_diff_free(diff);
+  return build_tibble(4, "status", status, "old", oldfiles, "new", newfiles, "patch", patches);
+}
+
 SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
@@ -184,27 +212,7 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   SEXP author = PROTECT(Rf_ScalarString(make_author(git_commit_author(commit))));
   SEXP committer = PROTECT(Rf_ScalarString(make_author(git_commit_committer(commit))));
   SEXP message = PROTECT(safe_string(git_commit_message(commit)));
-  SEXP changes = PROTECT(Rf_ScalarInteger(count_commit_changes(repo, commit)));
+  SEXP diff = PROTECT(R_git_commit_diff(ptr, ref));
   return build_list(6, "id", id, "parent", parent, "author", author, "committer", committer,
-                    "message", message, "changes", changes);
-}
-
-SEXP R_git_commit_diff(SEXP ptr, SEXP ref){
-  git_patch *patch = NULL;
-  git_repository *repo = get_git_repository(ptr);
-  git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
-  git_diff *diff = commit_to_diff(repo, commit);
-  int n = git_diff_num_deltas(diff);
-  SEXP vec = PROTECT(Rf_allocVector(STRSXP, n));
-  for(int i = 0; i < n ; i++){
-    git_buf buf = {0};
-    bail_if(git_patch_from_diff(&patch, diff, i), "git_patch_from_diff");
-    bail_if(git_patch_to_buf(&buf, patch), "git_patch_to_buf");
-    SET_STRING_ELT(vec, i, Rf_mkCharLenCE(buf.ptr, buf.size, CE_UTF8));
-    git_patch_free(patch);
-    git_buf_free(&buf);
-  }
-  git_diff_free(diff);
-  UNPROTECT(1);
-  return vec;
+                    "message", message, "diff", diff);
 }

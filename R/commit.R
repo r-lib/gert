@@ -107,6 +107,12 @@ git_commit_diff <- function(ref = "HEAD", repo = '.'){
   ref <- as.character(ref)
   .Call(R_git_commit_diff, repo, ref)
 }
+#
+#' @export
+#' @rdname commit
+git_commit_patch <- function(ref = "HEAD", repo = '.'){
+  git_commit_diff(ref = ref, repo = repo)$patch
+}
 
 #' @export
 #' @rdname commit
