@@ -19,6 +19,8 @@ class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository,
 its parent directory is considered, then the parent's parent, and so on. To
 prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
 
+\item{sig}{string in proper \code{"First Last <your@email.com>"} format, see details.}
+
 \item{name}{Real name of the committer}
 
 \item{email}{Email address of the commmitter}
@@ -26,8 +28,15 @@ prevent this recursive search, provide a filepath protected with \code{\link[=I]
 \item{time}{timestamp of class POSIXt or NULL}
 }
 \description{
-A signature contains the author and timestamp of a commit.
-This is needed by the \link{git_commit} function.
+A signature contains the author and timestamp of a commit. Each commit
+includes a signature of the author and committer (which can be identical).
+}
+\details{
+A signature string has format \code{"Real Name <email> timestamp tzoffset"}. The
+\verb{timestamp tzoffset} piece can be omitted in which case the current local
+time is used. If not omitted, \code{timestamp} must contain the number
+of seconds since the Unix epoch and \code{tzoffset} is the timezone offset in
+\code{hhmm} format (note the lack of a colon separator)
 }
 \seealso{
 Other git: 

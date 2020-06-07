@@ -1,7 +1,13 @@
 #' Author Signature
 #'
-#' A signature contains the author and timestamp of a commit.
-#' This is needed by the [git_commit] function.
+#' A signature contains the author and timestamp of a commit. Each commit
+#' includes a signature of the author and committer (which can be identical).
+#'
+#' A signature string has format `"Real Name <email> timestamp tzoffset"`. The
+#' `timestamp tzoffset` piece can be omitted in which case the current local
+#' time is used. If not omitted, `timestamp` must contain the number
+#' of seconds since the Unix epoch and `tzoffset` is the timezone offset in
+#' `hhmm` format (note the lack of a colon separator)
 #'
 #' @export
 #' @rdname signature
@@ -16,6 +22,7 @@ git_signature_default <- function(repo = '.'){
 
 #' @export
 #' @rdname signature
+#' @param sig string in proper `"First Last <your@email.com>"` format, see details.
 #' @useDynLib gert R_git_signature_parse
 git_signature_parse <- function(sig){
   sig <- as.character(sig)
