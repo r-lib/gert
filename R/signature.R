@@ -15,18 +15,22 @@
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_signature_default
+#' @examples # Your default user
+#' try(git_signature_default())
+#'
+#' # Specify explicit name and email
+#' git_signature("Some committer", "sarah@gmail.com")
+#'
+#' # Create signature for an hour ago
+#' (sig <- git_signature("Han", "han@company.com", Sys.time() - 3600))
+#'
+#' # Parse a signature
+#' git_signature_parse(sig)
+#' git_signature_parse("Emma <emma@mu.edu>")
 git_signature_default <- function(repo = '.'){
   repo <- git_open(repo)
-  .Call(R_git_signature_default, repo)
-}
-
-#' @export
-#' @rdname signature
-#' @param sig string in proper `"First Last <your@email.com>"` format, see details.
-#' @useDynLib gert R_git_signature_parse
-git_signature_parse <- function(sig){
-  sig <- as.character(sig)
-  .Call(R_git_signature_parse, sig)
+  sig <- .Call(R_git_signature_default, repo)
+  sig_data_to_string(list(name = sig$name, email = sig$email))
 }
 
 #' @export
@@ -45,5 +49,45 @@ git_signature <- function(name, email, time = NULL){
     hours <- as.integer(substring(tz, 1, 3))
     offset <- hours * 60 + minutes
   }
-  .Call(R_git_signature_create, name, email, time, offset)
+  sig <- .Call(R_git_signature_create, name, email, time, offset)
+  if(length(time)){
+    sig_data_to_string(sig)
+  } else {
+    sig_data_to_string(list(name = sig$name, email = sig$email))
+  }
+}
+
+#' @export
+#' @rdname signature
+#' @param sig string in proper `"First Last <your@email.com>"` format, see details.
+#' @useDynLib gert R_git_signature_parse
+git_signature_parse <- function(sig){
+  assert_string(sig)
+  .Call(R_git_signature_parse, sig)
+}
+
+offset_to_string <- function(offset){
+  if(length(offset) && is.numeric(offset)){
+    hours <- as.integer(offset %/% 60)
+    mins <- as.integer(offset %% 60)
+    sprintf('%+03d%02d', hours, mins)
+  } else ""
+}
+
+sig_data_to_string <- function(x){
+  sig <- sprintf("%s <%s>", x$name, x$email)
+  if(length(x$time)){
+    sig <- paste(sig, unclass(x$time), offset_to_string(x$offset))
+  }
+  structure(trimws(sig), class = "git_signature")
+}
+
+#' @export
+print.git_signature <- function(x, ...){
+  sig <- git_signature_parse(x)
+  name <- sig$name
+  email <- sig$email
+  time <- format(sig$time, "%a %b %d %H:%M:%S %Y") #print as user local time
+  offset <- offset_to_string(sig$offset)
+  cat(sprintf('[git signature]\nAuthor: %s <%s>\nDate: %s %s\n', name, email, time, offset))
 }

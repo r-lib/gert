@@ -5,15 +5,16 @@ test_that("creating signatures", {
   author <- sprintf("%s <%s>", name, email)
 
   sig <- git_signature(name, email)
-  info <- git_signature_info(sig)
-  expect_equal(info$author, author)
-  expect_lt(difftime(info$time, now, 'secs'), 1)
+  sigdata <- git_signature_parse(sig)
+  expect_equal(sigdata$name, name)
+  expect_equal(sigdata$email, email)
+  expect_lt(difftime(sigdata$time, now, 'secs'), 1)
 
   yesterday <- now - 24*60*60
   sig <- git_signature(name, email, time = yesterday)
-  info <- git_signature_info(sig)
-  expect_equal(info$author, author)
-  expect_lt(difftime(info$time, yesterday, 'secs'), 1)
+  sigdata <- git_signature_parse(sig)
+  expect_equal(sigdata$name, name)
+  expect_lt(difftime(sigdata$time, yesterday, 'secs'), 1)
 })
 
 test_that("adding and removing files", {

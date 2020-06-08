@@ -119,7 +119,8 @@ configure_local_user <- function(repo = ".") {
 }
 
 local_author <- function(repo = ".") {
-  git_signature_info(git_signature_default(repo))$author
+  user <- git_signature_parse(git_signature_default(repo))
+  sprintf("%s <%s>", user$name, user$email)
 }
 
 # helpers used in pkgdown setup

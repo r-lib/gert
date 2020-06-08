@@ -62,22 +62,22 @@ static int count_commit_changes(git_repository *repo, git_commit *commit){
   return count;
 }
 
-static SEXP new_git_sig(git_signature *sig){
-  SEXP author = PROTECT(Rf_ScalarString(make_author(sig)));
+static SEXP signature_data(git_signature *sig){
+  SEXP name = PROTECT(safe_string(sig->name));
+  SEXP email = PROTECT(safe_string(sig->email));
   SEXP time = PROTECT(Rf_ScalarReal(sig->when.time));
   SEXP offset = PROTECT(Rf_ScalarInteger(sig->when.offset));
   Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  SEXP out = PROTECT(build_list(3, "author", author, "time", time, "offset", offset));
-  Rf_setAttrib(out, R_ClassSymbol, Rf_mkString("git_sig"));
-  UNPROTECT(1);
-  return out;
+  Rf_setAttrib(time, PROTECT(Rf_install("tz")), PROTECT(safe_string("UTC")));
+  UNPROTECT(2);
+  return build_list(4, "name", name, "email", email, "time", time, "offset", offset);
 }
 
 SEXP R_git_signature_default(SEXP ptr){
   git_signature *sig;
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_signature_default(&sig, repo), "git_signature_default");
-  return new_git_sig(sig);
+  return signature_data(sig);
 }
 
 SEXP R_git_signature_create(SEXP name, SEXP email, SEXP time, SEXP offset){
@@ -91,10 +91,10 @@ SEXP R_git_signature_create(SEXP name, SEXP email, SEXP time, SEXP offset){
     int coff = Rf_asInteger(offset);
     bail_if(git_signature_new(&sig, cname, cmail, ctime, coff), "git_signature_new");
   }
-  return new_git_sig(sig);
+  return signature_data(sig);
 }
 
-static git_signature *parse_sig_str(SEXP x){
+static git_signature *parse_signature(SEXP x){
   const char *str = CHAR(STRING_ELT(x, 0));
   git_signature *sig = NULL;
   bail_if(git_signature_from_buffer(&sig, str), "git_signature_from_buffer");
@@ -108,7 +108,7 @@ static git_signature *parse_sig_str(SEXP x){
 }
 
 SEXP R_git_signature_parse(SEXP x){
-  return new_git_sig(parse_sig_str(x));
+  return signature_data(parse_signature(x));
 }
 
 SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer){
@@ -119,8 +119,8 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer){
   git_reference *head = NULL;
   git_oid tree_id, commit_id;
   git_repository *repo = get_git_repository(ptr);
-  git_signature *authsig = parse_sig_str(author);
-  git_signature *commitsig = parse_sig_str(committer);
+  git_signature *authsig = parse_signature(author);
+  git_signature *commitsig = parse_signature(committer);
   if(git_repository_head(&head, repo) == 0){
     bail_if(git_commit_lookup(&commit, repo, git_reference_target(head)), "git_commit_lookup");
   }

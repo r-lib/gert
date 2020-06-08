@@ -63,10 +63,16 @@
 #' unlink(repo, recursive = TRUE)
 git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
-  if(!length(author))
+  if(!length(author)) {
     author <- git_signature_default(repo = repo)
-  if(!length(committer))
+  } else {
+    git_signature_parse(author) #validate
+  }
+  if(!length(committer)){
     committer <- author
+  } else {
+    git_signature_parse(committer)  #validate
+  }
   stopifnot(is.character(message), length(message) == 1)
   status <- git_status(repo = repo)
   if(!any(status$staged))
