@@ -181,15 +181,8 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
 }
 
 #' @export
-#' @useDynLib gert R_git_signature_info
-print.git_sig_ptr <- function(x, ...){
-  info <- git_signature_info(x)
-  cat(sprintf("<git signature>: %s at %s\n", info$author, as.character(info$time)))
-}
-
-git_signature_info <- function(signature){
-  stopifnot(inherits(signature, 'git_sig_ptr'))
-  .Call(R_git_signature_info, signature)
+print.git_sig <- function(x, ...){
+  cat(sprintf("<git signature>: %s at %s\n", x$author, as.character(x$time)))
 }
 
 assert_string <- function(x){
