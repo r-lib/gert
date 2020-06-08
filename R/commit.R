@@ -186,11 +186,6 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
   .Call(R_git_reset, repo, ref, typenum)
 }
 
-#' @export
-print.git_sig <- function(x, ...){
-  cat(sprintf("<git signature>: %s at %s\n", x$author, as.character(x$time)))
-}
-
 assert_string <- function(x){
   if(!is.character(x) || !length(x))
     stop("Argument must be a string of length 1")
