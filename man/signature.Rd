@@ -3,15 +3,15 @@
 \name{signature}
 \alias{signature}
 \alias{git_signature_default}
-\alias{git_signature_parse}
 \alias{git_signature}
+\alias{git_signature_parse}
 \title{Author Signature}
 \usage{
 git_signature_default(repo = ".")
 
-git_signature_parse(sig)
-
 git_signature(name, email, time = NULL)
+
+git_signature_parse(sig)
 }
 \arguments{
 \item{repo}{The repository to target, either as a filepath or as an object of
@@ -19,13 +19,13 @@ class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository,
 its parent directory is considered, then the parent's parent, and so on. To
 prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
 
-\item{sig}{string in proper \code{"First Last <your@email.com>"} format, see details.}
-
 \item{name}{Real name of the committer}
 
 \item{email}{Email address of the commmitter}
 
 \item{time}{timestamp of class POSIXt or NULL}
+
+\item{sig}{string in proper \code{"First Last <your@email.com>"} format, see details.}
 }
 \description{
 A signature contains the author and timestamp of a commit. Each commit
@@ -37,6 +37,20 @@ A signature string has format \code{"Real Name <email> timestamp tzoffset"}. The
 time is used. If not omitted, \code{timestamp} must contain the number
 of seconds since the Unix epoch and \code{tzoffset} is the timezone offset in
 \code{hhmm} format (note the lack of a colon separator)
+}
+\examples{
+# Your default user
+try(git_signature_default())
+
+# Specify explicit name and email
+git_signature("Some committer", "sarah@gmail.com")
+
+# Create signature for an hour ago
+(sig <- git_signature("Han", "han@company.com", Sys.time() - 3600))
+
+# Parse a signature
+git_signature_parse(sig)
+git_signature_parse("Emma <emma@mu.edu>")
 }
 \seealso{
 Other git: 

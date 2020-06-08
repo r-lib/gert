@@ -63,10 +63,16 @@
 #' unlink(repo, recursive = TRUE)
 git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
-  if(!length(author))
+  if(!length(author)) {
     author <- git_signature_default(repo = repo)
-  if(!length(committer))
+  } else {
+    git_signature_parse(author) #validate
+  }
+  if(!length(committer)){
     committer <- author
+  } else {
+    git_signature_parse(committer)  #validate
+  }
   stopifnot(is.character(message), length(message) == 1)
   status <- git_status(repo = repo)
   if(!any(status$staged))
@@ -178,18 +184,6 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
   repo <- git_open(repo)
   ref <- as.character(ref)
   .Call(R_git_reset, repo, ref, typenum)
-}
-
-#' @export
-#' @useDynLib gert R_git_signature_info
-print.git_sig_ptr <- function(x, ...){
-  info <- git_signature_info(x)
-  cat(sprintf("<git signature>: %s at %s\n", info$author, as.character(info$time)))
-}
-
-git_signature_info <- function(signature){
-  stopifnot(inherits(signature, 'git_sig_ptr'))
-  .Call(R_git_signature_info, signature)
 }
 
 assert_string <- function(x){
