@@ -3,8 +3,8 @@
 #' Temporary stash away changed from the working directory.
 #'
 #' @export
-#' @rdname stash
-#' @name stash
+#' @rdname git_stash
+#' @name git_stash
 #' @inheritParams git_open
 #' @useDynLib gert R_git_stash_save
 #' @param message optional message to store the stash
@@ -24,7 +24,7 @@ git_stash_save <- function(message = "", keep_index = FALSE, include_untracked =
 }
 
 #' @export
-#' @rdname stash
+#' @rdname git_stash
 #' @useDynLib gert R_git_stash_pop
 #' @param index The position within the stash list. 0 points to the
 #' most recent stashed state.
@@ -34,7 +34,7 @@ git_stash_pop <- function(index = 0, repo = "."){
 }
 
 #' @export
-#' @rdname stash
+#' @rdname git_stash
 #' @useDynLib gert R_git_stash_drop
 git_stash_drop <- function(index = 0, repo = "."){
   repo <- git_open(repo)
@@ -42,7 +42,7 @@ git_stash_drop <- function(index = 0, repo = "."){
 }
 
 #' @export
-#' @rdname stash
+#' @rdname git_stash
 #' @useDynLib gert R_git_stash_list
 git_stash_list <- function(repo = "."){
   repo <- git_open(repo)

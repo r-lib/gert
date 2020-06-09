@@ -18,7 +18,8 @@
 #'
 #' @export
 #' @family git
-#' @rdname merge
+#' @rdname git_merge
+#' @name git_merge
 #' @inheritParams git_open
 #' @param ref branch or commit that you want to merge
 #' @param commit_on_success automatically create a merge commit if the merge succeeds without
@@ -52,7 +53,7 @@ git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
 }
 
 #' @export
-#' @rdname merge
+#' @rdname git_merge
 #' @useDynLib gert R_git_merge_base
 #' @param target the branch where you want to merge into. Defaults to current `HEAD`.
 git_merge_base <- function(ref, target = "HEAD", repo = '.'){
@@ -61,7 +62,7 @@ git_merge_base <- function(ref, target = "HEAD", repo = '.'){
 }
 
 #' @export
-#' @rdname merge
+#' @rdname git_merge
 #' @useDynLib gert R_git_merge_analysis
 git_merge_analysis <- function(ref, repo = '.'){
   repo <- git_open(repo)
@@ -69,7 +70,7 @@ git_merge_analysis <- function(ref, repo = '.'){
 }
 
 #' @export
-#' @rdname merge
+#' @rdname git_merge
 #' @useDynLib gert R_git_merge_stage
 git_merge_stage <- function(ref, repo = '.'){
   repo <- git_open(repo)
@@ -77,7 +78,7 @@ git_merge_stage <- function(ref, repo = '.'){
 }
 
 #' @export
-#' @rdname merge
+#' @rdname git_merge
 #' @useDynLib gert R_git_merge_cleanup
 git_merge_cleanup <- function(repo = '.'){
   repo <- git_open(repo)

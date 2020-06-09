@@ -3,8 +3,8 @@
 #' Add, remove and list remotes.
 #'
 #' @export
-#' @rdname remotes
-#' @name remotes
+#' @rdname git_remote
+#' @name git_remote
 #' @inheritParams git_open
 #' @param name unique name of the remote
 #' @param url server url (https or ssh)
@@ -15,7 +15,7 @@ git_remote_list <- function(repo = '.'){
 }
 
 #' @export
-#' @rdname remotes
+#' @rdname git_remote
 #' @param refspec optional string with the remote fetch value
 #' @useDynLib gert R_git_remote_add
 git_remote_add <- function(name, url, refspec = NULL, repo = '.'){
@@ -29,7 +29,7 @@ git_remote_add <- function(name, url, refspec = NULL, repo = '.'){
 }
 
 #' @export
-#' @rdname remotes
+#' @rdname git_remote
 #' @useDynLib gert R_git_remote_remove
 git_remote_remove <- function(name, repo = '.'){
   repo <- git_open(repo)
@@ -39,7 +39,7 @@ git_remote_remove <- function(name, repo = '.'){
 }
 
 #' @export
-#' @rdname remotes
+#' @rdname git_remote
 #' @useDynLib gert R_git_remote_set_url
 git_remote_set_url <- function(name, url, repo = '.'){
   repo <- git_open(repo)
@@ -50,7 +50,7 @@ git_remote_set_url <- function(name, url, repo = '.'){
 }
 
 #' @export
-#' @rdname remotes
+#' @rdname git_remote
 git_refspecs <- function(repo = '.'){
   remotes <- git_remote_list()
   lens <- vapply(remotes$refspecs, length, numeric(1))

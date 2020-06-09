@@ -3,8 +3,8 @@
 #' Create and list tags.
 #'
 #' @export
-#' @rdname tag
-#' @name tag
+#' @rdname git_tag
+#' @name git_tag
 #' @inheritParams git_open
 #' @param match pattern to filter tags (use `*` for wildcard)
 #' @useDynLib gert R_git_tag_list
@@ -15,7 +15,7 @@ git_tag_list <- function(match = "*", repo = '.'){
 }
 
 #' @export
-#' @rdname tag
+#' @rdname git_tag
 #' @param name tag name
 #' @param message tag message
 #' @param ref target reference to tag
@@ -28,7 +28,7 @@ git_tag_create <- function(name, message, ref = "HEAD", repo = '.'){
 }
 
 #' @export
-#' @rdname tag
+#' @rdname git_tag
 #' @useDynLib gert R_git_tag_delete
 git_tag_delete <- function(name, repo = '.'){
   repo <- git_open(repo)
@@ -37,7 +37,7 @@ git_tag_delete <- function(name, repo = '.'){
 }
 
 #' @export
-#' @rdname tag
+#' @rdname git_tag
 #' @param ... other arguments passed to [git_push]
 git_tag_push <- function(name, ..., repo = '.'){
   ref <- paste0('refs/tags/', name)

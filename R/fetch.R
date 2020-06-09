@@ -6,8 +6,8 @@
 #'
 #' @export
 #' @family git
-#' @name fetch
-#' @rdname fetch
+#' @name git_fetch
+#' @rdname git_fetch
 #' @inheritParams git_open
 #' @useDynLib gert R_git_remote_fetch
 #' @param remote name of a remote listed in [git_remote_list()]
@@ -36,7 +36,7 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
 }
 
 #' @export
-#' @rdname fetch
+#' @rdname git_fetch
 #' @useDynLib gert R_git_remote_push
 git_push <- function(remote = NULL, refspec = NULL, password = askpass,
                      ssh_key = NULL, mirror = FALSE, force = FALSE,
@@ -80,7 +80,7 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
 }
 
 #' @export
-#' @rdname fetch
+#' @rdname git_fetch
 #' @useDynLib gert R_git_repository_clone
 #' @param url remote url. Typically starts with `https://github.com/` for public
 #' repositories, and `https://yourname@github.com/` or `git@github.com/` for
@@ -137,7 +137,7 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_k
 }
 
 #' @export
-#' @rdname fetch
+#' @rdname git_fetch
 #' @param ... arguments passed to [git_fetch]
 git_pull <- function(..., repo = '.'){
   repo <- git_open(repo)

@@ -3,7 +3,7 @@
 #' Some wrappers for working with Github.
 #'
 #' @export
-#' @inheritParams fetch
+#' @inheritParams git_fetch
 #' @param pr number with PR to check out
 git_checkout_pull_request <- function(pr = 1, remote = 'origin', repo = '.'){
   local_branch <- sprintf('pr/%d', pr)

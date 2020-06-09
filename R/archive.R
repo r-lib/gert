@@ -4,8 +4,8 @@
 #' is returned by the function.
 #'
 #' @export
-#' @rdname archive
-#' @name archive
+#' @rdname git_archive
+#' @name git_archive
 #' @family git
 #' @inheritParams git_open
 #' @param file name of the output zip file. Default is returned

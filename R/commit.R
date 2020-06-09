@@ -15,8 +15,8 @@
 #' that are being tracked in the repository.
 #'
 #' @export
-#' @rdname commit
-#' @name commit
+#' @rdname git_commit
+#' @name git_commit
 #' @family git
 #' @inheritParams git_open
 #' @param message a commit message
@@ -81,7 +81,7 @@ git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
 }
 
 #' @export
-#' @rdname commit
+#' @rdname git_commit
 git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.'){
   repo <- git_open(repo)
   unstaged <- git_status(staged = FALSE, repo = repo)
@@ -98,7 +98,7 @@ git_commit_all <- function(message, author = NULL, committer = NULL, repo = '.')
 }
 
 #' @export
-#' @rdname commit
+#' @rdname git_commit
 #' @useDynLib gert R_git_commit_info
 git_commit_info <- function(ref = "HEAD", repo = '.'){
   repo <- git_open(repo)
@@ -106,7 +106,7 @@ git_commit_info <- function(ref = "HEAD", repo = '.'){
 }
 
 #' @export
-#' @rdname commit
+#' @rdname git_commit
 #' @param files vector of paths relative to the git root directory.
 #' Use `"."` to stage all changed files.
 #' @param force add files even if in gitignore
@@ -120,7 +120,7 @@ git_add <- function(files, force = FALSE, repo = '.'){
 }
 
 #' @export
-#' @rdname commit
+#' @rdname git_commit
 #' @useDynLib gert R_git_repository_rm
 git_rm <- function(files, repo = '.'){
   repo <- git_open(repo)
@@ -130,7 +130,7 @@ git_rm <- function(files, repo = '.'){
 }
 
 #' @export
-#' @rdname commit
+#' @rdname git_commit
 #' @useDynLib gert R_git_status_list
 #' @param staged return only staged (TRUE) or unstaged files (FALSE).
 #' Use `NULL` or `NA` to show both (default).
@@ -141,7 +141,7 @@ git_status <- function(staged = NULL, repo = '.'){
 }
 
 #' @export
-#' @rdname commit
+#' @rdname git_commit
 #' @useDynLib gert R_git_repository_ls
 git_ls <- function(repo = '.'){
   repo <- git_open(repo)
@@ -149,7 +149,7 @@ git_ls <- function(repo = '.'){
 }
 
 #' @export
-#' @rdname commit
+#' @rdname git_commit
 #' @useDynLib gert R_git_commit_log
 #' @param ref string with a branch/tag/commit
 #' @param max lookup at most latest n parent commits
@@ -161,7 +161,7 @@ git_log <- function(ref = "HEAD", max = 100, repo = "."){
 }
 
 #' @export
-#' @rdname commit
+#' @rdname git_commit
 #' @useDynLib gert R_git_reset
 #' @param type must be one of `"soft"`, `"hard"`, or `"mixed"`
 git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = "."){

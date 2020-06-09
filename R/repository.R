@@ -5,8 +5,8 @@
 #' appropriate.
 #'
 #' @export
-#' @rdname repository
-#' @name repository
+#' @rdname git_repo
+#' @name git_repo
 #' @family git
 #' @useDynLib gert R_git_repository_init
 #' @param path
@@ -47,7 +47,7 @@ git_init <- function(path = '.'){
 }
 
 #' @export
-#' @rdname repository
+#' @rdname git_repo
 #' @useDynLib gert R_git_repository_find
 git_find <- function(path = '.'){
   path <- normalizePath(path.expand(path), mustWork = FALSE)

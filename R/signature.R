@@ -10,8 +10,8 @@
 #' `hhmm` format (note the lack of a colon separator)
 #'
 #' @export
-#' @rdname signature
-#' @name signature
+#' @rdname git_signature
+#' @name git_signature
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_signature_default
@@ -34,7 +34,7 @@ git_signature_default <- function(repo = '.'){
 }
 
 #' @export
-#' @rdname signature
+#' @rdname git_signature
 #' @useDynLib gert R_git_signature_create
 #' @param name Real name of the committer
 #' @param email Email address of the commmitter
@@ -58,7 +58,7 @@ git_signature <- function(name, email, time = NULL){
 }
 
 #' @export
-#' @rdname signature
+#' @rdname git_signature
 #' @param sig string in proper `"First Last <your@email.com>"` format, see details.
 #' @useDynLib gert R_git_signature_parse
 git_signature_parse <- function(sig){
