@@ -26,5 +26,5 @@ git_archive_internal <- function(outfile, repo){
   wd <- getwd()
   on.exit(setwd(wd), add = TRUE)
   setwd(git_info(repo = repo)$path)
-  suppressMessages(zip::zip(outfile, files = files, recurse = FALSE), "deprecated")
+  suppressMessages(zip::zip(outfile, files = files, recurse = FALSE))
 }
