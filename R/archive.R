@@ -1,18 +1,23 @@
 #' Git Archive
 #'
-#' Exports the files in your repository to a zip file.
+#' Exports the files in your repository to a zip file that
+#' is returned by the function.
 #'
 #' @export
 #' @rdname archive
 #' @name archive
 #' @family git
 #' @inheritParams git_open
-#' @param file name of the output zip file
-git_archive <- function(file = "archive.zip", repo = "."){
+#' @param file name of the output zip file. Default is returned
+#' by the function
+#' @return path to the zip file that was created
+git_archive <- function(file = NULL, repo = "."){
   repo <- git_open(repo = repo)
   tmp <- tempfile(fileext = '.zip')
-  on.exit(unlink(tmp))
   git_archive_internal(tmp, repo = repo)
+  if(!length(file)){
+    file <- paste0(basename(git_info(repo)$path), ".zip")
+  }
   file.copy(tmp, file, overwrite = TRUE)
   return(file)
 }

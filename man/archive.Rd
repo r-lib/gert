@@ -5,18 +5,23 @@
 \alias{git_archive}
 \title{Git Archive}
 \usage{
-git_archive(file = "archive.zip", repo = ".")
+git_archive(file = NULL, repo = ".")
 }
 \arguments{
-\item{file}{name of the output zip file}
+\item{file}{name of the output zip file. Default is returned
+by the function}
 
 \item{repo}{The repository to target, either as a filepath or as an object of
 class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository, then
 its parent directory is considered, then the parent's parent, and so on. To
 prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
 }
+\value{
+path to the zip file that was created
+}
 \description{
-Exports the files in your repository to a zip file.
+Exports the files in your repository to a zip file that
+is returned by the function.
 }
 \seealso{
 Other git: 
