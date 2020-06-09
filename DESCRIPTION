@@ -21,7 +21,8 @@ BugReports: http://github.com/r-lib/gert/issues
 Imports:
     askpass,
     credentials (>= 1.0),
-    openssl (>= 1.4.1)
+    openssl (>= 1.4.1),
+    zip
 Suggests: 
     knitr,
     rmarkdown,

@@ -3,6 +3,7 @@
 S3method(print,git_repo_ptr)
 S3method(print,git_signature)
 export(git_add)
+export(git_archive)
 export(git_branch_checkout)
 export(git_branch_create)
 export(git_branch_delete)

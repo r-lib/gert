@@ -51,6 +51,7 @@ current one, without committing anything.
 }
 \seealso{
 Other git: 
+\code{\link{archive}},
 \code{\link{branch}},
 \code{\link{commit}},
 \code{\link{fetch}},

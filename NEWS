@@ -5,6 +5,7 @@
   - Config setters return previous value invisibly (#37)
   - Conflicted files are reported by git_status() (#40)
   - Windows: libgit2 now finds ~/.gitconfig under $USERPROFILE (instead of Documents)
+  - A git_signature object is now stored as a string instead of an externalptr
 
 0.3
   - Support for clone --mirror and push --mirror (#12)

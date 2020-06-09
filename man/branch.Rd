@@ -45,6 +45,7 @@ Create, list, and checkout branches.
 }
 \seealso{
 Other git: 
+\code{\link{archive}},
 \code{\link{commit}},
 \code{\link{fetch}},
 \code{\link{git_config}()},

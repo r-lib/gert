@@ -121,6 +121,7 @@ unlink(repo, recursive = TRUE)
 }
 \seealso{
 Other git: 
+\code{\link{archive}},
 \code{\link{branch}},
 \code{\link{fetch}},
 \code{\link{git_config}()},

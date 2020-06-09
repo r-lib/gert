@@ -54,6 +54,7 @@ git_signature_parse("Emma <emma@mu.edu>")
 }
 \seealso{
 Other git: 
+\code{\link{archive}},
 \code{\link{branch}},
 \code{\link{commit}},
 \code{\link{fetch}},

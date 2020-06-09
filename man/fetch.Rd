@@ -113,6 +113,7 @@ unlink(git_dir, recursive = TRUE)
 }
 \seealso{
 Other git: 
+\code{\link{archive}},
 \code{\link{branch}},
 \code{\link{commit}},
 \code{\link{git_config}()},

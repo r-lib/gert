@@ -53,6 +53,7 @@ unlink(r, recursive = TRUE)
 }
 \seealso{
 Other git: 
+\code{\link{archive}},
 \code{\link{branch}},
 \code{\link{commit}},
 \code{\link{fetch}},
