@@ -180,6 +180,7 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
     git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
     diff = commit_to_diff(repo, commit, &opt);
   } else {
+    // NB: this does not list 'staged' changes, as does: git_diff_tree_to_workdir_with_index()
     bail_if(git_diff_index_to_workdir(&diff, repo, NULL, &opt), "git_diff_index_to_workdir");
   }
   int n = git_diff_num_deltas(diff);
