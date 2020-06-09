@@ -107,21 +107,6 @@ git_commit_info <- function(ref = "HEAD", repo = '.'){
 
 #' @export
 #' @rdname commit
-#' @useDynLib gert R_git_commit_diff
-git_commit_diff <- function(ref = "HEAD", repo = '.'){
-  repo <- git_open(repo)
-  ref <- as.character(ref)
-  .Call(R_git_commit_diff, repo, ref)
-}
-#
-#' @export
-#' @rdname commit
-git_commit_patch <- function(ref = "HEAD", repo = '.'){
-  git_commit_diff(ref = ref, repo = repo)$patch
-}
-
-#' @export
-#' @rdname commit
 #' @param files vector of paths relative to the git root directory.
 #' Use `"."` to stage all changed files.
 #' @param force add files even if in gitignore

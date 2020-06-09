@@ -37,7 +37,7 @@ static git_commit *find_commit_from_string(git_repository *repo, const char * re
   return commit;
 }
 
-static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
+static git_diff *commit_to_diff(git_repository *repo, git_commit *commit, git_diff_options *opt){
   git_diff *diff = NULL;
   git_tree *old_tree = NULL;
   git_tree *new_tree = NULL;
@@ -48,15 +48,15 @@ static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
     bail_if(git_commit_tree(&old_tree, parent), "git_commit_tree");
     git_commit_free(parent);
   }
-  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
-  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
+  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, opt), "git_diff_tree_to_tree");
   git_tree_free(old_tree);
   git_tree_free(new_tree);
   return diff;
 }
 
 static int count_commit_changes(git_repository *repo, git_commit *commit){
-  git_diff *diff = commit_to_diff(repo, commit);
+  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
+  git_diff *diff = commit_to_diff(repo, commit, &opt);
   int count = git_diff_num_deltas(diff);
   git_diff_free(diff);
   return count;
@@ -172,10 +172,16 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
                       "deltas", deltas, "message", msg);
 }
 
-SEXP R_git_commit_diff(SEXP ptr, SEXP ref){
+SEXP R_git_diff_list(SEXP ptr, SEXP ref){
+  git_diff *diff = NULL;
   git_repository *repo = get_git_repository(ptr);
-  git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
-  git_diff *diff = commit_to_diff(repo, commit);
+  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
+  if(Rf_length(ref)){
+    git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+    diff = commit_to_diff(repo, commit, &opt);
+  } else {
+    bail_if(git_diff_index_to_workdir(&diff, repo, NULL, &opt), "git_diff_index_to_workdir");
+  }
   int n = git_diff_num_deltas(diff);
   SEXP patches = PROTECT(Rf_allocVector(STRSXP, n));
   SEXP oldfiles = PROTECT(Rf_allocVector(STRSXP, n));
@@ -208,7 +214,7 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   SEXP author = PROTECT(Rf_ScalarString(make_author(git_commit_author(commit))));
   SEXP committer = PROTECT(Rf_ScalarString(make_author(git_commit_committer(commit))));
   SEXP message = PROTECT(safe_string(git_commit_message(commit)));
-  SEXP diff = PROTECT(R_git_commit_diff(ptr, ref));
+  SEXP diff = PROTECT(R_git_diff_list(ptr, ref));
   return build_list(6, "id", id, "parent", parent, "author", author, "committer", committer,
                     "message", message, "diff", diff);
 }

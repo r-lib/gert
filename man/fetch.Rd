@@ -116,6 +116,7 @@ Other git:
 \code{\link{archive}},
 \code{\link{branch}},
 \code{\link{commit}},
+\code{\link{diff}()},
 \code{\link{git_config}()},
 \code{\link{git_merge}()},
 \code{\link{git_open}()},
