@@ -18,7 +18,7 @@ test_that("cloning repositories works", {
   expect_equal(remotes$url, "https://github.com/r-lib/gert")
 
   # Test archive
-  expect_equal(git_archive(repo = repo), 'gert.zip')
+  expect_equal(git_archive_zip(repo = repo), 'gert.zip')
   expect_equal(zip::zip_list('gert.zip')$filename, git_ls(repo=repo)$path)
   unlink('gert.zip')
 })

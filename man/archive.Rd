@@ -2,10 +2,10 @@
 % Please edit documentation in R/archive.R
 \name{archive}
 \alias{archive}
-\alias{git_archive}
+\alias{git_archive_zip}
 \title{Git Archive}
 \usage{
-git_archive(file = NULL, repo = ".")
+git_archive_zip(file = NULL, repo = ".")
 }
 \arguments{
 \item{file}{name of the output zip file. Default is returned
