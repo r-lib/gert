@@ -4,29 +4,38 @@
 \alias{git_repo}
 \alias{git_init}
 \alias{git_find}
+\alias{git_info}
 \title{Create or discover a local Git repository}
 \usage{
 git_init(path = ".")
 
 git_find(path = ".")
+
+git_info(repo = ".")
 }
 \arguments{
-\item{path}{\itemize{
-\item For \code{git_init()}: directory of the Git repository to create. If
-this directory already exists, it must be empty. If it does not exist, it
-is created, along with any intermediate directories that don't yet exist.
-\item For \code{git_find()}: directory at which to start the search for a Git
-repository. If it is not a Git repository, then its parent directory is
-consulted, then the parent's parent, and so on, similar to \code{\link[=git_open]{git_open()}}.
-}}
+\item{path}{the location of the git repository, see details.}
+
+\item{repo}{The path to the git repository. If the directory is not a
+repository, parent directories are considered (see \link{git_find}). To disable
+this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 }
 \value{
 The path to the Git repository.
 }
 \description{
 Use \code{git_init()} to create a new repository or \code{git_find()} to discover an
-existing local repository. Each has the ability to recurse down or up, as
-appropriate.
+existing local repository. \code{git_info()} shows basic information about a
+repository, such as the SHA and branch of the current HEAD.
+}
+\details{
+For \code{git_init()} the \code{path} parameter sets the directory of the git repository
+to create. If this directory already exists, it must be empty. If it does
+not exist, it is created, along with any intermediate directories that don't
+yet exist. For \code{git_find()} the \code{path} arguments specifies the directory at
+which to start the search for a git repository. If it is not a git repository
+itself, then its parent directory is consulted, then the parent's parent, and
+so on.
 }
 \examples{
 # directory does not yet exist
@@ -60,7 +69,6 @@ Other git:
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
 \code{\link{git_merge}()},
-\code{\link{git_open}()},
 \code{\link{git_signature}()}
 }
 \concept{git}

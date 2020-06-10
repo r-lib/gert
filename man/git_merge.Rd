@@ -24,10 +24,9 @@ git_merge_cleanup(repo = ".")
 \item{commit_on_success}{automatically create a merge commit if the merge succeeds without
 conflicts. Set this to \code{FALSE} if you want to customize your commit message/author.}
 
-\item{repo}{The repository to target, either as a filepath or as an object of
-class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository, then
-its parent directory is considered, then the parent's parent, and so on. To
-prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
+\item{repo}{The path to the git repository. If the directory is not a
+repository, parent directories are considered (see \link{git_find}). To disable
+this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 
 \item{target}{the branch where you want to merge into. Defaults to current \code{HEAD}.}
 }
@@ -57,7 +56,6 @@ Other git:
 \code{\link{git_config}()},
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
-\code{\link{git_open}()},
 \code{\link{git_repo}},
 \code{\link{git_signature}()}
 }

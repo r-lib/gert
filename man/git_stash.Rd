@@ -34,10 +34,9 @@ cleaned up from the working directory}
 \item{include_ignored}{ignored files are also stashed and then cleaned
 up from the working directory}
 
-\item{repo}{The repository to target, either as a filepath or as an object of
-class \code{git_repo_ptr}. If \code{repo} is a filepath and is not a repository, then
-its parent directory is considered, then the parent's parent, and so on. To
-prevent this recursive search, provide a filepath protected with \code{\link[=I]{I()}}.}
+\item{repo}{The path to the git repository. If the directory is not a
+repository, parent directories are considered (see \link{git_find}). To disable
+this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 
 \item{index}{The position within the stash list. 0 points to the
 most recent stashed state.}
