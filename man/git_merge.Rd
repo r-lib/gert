@@ -6,6 +6,7 @@
 \alias{git_merge_analysis}
 \alias{git_merge_stage}
 \alias{git_merge_cleanup}
+\alias{git_merge_state}
 \title{Merging tools}
 \usage{
 git_merge(ref, commit_on_success = TRUE, repo = ".")
@@ -17,6 +18,8 @@ git_merge_analysis(ref, repo = ".")
 git_merge_stage(ref, repo = ".")
 
 git_merge_cleanup(repo = ".")
+
+git_merge_state(repo = ".")
 }
 \arguments{
 \item{ref}{branch or commit that you want to merge}

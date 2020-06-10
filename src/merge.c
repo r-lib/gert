@@ -130,3 +130,21 @@ SEXP R_git_merge_cleanup(SEXP ptr){
   bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
   return R_NilValue;
 }
+
+static int merge_heads_cb(const git_oid *oid, void *payload){
+  SEXP vec = payload;
+  int i = Rf_length(vec);
+  SETLENGTH(vec, i + 1);
+  SET_STRING_ELT(vec, i, safe_string(git_oid_tostr_s(oid)));
+  return 0;
+}
+
+SEXP R_git_merge_state(SEXP ptr){
+  git_repository *repo = get_git_repository(ptr);
+  SEXP parents = PROTECT(Rf_allocVector(STRSXP, 0));
+  int state_merge = git_repository_state(repo) == GIT_REPOSITORY_STATE_MERGE;
+  SEXP state = PROTECT(Rf_ScalarLogical(state_merge));
+  if(state_merge)
+    git_repository_mergehead_foreach(repo, merge_heads_cb, &parents);
+  return build_list(2, "merging", state, "parents", parents);
+}

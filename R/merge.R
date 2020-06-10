@@ -32,8 +32,6 @@ git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
     message("Performing fast-foward merge, no commit needed")
     git_branch_fast_forward(ref = ref, repo = repo)
   } else if(state == "normal"){
-    # TODO: should we not cleanup upon conflicts and leave the merging-state?
-    on.exit(git_merge_cleanup(repo = repo))
     merged_without_conflict <- git_merge_stage(ref = ref, repo = repo)
     if(!nrow(git_status(repo = repo))){
       message("Merge did not result in any changes")
@@ -41,6 +39,7 @@ git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
       if(isTRUE(commit_on_success)){
         commit_message <- sprintf("Merged %s into %s", ref, git_info()$shorthand)
         git_commit(commit_message, repo = repo)
+        git_merge_cleanup(repo = repo)
       } else {
         message("Merge was not be committed due to merge conflict(s). Please fix first and run git_commit() manually.")
       }
@@ -83,4 +82,12 @@ git_merge_stage <- function(ref, repo = '.'){
 git_merge_cleanup <- function(repo = '.'){
   repo <- git_open(repo)
   .Call(R_git_merge_cleanup, repo)
+}
+
+#' @export
+#' @rdname git_merge
+#' @useDynLib gert R_git_merge_state
+git_merge_state <- function(repo = '.'){
+  repo <- git_open(repo)
+  .Call(R_git_merge_state, repo)
 }
