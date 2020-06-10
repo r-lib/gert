@@ -36,7 +36,8 @@ git_branch_create <- function(name, ref = "HEAD", checkout = TRUE, repo = '.'){
   name <- as.character(name)
   ref <- as.character(ref)
   checkout <- as.logical(checkout)
-  .Call(R_git_create_branch,repo, name, ref, checkout)
+  .Call(R_git_create_branch, repo, name, ref, checkout)
+  git_repo_path(repo)
 }
 
 #' @export
@@ -46,6 +47,7 @@ git_branch_delete <- function(name, repo = '.'){
   repo <- git_open(repo)
   name <- as.character(name)
   .Call(R_git_delete_branch, repo, name)
+  git_repo_path(repo)
 }
 
 #' @export
@@ -55,6 +57,7 @@ git_branch_fast_forward <- function(ref, repo = '.'){
   repo <- git_open(repo)
   ref <- as.character(ref)
   .Call(R_git_merge_fast_forward, repo, ref)
+  git_repo_path(repo)
 }
 
 #' @export
@@ -65,4 +68,5 @@ git_branch_set_upstream <- function(remote = "origin", repo = '.'){
   repo <- git_open(repo)
   branch <- NULL
   .Call(R_git_branch_set_upsteam, repo, remote, branch)
+  git_repo_path(repo)
 }

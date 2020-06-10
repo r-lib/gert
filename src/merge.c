@@ -128,5 +128,5 @@ SEXP R_git_merge_stage(SEXP ptr, SEXP refs){
 SEXP R_git_merge_cleanup(SEXP ptr){
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
-  return ptr;
+  return R_NilValue;
 }

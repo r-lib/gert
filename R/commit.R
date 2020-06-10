@@ -117,6 +117,7 @@ git_add <- function(files, force = FALSE, repo = '.'){
   normalizePath(file.path(info$path, files), mustWork = FALSE)
   force <- as.logical(force)
   .Call(R_git_repository_add, repo, files, force)
+  git_status(repo = repo)
 }
 
 #' @export
@@ -127,6 +128,7 @@ git_rm <- function(files, repo = '.'){
   info <- git_info(repo)
   normalizePath(file.path(info$path, files), mustWork = FALSE)
   .Call(R_git_repository_rm, repo, files)
+  git_status(repo = repo)
 }
 
 #' @export
@@ -169,6 +171,7 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
   repo <- git_open(repo)
   ref <- as.character(ref)
   .Call(R_git_reset, repo, ref, typenum)
+  git_status(repo = repo)
 }
 
 assert_string <- function(x){

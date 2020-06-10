@@ -54,6 +54,13 @@ SEXP R_git_repository_info(SEXP ptr){
   return build_list(8, "path", path, "bare", bare, "head", headref, "shorthand", shorthand, "commit", target, "remote", remote, "upstream", upstream, "reflist", refs);
 }
 
+SEXP R_git_repository_path(SEXP ptr){
+  git_repository *repo = get_git_repository(ptr);
+  return safe_string(
+    git_repository_is_bare(repo) ? git_repository_path(repo) : git_repository_workdir(repo)
+  );
+}
+
 SEXP R_git_repository_ls(SEXP ptr){
   git_index *index = NULL;
   git_repository *repo = get_git_repository(ptr);

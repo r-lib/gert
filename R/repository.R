@@ -45,7 +45,7 @@
 git_init <- function(path = '.'){
   path <- normalizePath(path.expand(path), mustWork = FALSE)
   repo <- .Call(R_git_repository_init, path)
-  git_info(repo)$path
+  git_repo_path(repo)
 }
 
 #' @export

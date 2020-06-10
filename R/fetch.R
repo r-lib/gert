@@ -15,7 +15,6 @@
 #' @param mirror use the `--mirror` flag
 #' @param bare use the `--bare` flag
 #' @param force use the `--force` flag
-
 git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
                       ssh_key = NULL, verbose = interactive(), repo = '.'){
   repo <- git_open(repo)
@@ -33,6 +32,7 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
   .Call(R_git_remote_fetch, repo, remote, refspec, key_cb, cred_cb, verbose)
+  git_repo_path(repo)
 }
 
 #' @export
@@ -75,8 +75,7 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
   if(isTRUE(is.na(info$upstream)) && !isTRUE(info$bare)){
     git_branch_set_upstream(paste0(remote, "/", info$shorthand), repo)
   }
-
-  repo
+  git_repo_path(repo)
 }
 
 #' @export
@@ -133,7 +132,8 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_k
   host <- url_to_host(url)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
-  .Call(R_git_repository_clone, url, path, branch, key_cb, cred_cb, bare, mirror, verbose)
+  repo <- .Call(R_git_repository_clone, url, path, branch, key_cb, cred_cb, bare, mirror, verbose)
+  git_repo_path(repo)
 }
 
 #' @export
@@ -145,5 +145,6 @@ git_pull <- function(..., repo = '.'){
   if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
     stop("No upstream configured for current HEAD")
   git_fetch(info$remote, ..., repo = repo)
-  git_branch_fast_forward(info$upstream, repo = repo)
+  git_merge(info$upstream, repo = repo)
+  git_repo_path(repo)
 }

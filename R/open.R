@@ -31,7 +31,6 @@ git_open <- function(repo = '.'){
   .Call(R_git_repository_open, path, search)
 }
 
-
 #' @export
 print.git_repo_ptr <- function(x, ...){
   info <- git_info(x)
@@ -42,4 +41,9 @@ print.git_repo_ptr <- function(x, ...){
   }
 
   cat(sprintf("<%s>: %s[@%s]\n", type, normalizePath(info$path), info$shorthand))
+}
+
+#' @useDynLib gert R_git_repository_path
+git_repo_path <- function(repo){
+  invisible(.Call(R_git_repository_path, repo))
 }
