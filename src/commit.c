@@ -152,14 +152,16 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
   SEXP msg = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP author = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP time = PROTECT(Rf_allocVector(REALSXP, len));
-  SEXP deltas = PROTECT(Rf_allocVector(INTSXP, len));
+  SEXP files = PROTECT(Rf_allocVector(INTSXP, len));
+  SEXP merger = PROTECT(Rf_allocVector(LGLSXP, len));
 
   for(int i = 0; i < len; i++){
     SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(head))));
     SET_STRING_ELT(msg, i, safe_char(git_commit_message(head)));
     SET_STRING_ELT(author, i, make_author(git_commit_author(head)));
     REAL(time)[i] = git_commit_time(head);
-    INTEGER(deltas)[i] = count_commit_changes(repo, head);
+    INTEGER(files)[i] = count_commit_changes(repo, head);
+    LOGICAL(merger)[i] = git_commit_parentcount(head) > 1;
 
     /* traverse to next commit (except for the final one) */
     if(i < len-1)
@@ -168,8 +170,8 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
     head = commit;
   }
   Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_tibble(5, "commit", ids, "author", author, "time", time,
-                      "deltas", deltas, "message", msg);
+  return build_tibble(6, "commit", ids, "author", author, "time", time,
+                      "files", files, "merge", merger, "message", msg);
 }
 
 SEXP R_git_diff_list(SEXP ptr, SEXP ref){
