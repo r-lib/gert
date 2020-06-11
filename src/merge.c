@@ -139,12 +139,12 @@ static int merge_heads_cb(const git_oid *oid, void *payload){
   return 0;
 }
 
-SEXP R_git_merge_state(SEXP ptr){
+SEXP R_git_merge_parent_heads(SEXP ptr){
   git_repository *repo = get_git_repository(ptr);
+  if(git_repository_state(repo) != GIT_REPOSITORY_STATE_MERGE)
+    return R_NilValue;
   SEXP parents = PROTECT(Rf_allocVector(STRSXP, 0));
-  int state_merge = git_repository_state(repo) == GIT_REPOSITORY_STATE_MERGE;
-  SEXP state = PROTECT(Rf_ScalarLogical(state_merge));
-  if(state_merge)
-    git_repository_mergehead_foreach(repo, merge_heads_cb, parents);
-  return build_list(2, "merging", state, "parents", parents);
+  git_repository_mergehead_foreach(repo, merge_heads_cb, parents);
+  UNPROTECT(1);
+  return parents;
 }

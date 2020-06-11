@@ -111,46 +111,59 @@ SEXP R_git_signature_parse(SEXP x){
   return signature_data(parse_signature(x));
 }
 
-SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
-                         SEXP merge_parents){
-  git_buf msg = {0};
-  git_tree *tree;
-  git_index *index;
+static void free_commit_list(const git_commit **list, int len){
+  for(int i = 0; i < len; i++){
+    git_commit_free((git_commit*) list[i]);
+  }
+}
+
+static int create_commit_list(const git_commit **list, git_repository *repo, SEXP merge_parents){
   git_commit *commit = NULL;
   git_reference *head = NULL;
-  git_oid tree_id, commit_id;
-  git_repository *repo = get_git_repository(ptr);
-  git_signature *authsig = parse_signature(author);
-  git_signature *commitsig = parse_signature(committer);
-  if(git_repository_head(&head, repo) == 0){
-    bail_if(git_commit_lookup(&commit, repo, git_reference_target(head)), "git_commit_lookup");
-  }
-  bail_if(git_message_prettify(&msg, Rf_translateCharUTF8(STRING_ELT(message, 0)), 0, 0), "git_message_prettify");
-
-  int len = Rf_length(merge_parents);
-  const git_commit *parents[len+1];
-  parents[0] = commit;
-  for(int i = 0; i < len; i++){
+  int err = git_repository_head(&head, repo);
+  if (err == GIT_EUNBORNBRANCH || err == GIT_ENOTFOUND)
+    return 0;
+  bail_if(err, "git_repository_head");
+  bail_if(git_commit_lookup(&commit, repo, git_reference_target(head)), "git_commit_lookup");
+  git_reference_free(head);
+  list[0] = commit;
+  for(int i = 0; i < Rf_length(merge_parents); i++){
     git_oid oid = {0};
     git_commit *parent = NULL;
     bail_if(git_oid_fromstr(&oid, CHAR(STRING_ELT(merge_parents, i))), "git_oid_fromstr");
     bail_if(git_commit_lookup(&parent, repo, &oid), "git_commit_lookup");
-    parents[i+1] = parent;
+    list[i+1] = parent;
   }
+  return Rf_length(merge_parents) + 1;
+}
+
+SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
+                         SEXP merge_parents){
+  git_buf msg = {0};
+  git_oid tree_id = {0};
+  git_oid commit_id = {0};
+  git_tree *tree = NULL;
+  git_index *index = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  git_signature *authsig = parse_signature(author);
+  git_signature *commitsig = parse_signature(committer);
+  bail_if(git_message_prettify(&msg, Rf_translateCharUTF8(STRING_ELT(message, 0)), 0, 0),
+          "git_message_prettify");
+  const git_commit *parents[10] = {0};
+  int number_parents = create_commit_list(parents, repo, merge_parents);
 
   // Setup tree, see: https://libgit2.org/docs/examples/init/
   bail_if(git_repository_index(&index, repo), "git_repository_index");
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
   bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");
   bail_if(git_commit_create(&commit_id, repo, "HEAD", authsig, commitsig, "UTF-8",
-                            msg.ptr, tree, commit ? 1 + len : 0, parents), "git_commit_create");
-  if(len)
+                            msg.ptr, tree, number_parents, parents), "git_commit_create");
+  if(number_parents > 1)
     bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
+  free_commit_list(parents, number_parents);
   git_buf_free(&msg);
   git_tree_free(tree);
   git_index_free(index);
-  git_commit_free(commit);
-  git_reference_free(head);
   return safe_string(git_oid_tostr_s(&commit_id));
 }
 

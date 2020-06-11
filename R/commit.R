@@ -77,7 +77,7 @@ git_commit <- function(message, author = NULL, committer = NULL, repo = '.'){
   status <- git_status(repo = repo)
   if(!any(status$staged))
     stop("No staged files to commit. Run git_add() to select files.")
-  merge_parents <- git_merge_state(repo = repo)$parents
+  merge_parents <- git_merge_parent_heads(repo = repo)
   .Call(R_git_commit_create, repo, message, author, committer, merge_parents)
 }
 

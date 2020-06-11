@@ -83,10 +83,8 @@ git_merge_abort <- function(repo = '.'){
   .Call(R_git_merge_cleanup, repo)
 }
 
-#' @export
-#' @rdname git_merge
-#' @useDynLib gert R_git_merge_state
-git_merge_state <- function(repo = '.'){
+#' @useDynLib gert R_git_merge_parent_heads
+git_merge_parent_heads <- function(repo = '.'){
   repo <- git_open(repo)
-  .Call(R_git_merge_state, repo)
+  .Call(R_git_merge_parent_heads, repo)
 }
