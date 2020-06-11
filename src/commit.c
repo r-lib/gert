@@ -128,7 +128,7 @@ static int create_commit_list(const git_commit **list, git_repository *repo, SEX
   git_reference_free(head);
   list[0] = commit;
   for(int i = 0; i < Rf_length(merge_parents); i++){
-    git_oid oid = {0};
+    git_oid oid = {{0}};
     git_commit *parent = NULL;
     bail_if(git_oid_fromstr(&oid, CHAR(STRING_ELT(merge_parents, i))), "git_oid_fromstr");
     bail_if(git_commit_lookup(&parent, repo, &oid), "git_commit_lookup");
@@ -140,8 +140,8 @@ static int create_commit_list(const git_commit **list, git_repository *repo, SEX
 SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
                          SEXP merge_parents){
   git_buf msg = {0};
-  git_oid tree_id = {0};
-  git_oid commit_id = {0};
+  git_oid tree_id = {{0}};
+  git_oid commit_id = {{0}};
   git_tree *tree = NULL;
   git_index *index = NULL;
   git_repository *repo = get_git_repository(ptr);
