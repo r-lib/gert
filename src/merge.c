@@ -131,11 +131,10 @@ SEXP R_git_merge_cleanup(SEXP ptr){
   return R_NilValue;
 }
 
+/* Just assume 1 extra merge parent for now (besides HEAD), no octopus merge */
 static int merge_heads_cb(const git_oid *oid, void *payload){
   SEXP vec = payload;
-  int i = Rf_length(vec);
-  SETLENGTH(vec, i + 1);
-  SET_STRING_ELT(vec, i, safe_char(git_oid_tostr_s(oid)));
+  SET_STRING_ELT(vec, 0, safe_char(git_oid_tostr_s(oid)));
   return 0;
 }
 
@@ -143,7 +142,7 @@ SEXP R_git_merge_parent_heads(SEXP ptr){
   git_repository *repo = get_git_repository(ptr);
   if(git_repository_state(repo) != GIT_REPOSITORY_STATE_MERGE)
     return R_NilValue;
-  SEXP parents = PROTECT(Rf_allocVector(STRSXP, 0));
+  SEXP parents = PROTECT(Rf_allocVector(STRSXP, 1));
   git_repository_mergehead_foreach(repo, merge_heads_cb, parents);
   UNPROTECT(1);
   return parents;
