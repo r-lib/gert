@@ -27,7 +27,7 @@ test_that("merge analysis works", {
   writeLines('Something else', 'test2.txt')
   git_add('test2.txt')
   git_commit("Some other commit")
-  expect_equal(git_merge_base('master'), first_commit)
+  expect_equal(git_merge_find_base('master'), first_commit)
 
   # Require merge commit
   expect_equal(git_merge_analysis('master'), 'normal')

@@ -2,7 +2,7 @@
 % Please edit documentation in R/merge.R
 \name{git_merge}
 \alias{git_merge}
-\alias{git_merge_base}
+\alias{git_merge_find_base}
 \alias{git_merge_analysis}
 \alias{git_merge_stage}
 \alias{git_merge_abort}
@@ -10,7 +10,7 @@
 \usage{
 git_merge(ref, commit_on_success = TRUE, repo = ".")
 
-git_merge_base(ref, target = "HEAD", repo = ".")
+git_merge_find_base(ref, target = "HEAD", repo = ".")
 
 git_merge_analysis(ref, repo = ".")
 
@@ -39,8 +39,9 @@ By default \code{git_merge} will automatically commit the merge. However if
 \code{commit_on_success} is set to \code{FALSE} or if the merge fails with
 merge-conflicts, the changes are staged but you have to run \link{git_commit} manually.
 
-Other functions are more low-level tools that are used by \code{git_merge}. \code{git_merge_base}
-finds the commit where two branches have diverged (i.e. the youngest common ancestor).
+Other functions are more low-level tools that are used by \code{git_merge}.
+\code{git_merge_find_base} looks up the commit where two branches have diverged
+(i.e. the youngest common ancestor).
 
 Use \code{git_merge_analysis} to test what strategy would be needed to merge a branch.
 Possible outcomes are \code{"fastforward"}, \code{"normal"}, or \code{"up-to-date"}.

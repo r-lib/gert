@@ -20,7 +20,7 @@ extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_delete_branch(SEXP, SEXP);
 extern SEXP R_git_diff_list(SEXP, SEXP);
 extern SEXP R_git_merge_analysis(SEXP, SEXP);
-extern SEXP R_git_merge_base(SEXP, SEXP, SEXP);
+extern SEXP R_git_merge_find_base(SEXP, SEXP, SEXP);
 extern SEXP R_git_merge_cleanup(SEXP);
 extern SEXP R_git_merge_fast_forward(SEXP, SEXP);
 extern SEXP R_git_merge_parent_heads(SEXP);
@@ -67,7 +67,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_delete_branch",      (DL_FUNC) &R_git_delete_branch,      2},
   {"R_git_diff_list",          (DL_FUNC) &R_git_diff_list,          2},
   {"R_git_merge_analysis",     (DL_FUNC) &R_git_merge_analysis,     2},
-  {"R_git_merge_base",         (DL_FUNC) &R_git_merge_base,         3},
+  {"R_git_merge_find_base",    (DL_FUNC) &R_git_merge_find_base,    3},
   {"R_git_merge_cleanup",      (DL_FUNC) &R_git_merge_cleanup,      1},
   {"R_git_merge_fast_forward", (DL_FUNC) &R_git_merge_fast_forward, 2},
   {"R_git_merge_parent_heads", (DL_FUNC) &R_git_merge_parent_heads, 1},

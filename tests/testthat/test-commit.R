@@ -94,7 +94,7 @@ test_that("status reports a conflicted file", {
   git_add("foo.txt", repo = repo)
   git_commit("Uppercase first 2 words", repo = repo)
 
-  expect_equal(base, git_merge_base("my-branch", repo = repo))
+  expect_equal(base, git_merge_find_base("my-branch", repo = repo))
   expect_equal(git_merge_analysis(base, repo = repo), "up_to_date")
   expect_equal(git_merge_analysis('my-branch', repo = repo), "normal")
 

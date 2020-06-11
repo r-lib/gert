@@ -7,8 +7,9 @@
 #' `commit_on_success` is set to `FALSE` or if the merge fails with
 #' merge-conflicts, the changes are staged but you have to run [git_commit] manually.
 #'
-#' Other functions are more low-level tools that are used by `git_merge`. `git_merge_base`
-#' finds the commit where two branches have diverged (i.e. the youngest common ancestor).
+#' Other functions are more low-level tools that are used by `git_merge`.
+#' `git_merge_find_base` looks up the commit where two branches have diverged
+#' (i.e. the youngest common ancestor).
 #'
 #' Use `git_merge_analysis` to test what strategy would be needed to merge a branch.
 #' Possible outcomes are `"fastforward"`, `"normal"`, or `"up-to-date"`.
@@ -52,11 +53,11 @@ git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
 
 #' @export
 #' @rdname git_merge
-#' @useDynLib gert R_git_merge_base
+#' @useDynLib gert R_git_merge_find_base
 #' @param target the branch where you want to merge into. Defaults to current `HEAD`.
-git_merge_base <- function(ref, target = "HEAD", repo = '.'){
+git_merge_find_base <- function(ref, target = "HEAD", repo = '.'){
   repo <- git_open(repo)
-  .Call(R_git_merge_base, repo, ref, target)
+  .Call(R_git_merge_find_base, repo, ref, target)
 }
 
 #' @export

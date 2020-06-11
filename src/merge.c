@@ -42,7 +42,7 @@ done:
   return ptr;
 }
 
-SEXP R_git_merge_base(SEXP ptr, SEXP ref1, SEXP ref2){
+SEXP R_git_merge_find_base(SEXP ptr, SEXP ref1, SEXP ref2){
   git_object *t1 = NULL;
   git_object *t2 = NULL;
   git_oid base = {{0}};
