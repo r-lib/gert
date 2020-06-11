@@ -40,6 +40,7 @@ git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
       if(isTRUE(commit_on_success)){
         commit_message <- sprintf("Merged %s into %s", ref, git_info()$shorthand)
         git_commit(commit_message, repo = repo)
+        message(commit_message)
       } else {
         message("Merge was not be committed due to merge conflict(s). Please fix first and run git_commit() manually.")
       }
