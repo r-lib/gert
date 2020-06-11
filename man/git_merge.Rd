@@ -5,7 +5,7 @@
 \alias{git_merge_base}
 \alias{git_merge_analysis}
 \alias{git_merge_stage}
-\alias{git_merge_cleanup}
+\alias{git_merge_abort}
 \alias{git_merge_state}
 \title{Merging tools}
 \usage{
@@ -17,7 +17,7 @@ git_merge_analysis(ref, repo = ".")
 
 git_merge_stage(ref, repo = ".")
 
-git_merge_cleanup(repo = ".")
+git_merge_abort(repo = ".")
 
 git_merge_state(repo = ".")
 }

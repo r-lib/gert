@@ -34,6 +34,7 @@ test_that("merge analysis works", {
   git_merge('master')
   newlog <- git_log()
   expect_length(newlog$commit, 3)
+  expect_equal(newlog$merge, c(TRUE, FALSE, FALSE))
 
   # Expect no changes
   git_merge('master')
