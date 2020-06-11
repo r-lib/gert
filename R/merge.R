@@ -38,11 +38,11 @@ git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
       message("Merge did not result in any changes")
     } else if(isTRUE(merged_without_conflict)){
       if(isTRUE(commit_on_success)){
-        commit_message <- sprintf("Merged %s into %s", ref, git_info()$shorthand)
+        commit_message <- sprintf("Merged %s into %s", ref, git_info(repo = repo)$shorthand)
         git_commit(commit_message, repo = repo)
         message(commit_message)
       } else {
-        message("Merge was not be committed due to merge conflict(s). Please fix first and run git_commit() manually.")
+        message("Merge was not be committed due to merge conflict(s). Please fix and run git_commit() or git_merge_abort()")
       }
     } else {
       message("Merge has resulted in merge conflict(s).")
