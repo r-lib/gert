@@ -19,7 +19,7 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 
 \item{name}{Real name of the committer}
 
-\item{email}{Email address of the commmitter}
+\item{email}{Email address of the committer}
 
 \item{time}{timestamp of class POSIXt or NULL}
 

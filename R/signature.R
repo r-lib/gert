@@ -37,7 +37,7 @@ git_signature_default <- function(repo = '.'){
 #' @rdname git_signature
 #' @useDynLib gert R_git_signature_create
 #' @param name Real name of the committer
-#' @param email Email address of the commmitter
+#' @param email Email address of the committer
 #' @param time timestamp of class POSIXt or NULL
 git_signature <- function(name, email, time = NULL){
   assert_string(name)
