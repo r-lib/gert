@@ -2,19 +2,19 @@
 % Please edit documentation in R/merge.R
 \name{git_merge}
 \alias{git_merge}
+\alias{git_merge_stage_only}
 \alias{git_merge_find_base}
 \alias{git_merge_analysis}
-\alias{git_merge_stage}
 \alias{git_merge_abort}
 \title{Merging tools}
 \usage{
 git_merge(ref, commit = TRUE, squash = FALSE, repo = ".")
 
+git_merge_stage_only(ref, squash = FALSE, repo = ".")
+
 git_merge_find_base(ref, target = "HEAD", repo = ".")
 
 git_merge_analysis(ref, repo = ".")
-
-git_merge_stage(ref, repo = ".")
 
 git_merge_abort(repo = ".")
 }
@@ -45,13 +45,11 @@ and you have to manually run \code{git_commit} or \code{git_merge_abort} to proc
 
 Other functions are more low-level tools that are used by \code{git_merge}.
 \code{git_merge_find_base} looks up the commit where two branches have diverged
-(i.e. the youngest common ancestor).
+(i.e. the youngest common ancestor). The \code{git_merge_analysis} is used to
+test if a merge can simply be fast forwarded or not.
 
-Use \code{git_merge_analysis} to test what strategy would be needed to merge a branch.
-Possible outcomes are \code{"fastforward"}, \code{"normal"}, or \code{"up-to-date"}.
-
-The \code{git_merge_stage} function applies and stages changes from another branch in the
-current one, without committing anything.
+The \code{git_merge_stage_only} function applies and stages changes, without
+committing or fast-forwarding.
 }
 \seealso{
 Other git: 

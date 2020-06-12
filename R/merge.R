@@ -10,13 +10,11 @@
 #'
 #' Other functions are more low-level tools that are used by `git_merge`.
 #' `git_merge_find_base` looks up the commit where two branches have diverged
-#' (i.e. the youngest common ancestor).
+#' (i.e. the youngest common ancestor). The `git_merge_analysis` is used to
+#' test if a merge can simply be fast forwarded or not.
 #'
-#' Use `git_merge_analysis` to test what strategy would be needed to merge a branch.
-#' Possible outcomes are `"fastforward"`, `"normal"`, or `"up-to-date"`.
-#'
-#' The `git_merge_stage` function applies and stages changes from another branch in the
-#' current one, without committing anything.
+#' The `git_merge_stage_only` function applies and stages changes, without
+#' committing or fast-forwarding.
 #'
 #' @export
 #' @family git
@@ -36,11 +34,7 @@ git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.'){
     message("Performing fast-foward merge, no commit needed")
     git_branch_fast_forward(ref = ref, repo = repo)
   } else if(state == "normal"){
-    merged_without_conflict <- git_merge_stage(ref = ref, repo = repo)
-    if(isTRUE(squash)){
-      # This turns it in a regular commit
-      git_merge_cleanup(repo = repo)
-    }
+    merged_without_conflict <- git_merge_stage_only(ref = ref, squash = squash, repo = repo)
     if(!nrow(git_status(repo = repo))){
       message("Merge did not result in any changes")
     } else if(isTRUE(merged_without_conflict)){
@@ -61,6 +55,17 @@ git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.'){
 
 #' @export
 #' @rdname git_merge
+#' @useDynLib gert R_git_merge_stage
+git_merge_stage_only <- function(ref, squash = FALSE, repo = '.'){
+  repo <- git_open(repo)
+  success <- .Call(R_git_merge_stage, repo, ref)
+  if(isTRUE(squash)) # This turns it in a regular commit
+    git_merge_cleanup(repo = repo)
+  return(success)
+}
+
+#' @export
+#' @rdname git_merge
 #' @useDynLib gert R_git_merge_find_base
 #' @param target the branch where you want to merge into. Defaults to current `HEAD`.
 git_merge_find_base <- function(ref, target = "HEAD", repo = '.'){
@@ -74,14 +79,6 @@ git_merge_find_base <- function(ref, target = "HEAD", repo = '.'){
 git_merge_analysis <- function(ref, repo = '.'){
   repo <- git_open(repo)
   .Call(R_git_merge_analysis, repo, ref)
-}
-
-#' @export
-#' @rdname git_merge
-#' @useDynLib gert R_git_merge_stage
-git_merge_stage <- function(ref, repo = '.'){
-  repo <- git_open(repo)
-  .Call(R_git_merge_stage, repo, ref)
 }
 
 #' @useDynLib gert R_git_merge_cleanup
