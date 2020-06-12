@@ -105,4 +105,13 @@ test_that("status reports a conflicted file", {
   expect_equal(status$file, "foo.txt")
   expect_equal(status$status, "conflicted")
   expect_false(status$staged)
+
+  # Resolve the conflict
+  conflicts <- git_conflicts(repo = repo)
+  expect_equal(conflicts$our, status$file)
+  writeLines("Conflict is resolved", foo_path)
+  git_add('foo.txt', repo = repo)
+  git_commit("Resolve merge conflict", repo = repo)
+  expect_length(git_conflicts(repo = repo)$our, 0)
+  expect_length(git_status(repo = repo)$file, 0)
 })

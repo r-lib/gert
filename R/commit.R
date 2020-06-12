@@ -145,6 +145,14 @@ git_status <- function(staged = NULL, repo = '.'){
 
 #' @export
 #' @rdname git_commit
+#' @useDynLib gert R_git_conflict_list
+git_conflicts <- function(repo = '.'){
+  repo <- git_open(repo)
+  .Call(R_git_conflict_list, repo)
+}
+
+#' @export
+#' @rdname git_commit
 #' @useDynLib gert R_git_repository_ls
 git_ls <- function(repo = '.'){
   repo <- git_open(repo)

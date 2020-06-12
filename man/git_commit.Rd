@@ -7,6 +7,7 @@
 \alias{git_add}
 \alias{git_rm}
 \alias{git_status}
+\alias{git_conflicts}
 \alias{git_ls}
 \alias{git_log}
 \alias{git_reset}
@@ -23,6 +24,8 @@ git_add(files, force = FALSE, repo = ".")
 git_rm(files, repo = ".")
 
 git_status(staged = NULL, repo = ".")
+
+git_conflicts(repo = ".")
 
 git_ls(repo = ".")
 
