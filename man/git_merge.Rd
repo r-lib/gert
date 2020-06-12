@@ -8,7 +8,7 @@
 \alias{git_merge_abort}
 \title{Merging tools}
 \usage{
-git_merge(ref, commit_on_success = TRUE, repo = ".")
+git_merge(ref, commit = TRUE, squash = FALSE, repo = ".")
 
 git_merge_find_base(ref, target = "HEAD", repo = ".")
 
@@ -21,8 +21,11 @@ git_merge_abort(repo = ".")
 \arguments{
 \item{ref}{branch or commit that you want to merge}
 
-\item{commit_on_success}{automatically create a merge commit if the merge succeeds without
+\item{commit}{automatically create a merge commit if the merge succeeds without
 conflicts. Set this to \code{FALSE} if you want to customize your commit message/author.}
+
+\item{squash}{omits the second parent from the commit, which make the merge a regular
+single-parent commit.}
 
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable
@@ -35,9 +38,10 @@ Use \code{git_merge} to merge a branch into the current head. Based on how the b
 have diverged, the function will select a fast-forward or merge-commit strategy.
 }
 \details{
-By default \code{git_merge} will automatically commit the merge. However if
-\code{commit_on_success} is set to \code{FALSE} or if the merge fails with
-merge-conflicts, the changes are staged but you have to run \link{git_commit} manually.
+By default \code{git_merge} automatically commits the merge commit upon success.
+However if the merge fails with merge-conflicts, or if \code{commit} is set to
+\code{FALSE}, the changes are staged and the repository is put in merging state,
+and you have to manually run \code{git_commit} or \code{git_merge_abort} to proceed.
 
 Other functions are more low-level tools that are used by \code{git_merge}.
 \code{git_merge_find_base} looks up the commit where two branches have diverged

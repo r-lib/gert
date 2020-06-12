@@ -3,9 +3,10 @@
 #' Use `git_merge` to merge a branch into the current head. Based on how the branches
 #' have diverged, the function will select a fast-forward or merge-commit strategy.
 #'
-#' By default `git_merge` will automatically commit the merge. However if
-#' `commit_on_success` is set to `FALSE` or if the merge fails with
-#' merge-conflicts, the changes are staged but you have to run [git_commit] manually.
+#' By default `git_merge` automatically commits the merge commit upon success.
+#' However if the merge fails with merge-conflicts, or if `commit` is set to
+#' `FALSE`, the changes are staged and the repository is put in merging state,
+#' and you have to manually run `git_commit` or `git_merge_abort` to proceed.
 #'
 #' Other functions are more low-level tools that are used by `git_merge`.
 #' `git_merge_find_base` looks up the commit where two branches have diverged
@@ -23,9 +24,11 @@
 #' @name git_merge
 #' @inheritParams git_open
 #' @param ref branch or commit that you want to merge
-#' @param commit_on_success automatically create a merge commit if the merge succeeds without
+#' @param commit automatically create a merge commit if the merge succeeds without
 #' conflicts. Set this to `FALSE` if you want to customize your commit message/author.
-git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
+#' @param squash omits the second parent from the commit, which make the merge a regular
+#' single-parent commit.
+git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.'){
   state <- git_merge_analysis(ref = ref, repo = repo)
   if(state == "up_to_date"){
     message("Already up to date, nothing to merge")
@@ -34,10 +37,14 @@ git_merge <- function(ref, commit_on_success = TRUE, repo = '.'){
     git_branch_fast_forward(ref = ref, repo = repo)
   } else if(state == "normal"){
     merged_without_conflict <- git_merge_stage(ref = ref, repo = repo)
+    if(isTRUE(squash)){
+      # This turns it in a regular commit
+      git_merge_cleanup(repo = repo)
+    }
     if(!nrow(git_status(repo = repo))){
       message("Merge did not result in any changes")
     } else if(isTRUE(merged_without_conflict)){
-      if(isTRUE(commit_on_success)){
+      if(isTRUE(commit)){
         commit_message <- sprintf("Merged %s into %s", ref, git_info(repo = repo)$shorthand)
         git_commit(commit_message, repo = repo)
         message(commit_message)
@@ -77,13 +84,15 @@ git_merge_stage <- function(ref, repo = '.'){
   .Call(R_git_merge_stage, repo, ref)
 }
 
-#' @export
-#' @rdname git_merge
 #' @useDynLib gert R_git_merge_cleanup
-git_merge_abort <- function(repo = '.'){
+git_merge_cleanup <- function(repo = '.'){
   repo <- git_open(repo)
   .Call(R_git_merge_cleanup, repo)
 }
+
+#' @export
+#' @rdname git_merge
+git_merge_abort <-git_merge_cleanup
 
 #' @useDynLib gert R_git_merge_parent_heads
 git_merge_parent_heads <- function(repo = '.'){
