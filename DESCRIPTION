@@ -7,12 +7,12 @@ Authors@R: c(
       comment = c(ORCID = "0000-0002-4035-0289")),
     person("Jennifer", "Bryan", role = "ctb", email = "jenny@rstudio.com",
       comment = c(ORCID = "0000-0002-6983-2759")))
-Description: Simple git client based on 'libgit2' with
-    user-friendly authentication and support for both SSH and HTTPS
-    remotes on all platforms. User credentials are shared with command
-    line 'git' through the git-credential store and ssh keys stored on
-    disk or ssh-agent. On Linux, a somewhat recent version of 'libgit2' is
-    required.
+Description: Simple git client for R based on 'libgit2' with support for SSH and 
+    HTTPS remotes. All functions in gert use basic R data types (such as vectors
+    and data-frames) for their arguments and return values. User credentials are
+    shared with command line 'git' through the git-credential store and ssh keys
+    stored on disk or ssh-agent. On Linux, a somewhat recent version of 'libgit2'
+    is required; we provide a PPA for older Ubuntu LTS versions. 
 License: MIT + file LICENSE
 URL: https://docs.ropensci.org/gert (website),
     https://github.com/r-lib/gert (devel), 
@@ -32,5 +32,5 @@ VignetteBuilder:
 Encoding: UTF-8
 Roxygen: list(load = "installed", markdown = TRUE)
 RoxygenNote: 7.1.0.9000
-SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or
-    libgit2-dev (deb). A PPA is available for older Ubuntu LTS versions.
+SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb).
+    A PPA is available for older Ubuntu LTS versions.
