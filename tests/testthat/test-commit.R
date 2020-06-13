@@ -108,13 +108,13 @@ test_that("status reports a conflicted file", {
   expect_equal(git_merge_analysis('my-branch', repo = repo), "normal")
 
   # What if we would rebase
-  rebase_info <- git_rebase_info("my-branch", repo = repo)
+  rebase_info <- git_rebase_list("my-branch", repo = repo)
   expect_equal(rebase_info$type, rep("pick", 3))
   expect_equal(rebase_info$commit, rev(head(git_log(repo = repo), -1)$commit))
   expect_equal(rebase_info$conflicts, c(T,T,F))
 
   # Or rebase onto master
-  rebase_info <- git_rebase_info("HEAD", "my-branch", repo = repo)
+  rebase_info <- git_rebase_list("HEAD", "my-branch", repo = repo)
   expect_equal(rebase_info$type, "pick")
   expect_equal(rebase_info$commit, head(git_log("my-branch", repo = repo), -1)$commit)
   expect_true(rebase_info$conflicts)
