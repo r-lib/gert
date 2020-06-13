@@ -116,6 +116,6 @@ void R_init_gert(DllInfo *dll) {
   if(userprofile)
     git_libgit2_opts(GIT_OPT_SET_SEARCH_PATH, GIT_CONFIG_LEVEL_GLOBAL, userprofile);
 #endif
-  R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-  R_useDynamicSymbols(dll, FALSE);
+  //R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+  //R_useDynamicSymbols(dll, FALSE);
 }

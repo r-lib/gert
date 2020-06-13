@@ -77,6 +77,7 @@ test_that("status reports a conflicted file", {
   configure_local_user(repo)
 
   foo_path <- file.path(repo, "foo.txt")
+  bar_path <- file.path(repo, "bar.txt")
 
   writeLines("cranky-crab-legs", foo_path)
   git_add("foo.txt", repo = repo)
@@ -94,9 +95,29 @@ test_that("status reports a conflicted file", {
   git_add("foo.txt", repo = repo)
   git_commit("Uppercase first 2 words", repo = repo)
 
+  writeLines(c("CRANKY-CRAB-legs", "One more line"), foo_path)
+  git_add("foo.txt", repo = repo)
+  git_commit("Add another commit", repo = repo)
+
+  writeLines("Nothing special", bar_path)
+  git_add("bar.txt", repo = repo)
+  git_commit("Non-conflicting commit", repo = repo)
+
   expect_equal(base, git_merge_find_base("my-branch", repo = repo))
   expect_equal(git_merge_analysis(base, repo = repo), "up_to_date")
   expect_equal(git_merge_analysis('my-branch', repo = repo), "normal")
+
+  # What if we would rebase
+  rebase_info <- git_rebase_info("my-branch", repo = repo)
+  expect_equal(rebase_info$type, rep("pick", 3))
+  expect_equal(rebase_info$commit, rev(head(git_log(repo = repo), -1)$commit))
+  expect_equal(rebase_info$conflicts, c(T,T,F))
+
+  # Or rebase onto master
+  rebase_info <- git_rebase_info("HEAD", "my-branch", repo = repo)
+  expect_equal(rebase_info$type, "pick")
+  expect_equal(rebase_info$commit, head(git_log("my-branch", repo = repo), -1)$commit)
+  expect_true(rebase_info$conflicts)
 
   # Merge returns FALSE due to conflicts
   git_merge("my-branch", repo = repo)
