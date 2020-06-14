@@ -26,12 +26,14 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 }
 \description{
 A cherry-pick applies the changes from a given commit (from another branch)
-onto the current branch. A rebase resets the target branch to another branch
-(usually the remote upstream) and then re-applies the local changes by
-cherry-picking each of the local commits that was not yet in the upstream.
+onto the current branch. A rebase resets the branch to the state of another
+branch (usually upstream) and then re-applies your local changes by cherry-
+picking each of your local commits onto the upstream commit history.
 }
 \details{
-\code{git_rebase_list} shows the commits that need to be cherry-picked to rebase
-\code{branch} onto \code{upstream}, including which of these commits will conflict. It
-does so by performing a dry-run, without saving any actual changes.
+\code{git_rebase_list} shows the commits that would need to be cherry-picked to
+rebase the current branch onto \code{upstream} history. It does so by performing
+a dry-run, without saving any actual changes. The output also shows if any
+of the commits conflict (in which case you cannot rebase).
+Use \code{git_rebase_commit} to actually rewind and rebase your local branch.
 }
