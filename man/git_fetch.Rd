@@ -38,7 +38,7 @@ git_clone(
   verbose = interactive()
 )
 
-git_pull(..., repo = ".")
+git_pull(..., rebase = FALSE, repo = ".")
 }
 \arguments{
 \item{remote}{name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}}
@@ -73,6 +73,9 @@ private repos. You will be prompted for a password or pat when needed.}
 \item{bare}{use the \code{--bare} flag}
 
 \item{...}{arguments passed to \link{git_fetch}}
+
+\item{rebase}{if TRUE we try to rebase instead of merge local changes. This
+is not possible in case of conflicts (you will get an error).}
 }
 \description{
 Use \link{git_fetch} and \link{git_push} to sync a local branch with a remote.

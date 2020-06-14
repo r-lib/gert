@@ -113,12 +113,6 @@ test_that("status reports a conflicted file", {
   expect_equal(rebase_info$commit, rev(head(git_log(repo = repo), -1)$commit))
   expect_equal(rebase_info$conflicts, c(T,T,F))
 
-  # Or rebase onto master
-  rebase_info <- git_rebase_list("HEAD", "my-branch", repo = repo)
-  expect_equal(rebase_info$type, "pick")
-  expect_equal(rebase_info$commit, head(git_log("my-branch", repo = repo), -1)$commit)
-  expect_true(rebase_info$conflicts)
-
   # Merge returns FALSE due to conflicts
   git_merge("my-branch", repo = repo)
 

@@ -11,24 +11,38 @@
 #'
 #' @export
 #' @rdname git_rebase
+#' @name git_rebase
 #' @param upstream branch to which you want to rewind and re-apply your
 #' local commits. The default uses the remote upstream branch with the
 #' current state on the git server, simulating [git_pull].
-#' @param branch target branch containing the commits you want sync with
-#' upstream. Defaults to current branch.
 #' @inheritParams git_open
-#' @useDynLib gert R_git_rebase_list
-git_rebase_list <- function(upstream = NULL, branch = "HEAD", repo = '.'){
+git_rebase_list <- function(upstream = NULL, repo = '.'){
+  git_rebase(upstream = upstream, commit_changes = FALSE, repo = repo)
+}
+
+#' @export
+#' @rdname git_rebase
+git_rebase_commit <- function(upstream = NULL, repo = '.'){
+  git_rebase(upstream = upstream, commit_changes = TRUE, repo = repo)
+}
+
+#' @useDynLib gert R_git_rebase
+git_rebase <- function(upstream, commit_changes, repo){
   repo <- git_open(repo)
-  assert_string(branch)
+  info <- git_info(repo = repo)
   if(!length(upstream)){
-    info <- git_info(repo = repo)
     if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
       stop("No upstream configured for current HEAD")
     git_fetch(info$remote, repo = repo)
     upstream <- info$upstream
   }
-  .Call(R_git_rebase_list, repo, branch, upstream)
+  df <- .Call(R_git_rebase, repo, upstream, commit_changes)
+  if(commit_changes){
+    new_head <- ifelse(nrow(df) > 0, utils::tail(df$commit, 1), upstream[1])
+    git_reset("hard", ref = new_head, repo = repo)
+    message(sprintf("Resetting %s to %s", info$shorthand, new_head))
+  }
+  return(df)
 }
 
 #' @export

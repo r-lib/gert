@@ -138,13 +138,22 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_k
 
 #' @export
 #' @rdname git_fetch
+#' @param rebase if TRUE we try to rebase instead of merge local changes. This
+#' is not possible in case of conflicts (you will get an error).
 #' @param ... arguments passed to [git_fetch]
-git_pull <- function(..., repo = '.'){
+git_pull <- function(..., rebase = FALSE, repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
   if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
     stop("No upstream configured for current HEAD")
   git_fetch(info$remote, ..., repo = repo)
-  git_merge(info$upstream, repo = repo)
+  if(isTRUE(rebase)){
+    rebase_df <- git_rebase_list(upstream = info$upstream, repo = repo)
+    if(any(rebase_df$conflicts))
+      stop("Found conflicts, rebase not possible. Retry with rebase = FALSE")
+    git_rebase_commit(upstream = info$upstream, repo = repo)
+  } else {
+    git_merge(info$upstream, repo = repo)
+  }
   git_repo_path(repo)
 }

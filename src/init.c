@@ -27,7 +27,7 @@ extern SEXP R_git_merge_fast_forward(SEXP, SEXP);
 extern SEXP R_git_merge_find_base(SEXP, SEXP, SEXP);
 extern SEXP R_git_merge_parent_heads(SEXP);
 extern SEXP R_git_merge_stage(SEXP, SEXP);
-extern SEXP R_git_rebase_list(SEXP, SEXP, SEXP);
+extern SEXP R_git_rebase(SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_add(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_fetch(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_list(SEXP);
@@ -77,7 +77,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_merge_find_base",    (DL_FUNC) &R_git_merge_find_base,    3},
   {"R_git_merge_parent_heads", (DL_FUNC) &R_git_merge_parent_heads, 1},
   {"R_git_merge_stage",        (DL_FUNC) &R_git_merge_stage,        2},
-  {"R_git_rebase_list",        (DL_FUNC) &R_git_rebase_list,        3},
+  {"R_git_rebase",             (DL_FUNC) &R_git_rebase,             3},
   {"R_git_remote_add",         (DL_FUNC) &R_git_remote_add,         4},
   {"R_git_remote_fetch",       (DL_FUNC) &R_git_remote_fetch,       6},
   {"R_git_remote_list",        (DL_FUNC) &R_git_remote_list,        1},

@@ -25,21 +25,20 @@ static const char * type_to_string(git_rebase_operation_t type){
   return NULL;
 }
 
-SEXP R_git_rebase_list(SEXP ptr, SEXP target, SEXP upstream){
+SEXP R_git_rebase(SEXP ptr, SEXP upstream, SEXP commit_changes){
   git_index *index = NULL;
   git_rebase *rebase = NULL;
   git_rebase_operation *operation = NULL;
-  git_annotated_commit *base_head = NULL;
   git_annotated_commit *upstream_head = NULL;
+  int do_commit = Rf_asLogical(commit_changes);
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_annotated_commit_from_revspec(&base_head, repo, CHAR(STRING_ELT(target, 0))),
-          "git_annotated_commit_from_revspec");
-  bail_if(git_annotated_commit_from_revspec(&upstream_head, repo, CHAR(STRING_ELT(upstream, 0))),
-          "git_annotated_commit_from_revspec");
   git_rebase_options opt = GIT_REBASE_OPTIONS_INIT;
   opt.inmemory = 1;
-  bail_if(git_rebase_init(&rebase, repo, base_head, upstream_head, NULL, &opt), "git_rebase_init");
-  git_annotated_commit_free(base_head);
+  if(do_commit)
+    opt.merge_options.flags = GIT_MERGE_FAIL_ON_CONFLICT;
+  bail_if(git_annotated_commit_from_revspec(&upstream_head, repo, CHAR(STRING_ELT(upstream, 0))),
+          "git_annotated_commit_from_revspec");
+  bail_if(git_rebase_init(&rebase, repo, NULL, upstream_head, NULL, &opt), "git_rebase_init");
   git_annotated_commit_free(upstream_head);
   size_t len = git_rebase_operation_entrycount(rebase);
   SEXP types = PROTECT(Rf_allocVector(STRSXP, len));
@@ -47,14 +46,24 @@ SEXP R_git_rebase_list(SEXP ptr, SEXP target, SEXP upstream){
   SEXP conflicts = PROTECT(Rf_allocVector(LGLSXP, len));
   for(int i = 0; i < len; i++){
     bail_if(git_rebase_next(&operation, rebase), "git_rebase_next");
-    SET_STRING_ELT(oids, i, safe_char(git_oid_tostr_s(&operation->id)));
     SET_STRING_ELT(types, i, safe_char(type_to_string(operation->type)));
     bail_if(git_rebase_inmemory_index(&index, rebase), "git_rebase_inmemory_index");
     LOGICAL(conflicts)[i] = git_index_has_conflicts(index);
     git_index_conflict_cleanup(index);
     git_index_free(index);
+    if(do_commit){
+      git_commit *orig = NULL;
+      git_oid new_oid = {0};
+      bail_if(git_commit_lookup(&orig, repo, &operation->id), "git_commit_lookup");
+      bail_if(git_rebase_commit(&new_oid, rebase, NULL,
+                                git_commit_committer(orig), NULL, NULL), "git_rebase_commit");
+      git_commit_free(orig);
+      SET_STRING_ELT(oids, i, safe_char(git_oid_tostr_s(&new_oid)));
+    } else {
+      SET_STRING_ELT(oids, i, safe_char(git_oid_tostr_s(&operation->id)));
+    }
   }
-  bail_if(git_rebase_abort(rebase), "git_rebase_abort");
+  git_rebase_finish(rebase, NULL); //is no-op for in-memory rebase
   git_rebase_free(rebase);
   return build_tibble(3, "commit", oids, "type", types, "conflicts", conflicts);
 }

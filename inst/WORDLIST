@@ -18,6 +18,7 @@ libgit
 linkable
 ppa
 pre
+rebase
 repos
 unstaged
 untracked
