@@ -39,6 +39,9 @@ test_that("rebasing things", {
   expect_equal(c(commit_msg, orig$message), newlog$message)
   expect_equal(orig$commit, newlog$commit[-1])
 
+  # Check that patch matches
+  expect_equal(git_diff(commit_id, repo = repo), git_diff(newlog$commit[1], repo = repo))
+
   # Merge changes into another branch
   git_branch_checkout('backup', repo = repo)
   git_merge("master", repo = repo)
