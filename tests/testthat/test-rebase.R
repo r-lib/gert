@@ -24,7 +24,7 @@ test_that("rebasing things", {
   expect_equal(git_log(max = 5, repo = repo)$commit, utils::tail(orig$commit, 5))
   writeLines("some random change", file.path(repo, 'randomfile.txt'))
   git_add(".", repo = repo)
-  commit_id <- git_commit("Added a local change", repo = repo)
+  commit_id <- git_commit("Added a local change", repo = repo, author = "Jerry <test@jerry.nl>")
   commit_msg <- git_commit_info(commit_id, repo = repo)$message
 
   # Confirm that we cannot fast forward
