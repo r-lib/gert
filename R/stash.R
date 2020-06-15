@@ -5,6 +5,7 @@
 #' @export
 #' @rdname git_stash
 #' @name git_stash
+#' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_stash_save
 #' @param message optional message to store the stash

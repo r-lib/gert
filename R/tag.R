@@ -5,6 +5,7 @@
 #' @export
 #' @rdname git_tag
 #' @name git_tag
+#' @family git
 #' @inheritParams git_open
 #' @param match pattern to filter tags (use `*` for wildcard)
 #' @useDynLib gert R_git_tag_list

@@ -50,3 +50,19 @@ Gert only support a clean rebase; it never leaves the repository in unfinished
 "rebasing" state. If conflicts arise, \code{git_rebase_commit} will raise an error
 without making changes.
 }
+\seealso{
+Other git: 
+\code{\link{git_archive}},
+\code{\link{git_branch}},
+\code{\link{git_commit}()},
+\code{\link{git_config}()},
+\code{\link{git_diff}()},
+\code{\link{git_fetch}()},
+\code{\link{git_merge}()},
+\code{\link{git_remote}},
+\code{\link{git_repo}},
+\code{\link{git_signature}()},
+\code{\link{git_stash}},
+\code{\link{git_tag}}
+}
+\concept{git}

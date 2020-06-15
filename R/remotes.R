@@ -5,6 +5,7 @@
 #' @export
 #' @rdname git_remote
 #' @name git_remote
+#' @family git
 #' @inheritParams git_open
 #' @param name unique name of the remote
 #' @param url server url (https or ssh)

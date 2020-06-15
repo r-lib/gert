@@ -44,3 +44,19 @@ most recent stashed state.}
 \description{
 Temporary stash away changed from the working directory.
 }
+\seealso{
+Other git: 
+\code{\link{git_archive}},
+\code{\link{git_branch}},
+\code{\link{git_commit}()},
+\code{\link{git_config}()},
+\code{\link{git_diff}()},
+\code{\link{git_fetch}()},
+\code{\link{git_merge}()},
+\code{\link{git_rebase}()},
+\code{\link{git_remote}},
+\code{\link{git_repo}},
+\code{\link{git_signature}()},
+\code{\link{git_tag}}
+}
+\concept{git}

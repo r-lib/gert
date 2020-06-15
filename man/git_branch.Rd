@@ -50,7 +50,11 @@ Other git:
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
 \code{\link{git_merge}()},
+\code{\link{git_rebase}()},
+\code{\link{git_remote}},
 \code{\link{git_repo}},
-\code{\link{git_signature}()}
+\code{\link{git_signature}()},
+\code{\link{git_stash}},
+\code{\link{git_tag}}
 }
 \concept{git}
