@@ -1,6 +1,7 @@
 #include <string.h>
 #include "utils.h"
 
+/* I think this does exactly the same as GIT_RESET_MIXED */
 SEXP R_git_branch_set_target(SEXP ptr, SEXP ref){
   git_object *revision = NULL;
   git_reference *head = NULL;

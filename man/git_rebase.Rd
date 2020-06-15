@@ -38,13 +38,15 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 \description{
 A cherry-pick applies the changes from a given commit (from another branch)
 onto the current branch. A rebase resets the branch to the state of another
-branch (usually upstream) and then re-applies your local changes by cherry-
-picking each of your local commits onto the upstream commit history.
+branch (upstream) and then re-applies your local changes by cherry-picking
+each of your local commits onto the upstream commit history.
 }
 \details{
-\code{git_rebase_list} shows the commits that would need to be cherry-picked to
-rebase the current branch onto \code{upstream} history. It does so by performing
-a dry-run, without saving any actual changes. The output also shows if any
-of the commits conflict (in which case you cannot rebase).
-Use \code{git_rebase_commit} to actually rewind and rebase your local branch.
+\code{git_rebase_list} shows your local commits that are missing from the \code{upstream}
+history, and if they conflict with upstream changes. It does so by performing
+a rebase dry-run, without committing anything. If there are no conflicts, you
+can use \code{git_rebase_commit} to rewind and rebase your branch onto \code{upstream}.
+Gert only support a clean rebase; it never leaves the repository in unfinished
+"rebasing" state. If conflicts arise, \code{git_rebase_commit} will raise an error
+without making changes.
 }
