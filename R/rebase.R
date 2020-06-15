@@ -42,7 +42,7 @@ git_rebase <- function(upstream, commit_changes, repo){
   df <- .Call(R_git_rebase, repo, upstream, commit_changes)
   if(commit_changes){
     new_head <- ifelse(nrow(df) > 0, utils::tail(df$commit, 1), upstream[1])
-    git_reset_hard(ref = new_head, repo = repo)
+    git_branch_set_target(ref = new_head, repo = repo)
     message(sprintf("Resetting %s to %s", info$shorthand, new_head))
   }
   return(df)

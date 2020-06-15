@@ -52,12 +52,11 @@ git_branch_delete <- function(name, repo = '.'){
 
 #' @export
 #' @rdname git_branch
-#' @useDynLib gert R_git_merge_fast_forward
 git_branch_fast_forward <- function(ref, repo = '.'){
-  repo <- git_open(repo)
-  ref <- as.character(ref)
-  .Call(R_git_merge_fast_forward, repo, ref)
-  git_repo_path(repo)
+  analysis <- git_merge_analysis(ref = ref, repo = repo)
+  if(analysis != "fastforward")
+    stop("Branch cannot be fast-forwarded. Use git_merge() instead")
+  git_branch_set_target(ref = ref, repo = repo)
 }
 
 #' @export
@@ -68,5 +67,13 @@ git_branch_set_upstream <- function(remote = "origin", repo = '.'){
   repo <- git_open(repo)
   branch <- NULL
   .Call(R_git_branch_set_upsteam, repo, remote, branch)
+  git_repo_path(repo)
+}
+
+#' @useDynLib gert R_git_branch_set_target
+git_branch_set_target <- function(ref, repo = '.'){
+  repo <- git_open(repo)
+  ref <- as.character(ref)
+  .Call(R_git_branch_set_target, repo, ref)
   git_repo_path(repo)
 }
