@@ -25,7 +25,6 @@
 #' @return
 #' * `git_status()`, `git_ls()`: A data frame with one row per file
 #' * `git_log()`: A data frame with one row per commit
-#' * `git_add()`, `git_rm()`, `git_reset()`: An object of class `git_repo_ptr`
 #' * `git_commit()`, `git_commit_all()`: A SHA
 #' @useDynLib gert R_git_commit_create
 #' @examples
@@ -169,18 +168,6 @@ git_log <- function(ref = "HEAD", max = 100, repo = "."){
   ref <- as.character(ref)
   max <- as.integer(max)
   .Call(R_git_commit_log, repo, ref, max)
-}
-
-#' @export
-#' @rdname git_commit
-#' @useDynLib gert R_git_reset
-#' @param type must be one of `"soft"`, `"hard"`, or `"mixed"`
-git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = "."){
-  typenum <- switch(match.arg(type), soft = 1L, mixed = 2L, hard = 3L)
-  repo <- git_open(repo)
-  ref <- as.character(ref)
-  .Call(R_git_reset, repo, ref, typenum)
-  git_status(repo = repo)
 }
 
 assert_string <- function(x){

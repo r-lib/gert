@@ -4,7 +4,7 @@
 #'
 #' @export
 #' @rdname git_branch
-#' @name branch
+#' @name git_branch
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_branch_list

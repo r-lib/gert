@@ -18,6 +18,7 @@
 #' local commits. The default uses the remote upstream branch with the
 #' current state on the git server, simulating [git_pull].
 #' @inheritParams git_open
+#' @inheritParams git_branch
 git_rebase_list <- function(upstream = NULL, repo = '.'){
   git_rebase(upstream = upstream, commit_changes = FALSE, repo = repo)
 }
@@ -41,10 +42,37 @@ git_rebase <- function(upstream, commit_changes, repo){
   df <- .Call(R_git_rebase, repo, upstream, commit_changes)
   if(commit_changes){
     new_head <- ifelse(nrow(df) > 0, utils::tail(df$commit, 1), upstream[1])
-    git_reset("hard", ref = new_head, repo = repo)
+    git_reset_hard(ref = new_head, repo = repo)
     message(sprintf("Resetting %s to %s", info$shorthand, new_head))
   }
   return(df)
+}
+
+#' @export
+#' @rdname git_rebase
+git_reset_hard <- function(ref = "HEAD", repo = "."){
+  git_reset("hard", ref = ref, repo = repo)
+}
+
+#' @export
+#' @rdname git_rebase
+git_reset_soft <- function(ref = "HEAD", repo = "."){
+  git_reset("soft", ref = ref, repo = repo)
+}
+
+#' @export
+#' @rdname git_rebase
+git_reset_mixed <- function(ref = "HEAD", repo = "."){
+  git_reset("mixed", ref = ref, repo = repo)
+}
+
+#' @useDynLib gert R_git_reset
+git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = "."){
+  typenum <- switch(match.arg(type), soft = 1L, mixed = 2L, hard = 3L)
+  repo <- git_open(repo)
+  ref <- as.character(ref)
+  .Call(R_git_reset, repo, ref, typenum)
+  git_status(repo = repo)
 }
 
 #' @export

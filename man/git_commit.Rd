@@ -10,7 +10,6 @@
 \alias{git_conflicts}
 \alias{git_ls}
 \alias{git_log}
-\alias{git_reset}
 \title{Stage and commit changes}
 \usage{
 git_commit(message, author = NULL, committer = NULL, repo = ".")
@@ -30,8 +29,6 @@ git_conflicts(repo = ".")
 git_ls(repo = ".")
 
 git_log(ref = "HEAD", max = 100, repo = ".")
-
-git_reset(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".")
 }
 \arguments{
 \item{message}{a commit message}
@@ -55,14 +52,11 @@ Use \code{"."} to stage all changed files.}
 Use \code{NULL} or \code{NA} to show both (default).}
 
 \item{max}{lookup at most latest n parent commits}
-
-\item{type}{must be one of \code{"soft"}, \code{"hard"}, or \code{"mixed"}}
 }
 \value{
 \itemize{
 \item \code{git_status()}, \code{git_ls()}: A data frame with one row per file
 \item \code{git_log()}: A data frame with one row per commit
-\item \code{git_add()}, \code{git_rm()}, \code{git_reset()}: An object of class \code{git_repo_ptr}
 \item \code{git_commit()}, \code{git_commit_all()}: A SHA
 }
 }
@@ -116,8 +110,8 @@ unlink(repo, recursive = TRUE)
 }
 \seealso{
 Other git: 
-\code{\link{branch}},
 \code{\link{git_archive}},
+\code{\link{git_branch}},
 \code{\link{git_config}()},
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},

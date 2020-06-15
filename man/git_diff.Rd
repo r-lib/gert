@@ -22,8 +22,8 @@ View changes in a commit or in the current working directory.
 }
 \seealso{
 Other git: 
-\code{\link{branch}},
 \code{\link{git_archive}},
+\code{\link{git_branch}},
 \code{\link{git_commit}()},
 \code{\link{git_config}()},
 \code{\link{git_fetch}()},

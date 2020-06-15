@@ -4,12 +4,21 @@
 \alias{git_rebase}
 \alias{git_rebase_list}
 \alias{git_rebase_commit}
+\alias{git_reset_hard}
+\alias{git_reset_soft}
+\alias{git_reset_mixed}
 \alias{git_cherry_pick}
 \title{Cherry-Pick and Rebase}
 \usage{
 git_rebase_list(upstream = NULL, repo = ".")
 
 git_rebase_commit(upstream = NULL, repo = ".")
+
+git_reset_hard(ref = "HEAD", repo = ".")
+
+git_reset_soft(ref = "HEAD", repo = ".")
+
+git_reset_mixed(ref = "HEAD", repo = ".")
 
 git_cherry_pick(commit, repo = ".")
 }
@@ -21,6 +30,8 @@ current state on the git server, simulating \link{git_pull}.}
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}.}
+
+\item{ref}{string with a branch/tag/commit}
 
 \item{commit}{id of the commit to cherry pick}
 }
