@@ -39,7 +39,7 @@ remotes::install_github("r-lib/gert")
 On Linux you need to install libgit2:
 
  - Debian: [libgit2-dev](https://packages.debian.org/buster/libgit2-dev)
- - Fedora: [libgit2-devel](https://apps.fedoraproject.org/packages/libgit2-devel)
+ - Fedora / CentOS: [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2)
  
 For Ubuntu Trusty and Xenial, you can use libgit2 backports from [this ppa](https://launchpad.net/~cran/+archive/ubuntu/libgit2):
 
