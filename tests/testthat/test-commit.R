@@ -113,6 +113,7 @@ test_that("status reports a conflicted file", {
   expect_equal(rebase_info$commit, rev(head(git_log(repo = repo), -1)$commit))
   expect_equal(rebase_info$conflicts, c(T,T,F))
   expect_error(git_rebase_commit("my-branch", repo = repo), class = "GIT_EMERGECONFLICT")
+  expect_error(git_branch_fast_forward("my-branch", repo = repo))
 
   # Merge returns FALSE due to conflicts
   git_merge("my-branch", repo = repo)
