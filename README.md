@@ -123,7 +123,7 @@ Global config: /Users/jeroen/.gitconfig
 Default user: Jeroen Ooms <jeroenooms@gmail.com
 ```
 
-On Mac/Linux, it first tries to authenticate using credentials from your `ssh-agent`. If that doesn't work it will look for a suitable private key on your system (ususally `id_rsa`), and if it is password protected, gert will safely prompt the user for a passphrase using [askpass](https://github.com/jeroen/askpass#readme).
+On Mac/Linux, it first tries to authenticate using credentials from your `ssh-agent`. If that doesn't work it will look for a suitable private key on your system (ususally `id_rsa`), and if it is protected with a passphrase, gert will safely prompt the user for the passphrase using [askpass](https://github.com/jeroen/askpass#readme).
 If the user does not have an SSH key yet, the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package makes it easy to set that up.
 
 One limitation that remains is that libgit2 does not support `ssh-agent` on Windows. This is [unlikely to change](https://github.com/libgit2/libgit2/issues/4958) because ssh-agent uses unix-sockets which do not exist in native Windows software.
