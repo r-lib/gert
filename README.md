@@ -108,7 +108,7 @@ For R users who are familiar with the `git` command line, gert should be mostly 
 
 ### Automatic authentication
 
-To authenticate with a remote in git2r, you need to manually pass your crentials in every call to e.g. `git2r::clone()`, which is not ideal.
+To authenticate with a remote in git2r, you may need to manually pass your crentials in every call to e.g. `git2r::clone()`, which is not ideal.
 
 In Gert, authentication is done automatically using the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package. This package calls out to the local OS credential store which is also used by the `git` command line. Therefore gert will automatically pick up on https credentials that are safely stored in your OS keychain. 
 
