@@ -108,13 +108,13 @@ For R users who are familiar with the `git` command line, gert should be mostly 
 
 ### Automatic authentication
 
-To authenticate with a remote in git2r, you may need to manually pass your crentials in every call to e.g. `git2r::clone()`, which is not ideal.
+To authenticate with a remote in git2r, you may need to manually pass your credentials in every call to e.g. `git2r::clone()`, which is not ideal.
 
 In Gert, authentication is done automatically using the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package. This package calls out to the local OS credential store which is also used by the `git` command line. Therefore gert will automatically pick up on https credentials that are safely stored in your OS keychain. 
 
-If no credentials are available from the store, `gert` will try to authenticate using your `GITHUB_PAT` (if set) for Github https remotes. If none of that works, it safely prompts the user for credentials using [askpass](https://github.com/jeroen/askpass#readme). Together, these methods should make https authentication "just work" in any scenario, without having to manually provide passwords in R.
+If no credentials are available from the store, `gert` will try to authenticate using your `GITHUB_PAT` (if set) for GitHub https remotes. If none of that works, it safely prompts the user for credentials using [askpass](https://github.com/jeroen/askpass#readme). Together, these methods should make https authentication "just work" in any scenario, without having to manually provide passwords in R.
 
-Authenentication with ssh remotes is a bit more complicated, but Gert will again try to make this as smooth as possible. First of all, Gert will tell you if SSH is supported when attaching the package (this will be the case on all modern systems):
+Authentication with ssh remotes is a bit more complicated, but Gert will again try to make this as smooth as possible. First of all, Gert will tell you if SSH is supported when attaching the package (this will be the case on all modern systems):
 
 ```r
 > library(gert)
@@ -123,7 +123,7 @@ Global config: /Users/jeroen/.gitconfig
 Default user: Jeroen Ooms <jeroenooms@gmail.com
 ```
 
-On Mac/Linux, it first tries to authenticate using credentials from your `ssh-agent`. If that doesn't work it will look for a suitable private key on your system (ususally `id_rsa`), and if it is protected with a passphrase, gert will safely prompt the user for the passphrase using [askpass](https://github.com/jeroen/askpass#readme).
+On Mac/Linux, it first tries to authenticate using credentials from your `ssh-agent`. If that doesn't work it will look for a suitable private key on your system (usually `id_rsa`), and if it is protected with a passphrase, gert will safely prompt the user for the passphrase using [askpass](https://github.com/jeroen/askpass#readme).
 If the user does not have an SSH key yet, the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package makes it easy to set that up.
 
 One limitation that remains is that libgit2 does not support `ssh-agent` on Windows. This is [unlikely to change](https://github.com/libgit2/libgit2/issues/4958) because ssh-agent uses unix-sockets which do not exist in native Windows software.
@@ -144,4 +144,4 @@ sudo add-apt-repository ppa:cran/libgit2
 sudo apt-get install libgit2-dev
 ```
 
-CI users do not need to worry about this, because we automatically enable this PPA on Travis and GitHub Actions. Outside of CI systems, very few people are running Ubuntu 16 anymore, most production servers have updated to Ubuntu 18 or 20 by now, so this is rarely an issue in pratice.
+CI users do not need to worry about this, because we automatically enable this PPA on Travis and GitHub Actions. Outside of CI systems, very few people are running Ubuntu 16 anymore, most production servers have updated to Ubuntu 18 or 20 by now, so this is rarely an issue in practice.
