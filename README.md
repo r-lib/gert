@@ -112,7 +112,7 @@ To authenticate with a remote in git2r, you may need to manually pass your crent
 
 In Gert, authentication is done automatically using the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package. This package calls out to the local OS credential store which is also used by the `git` command line. Therefore gert will automatically pick up on https credentials that are safely stored in your OS keychain. 
 
-If no credentials are available from the store, `gert` will try to authenticate using your `GITHUB_PAT` (if set) for Github https remotes. If none of that works, it safely prompt the user for credentials using [askpass](https://github.com/jeroen/askpass#readme). Together, these methods should make https authentication "just work" in any scenario, without having to manually provide passwords in R.
+If no credentials are available from the store, `gert` will try to authenticate using your `GITHUB_PAT` (if set) for Github https remotes. If none of that works, it safely prompts the user for credentials using [askpass](https://github.com/jeroen/askpass#readme). Together, these methods should make https authentication "just work" in any scenario, without having to manually provide passwords in R.
 
 Authenentication with ssh remotes is a bit more complicated, but Gert will again try to make this as smooth as possible. First of all, Gert will tell you if SSH is supported when attaching the package (this will be the case on all modern systems):
 
