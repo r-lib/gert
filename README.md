@@ -132,11 +132,11 @@ One limitation that remains is that libgit2 does not support `ssh-agent` on Wind
 
 Gert always uses the system version of libgit2, i.e. [libgit2-dev](https://packages.ubuntu.com/focal/libgit2-dev) on Debian/Ubuntu and [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2) on Fedora. On MacOS and Windows the package is statically linked to the [Homebrew](https://github.com/Homebrew/homebrew-core/blob/master/Formula/libgit2.rb) and [rtools](https://github.com/r-windows/rtools-packages/blob/master/mingw-w64-libgit2/PKGBUILD) build of libgit2. These versions of libgit2 are guaranteed to be properly configured for that operating system, especially when it comes to 3rd party libraries that libgit2 needs to support ssh and TLS (for https).
 
-The git2r package takes another approach by bundling the libgit2 source code in the R package, and automatically building libgit2 on-the-fly when the R package is compiled. This is mostly for historical reasons, because up till  recently, libgit2 was not yet available on every Linux system. It also saves R the user from having to `apt-get install libgit2-dev`.
+The git2r package takes another approach by bundling the libgit2 source code in the R package, and automatically building libgit2 on-the-fly when the R package is compiled. This is mostly for historical reasons, because until recently, libgit2 was not available on every Linux system. It also saves the R user from having to install libgit2, e.g. via `apt-get install libgit2-dev`.
 
 However the problem is that configuring and building libgit2 is complicated (like most system libraries) and requires several platform-specific flags and system dependencies. As a result, git2r is sometimes installed with missing functionality, depending on what was detected during compilation. On MacOS for example, some git2r users have SSH support but others do not. Weird problems due to missing libgit2 features turn out to be very persistent, and have caused a lot of frustration. For this reason, Gert does not bundle libgit2, and always uses the libgit2 provided by the OS, so that we know exactly what we're getting.
 
-One disadvantage of this approach is that on very old versions of Ubuntu, the system provided version of libgit2 is out of date, and we need to enable a PPA with more recent libgit2 backports. This is the case for Ubuntu Xenial (16.04) which is a system from 2016 that will be EOL in April 2021.
+One disadvantage of this approach is that on very old versions of Ubuntu, the system-provided version of libgit2 is out of date, and we need to enable a PPA with more recent libgit2 backports. This is the case for Ubuntu Xenial (16.04) which is a system from 2016 that will be EOL in April 2021.
 
 ```sh
 # Needed on Ubuntu 16.04
@@ -144,4 +144,4 @@ sudo add-apt-repository ppa:cran/libgit2
 sudo apt-get install libgit2-dev
 ```
 
-CI users do not need to worry about this, because we automatically enable this PPA on Travis and GHA. Outside of CI systems, very few people are running Ubuntu 16 anymore, most production servers have updated to Ubuntu 18 or 20 by now, so this is rarely an issue in pratice.
+CI users do not need to worry about this, because we automatically enable this PPA on Travis and GitHub Actions. Outside of CI systems, very few people are running Ubuntu 16 anymore, most production servers have updated to Ubuntu 18 or 20 by now, so this is rarely an issue in pratice.
