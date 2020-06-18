@@ -89,7 +89,7 @@ Some of the main differences:
 
 ### Simplicity 
 
-Gert is focused on high-level functions that shield the end-user from the complexity of libgit2. Functions in gert use standard R data types (such as vectors and data-frames) for their arguments and return values, which should be easy to work with for R users/packages. The target repository is either inferred from current working or is specified as a filepath. Branches and remotes are referred to by name, much like command line `git`. None of the functions in gert expose any externalptr types to the user.
+Gert is focused on high-level functions that shield the end-user from the complexity of libgit2. Functions in gert use standard R data types (such as vectors and data-frames) for their arguments and return values, which should be easy to work with for R users/packages. The target repository is either inferred from current working directory or is specified as a filepath. Branches and remotes are referred to by name, much like command line `git`. None of the functions in gert expose any externalptr types to the user.
 
 ```
 > gert::git_log(max=6)
