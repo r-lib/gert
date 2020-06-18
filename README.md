@@ -108,13 +108,13 @@ For R users who are familiar with the `git` command line, gert should be mostly 
 
 ### Automatic authentication
 
-To authenticate with a remote in git2r, you may need to manually pass your credentials in every call to e.g. `git2r::clone()`, which is not ideal.
+To authenticate with a remote in git2r, you may need to manually pass your credentials in every call to e.g. `git2r::clone()`, which can be burdensome. This is always the case for https remotes and is often the case even for ssh remotes.
 
-In Gert, authentication is done automatically using the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package. This package calls out to the local OS credential store which is also used by the `git` command line. Therefore gert will automatically pick up on https credentials that are safely stored in your OS keychain. 
+In gert, authentication is done automatically using the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package. This package calls out to the local OS credential store which is also used by the `git` command line. Therefore gert will automatically pick up on https credentials that are safely stored in your OS keychain. 
 
-If no credentials are available from the store, `gert` will try to authenticate using your `GITHUB_PAT` (if set) for GitHub https remotes. If none of that works, it safely prompts the user for credentials using [askpass](https://github.com/jeroen/askpass#readme). Together, these methods should make https authentication "just work" in any scenario, without having to manually provide passwords in R.
+If no credentials are available from the store, gert will try to authenticate using your `GITHUB_PAT` (if set) for GitHub https remotes. If none of that works, it safely prompts the user for credentials using [askpass](https://github.com/jeroen/askpass#readme). Together, these methods should make https authentication "just work" in any scenario, without having to manually provide passwords in R.
 
-Authentication with ssh remotes is a bit more complicated, but Gert will again try to make this as smooth as possible. First of all, Gert will tell you if SSH is supported when attaching the package (this will be the case on all modern systems):
+Authentication with ssh remotes is a bit more complicated, but gert will again try to make this as smooth as possible. First of all, gert will tell you if SSH is supported when attaching the package (this will be the case on all modern systems):
 
 ```r
 > library(gert)
@@ -134,7 +134,7 @@ Gert always uses the system version of libgit2, i.e. [libgit2-dev](https://packa
 
 The git2r package takes another approach by bundling the libgit2 source code in the R package, and automatically building libgit2 on-the-fly when the R package is compiled. This is mostly for historical reasons, because until recently, libgit2 was not available on every Linux system. It also saves the R user from having to install libgit2, e.g. via `apt-get install libgit2-dev`.
 
-However the problem is that configuring and building libgit2 is complicated (like most system libraries) and requires several platform-specific flags and system dependencies. As a result, git2r is sometimes installed with missing functionality, depending on what was detected during compilation. On MacOS for example, some git2r users have SSH support but others do not. Weird problems due to missing libgit2 features turn out to be very persistent, and have caused a lot of frustration. For this reason, Gert does not bundle libgit2, and always uses the libgit2 provided by the OS, so that we know exactly what we're getting.
+However the problem is that configuring and building libgit2 is complicated (like most system libraries) and requires several platform-specific flags and system dependencies. As a result, git2r is sometimes installed with missing functionality, depending on what was detected during compilation. On MacOS for example, some git2r users have SSH support but others do not. Weird problems due to missing libgit2 features turn out to be very persistent, and have caused a lot of frustration. For this reason, gert does not bundle libgit2, and always uses the libgit2 provided by the OS, so that we know exactly what we're getting.
 
 One disadvantage of this approach is that on very old versions of Ubuntu, the system-provided version of libgit2 is out of date, and we need to enable a PPA with more recent libgit2 backports. This is the case for Ubuntu Xenial (16.04) which is a system from 2016 that will be EOL in April 2021.
 
