@@ -83,7 +83,7 @@ git_reset_hard("HEAD^")
 
 ## Differences with `git2r`
 
-Gert is based on [libgit2](https://libgit2.org/), just like the rOpenSci package [git2r](https://docs.ropensci.org/git2r/). Both are good packages. The well established git2r has been on CRAN since 2015, is actively maintained by Stefan Widgren, and is widely used. Gert was started in 2019, and takes a fresh approach based on more recent APIs in libgit2 and things we learned from using git2r.
+Gert is based on [libgit2](https://libgit2.org/), just like the rOpenSci package [git2r](https://docs.ropensci.org/git2r/). Both are good packages. The well established git2r has been on CRAN since 2015, is actively maintained by Stefan Widgren, and is widely used. Gert was started in 2019, and takes a fresh approach based on more recent APIs in libgit2 and lessons learned from using git2r.
 
 Some of the main differences:
 
