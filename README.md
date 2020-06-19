@@ -92,7 +92,7 @@ On most platforms, gert supports both HTTPS or SSH remotes. If you don't have an
   
 Again: no need to use your Github master password in gert/git. Instead [generate a personal access token](https://github.com/settings/tokens/new) and enter this as the password when pushing/pulling from https remotes. This works both with gert and with the git command line, even when you have 2FA enabled (which you should).
 
-Ninja tip: use `credentials::set_github_pat()` to automatically set the `GITHUB_PAT` environment variable in your R session using the value stored in your git credential store. This is a safer way to store your PAT than hardcoding it in your `.Rprofile`.
+Ninja tip: use `credentials::set_github_pat()` to automatically set the `GITHUB_PAT` environment variable in your R session using the value stored in your git credential store. This is a safer way to store your PAT than hardcoding it in your `.Renviron`.
 
 ## Differences with `git2r`
 
