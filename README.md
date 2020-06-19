@@ -85,7 +85,7 @@ git_reset_hard("HEAD^")
 
 On most platforms, gert supports both HTTPS or SSH remotes. If you don't have any preference, the safest choice is  __HTTPS remotes using a PAT as the password__. This is what I use myself as well. HTTPS remotes have the following benefits:
 
-  - Your credentials are safely stored by your OS, accesible both to gert and command line `git`.
+  - Your credentials are safely stored by your OS, accessible both to gert and command line `git`.
   - Https works on any network. However the ssh protocol requires port 22, which is often blocked on public wifi networks.
   - You can authenticate over https using the same GITHUB_PAT that you use for the GitHub API.
   - libgit2 supports https on all platforms (SSH support depends on libssh2 availability).
@@ -151,7 +151,7 @@ One limitation that remains is that libgit2 does not support `ssh-agent` on Wind
 
 ### The libgit2 dependency
 
-Gert always uses the system version of libgit2, i.e. [libgit2-dev](https://packages.ubuntu.com/focal/libgit2-dev) on Debian/Ubuntu and [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2) on Fedora. On MacOS and Windows the package is statically linked to the [Homebrew](https://github.com/Homebrew/homebrew-core/blob/master/Formula/libgit2.rb) and [rtools](https://github.com/r-windows/rtools-packages/blob/master/mingw-w64-libgit2/PKGBUILD) build of libgit2. These versions of libgit2 are guaranteed to be properly configured for that operating system, especially when it comes to 3rd party libraries that libgit2 needs to support ssh and TLS (for https).
+Gert always uses the system version of libgit2, i.e. [libgit2-dev](https://packages.ubuntu.com/focal/libgit2-dev) on Debian/Ubuntu and [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2) on Fedora. On MacOS and Windows the package is statically linked to the [Homebrew](https://github.com/Homebrew/homebrew-core/blob/master/Formula/libgit2.rb) and [rtools40](https://github.com/r-windows/rtools-packages/blob/master/mingw-w64-libgit2/PKGBUILD) build of libgit2. These versions of libgit2 are guaranteed to be properly configured for that operating system, especially when it comes to 3rd party libraries that libgit2 needs to support ssh and TLS (for https).
 
 The git2r package takes another approach by bundling the libgit2 source code in the R package, and automatically building libgit2 on-the-fly when the R package is compiled. This is mostly for historical reasons, because until recently, libgit2 was not available on every Linux system. It also saves the R user from having to install libgit2, e.g. via `apt-get install libgit2-dev`.
 
