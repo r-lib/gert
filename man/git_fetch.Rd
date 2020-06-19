@@ -42,7 +42,9 @@ git_clone(
 git_pull(rebase = FALSE, ..., repo = ".")
 }
 \arguments{
-\item{remote}{name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}}
+\item{remote}{Optional. Name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}. If
+unspecified and the current branch is already tracking branch a remote
+branch, that remote is honored. Otherwise, defaults to \code{origin}.}
 
 \item{refspec}{string with mapping between remote and local refs}
 
@@ -83,8 +85,8 @@ is not possible in case of conflicts (you will get an error).}
 \item{...}{arguments passed to \link{git_fetch}}
 }
 \description{
-Use \link{git_fetch} and \link{git_push} to sync a local branch with a remote.
-Here \link{git_pull} is a wrapper for \link{git_fetch} which that tries to
+Use \code{\link[=git_fetch]{git_fetch()}} and \code{\link[=git_push]{git_push()}} to sync a local branch with a remote
+branch. Here \code{\link[=git_pull]{git_pull()}} is a wrapper for \code{\link[=git_fetch]{git_fetch()}} which then tries to
 \link[=git_branch_fast_forward]{fast-forward} the local branch after fetching.
 }
 \examples{

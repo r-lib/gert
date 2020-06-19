@@ -44,3 +44,7 @@
 as_string <- function(x){
   ifelse(length(x) > 0, x[1], NA_character_)
 }
+
+`%||%` <- function(x, y) {
+  if (is.null(x)) y else x
+}
