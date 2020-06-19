@@ -1,6 +1,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
+#include <R_ext/Visibility.h>
 #include <git2.h>
 
 /* FIXME:
@@ -109,7 +110,7 @@ static const R_CallMethodDef CallEntries[] = {
   {NULL, NULL, 0}
 };
 
-void R_init_gert(DllInfo *dll) {
+attribute_visible void R_init_gert(DllInfo *dll) {
 #if LIBGIT2_VER_MAJOR == 0 && LIBGIT2_VER_MINOR < 22
   git_threads_init();
 #else
