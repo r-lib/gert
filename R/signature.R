@@ -30,7 +30,7 @@
 git_signature_default <- function(repo = '.'){
   repo <- git_open(repo)
   sig <- .Call(R_git_signature_default, repo)
-  sig_data_to_string(list(name = sig$name, email = sig$email))
+  sprintf("%s <%s>", sig$name, sig$email)
 }
 
 #' @export
@@ -79,11 +79,11 @@ sig_data_to_string <- function(x){
   if(length(x$time)){
     sig <- paste(sig, unclass(x$time), offset_to_string(x$offset))
   }
-  structure(trimws(sig), class = "git_signature")
+  structure(trimws(sig), class = "gert_signature")
 }
 
 #' @export
-print.git_signature <- function(x, ...){
+print.gert_signature <- function(x, ...){
   sig <- git_signature_parse(x)
   name <- sig$name
   email <- sig$email
