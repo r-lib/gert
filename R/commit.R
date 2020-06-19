@@ -139,7 +139,8 @@ git_rm <- function(files, repo = '.'){
 git_status <- function(staged = NULL, repo = '.'){
   repo <- git_open(repo)
   staged <- as.logical(staged)
-  .Call(R_git_status_list, repo, staged)
+  df <- .Call(R_git_status_list, repo, staged)
+  df[order(df$file), ,drop = FALSE]
 }
 
 #' @export
