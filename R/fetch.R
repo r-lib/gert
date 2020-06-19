@@ -37,10 +37,13 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
 
 #' @export
 #' @rdname git_fetch
+#' @param set_upstream change the branch default upstream to `remote`.
+#' If `NULL`, this will set the branch upstream only if the push was
+#' successful and if the branch does not have an upstream set yet.
 #' @useDynLib gert R_git_remote_push
-git_push <- function(remote = NULL, refspec = NULL, password = askpass,
-                     ssh_key = NULL, mirror = FALSE, force = FALSE,
-                     verbose = interactive(), repo = '.'){
+git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
+                     password = askpass, ssh_key = NULL, mirror = FALSE,
+                     force = FALSE, verbose = interactive(), repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
 
@@ -71,8 +74,10 @@ git_push <- function(remote = NULL, refspec = NULL, password = askpass,
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
 
   .Call(R_git_remote_push, repo, remote, refspec, key_cb, cred_cb, verbose)
+  if(is.null(set_upstream))
+    set_upstream <- isTRUE(is.na(info$upstream)) && !isTRUE(info$bare)
 
-  if(isTRUE(is.na(info$upstream)) && !isTRUE(info$bare)){
+  if(isTRUE(set_upstream)){
     git_branch_set_upstream(paste0(remote, "/", info$shorthand), repo)
   }
   git_repo_path(repo)

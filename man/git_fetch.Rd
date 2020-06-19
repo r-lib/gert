@@ -19,6 +19,7 @@ git_fetch(
 git_push(
   remote = NULL,
   refspec = NULL,
+  set_upstream = NULL,
   password = askpass,
   ssh_key = NULL,
   mirror = FALSE,
@@ -57,6 +58,10 @@ look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credential
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}.}
+
+\item{set_upstream}{change the branch default upstream to \code{remote}.
+If \code{NULL}, this will set the branch upstream only if the push was
+successful and if the branch does not have an upstream set yet.}
 
 \item{mirror}{use the \code{--mirror} flag}
 
