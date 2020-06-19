@@ -81,11 +81,22 @@ git_branch_delete("mybranch")
 git_reset_hard("HEAD^")
 ```
 
+## Should I use HTTPS or SSH remotes?
+
+On most platforms, gert supports both HTTPS or SSH remotes. If you don't have any preference, the safest choice is  __HTTPS remotes using a PAT as the password__. This is what I use myself as well. HTTPS remotes have the following benefits:
+
+  - Your credentials are safely stored by your OS, accesible both to gert and command line `git`.
+  - Https works on any network. However the ssh protocol requires port 22, which is often blocked on public wifi networks.
+  - You can authenticate over https using the same GITHUB_PAT that you use for the GitHub API.
+  - libgit2 supports https on all platforms (SSH support depends on libssh2 availability).
+  
+Again: no need to use your Github master password in gert/git. Instead [generate a personal access token](https://github.com/settings/tokens/new) and enter this as the password when pushing/pulling from https remotes. This works both with gert and with the git command line, even when you have 2FA enabled (which you should).
+
+Ninja tip: use `credentials::set_github_pat()` to automatically set the `GITHUB_PAT` environment variable in your R session using the value stored in your git credential store. This is a safer way to store your PAT than hardcoding it in your `.Rprofile`.
+
 ## Differences with `git2r`
 
-Gert is based on [libgit2](https://libgit2.org/), just like the rOpenSci package [git2r](https://docs.ropensci.org/git2r/). Both are good packages. The well established git2r has been on CRAN since 2015, is actively maintained by Stefan Widgren, and is widely used. Gert was started in 2019, and takes a fresh approach based on more recent APIs in libgit2 and lessons learned from using git2r.
-
-Some of the main differences:
+Gert is based on [libgit2](https://libgit2.org/), just like the rOpenSci package [git2r](https://docs.ropensci.org/git2r/). Both are good packages. The well established git2r has been on CRAN since 2015, is actively maintained by Stefan Widgren, and is widely used. Gert was started in 2019, and takes a fresh approach based on more recent APIs in libgit2 and lessons learned from using git2r. Some of the main differences:
 
 ### Simplicity 
 
@@ -125,8 +136,16 @@ Global config: /Users/jeroen/.gitconfig
 Default user: Jeroen Ooms <jeroenooms@gmail.com
 ```
 
-On Mac/Linux, it first tries to authenticate using credentials from your `ssh-agent`. If that doesn't work it will look for a suitable private key on your system (usually `id_rsa`), and if it is protected with a passphrase, gert will safely prompt the user for the passphrase using [askpass](https://github.com/jeroen/askpass#readme).
+On Mac/Linux, gert first tries to authenticate using credentials from your `ssh-agent`. If that doesn't work it will look for a suitable ssh key on your system (usually `id_rsa`), and if it is protected with a passphrase, gert will safely prompt the user for the passphrase using [askpass](https://github.com/jeroen/askpass#readme).
 If the user does not have an SSH key yet, the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package makes it easy to set that up.
+
+```r
+> library(credentials)
+Found git version 2.24.3 (Apple Git-128)
+Supported HTTPS credential helpers: cache, store
+Found OpenSSH_8.1p1, LibreSSL 2.7.3
+Default SSH key: /Users/jeroen/.ssh/id_rsa
+```
 
 One limitation that remains is that libgit2 does not support `ssh-agent` on Windows. This is [unlikely to change](https://github.com/libgit2/libgit2/issues/4958) because ssh-agent uses unix-sockets which do not exist in native Windows software.
 
