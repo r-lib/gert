@@ -31,9 +31,12 @@ git_archive_internal <- function(outfile, repo){
   wd <- getwd()
   on.exit(setwd(wd), add = TRUE)
   setwd(git_info(repo = repo)$path)
-  if(getRversion() < 4){
-    suppressMessages(zip::zip(outfile, files = files, recurse = FALSE))
-  } else {
-    suppressMessages(zip::zip(outfile, files = files, recurse = FALSE), "deprecated")
+  suppressMessages(zip::zip(outfile, files = files, recurse = FALSE), classes = "deprecated")
+}
+
+# Backport to prevent NOTE
+if(getRversion() < 4){
+  suppressMessages <- function(..., classes = NULL){
+    base::suppressMessages(...)
   }
 }
