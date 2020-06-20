@@ -9,7 +9,9 @@ git_checkout_pull_request(pr = 1, remote = "origin", repo = ".")
 \arguments{
 \item{pr}{number with PR to check out}
 
-\item{remote}{name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}}
+\item{remote}{Optional. Name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}. If
+unspecified and the current branch is already tracking branch a remote
+branch, that remote is honored. Otherwise, defaults to \code{origin}.}
 
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable

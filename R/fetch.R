@@ -1,8 +1,8 @@
 #' Push and Pull
 #'
-#' Use [git_fetch] and [git_push] to sync a local branch with a remote.
-#' Here [git_pull] is a wrapper for [git_fetch] which that tries to
-#' [fast-forward][git_branch_fast_forward] the local branch after fetching.
+#' Use [git_fetch()] and [git_push()] to sync a local branch with a remote
+#' branch. Here [git_pull()] is a wrapper for [git_fetch()] which then tries to
+#' [fast-forward][git_branch_fast_forward()] the local branch after fetching.
 #'
 #' @export
 #' @family git
@@ -10,7 +10,9 @@
 #' @rdname git_fetch
 #' @inheritParams git_open
 #' @useDynLib gert R_git_remote_fetch
-#' @param remote name of a remote listed in [git_remote_list()]
+#' @param remote Optional. Name of a remote listed in [git_remote_list()]. If
+#'   unspecified and the current branch is already tracking branch a remote
+#'   branch, that remote is honored. Otherwise, defaults to `origin`.
 #' @param refspec string with mapping between remote and local refs
 #' @param mirror use the `--mirror` flag
 #' @param bare use the `--bare` flag
@@ -22,8 +24,14 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
   if(!length(remote))
     remote <- info$remote
   remote <- as.character(remote)
-  if(!length(remote) || is.na(remote))
-    stop("No remote is set for this branch")
+  if(!length(remote) || is.na(remote)){
+    if(is.na(match("origin", git_remote_list()$name))){
+      stop("No remote is set for this branch")
+    } else {
+      message("No remote set for this branch, using default remote 'origin'")
+      remote <- "origin"
+    }
+  }
   if(!length(refspec))
     refspec <- info$head
   refspec <- as.character(refspec)
@@ -52,8 +60,14 @@ git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
 
   remote <- as.character(remote)
 
-  if(!length(remote) || is.na(remote))
-    stop("No remote is set for this branch")
+  if(!length(remote) || is.na(remote)){
+    if(is.na(match("origin", git_remote_list()$name))){
+      stop("No remote is set for this branch")
+    } else {
+      message("No remote set for this branch, using default remote 'origin'")
+      remote <- "origin"
+    }
+  }
 
   if(isTRUE(mirror)) {
     refs <- info$reflist
