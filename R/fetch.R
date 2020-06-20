@@ -25,7 +25,7 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
     remote <- info$remote
   remote <- as.character(remote)
   if(!length(remote) || is.na(remote)){
-    if(is.na(match("origin", git_remote_list()$name))){
+    if(is.na(match("origin", git_remote_list(repo = repo)$name))){
       stop("No remote is set for this branch")
     } else {
       message("No remote set for this branch, using default remote 'origin'")
@@ -61,7 +61,7 @@ git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
   remote <- as.character(remote)
 
   if(!length(remote) || is.na(remote)){
-    if(is.na(match("origin", git_remote_list()$name))){
+    if(is.na(match("origin", git_remote_list(repo = repo)$name))){
       stop("No remote is set for this branch")
     } else {
       message("No remote set for this branch, using default remote 'origin'")
