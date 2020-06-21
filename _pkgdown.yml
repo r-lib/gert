@@ -2,6 +2,7 @@ reference:
 - title: Create or learn about local repositories.
   contents:
   - git_repo
+  - git_open
 
 - title: Local operations
   desc: Functions that work with local repositories.
@@ -11,12 +12,14 @@ reference:
   - git_tag
   - git_stash
 
-- title: Remote operations
-  desc: Functions that work with remote repositories.
+- title: Remotes and Merging
+  desc: Functions that work with remote repositories
   contents:
   - git_remote
   - git_fetch
   - git_merge
+  - git_rebase
+  - git_diff
   - git_rebase
   - git_checkout_pull_request
 
