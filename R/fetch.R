@@ -160,19 +160,35 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_k
 #' @param rebase if TRUE we try to rebase instead of merge local changes. This
 #' is not possible in case of conflicts (you will get an error).
 #' @param ... arguments passed to [git_fetch]
-git_pull <- function(rebase = FALSE, ..., repo = '.'){
+git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
-  if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
-    stop("No upstream configured for current HEAD")
-  git_fetch(info$remote, ..., repo = repo)
+
+  if(!length(remote))    # Using this over info$upstream since they appear linked and we only need the 1st part
+    remote <- info$remote
+
+  if(!length(remote) || is.na(remote) || !nchar(remote))
+    stop("Remote not provided and no upstream configured for current HEAD")
+
+  ref <- info$shorthand
+  if (grepl("^refs/", ref)) # Not sure when or if this might happen, but erring on caution
+    stop("Expected a short reference name")
+  if (ref == "HEAD")
+    stop("Repository is currently in a detached head state")
+
+  local_ref <- paste0(remote, "/", ref)
+
+  git_fetch(remote, refspec = ref, ..., repo = repo)
+  if (!local_ref %in% git_branch_list()$name) # Failed fetch doesn't throw an error
+    stop("Failed to fetch reference ", local_ref)
+
   if(isTRUE(rebase)){
-    rebase_df <- git_rebase_list(upstream = info$upstream, repo = repo)
+    rebase_df <- git_rebase_list(upstream = local_ref, repo = repo)
     if(any(rebase_df$conflicts))
       stop("Found conflicts, rebase not possible. Retry with rebase = FALSE")
-    git_rebase_commit(upstream = info$upstream, repo = repo)
+    git_rebase_commit(upstream = local_ref, repo = repo)
   } else {
-    git_merge(info$upstream, repo = repo)
+    git_merge(local_ref, repo = repo)
   }
   git_repo_path(repo)
 }
