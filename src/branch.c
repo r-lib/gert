@@ -174,7 +174,7 @@ SEXP R_git_remote_remove(SEXP ptr, SEXP name){
   return R_NilValue;
 }
 
-SEXP R_git_branch_set_upsteam(SEXP ptr, SEXP remote, SEXP branch){
+SEXP R_git_branch_set_upstream(SEXP ptr, SEXP remote, SEXP branch){
   git_reference *ref;
   git_repository *repo = get_git_repository(ptr);
   if(Rf_length(branch)){

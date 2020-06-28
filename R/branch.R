@@ -62,11 +62,11 @@ git_branch_fast_forward <- function(ref, repo = '.'){
 #' @export
 #' @rdname git_branch
 #' @param remote name of existing remote from [git_remote_list]
-#' @useDynLib gert R_git_branch_set_upsteam
+#' @useDynLib gert R_git_branch_set_upstream
 git_branch_set_upstream <- function(remote = "origin", repo = '.'){
   repo <- git_open(repo)
   branch <- NULL
-  .Call(R_git_branch_set_upsteam, repo, remote, branch)
+  .Call(R_git_branch_set_upstream, repo, remote, branch)
   git_repo_path(repo)
 }
 
