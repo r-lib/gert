@@ -53,7 +53,7 @@ or password protected ssh keys. Defaults to \link[askpass:askpass]{askpass} whic
 checks \code{getOption('askpass')}.}
 
 \item{ssh_key}{path or object containing your ssh private key. By default we
-look for keys in \code{ssh-agent} and \link[credentials:ssh_key_info]{credentials::ssh_key_info}.}
+look for keys in \code{ssh-agent} and \link[credentials:ssh_credentials]{credentials::ssh_key_info}.}
 
 \item{verbose}{display some progress info while downloading}
 
