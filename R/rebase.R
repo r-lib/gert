@@ -87,3 +87,15 @@ git_cherry_pick <- function(commit, repo = '.'){
   assert_string(commit)
   .Call(R_git_cherry_pick, repo, commit)
 }
+
+#' @export
+#' @rdname git_rebase
+#' @useDynLib gert R_git_ahead_behind
+git_ahead_behind <- function(upstream = NULL, ref = 'HEAD', repo = '.'){
+  repo <- git_open(repo)
+  if(!length(upstream))
+    upstream <- git_info(repo = repo)$upstream
+  if(!length(upstream))
+    stop("No upstream set or specified")
+  .Call(R_git_ahead_behind, repo, ref, upstream)
+}

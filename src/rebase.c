@@ -53,7 +53,7 @@ SEXP R_git_rebase(SEXP ptr, SEXP upstream, SEXP commit_changes){
     git_index_free(index);
     if(do_commit){
       git_commit *orig = NULL;
-      git_oid new_oid = {0};
+      git_oid new_oid = {{0}};
       bail_if(git_commit_lookup(&orig, repo, &operation->id), "git_commit_lookup");
       bail_if(git_rebase_commit(&new_oid, rebase, NULL,
                                 git_commit_committer(orig), NULL, NULL), "git_rebase_commit");
@@ -69,8 +69,8 @@ SEXP R_git_rebase(SEXP ptr, SEXP upstream, SEXP commit_changes){
 }
 
 SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
-  git_oid oid = {0};
-  git_oid tree_id = {0};
+  git_oid oid = {{0}};
+  git_oid tree_id = {{0}};
   git_tree *tree = NULL;
   git_index *index = NULL;
   git_commit *orig = NULL;
@@ -84,7 +84,7 @@ SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
   bail_if(git_oid_fromstr(&oid, CHAR(STRING_ELT(commit_id, 0))), "git_oid_fromstr");
   bail_if(git_commit_lookup(&orig, repo, &oid), "git_commit_lookup");
   bail_if(git_cherrypick(repo, orig, &opt), "git_cherrypick");
-  git_oid new_oid = {0};
+  git_oid new_oid = {{0}};
   const git_commit *parents[1] = {parent}; // This ignores (aka squashes) other parents from a merge-commit
   bail_if(git_repository_index(&index, repo), "git_repository_index");
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
@@ -98,4 +98,17 @@ SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
   git_index_free(index);
   git_tree_free(tree);
   return safe_string(git_oid_tostr_s(&new_oid));
+}
+
+SEXP R_git_ahead_behind(SEXP ptr, SEXP local, SEXP upstream){
+  size_t ahead, behind;
+  git_object *rev_local = NULL, *rev_upstream = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_revparse_single(&rev_local, repo, CHAR(STRING_ELT(local, 0))), "git_revparse_single");
+  bail_if(git_revparse_single(&rev_upstream, repo, CHAR(STRING_ELT(upstream, 0))), "git_revparse_single");
+  bail_if(git_graph_ahead_behind(&ahead, &behind, repo,
+                                 git_object_id(rev_local), git_object_id(rev_upstream)), "git_graph_ahead_behind");
+  git_object_free(rev_local);
+  git_object_free(rev_upstream);
+  return build_list(2, "ahead", PROTECT(Rf_ScalarInteger(ahead)), "behind", PROTECT(Rf_ScalarInteger(behind)));
 }

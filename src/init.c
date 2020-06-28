@@ -9,6 +9,7 @@
  */
 
 /* .Call calls */
+extern SEXP R_git_ahead_behind(SEXP, SEXP, SEXP);
 extern SEXP R_git_branch_list(SEXP);
 extern SEXP R_git_branch_set_upsteam(SEXP, SEXP, SEXP);
 extern SEXP R_git_checkout_branch(SEXP, SEXP, SEXP);
@@ -59,6 +60,7 @@ extern SEXP R_git_tag_list(SEXP, SEXP);
 extern SEXP R_libgit2_config();
 
 static const R_CallMethodDef CallEntries[] = {
+  {"R_git_ahead_behind",       (DL_FUNC) &R_git_ahead_behind,       3},
   {"R_git_branch_list",        (DL_FUNC) &R_git_branch_list,        1},
   {"R_git_branch_set_upsteam", (DL_FUNC) &R_git_branch_set_upsteam, 3},
   {"R_git_checkout_branch",    (DL_FUNC) &R_git_checkout_branch,    3},

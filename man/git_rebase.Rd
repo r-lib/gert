@@ -8,6 +8,7 @@
 \alias{git_reset_soft}
 \alias{git_reset_mixed}
 \alias{git_cherry_pick}
+\alias{git_ahead_behind}
 \title{Cherry-Pick and Rebase}
 \usage{
 git_rebase_list(upstream = NULL, repo = ".")
@@ -21,6 +22,8 @@ git_reset_soft(ref = "HEAD", repo = ".")
 git_reset_mixed(ref = "HEAD", repo = ".")
 
 git_cherry_pick(commit, repo = ".")
+
+git_ahead_behind(upstream = NULL, ref = "HEAD", repo = ".")
 }
 \arguments{
 \item{upstream}{branch to which you want to rewind and re-apply your
