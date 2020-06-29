@@ -93,6 +93,8 @@ git_merge_abort <- function(repo = '.'){
   if(length(git_merge_parent_heads(repo = repo))){
     git_reset_hard(repo = repo)
     git_merge_cleanup(repo = repo)
+  } else {
+    message("There is no merge to abort")
   }
 }
 
