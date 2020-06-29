@@ -16,7 +16,7 @@ git_merge_find_base(ref, target = "HEAD", repo = ".")
 
 git_merge_analysis(ref, repo = ".")
 
-git_merge_abort(repo = repo)
+git_merge_abort(repo = ".")
 }
 \arguments{
 \item{ref}{branch or commit that you want to merge}

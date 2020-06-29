@@ -89,9 +89,11 @@ git_merge_cleanup <- function(repo = '.'){
 
 #' @export
 #' @rdname git_merge
-git_merge_abort <- function(repo = repo){
-  git_reset_hard(repo = repo)
-  git_merge_cleanup(repo = repo)
+git_merge_abort <- function(repo = '.'){
+  if(length(git_merge_parent_heads(repo = repo))){
+    git_reset_hard(repo = repo)
+    git_merge_cleanup(repo = repo)
+  }
 }
 
 #' @useDynLib gert R_git_merge_parent_heads
