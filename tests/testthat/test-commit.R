@@ -117,10 +117,23 @@ test_that("status reports a conflicted file", {
 
   # Merge returns FALSE due to conflicts
   git_merge("my-branch", repo = repo)
-
   status <- git_status(repo = repo)
   expect_equal(status$file, "foo.txt")
   expect_equal(status$status, "conflicted")
+  expect_equal(git_conflicts(repo = repo)$our, "foo.txt")
+  expect_false(status$staged)
+
+  # Abort and cleanup
+  git_merge_abort(repo = repo)
+  expect_equal(nrow(git_status(repo = repo)), 0)
+  expect_equal(nrow(git_conflicts(repo = repo)), 0)
+
+  # Merge again :)
+  git_merge("my-branch", repo = repo)
+  status <- git_status(repo = repo)
+  expect_equal(status$file, "foo.txt")
+  expect_equal(status$status, "conflicted")
+  expect_equal(git_conflicts(repo = repo)$our, "foo.txt")
   expect_false(status$staged)
 
   # Resolve the conflict
