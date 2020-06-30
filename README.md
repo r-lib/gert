@@ -1,8 +1,9 @@
 # gert <img src="https://jeroen.github.io/images/ropensci-tidyverse.png" align="right" alt="logo" width="120" height = "139" style = "border: none; float: right;">
 
+*This package is a joint effort from [rOpenSci](https://ropensci.org/) and the [Tidyverse](https://www.tidyverse.org/) team.*
+
 > Simple Git Client for R
 
-This package is a collaboration between [rOpenSci](https://ropensci.org/) and the [Tidyverse](https://www.tidyverse.org/) team.
 
 <!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
