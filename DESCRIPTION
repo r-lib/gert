@@ -27,12 +27,13 @@ Suggests:
     spelling, 
     knitr,
     rmarkdown,
+    rstudioapi,
     testthat
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0.9000
+RoxygenNote: 7.1.1
 SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb).
     A PPA is available for older Ubuntu LTS versions.
 Language: en-US

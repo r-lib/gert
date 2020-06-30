@@ -28,7 +28,12 @@ git_open <- function(repo = '.'){
   }
   search <- !inherits(repo, 'AsIs')
   path <- normalizePath(path.expand(repo), mustWork = FALSE)
-  .Call(R_git_repository_open, path, search)
+  out <- .Call(R_git_repository_open, path, search)
+  do.call(
+    on.exit, list(substitute(rstudio_git_tickle()), add = TRUE),
+    envir = parent.frame()
+  )
+  return(out)
 }
 
 #' @export
@@ -46,4 +51,13 @@ print.git_repo_ptr <- function(x, ...){
 #' @useDynLib gert R_git_repository_path
 git_repo_path <- function(repo){
   invisible(.Call(R_git_repository_path, repo))
+}
+
+rstudio_git_tickle <- function() {
+  if(interactive() && identical(Sys.getenv('RSTUDIO'), '1')){
+    if (rstudioapi::hasFun("executeCommand")) {
+      rstudioapi::executeCommand("vcsRefresh")
+    }
+  }
+  invisible()
 }
