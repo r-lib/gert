@@ -63,7 +63,3 @@ rstudio_git_tickle <- function() {
   }
   invisible()
 }
-
-is_rstudio <- function(){
-
-}
