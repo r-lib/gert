@@ -55,9 +55,15 @@ git_repo_path <- function(repo){
 
 rstudio_git_tickle <- function() {
   if(interactive() && identical(Sys.getenv('RSTUDIO'), '1')){
-    if (rstudioapi::hasFun("executeCommand")) {
-      rstudioapi::executeCommand("vcsRefresh")
+    if(isTRUE(requireNamespace('rstudioapi', quietly = TRUE))){
+      if (rstudioapi::hasFun("executeCommand")) {
+        rstudioapi::executeCommand("vcsRefresh")
+      }
     }
   }
   invisible()
+}
+
+is_rstudio <- function(){
+
 }
