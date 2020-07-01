@@ -29,8 +29,10 @@ git_open <- function(repo = '.'){
   search <- !inherits(repo, 'AsIs')
   path <- normalizePath(path.expand(repo), mustWork = FALSE)
   out <- .Call(R_git_repository_open, path, search)
+  # This call may get evaluated outside of the gert namespace
+  cl <- parse(text='gert:::rstudio_git_tickle()')[[1]]
   do.call(
-    on.exit, list(substitute(rstudio_git_tickle()), add = TRUE),
+    on.exit, list(cl, add = TRUE),
     envir = parent.frame()
   )
   return(out)
