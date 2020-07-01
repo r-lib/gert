@@ -29,12 +29,13 @@ git_open <- function(repo = '.'){
   search <- !inherits(repo, 'AsIs')
   path <- normalizePath(path.expand(repo), mustWork = FALSE)
   out <- .Call(R_git_repository_open, path, search)
-  # This call may get evaluated outside of the gert namespace
-  cl <- parse(text='gert:::rstudio_git_tickle()')[[1]]
-  do.call(
-    on.exit, list(cl, add = TRUE),
-    envir = parent.frame()
-  )
+  if(interactive() && identical(Sys.getenv('RSTUDIO'), '1')){
+    cl <- substitute(rstudioapi::executeCommand("vcsRefresh"))
+    do.call(
+      on.exit, list(cl, add = TRUE),
+      envir = parent.frame()
+    )
+  }
   return(out)
 }
 
@@ -53,15 +54,4 @@ print.git_repo_ptr <- function(x, ...){
 #' @useDynLib gert R_git_repository_path
 git_repo_path <- function(repo){
   invisible(.Call(R_git_repository_path, repo))
-}
-
-rstudio_git_tickle <- function() {
-  if(interactive() && identical(Sys.getenv('RSTUDIO'), '1')){
-    if(isTRUE(requireNamespace('rstudioapi', quietly = TRUE))){
-      if (rstudioapi::hasFun("executeCommand")) {
-        rstudioapi::executeCommand("vcsRefresh")
-      }
-    }
-  }
-  invisible()
 }

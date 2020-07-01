@@ -22,7 +22,7 @@ Imports:
     askpass,
     credentials (>= 1.0),
     openssl (>= 1.4.1),
-    rstudioapi,
+    rstudioapi (>= 0.11),
     zip
 Suggests:
     spelling, 
