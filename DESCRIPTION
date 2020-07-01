@@ -22,12 +22,12 @@ Imports:
     askpass,
     credentials (>= 1.0),
     openssl (>= 1.4.1),
+    rstudioapi,
     zip
 Suggests:
     spelling, 
     knitr,
     rmarkdown,
-    rstudioapi,
     testthat
 VignetteBuilder: 
     knitr
