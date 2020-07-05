@@ -20,7 +20,7 @@ URL: https://docs.ropensci.org/gert (website),
 BugReports: http://github.com/r-lib/gert/issues
 Imports:
     askpass,
-    credentials (>= 1.0),
+    credentials (>= 1.2.1),
     openssl (>= 1.4.1),
     rstudioapi (>= 0.11),
     zip
