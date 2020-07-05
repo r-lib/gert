@@ -107,6 +107,14 @@ git_commit_info <- function(ref = "HEAD", repo = '.'){
 
 #' @export
 #' @rdname git_commit
+#' @useDynLib gert R_git_commit_id
+git_commit_id <- function(ref = "HEAD", repo = '.'){
+  repo <- git_open(repo)
+  .Call(R_git_commit_id, repo, ref)
+}
+
+#' @export
+#' @rdname git_commit
 #' @param files vector of paths relative to the git root directory.
 #' Use `"."` to stage all changed files.
 #' @param force add files even if in gitignore
@@ -162,7 +170,7 @@ git_ls <- function(repo = '.'){
 #' @export
 #' @rdname git_commit
 #' @useDynLib gert R_git_commit_log
-#' @param ref string with a branch/tag/commit
+#' @param ref revision string with a branch/tag/commit value
 #' @param max lookup at most latest n parent commits
 git_log <- function(ref = "HEAD", max = 100, repo = "."){
   repo <- git_open(repo)

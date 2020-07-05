@@ -247,3 +247,9 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   return build_list(6, "id", id, "parent", parent, "author", author, "committer", committer,
                     "message", message, "diff", diff);
 }
+
+SEXP R_git_commit_id(SEXP ptr, SEXP ref){
+  git_repository *repo = get_git_repository(ptr);
+  git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+  return safe_string(git_oid_tostr_s(git_commit_id(commit)));
+}
