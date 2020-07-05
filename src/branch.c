@@ -7,6 +7,7 @@ SEXP R_git_reset(SEXP ptr, SEXP ref, SEXP typenum){
   bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
   opts.checkout_strategy = GIT_CHECKOUT_SAFE;
+  set_checkout_notify_cb(&opts);
   git_reset_t reset_type = Rf_asInteger(typenum);
   bail_if(git_reset(repo, revision, reset_type, &opts), "git_reset");
   return ptr;
@@ -19,6 +20,7 @@ SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
   git_reference *branch = NULL;
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
   opts.checkout_strategy = GIT_CHECKOUT_SAFE;
+  set_checkout_notify_cb(&opts);
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
   bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
@@ -51,6 +53,7 @@ SEXP R_git_checkout_branch(SEXP ptr, SEXP branch, SEXP force){
   /* Set checkout options */
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
   opts.checkout_strategy = Rf_asLogical(force) ? GIT_CHECKOUT_FORCE : GIT_CHECKOUT_SAFE;
+  set_checkout_notify_cb(&opts);
 
   git_object *obj;
   bail_if(git_object_lookup(&obj, repo, git_reference_target(ref), GIT_OBJ_ANY), "git_object_lookup");
@@ -64,6 +67,7 @@ SEXP R_git_checkout_ref(SEXP ptr, SEXP ref, SEXP force){
   git_repository *repo = get_git_repository(ptr);
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
   opts.checkout_strategy = Rf_asLogical(force) ? GIT_CHECKOUT_FORCE : GIT_CHECKOUT_SAFE;
+  set_checkout_notify_cb(&opts);
 
   /* Parse the branch/tag/ref string */
   git_object *treeish = NULL;

@@ -24,3 +24,5 @@ git_repository *get_git_repository(SEXP ptr);
 #define git_checkout_options git_checkout_opts
 #define GIT_CHECKOUT_OPTIONS_INIT GIT_CHECKOUT_OPTS_INIT
 #endif
+
+void set_checkout_notify_cb(git_checkout_options *opts);

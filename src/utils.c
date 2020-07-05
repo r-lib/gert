@@ -77,3 +77,18 @@ SEXP list_to_tibble(SEXP df){
   UNPROTECT(2);
   return df;
 }
+
+static int checkout_notify_cb(git_checkout_notify_t why, const char *path, const git_diff_file *baseline,
+                              const git_diff_file *target, const git_diff_file *workdir, void *payload){
+  //git_checkout_options *opts = payload;
+  if(why == GIT_CHECKOUT_NOTIFY_CONFLICT){
+    Rf_warningcall_immediate(R_NilValue, "Your local changes to the following file would be overwritten by checkout: %s\nUse force = TRUE to checkout anyway.", path);
+  }
+  return 0;
+}
+
+void set_checkout_notify_cb(git_checkout_options *opts){
+  opts->notify_cb = checkout_notify_cb;
+  opts->notify_flags = GIT_CHECKOUT_NOTIFY_CONFLICT;
+  opts->notify_payload = opts;
+}
