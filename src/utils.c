@@ -31,6 +31,12 @@ SEXP safe_string(const char *x){
   return Rf_ScalarString(safe_char(x));
 }
 
+SEXP string_or_null(const char *x){
+  if(x == NULL)
+    return R_NilValue;
+  return Rf_mkString(x);
+}
+
 SEXP safe_char(const char *x){
   if(x == NULL)
     return NA_STRING;
