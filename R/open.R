@@ -31,10 +31,7 @@ git_open <- function(repo = '.'){
   out <- .Call(R_git_repository_open, path, search)
   if(is_rstudio_ide()){
     cl <- substitute(rstudioapi::executeCommand("vcsRefresh"))
-    do.call(
-      on.exit, list(cl, add = TRUE),
-      envir = parent.frame()
-    )
+    do.call(on.exit, list(cl, add = TRUE), envir = parent.frame())
   }
   return(out)
 }
