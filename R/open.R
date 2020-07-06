@@ -29,7 +29,7 @@ git_open <- function(repo = '.'){
   search <- !inherits(repo, 'AsIs')
   path <- normalizePath(path.expand(repo), mustWork = FALSE)
   out <- .Call(R_git_repository_open, path, search)
-  if(interactive() && identical(Sys.getenv('RSTUDIO'), '1')){
+  if(is_rstudio_ide()){
     cl <- substitute(rstudioapi::executeCommand("vcsRefresh"))
     do.call(
       on.exit, list(cl, add = TRUE),
@@ -37,6 +37,10 @@ git_open <- function(repo = '.'){
     )
   }
   return(out)
+}
+
+is_rstudio_ide <- function(){
+  interactive() && identical(Sys.getenv('RSTUDIO'), '1') && !nchar(Sys.getenv('Disable_vcsRefresh'))
 }
 
 #' @export
