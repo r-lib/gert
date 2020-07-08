@@ -68,23 +68,38 @@ SEXP R_git_rebase(SEXP ptr, SEXP upstream, SEXP commit_changes){
   return build_tibble(3, "commit", oids, "type", types, "conflicts", conflicts);
 }
 
+static int count_changes(git_repository *repo){
+  git_status_options opts = GIT_STATUS_OPTIONS_INIT;
+  opts.show = GIT_STATUS_SHOW_INDEX_ONLY;
+  git_status_list *list = NULL;
+  bail_if(git_status_list_new(&list, repo, &opts), "git_status_list_new");
+  int count = git_status_list_entrycount(list);
+  git_status_list_free(list);
+  return count;
+}
+
 SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
   git_oid oid = {{0}};
   git_oid tree_id = {{0}};
   git_tree *tree = NULL;
   git_index *index = NULL;
   git_commit *orig = NULL;
-  git_commit *parent = NULL;
-  git_reference *head = NULL;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_repository_head(&head, repo), "git_repository_head");
-  bail_if(git_commit_lookup(&parent, repo, git_reference_target(head)), "git_commit_lookup");
   git_cherrypick_options opt = GIT_CHERRYPICK_OPTIONS_INIT;
   opt.merge_opts.flags = GIT_MERGE_FAIL_ON_CONFLICT;
   bail_if(git_oid_fromstr(&oid, CHAR(STRING_ELT(commit_id, 0))), "git_oid_fromstr");
   bail_if(git_commit_lookup(&orig, repo, &oid), "git_commit_lookup");
   bail_if(git_cherrypick(repo, orig, &opt), "git_cherrypick");
+  bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
   git_oid new_oid = {{0}};
+  if(count_changes(repo) == 0){
+    git_commit_free(orig);
+    Rf_error("Cherry-pick resulted in no changes");
+  }
+  git_commit *parent = NULL;
+  git_reference *head = NULL;
+  bail_if(git_repository_head(&head, repo), "git_repository_head");
+  bail_if(git_commit_lookup(&parent, repo, git_reference_target(head)), "git_commit_lookup");
   const git_commit *parents[1] = {parent}; // This ignores (aka squashes) other parents from a merge-commit
   bail_if(git_repository_index(&index, repo), "git_repository_index");
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
@@ -92,12 +107,11 @@ SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
   bail_if(git_commit_create(&new_oid, repo, "HEAD", git_commit_author(orig),
                             git_commit_committer(orig), git_commit_message_encoding(orig),
                             git_commit_message(orig), tree, 1, parents), "git_commit_create");
-  bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
   git_reference_free(head);
   git_commit_free(parent);
-  git_commit_free(orig);
   git_index_free(index);
   git_tree_free(tree);
+  git_commit_free(orig);
   return safe_string(git_oid_tostr_s(&new_oid));
 }
 
