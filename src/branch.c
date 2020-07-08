@@ -220,8 +220,6 @@ SEXP R_git_remote_info(SEXP ptr, SEXP name){
   const char *cname = CHAR(STRING_ELT(name, 0));
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_remote_lookup(&remote, repo, cname), "git_remote_lookup");
-  git_buf default_branch = {0};
-  int has_default = git_remote_default_branch(&default_branch, remote) == GIT_OK;
   git_strarray fetchspecs = {0};
   git_strarray pushspecs = {0};
   bail_if(git_remote_get_fetch_refspecs(&fetchspecs, remote), "git_remote_get_fetch_refspecs");
@@ -234,12 +232,16 @@ SEXP R_git_remote_info(SEXP ptr, SEXP name){
     SET_STRING_ELT(push, i, safe_char(pushspecs.strings[i]));
   git_strarray_free(&fetchspecs);
   git_strarray_free(&pushspecs);
+  char buf[1000] = {0};
+  sprintf(buf, "refs/remotes/%s/HEAD", git_remote_name(remote));
+  git_reference *remote_head = NULL;
+  bail_if(git_reference_lookup(&remote_head, repo, buf), "git_reference_lookup");
+  SEXP default_branch = PROTECT(safe_string(git_reference_symbolic_target(remote_head)));
   SEXP out = build_list(6,
     "name", PROTECT(string_or_null(git_remote_name(remote))),
     "url", PROTECT(string_or_null(git_remote_url(remote))),
     "push_url", PROTECT(string_or_null(git_remote_pushurl(remote))),
-    "default_branch", PROTECT(has_default ? Rf_ScalarString(
-        Rf_mkCharLen(default_branch.ptr, default_branch.size)) : R_NilValue),
+    "head", default_branch,
     "fetch", fetch,
     "push", push
   );
