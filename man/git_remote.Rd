@@ -5,28 +5,34 @@
 \alias{git_remote_list}
 \alias{git_remote_add}
 \alias{git_remote_remove}
+\alias{git_remote_info}
 \alias{git_remote_set_url}
-\alias{git_refspecs}
+\alias{git_remote_set_pushurl}
+\alias{git_remote_refspecs}
 \title{Git Remotes}
 \usage{
 git_remote_list(repo = ".")
 
-git_remote_add(name, url, refspec = NULL, repo = ".")
+git_remote_add(url, name = "origin", refspec = NULL, repo = ".")
 
 git_remote_remove(name, repo = ".")
 
-git_remote_set_url(name, url, repo = ".")
+git_remote_info(name = NULL, repo = ".")
 
-git_refspecs(repo = ".")
+git_remote_set_url(url, name = NULL, repo = ".")
+
+git_remote_set_pushurl(url, name = NULL, repo = ".")
+
+git_remote_refspecs(name = NULL, repo = ".")
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 
-\item{name}{unique name of the remote}
-
 \item{url}{server url (https or ssh)}
+
+\item{name}{unique name of the remote}
 
 \item{refspec}{optional string with the remote fetch value}
 }

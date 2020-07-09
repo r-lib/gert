@@ -107,6 +107,7 @@ SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
   bail_if(git_commit_create(&new_oid, repo, "HEAD", git_commit_author(orig),
                             git_commit_committer(orig), git_commit_message_encoding(orig),
                             git_commit_message(orig), tree, 1, parents), "git_commit_create");
+  bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
   git_reference_free(head);
   git_commit_free(parent);
   git_index_free(index);

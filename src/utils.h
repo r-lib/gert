@@ -4,6 +4,7 @@
 void warn_last_msg();
 void bail_if(int err, const char *what);
 void bail_if_null(void * ptr, const char * what);
+SEXP string_or_null(const char *x);
 SEXP safe_string(const char *x);
 SEXP safe_char(const char *x);
 SEXP make_strvec(int n, ...);

@@ -353,6 +353,7 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP get
   git_strarray *rs = Rf_length(refspec) ? files_to_array(refspec) : NULL;
   git_fetch_options opts = GIT_FETCH_OPTIONS_INIT;
   opts.download_tags = GIT_REMOTE_DOWNLOAD_TAGS_ALL;
+  opts.prune = GIT_FETCH_PRUNE;
   opts.update_fetchhead = 1;
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;

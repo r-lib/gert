@@ -46,7 +46,8 @@ git_pull(rebase = FALSE, ..., repo = ".")
 unspecified and the current branch is already tracking branch a remote
 branch, that remote is honored. Otherwise, defaults to \code{origin}.}
 
-\item{refspec}{string with mapping between remote and local refs}
+\item{refspec}{string with mapping between remote and local refs. Default
+uses the default refspec from the remote, which usually fetches all branches.}
 
 \item{password}{a string or a callback function to get passwords for authentication
 or password protected ssh keys. Defaults to \link[askpass:askpass]{askpass} which
