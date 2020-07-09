@@ -32,8 +32,6 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
       remote <- "origin"
     }
   }
-  if(!length(refspec))
-    refspec <- info$head
   refspec <- as.character(refspec)
   verbose <- as.logical(verbose)
   host <- remote_to_host(repo, remote)
