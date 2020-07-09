@@ -36,8 +36,7 @@ git_branch_create <- function(name, ref = "HEAD", checkout = TRUE, repo = '.'){
   name <- as.character(name)
   ref <- as.character(ref)
   checkout <- as.logical(checkout)
-  .Call(R_git_create_branch, repo, name, ref, checkout)
-  git_repo_path(repo)
+  invisible(.Call(R_git_create_branch, repo, name, ref, checkout))
 }
 
 #' @export

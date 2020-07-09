@@ -12,6 +12,7 @@ PPA
 Rebase
 SHA
 TLS
+Tidyverse
 Widgren
 Xenial
 askpass
@@ -33,6 +34,7 @@ pre
 rOpenSci
 rebase
 rebasing
+refspec
 repos
 rtools
 unstaged

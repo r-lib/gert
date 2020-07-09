@@ -13,27 +13,42 @@ SEXP R_git_reset(SEXP ptr, SEXP ref, SEXP typenum){
   return ptr;
 }
 
+static int is_remote_branch(git_repository *repo, const char *name){
+  git_reference *ref = NULL;
+  if(git_branch_lookup(&ref, repo, name, GIT_BRANCH_REMOTE) == GIT_OK){
+    git_reference_free(ref);
+    return 1;
+  }
+  return 0;
+}
+
 SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
   git_object *obj;
   git_commit *commit = NULL;
   git_object *revision = NULL;
   git_reference *branch = NULL;
+  const char *source = CHAR(STRING_ELT(ref, 0));
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
   opts.checkout_strategy = GIT_CHECKOUT_SAFE;
   set_checkout_notify_cb(&opts);
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
+  bail_if(git_revparse_single(&revision, repo, source), "git_revparse_single");
   bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
   git_object_free(revision);
   bail_if(git_branch_create(&branch, repo, CHAR(STRING_ELT(name, 0)), commit, 0), "git_branch_create");
   git_commit_free(commit);
+  if(is_remote_branch(repo, source)){
+    bail_if(git_branch_set_upstream(branch, source), "git_branch_set_upstream");
+  }
   if(Rf_asInteger(checkout)){
     bail_if(git_object_lookup(&obj, repo, git_reference_target(branch), GIT_OBJ_ANY), "git_object_lookup");
     bail_if(git_checkout_tree(repo, obj, &opts), "git_checkout_tree");
     git_object_free(obj);
     bail_if(git_repository_set_head(repo, git_reference_name(branch)), "git_repository_set_head");
   }
-  return ptr;
+  SEXP out = safe_string(git_reference_name(branch));
+  git_reference_free(branch);
+  return out;
 }
 
 SEXP R_git_delete_branch(SEXP ptr, SEXP branch){

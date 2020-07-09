@@ -9,13 +9,16 @@ test_that("remotes from new repo",{
   expect_equal(git_remote_add('https://github.com/jeroen/webp', name = 'jeroen', repo = repo), 'jeroen')
   git_fetch('jeroen', repo = repo)
   git_branch_create('master', 'jeroen/master', repo = repo)
-  git_branch_set_upstream('jeroen/master', repo = repo)
+  git_branch_create('testje', git_commit_id('jeroen/master', repo = repo), checkout = FALSE, repo = repo)
   git_remote_set_pushurl('https://github.com/foo/baz', repo = repo)
   info <- git_remote_info(repo = repo)
   expect_equal(info$name, 'jeroen')
   expect_equal(info$url, "https://github.com/jeroen/webp")
   expect_equal(info$push_url, "https://github.com/foo/baz")
   expect_equal(info$fetch, "+refs/heads/*:refs/remotes/jeroen/*")
+  branches <- git_branch_list(repo = repo)
+  expect_equal(branches$name, c("master", "testje", "jeroen/master"))
+  expect_equal(branches$upstream, c("refs/remotes/jeroen/master", NA, NA))
 })
 
 test_that("remotes after clone", {

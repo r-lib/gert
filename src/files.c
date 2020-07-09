@@ -51,7 +51,8 @@ SEXP R_git_repository_info(SEXP ptr){
     git_reference_free(head);
   }
 
-  return build_list(8, "path", path, "bare", bare, "head", headref, "shorthand", shorthand, "commit", target, "remote", remote, "upstream", upstream, "reflist", refs);
+  return build_list(8, "path", path, "bare", bare, "head", headref, "shorthand", shorthand,
+                    "commit", target, "remote", remote, "upstream", upstream, "reflist", refs);
 }
 
 SEXP R_git_repository_path(SEXP ptr){
