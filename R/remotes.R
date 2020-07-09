@@ -24,7 +24,7 @@ git_remote_add <- function(url, name = "origin", refspec = NULL, repo = '.'){
   name <- as.character(name)
   url <- as.character(url)
   refspec <- as.character(refspec)
-  .Call(R_git_remote_add, repo, name, url, refspec)
+  invisible(.Call(R_git_remote_add, repo, name, url, refspec))
 }
 
 #' @export

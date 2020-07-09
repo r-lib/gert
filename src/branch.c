@@ -119,18 +119,6 @@ SEXP R_git_branch_list(SEXP ptr){
   return build_tibble(5, "name", names, "local", islocal, "ref", refs,"upstream", upstreams, "commit", ids);
 }
 
-static SEXP make_refspecs(git_remote *remote){
-  int size = git_remote_refspec_count(remote);
-  SEXP strings = PROTECT(Rf_allocVector(STRSXP, size));
-  SEXP directions = PROTECT(Rf_allocVector(STRSXP, size));
-  for(int i = 0; i < size; i++){
-    const git_refspec *refspec = git_remote_get_refspec(remote, i);
-    SET_STRING_ELT(strings, i, safe_char(git_refspec_string(refspec)));
-    SET_STRING_ELT(directions, i, safe_char(git_refspec_direction(refspec) == GIT_DIRECTION_FETCH ? "fetch" : "push"));
-  }
-  return build_tibble(2, "refspec", strings, "direction", directions);
-}
-
 SEXP R_git_remote_list(SEXP ptr){
   git_strarray remotes = {0};
   git_repository *repo = get_git_repository(ptr);
