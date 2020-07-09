@@ -13,7 +13,8 @@
 #' @param remote Optional. Name of a remote listed in [git_remote_list()]. If
 #'   unspecified and the current branch is already tracking branch a remote
 #'   branch, that remote is honored. Otherwise, defaults to `origin`.
-#' @param refspec string with mapping between remote and local refs
+#' @param refspec string with mapping between remote and local refs. Default
+#' uses the default refspec from the remote, which usually fetches all branches.
 #' @param mirror use the `--mirror` flag
 #' @param bare use the `--bare` flag
 #' @param force use the `--force` flag
