@@ -260,13 +260,12 @@ SEXP R_git_remote_info(SEXP ptr, SEXP name){
   char buf[1000] = {0};
   sprintf(buf, "refs/remotes/%s/HEAD", git_remote_name(remote));
   git_reference *remote_head = NULL;
-  bail_if(git_reference_lookup(&remote_head, repo, buf), "git_reference_lookup");
-  SEXP default_branch = PROTECT(safe_string(git_reference_symbolic_target(remote_head)));
+  int has_default = git_reference_lookup(&remote_head, repo, buf) == GIT_OK;
   SEXP out = build_list(6,
     "name", PROTECT(string_or_null(git_remote_name(remote))),
     "url", PROTECT(string_or_null(git_remote_url(remote))),
     "push_url", PROTECT(string_or_null(git_remote_pushurl(remote))),
-    "head", default_branch,
+    "head", PROTECT(string_or_null(has_default ? git_reference_symbolic_target(remote_head) : NULL)),
     "fetch", fetch,
     "push", push
   );
