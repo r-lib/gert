@@ -19,7 +19,7 @@ git_remote_list <- function(repo = '.'){
 #' @rdname git_remote
 #' @param refspec optional string with the remote fetch value
 #' @useDynLib gert R_git_remote_add
-git_remote_add <- function(name, url, refspec = NULL, repo = '.'){
+git_remote_add <- function(url, name = "origin", refspec = NULL, repo = '.'){
   repo <- git_open(repo)
   name <- as.character(name)
   url <- as.character(url)
@@ -44,16 +44,18 @@ git_remote_info <- function(name = NULL, repo = '.'){
   repo <- git_open(repo)
   name <- as.character(name)
   if(!length(name))
-    name <- git_info()$remote
+    name <- git_info(repo = repo)$remote
   .Call(R_git_remote_info, repo, name)
 }
 
 #' @export
 #' @rdname git_remote
 #' @useDynLib gert R_git_remote_set_url
-git_remote_set_url <- function(name, url, repo = '.'){
+git_remote_set_url <- function(url, name = NULL, repo = '.'){
   repo <- git_open(repo)
   name <- as.character(name)
+  if(!length(name))
+    name <- git_info(repo = repo)$remote
   url <- as.character(url)
   .Call(R_git_remote_set_url, repo, name, url)
   invisible()
@@ -62,9 +64,11 @@ git_remote_set_url <- function(name, url, repo = '.'){
 #' @export
 #' @rdname git_remote
 #' @useDynLib gert R_git_remote_set_pushurl
-git_remote_set_pushurl <- function(name, url, repo = '.'){
+git_remote_set_pushurl <- function(url, name = NULL , repo = '.'){
   repo <- git_open(repo)
   name <- as.character(name)
+  if(!length(name))
+    name <- git_info(repo = repo)$remote
   url <- as.character(url)
   .Call(R_git_remote_set_pushurl, repo, name, url)
   invisible()
