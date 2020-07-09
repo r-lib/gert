@@ -137,19 +137,17 @@ SEXP R_git_remote_list(SEXP ptr){
   bail_if(git_remote_list(&remotes, repo), "git_remote_list");
   SEXP names = PROTECT(Rf_allocVector(STRSXP, remotes.count));
   SEXP url = PROTECT(Rf_allocVector(STRSXP, remotes.count));
-  SEXP refspecs = PROTECT(Rf_allocVector(VECSXP, remotes.count));
   for(int i = 0; i < remotes.count; i++){
     git_remote *remote = NULL;
     char *name = remotes.strings[i];
     SET_STRING_ELT(names, i, safe_char(name));
     if(!git_remote_lookup(&remote, repo, name)){
       SET_STRING_ELT(url, i, safe_char(git_remote_url(remote)));
-      SET_VECTOR_ELT(refspecs, i, make_refspecs(remote));
       git_remote_free(remote);
     }
     free(name);
   }
-  return build_tibble(3, "name", names, "url", url, "refspecs", refspecs);
+  return build_tibble(2, "name", names, "url", url);
 }
 
 SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url, SEXP refspec){
@@ -165,7 +163,7 @@ SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url, SEXP refspec){
   } else {
     bail_if(git_remote_create(&remote, repo, cname, curl), "git_remote_create");
   }
-  SEXP out = make_refspecs(remote);
+  SEXP out = safe_string(git_remote_name(remote));
   git_remote_free(remote);
   return out;
 }
@@ -213,6 +211,33 @@ SEXP R_git_branch_set_upstream(SEXP ptr, SEXP remote, SEXP branch){
   bail_if(git_branch_set_upstream(ref, CHAR(STRING_ELT(remote, 0))), "git_branch_set_upstream");
   git_reference_free(ref);
   return ptr;
+}
+
+SEXP R_git_remote_refspecs(SEXP ptr, SEXP name){
+  git_remote *remote = NULL;
+  const char *cname = CHAR(STRING_ELT(name, 0));
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_remote_lookup(&remote, repo, cname), "git_remote_lookup");
+  size_t len = git_remote_refspec_count(remote);
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP urls = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP directions = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP string = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP src = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP dest = PROTECT(Rf_allocVector(STRSXP, len));
+  SEXP force = PROTECT(Rf_allocVector(LGLSXP, len));
+  for(size_t i = 0; i < len; i++){
+    const git_refspec *refspec = git_remote_get_refspec(remote, i);
+    SET_STRING_ELT(names, i, safe_char(git_remote_name(remote)));
+    SET_STRING_ELT(urls, i, safe_char(git_remote_url(remote)));
+    SET_STRING_ELT(directions, i, safe_char(git_refspec_direction(refspec) == GIT_DIRECTION_FETCH ? "fetch" : "push"));
+    SET_STRING_ELT(string, i, safe_char(git_refspec_string(refspec)));
+    SET_STRING_ELT(src, i, safe_char(git_refspec_src(refspec)));
+    SET_STRING_ELT(dest, i, safe_char(git_refspec_dst(refspec)));
+    LOGICAL(force)[i] = git_refspec_force(refspec);
+  }
+  return build_tibble(7, "name", names, "url", urls, "direction", directions,
+                      "refspec", string, "src", src, "dest", dest, "force", force);
 }
 
 SEXP R_git_remote_info(SEXP ptr, SEXP name){

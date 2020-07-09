@@ -8,7 +8,7 @@
 \alias{git_remote_info}
 \alias{git_remote_set_url}
 \alias{git_remote_set_pushurl}
-\alias{git_refspecs}
+\alias{git_remote_refspecs}
 \title{Git Remotes}
 \usage{
 git_remote_list(repo = ".")
@@ -23,7 +23,7 @@ git_remote_set_url(url, name = NULL, repo = ".")
 
 git_remote_set_pushurl(url, name = NULL, repo = ".")
 
-git_refspecs(repo = ".")
+git_remote_refspecs(name = NULL, repo = ".")
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a

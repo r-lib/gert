@@ -76,12 +76,11 @@ git_remote_set_pushurl <- function(url, name = NULL , repo = '.'){
 
 #' @export
 #' @rdname git_remote
-git_refspecs <- function(repo = '.'){
-  remotes <- git_remote_list()
-  lens <- vapply(remotes$refspecs, length, numeric(1))
-  indexes <- rep(seq_len(nrow(remotes)), lens)
-  out <- remotes[indexes,]
-  out$refspecs <- unlist(remotes$refspecs)
-  names(out) <- c("remote", "url", "refspec")
-  out
+#' @useDynLib gert R_git_remote_refspecs
+git_remote_refspecs <- function(name = NULL, repo = '.'){
+  repo <- git_open(repo)
+  name <- as.character(name)
+  if(!length(name))
+    name <- git_info(repo = repo)$remote
+  .Call(R_git_remote_refspecs, repo, name)
 }
