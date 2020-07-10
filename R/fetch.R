@@ -167,7 +167,7 @@ git_pull <- function(rebase = FALSE, ..., repo = '.'){
   info <- git_info(repo)
   if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
     stop("No upstream configured for current HEAD")
-  git_fetch(info$remote, ..., repo = repo)
+  git_fetch(info$remote, refspec = info$upstream, ..., repo = repo)
   if(isTRUE(rebase)){
     rebase_df <- git_rebase_list(upstream = info$upstream, repo = repo)
     if(any(rebase_df$conflicts))
