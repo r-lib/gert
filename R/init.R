@@ -5,8 +5,12 @@
   packageStartupMessage(sprintf(
     "Linking to libgit2 v%s, ssh support: %s",
     as.character(config$version), ssh))
-  if(length(config$config.global) && nchar(config$config.global)){
-    packageStartupMessage(paste0("Global config: ", normalizePath(config$config.global, mustWork = FALSE)))
+  user_config <- config$config.global
+  if(length(user_config) && nchar(user_config)){
+    if(is_windows()){
+      user_config <- normalizePath(user_config, mustWork = FALSE)
+    }
+    packageStartupMessage(paste0("Global config: ", user_config))
   } else {
     packageStartupMessage(paste("No global .gitconfig found in:", config$config.home))
   }
@@ -43,4 +47,8 @@
 
 as_string <- function(x){
   ifelse(length(x) > 0, x[1], NA_character_)
+}
+
+is_windows <- function(){
+  identical(.Platform$OS.type, "windows")
 }
