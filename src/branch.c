@@ -243,7 +243,7 @@ SEXP R_git_remote_refspecs(SEXP ptr, SEXP name){
                       "refspec", string, "src", src, "dest", dest, "force", force);
 }
 
-SEXP R_git_remote_add_refspec(SEXP ptr, SEXP remote, SEXP refspec){
+SEXP R_git_remote_add_fetch(SEXP ptr, SEXP remote, SEXP refspec){
   git_repository *repo = get_git_repository(ptr);
   bail_if(git_remote_add_fetch(repo, CHAR(STRING_ELT(remote, 0)), CHAR(STRING_ELT(refspec, 0))), "git_remote_add_fetch");
   return refspec;
