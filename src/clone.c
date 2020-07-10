@@ -343,7 +343,7 @@ static int update_cb(const char *refname, const git_oid *a, const git_oid *b, vo
   return 0;
 }
 
-SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP getcred, SEXP verbose){
+SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP getcred, SEXP prune, SEXP verbose){
   git_remote *remote = NULL;
   git_repository *repo = get_git_repository(ptr);
   if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
@@ -353,7 +353,8 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP get
   git_strarray *rs = Rf_length(refspec) ? files_to_array(refspec) : NULL;
   git_fetch_options opts = GIT_FETCH_OPTIONS_INIT;
   opts.download_tags = GIT_REMOTE_DOWNLOAD_TAGS_ALL;
-  opts.prune = GIT_FETCH_PRUNE;
+  if(Rf_asLogical(prune))
+    opts.prune = GIT_FETCH_PRUNE;
   opts.update_fetchhead = 1;
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;

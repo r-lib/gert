@@ -12,6 +12,7 @@ git_fetch(
   refspec = NULL,
   password = askpass,
   ssh_key = NULL,
+  prune = FALSE,
   verbose = interactive(),
   repo = "."
 )
@@ -55,6 +56,9 @@ checks \code{getOption('askpass')}.}
 
 \item{ssh_key}{path or object containing your ssh private key. By default we
 look for keys in \code{ssh-agent} and \link[credentials:ssh_credentials]{credentials::ssh_key_info}.}
+
+\item{prune}{delete tracking branches that no longer exist on the remote, or
+are not in the refspec (such as pull requests).}
 
 \item{verbose}{display some progress info while downloading}
 

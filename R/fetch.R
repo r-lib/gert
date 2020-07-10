@@ -18,8 +18,10 @@
 #' @param mirror use the `--mirror` flag
 #' @param bare use the `--bare` flag
 #' @param force use the `--force` flag
-git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
-                      ssh_key = NULL, verbose = interactive(), repo = '.'){
+#' @param prune delete tracking branches that no longer exist on the remote, or
+#' are not in the refspec (such as pull requests).
+git_fetch <- function(remote = NULL, refspec = NULL, password = askpass, ssh_key = NULL,
+                      prune = FALSE, verbose = interactive(), repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
   if(!length(remote))
@@ -34,11 +36,12 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass,
     }
   }
   refspec <- as.character(refspec)
+  prune <- as.logical(prune)
   verbose <- as.logical(verbose)
   host <- remote_to_host(repo, remote)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
-  .Call(R_git_remote_fetch, repo, remote, refspec, key_cb, cred_cb, verbose)
+  .Call(R_git_remote_fetch, repo, remote, refspec, key_cb, cred_cb, prune, verbose)
   git_repo_path(repo)
 }
 

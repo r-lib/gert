@@ -2,12 +2,16 @@
 % Please edit documentation in R/pr.R
 \name{git_checkout_pull_request}
 \alias{git_checkout_pull_request}
+\alias{git_fetch_pull_requests}
 \title{GitHub Wrappers}
 \usage{
-git_checkout_pull_request(pr = 1, remote = "origin", repo = ".")
+git_checkout_pull_request(pr = 1, remote = NULL, repo = ".")
+
+git_fetch_pull_requests(pr = "*", remote = NULL, repo = ".")
 }
 \arguments{
-\item{pr}{number with PR to check out}
+\item{pr}{number with PR to fetch or check out. Use \code{"*"} to fetch all
+pull requests.}
 
 \item{remote}{Optional. Name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}. If
 unspecified and the current branch is already tracking branch a remote
@@ -18,5 +22,9 @@ repository, parent directories are considered (see \link{git_find}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 }
 \description{
-Some wrappers for working with Github.
+Fetch and checkout pull requests.
+}
+\details{
+By default \code{git_fetch_pull_requests} will download all PR branches. To
+remove these again simply use \code{git_fetch(prune = TRUE)}.
 }
