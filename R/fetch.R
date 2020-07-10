@@ -165,8 +165,13 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_k
 git_pull <- function(rebase = FALSE, ..., repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
-  if(!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
+  upstream <- info$upstream
+  if(!length(upstream) || is.na(upstream) || !nchar(upstream))
     stop("No upstream configured for current HEAD")
+  if(grepl(".*/pr/\\d+$", upstream)){
+    pr <- utils::tail(strsplit(upstream, '/pr/', fixed = TRUE)[[1]], 1)
+    try(git_fetch_pull_requests(pr = pr, remote = info$remote, repo = repo))
+  }
   git_fetch(info$remote, ..., repo = repo)
   if(isTRUE(rebase)){
     rebase_df <- git_rebase_list(upstream = info$upstream, repo = repo)

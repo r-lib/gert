@@ -84,3 +84,13 @@ git_remote_refspecs <- function(name = NULL, repo = '.'){
     name <- git_info(repo = repo)$remote
   .Call(R_git_remote_refspecs, repo, name)
 }
+
+#' @useDynLib gert R_git_remote_add_fetch
+git_remote_add_fetch <- function(refspec, remote = NULL, repo = '.'){
+  repo <- git_open(repo)
+  remote <- as.character(remote)
+  if(!length(remote))
+    remote <- git_info(repo = repo)$remote
+  refspec <- as.character(refspec)
+  .Call(R_git_remote_add_fetch, repo, remote, refspec)
+}

@@ -7,14 +7,18 @@
 #'
 #' @export
 #' @rdname github
+#' @param track adds a refspec to the remote to automatically fetch updates for
+#' this PR for every `git_fetch()`.
 #' @inheritParams git_fetch
 #' @param pr number with PR to fetch or check out. Use `"*"` to fetch all
 #' pull requests.
-git_checkout_pull_request <- function(pr = 1, remote = NULL, repo = '.'){
+git_checkout_pull_request <- function(pr = 1, remote = NULL, track = FALSE, repo = '.'){
   pr <- as.character(pr)
   if(!length(remote))
     remote <- git_info(repo)$remote
-  git_fetch_pull_requests(pr = pr, remote = remote, repo = repo)
+  refspec <- git_fetch_pull_requests(pr = pr, remote = remote, repo = repo)
+  if(isTRUE(track))
+    git_remote_add_fetch(refspec = refspec, remote = remote, repo = repo)
   local_branch <- sprintf("pr-%s", pr)
   remote_branch <- sprintf("%s/pr/%s", remote, pr)
   git_branch_create(local_branch, remote_branch, repo = repo)
@@ -28,4 +32,5 @@ git_fetch_pull_requests <- function(pr = '*', remote = NULL, repo = '.'){
     remote <- git_info(repo)$remote
   refspec <- sprintf('+refs/pull/%s/head:refs/remotes/%s/pr/%s', pr, remote, pr)
   git_fetch(remote = remote, refspec = refspec, repo = repo)
+  invisible(refspec)
 }
