@@ -16,12 +16,18 @@ git_checkout_pull_request <- function(pr = 1, remote = NULL, track = FALSE, repo
   pr <- as.character(pr)
   if(!length(remote))
     remote <- git_info(repo)$remote
-  refspec <- git_fetch_pull_requests(pr = pr, remote = remote, repo = repo)
-  if(isTRUE(track))
-    git_remote_add_fetch(refspec = refspec, remote = remote, repo = repo)
   local_branch <- sprintf("pr-%s", pr)
   remote_branch <- sprintf("%s/pr/%s", remote, pr)
-  git_branch_create(local_branch, remote_branch, repo = repo)
+  refspec <- git_fetch_pull_requests(pr = pr, remote = remote, repo = repo)
+  if(isTRUE(track) && !(refspec %in% git_remote_refspecs(name = remote, repo = repo))){
+    git_remote_add_fetch(refspec = refspec, remote = remote, repo = repo)
+  }
+  if(git_branch_exists(local_branch)){
+    git_branch_checkout(local_branch, repo = repo)
+    git_pull(repo = repo)
+  } else {
+    git_branch_create(local_branch, remote_branch, checkout = TRUE, repo = repo)
+  }
 }
 
 #' @export

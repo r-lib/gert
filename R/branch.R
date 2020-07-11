@@ -69,6 +69,17 @@ git_branch_set_upstream <- function(remote = "origin", repo = '.'){
   git_repo_path(repo)
 }
 
+#' @export
+#' @rdname git_branch
+#' @param local set FALSE to check for remote branch names.
+#' @useDynLib gert R_git_branch_exists
+git_branch_exists <- function(name, local = TRUE, repo = '.'){
+  repo <- git_open(repo)
+  name <- as.character(name)
+  local <- as.logical(local)
+  .Call(R_git_branch_exists, repo, name, local)
+}
+
 #' @useDynLib gert R_git_branch_set_target
 git_branch_set_target <- function(ref, repo = '.'){
   repo <- git_open(repo)

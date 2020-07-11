@@ -13,13 +13,19 @@ SEXP R_git_reset(SEXP ptr, SEXP ref, SEXP typenum){
   return ptr;
 }
 
-static int is_remote_branch(git_repository *repo, const char *name){
+static int branch_exists(git_repository *repo, const char *name, git_branch_t branch_type){
   git_reference *ref = NULL;
-  if(git_branch_lookup(&ref, repo, name, GIT_BRANCH_REMOTE) == GIT_OK){
+  if(git_branch_lookup(&ref, repo, name, branch_type) == GIT_OK){
     git_reference_free(ref);
     return 1;
   }
   return 0;
+}
+
+SEXP R_git_branch_exists(SEXP ptr, SEXP name, SEXP local){
+  git_repository *repo = get_git_repository(ptr);
+  git_branch_t type = Rf_asLogical(local) ? GIT_BRANCH_LOCAL : GIT_BRANCH_REMOTE;
+  return Rf_ScalarLogical(branch_exists(repo, CHAR(STRING_ELT(name, 0)), type));
 }
 
 SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
@@ -37,7 +43,7 @@ SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
   git_object_free(revision);
   bail_if(git_branch_create(&branch, repo, CHAR(STRING_ELT(name, 0)), commit, 0), "git_branch_create");
   git_commit_free(commit);
-  if(is_remote_branch(repo, source)){
+  if(branch_exists(repo, source, GIT_BRANCH_REMOTE)){
     bail_if(git_branch_set_upstream(branch, source), "git_branch_set_upstream");
   }
   if(Rf_asInteger(checkout)){

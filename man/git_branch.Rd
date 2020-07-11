@@ -8,6 +8,7 @@
 \alias{git_branch_delete}
 \alias{git_branch_fast_forward}
 \alias{git_branch_set_upstream}
+\alias{git_branch_exists}
 \title{Git Branch}
 \usage{
 git_branch_list(repo = ".")
@@ -21,6 +22,8 @@ git_branch_delete(name, repo = ".")
 git_branch_fast_forward(ref, repo = ".")
 
 git_branch_set_upstream(remote = "origin", repo = ".")
+
+git_branch_exists(name, local = TRUE, repo = ".")
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -38,6 +41,8 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 \item{checkout}{move HEAD to the newly created branch}
 
 \item{remote}{name of existing remote from \link{git_remote_list}}
+
+\item{local}{set FALSE to check for remote branch names.}
 }
 \description{
 Create, list, and checkout branches.
