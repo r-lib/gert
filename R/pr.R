@@ -16,11 +16,11 @@ git_checkout_pull_request <- function(pr = 1, remote = NULL, repo = '.'){
     remote <- git_info(repo)$remote
   local_branch <- sprintf("pr-%s", pr)
   remote_branch <- sprintf("%s/pr/%s", remote, pr)
+  git_fetch_pull_requests(pr = pr, remote = remote, repo = repo)
   if(git_branch_exists(local_branch)){
     git_branch_checkout(local_branch, repo = repo)
     git_pull(repo = repo)
   } else {
-    git_fetch_pull_requests(pr = pr, remote = remote, repo = repo)
     git_branch_create(local_branch, remote_branch, checkout = TRUE, repo = repo)
   }
 }
