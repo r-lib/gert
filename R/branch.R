@@ -23,8 +23,8 @@ git_branch_checkout <- function(branch, force = FALSE, repo = '.'){
   branch <- as.character(branch)
   force <- as.logical(force)
   if(!git_branch_exists(branch, repo = repo)){
-    all_branches <- git_branch_list(repo = repo)$name
-    candidate <- basename(all_branches) == branch
+    all_branches <- subset(git_branch_list(repo = repo), local == FALSE)$name
+    candidate <- sub("^[^/]+/", "", all_branches) == branch
     if(sum(candidate) > 1){
       stop(sprintf("Local branch '%s' does not exist and multiple remote candidates found.", branch))
     } else if(sum(candidate) == 0){
