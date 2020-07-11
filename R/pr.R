@@ -14,7 +14,7 @@ git_checkout_pull_request <- function(pr = 1, remote = NULL, repo = '.'){
   pr <- as.character(pr)
   if(!length(remote))
     remote <- git_info(repo)$remote
-  local_branch <- sprintf("pr-%s", pr)
+  local_branch <- sprintf("pr/%s", pr)
   remote_branch <- sprintf("%s/pr/%s", remote, pr)
   git_fetch_pull_requests(pr = pr, remote = remote, repo = repo)
   if(git_branch_exists(local_branch)){
