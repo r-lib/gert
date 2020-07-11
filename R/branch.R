@@ -22,6 +22,19 @@ git_branch_checkout <- function(branch, force = FALSE, repo = '.'){
   repo <- git_open(repo)
   branch <- as.character(branch)
   force <- as.logical(force)
+  if(!git_branch_exists(branch, repo = repo)){
+    all_branches <- git_branch_list(repo = repo)$name
+    candidate <- basename(all_branches) == branch
+    if(sum(candidate) > 1){
+      stop(sprintf("Local branch '%s' does not exist and multiple remote candidates found.", branch))
+    } else if(sum(candidate) == 0){
+      stop(sprintf("No local or remote branch '%s' found.", branch))
+    } else {
+      remote_branch <- unname(all_branches[candidate])
+      message(sprintf("Creating local branch %s from %s", branch, remote_branch))
+      git_branch_create(branch, remote_branch, checkout = FALSE, repo = repo)
+    }
+  }
   .Call(R_git_checkout_branch, repo, branch, force)
 }
 
