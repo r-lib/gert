@@ -5,7 +5,7 @@
 \alias{git_fetch_pull_requests}
 \title{GitHub Wrappers}
 \usage{
-git_checkout_pull_request(pr = 1, remote = NULL, track = FALSE, repo = ".")
+git_checkout_pull_request(pr = 1, remote = NULL, repo = ".")
 
 git_fetch_pull_requests(pr = "*", remote = NULL, repo = ".")
 }
@@ -16,9 +16,6 @@ pull requests.}
 \item{remote}{Optional. Name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}. If
 unspecified and the current branch is already tracking branch a remote
 branch, that remote is honored. Otherwise, defaults to \code{origin}.}
-
-\item{track}{adds a refspec to the remote to automatically fetch updates for
-this PR for every \code{git_fetch()}.}
 
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable
