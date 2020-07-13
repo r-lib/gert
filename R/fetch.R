@@ -182,9 +182,13 @@ git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.'){
     pr <- utils::tail(strsplit(upstream, '/pr/', fixed = TRUE)[[1]], 1)
     try(git_fetch_pull_requests(pr = pr, remote = remote, repo = repo))
   }
-  git_fetch(remote, ..., repo = repo)
-  if(!git_branch_exists(upstream, local = FALSE, repo = repo))
-    stop("Failed to fetch upstream branch: ", upstream)
+  if(!git_branch_exists(upstream, local = TRUE)){
+    message("Local upstream, skipping fetch")
+  } else {
+    git_fetch(remote, ..., repo = repo)
+    if(!git_branch_exists(upstream, local = FALSE, repo = repo))
+      stop("Failed to fetch upstream branch: ", upstream)
+  }
   if(isTRUE(rebase)){
     rebase_df <- git_rebase_list(upstream = upstream, repo = repo)
     if(any(rebase_df$conflicts))
