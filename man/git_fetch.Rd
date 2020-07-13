@@ -40,7 +40,7 @@ git_clone(
   verbose = interactive()
 )
 
-git_pull(rebase = FALSE, ..., repo = ".")
+git_pull(remote = NULL, rebase = FALSE, ..., repo = ".")
 }
 \arguments{
 \item{remote}{Optional. Name of a remote listed in \code{\link[=git_remote_list]{git_remote_list()}}. If

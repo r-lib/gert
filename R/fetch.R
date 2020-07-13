@@ -162,24 +162,36 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_k
 #' @param rebase if TRUE we try to rebase instead of merge local changes. This
 #' is not possible in case of conflicts (you will get an error).
 #' @param ... arguments passed to [git_fetch]
-git_pull <- function(rebase = FALSE, ..., repo = '.'){
+git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
-  upstream <- info$upstream
+  branch <- info$shorthand
+  if (branch == "HEAD")
+    stop("Repository is currently in a detached head state")
+
+  upstream <- if(length(remote) && nchar(remote)){
+    paste0(remote, '/', branch)
+  } else {
+    info$upstream
+  }
+
   if(!length(upstream) || is.na(upstream) || !nchar(upstream))
-    stop("No upstream configured for current HEAD")
+    stop("No upstream configured for current branch, please specify a remote")
+
   if(grepl(".*/pr/\\d+$", upstream)){
     pr <- utils::tail(strsplit(upstream, '/pr/', fixed = TRUE)[[1]], 1)
-    try(git_fetch_pull_requests(pr = pr, remote = info$remote, repo = repo))
+    try(git_fetch_pull_requests(pr = pr, remote = remote, repo = repo))
   }
-  git_fetch(info$remote, ..., repo = repo)
+  git_fetch(remote, ..., repo = repo)
+  if(!git_branch_exists(upstream, local = FALSE, repo = repo))
+    stop("Failed to fetch upstream branch: ", upstream)
   if(isTRUE(rebase)){
-    rebase_df <- git_rebase_list(upstream = info$upstream, repo = repo)
+    rebase_df <- git_rebase_list(upstream = upstream, repo = repo)
     if(any(rebase_df$conflicts))
       stop("Found conflicts, rebase not possible. Retry with rebase = FALSE")
-    git_rebase_commit(upstream = info$upstream, repo = repo)
+    git_rebase_commit(upstream = upstream, repo = repo)
   } else {
-    git_merge(info$upstream, repo = repo)
+    git_merge(upstream, repo = repo)
   }
   git_repo_path(repo)
 }
