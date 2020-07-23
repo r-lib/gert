@@ -169,3 +169,4 @@ sudo apt-get install libgit2-dev
 ```
 
 CI users do not need to worry about this, because we automatically enable this PPA on Travis and GitHub Actions. Outside of CI systems, very few people are running Ubuntu 16 anymore, most production servers have updated to Ubuntu 18 or 20 by now, so this is rarely an issue in practice.
+
