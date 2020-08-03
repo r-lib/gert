@@ -162,7 +162,8 @@ However the problem is that configuring and building libgit2 is complicated (lik
 
 As usual, those who install gert as a source package, by choice on Windows and macOS or by necessity on Linux, **do** need to ensure the necessary system libraries are present, e.g.:
 
-  * [libgit2-dev](https://packages.ubuntu.com/focal/libgit2-dev) on Debian/Ubuntu     * [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2) on Fedora
+  * [libgit2-dev](https://packages.ubuntu.com/focal/libgit2-dev) on Debian/Ubuntu
+  * [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2) on Fedora
   * [Homebrew libgit2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/libgit2.rb) on macOS
   * [rtools40 libgit2](https://github.com/r-windows/rtools-packages/blob/master/mingw-w64-libgit2/PKGBUILD) on Windows
 
