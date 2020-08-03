@@ -154,7 +154,7 @@ One limitation that remains is that libgit2 does not support `ssh-agent` on Wind
 
 ### The libgit2 dependency
 
-If you use Windows or macOS and you install gert from CRAN, it comes with "batteries included". Gert brings in prebuilt versions of external dependencies, like libgit2 and the 3rd party libraries needed for support ssh and TLS (for https). This approach guarantees that gert uses libraries that are properly configured for your operating system.
+If you use Windows or macOS and you install gert from CRAN, it comes with "batteries included". Gert brings in prebuilt versions of external dependencies, like libgit2 and the 3rd party libraries needed to support ssh and TLS (for https). This approach guarantees that gert uses libraries that are properly configured for your operating system.
 
 The git2r package takes another approach by bundling the libgit2 source code in the R package, and automatically building libgit2 on-the-fly when the R package is compiled. This is mostly for historical reasons, because until recently, libgit2 was not available on every Linux system.
 
