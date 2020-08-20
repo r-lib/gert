@@ -44,7 +44,11 @@ static git_diff *commit_to_diff(git_repository *repo, git_commit *commit, git_di
   git_commit *parent = NULL;
   bail_if(git_commit_tree(&new_tree, commit), "git_commit_tree");
   if(git_commit_parentcount(commit) > 0){
-    bail_if(git_commit_parent(&parent, commit, 0), "git_commit_parent");
+    /* Parent may not be available in case of shallow clone */
+    if(git_commit_parent(&parent, commit, 0)){
+      git_tree_free(new_tree);
+      return NULL;
+    }
     bail_if(git_commit_tree(&old_tree, parent), "git_commit_tree");
     git_commit_free(parent);
   }
@@ -57,6 +61,8 @@ static git_diff *commit_to_diff(git_repository *repo, git_commit *commit, git_di
 static int count_commit_changes(git_repository *repo, git_commit *commit){
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
   git_diff *diff = commit_to_diff(repo, commit, &opt);
+  if(diff == NULL)
+    return NA_INTEGER;
   int count = git_diff_num_deltas(diff);
   git_diff_free(diff);
   return count;
@@ -211,6 +217,8 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
     // NB: this does not list 'staged' changes, as does: git_diff_tree_to_workdir_with_index()
     bail_if(git_diff_index_to_workdir(&diff, repo, NULL, &opt), "git_diff_index_to_workdir");
   }
+  if(diff == NULL) //e.g. shallow clone
+    return R_NilValue;
   int n = git_diff_num_deltas(diff);
   SEXP patches = PROTECT(Rf_allocVector(STRSXP, n));
   SEXP oldfiles = PROTECT(Rf_allocVector(STRSXP, n));
