@@ -23,7 +23,7 @@ Imports:
     credentials (>= 1.2.1),
     openssl (>= 1.4.1),
     rstudioapi (>= 0.11),
-    zip
+    zip (>= 2.1.0)
 Suggests:
     spelling, 
     knitr,
