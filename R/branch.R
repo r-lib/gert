@@ -31,7 +31,7 @@ git_branch_checkout <- function(branch, force = FALSE, repo = '.'){
       stop(sprintf("No local or remote branch '%s' found.", branch))
     } else {
       remote_branch <- unname(all_branches[candidate])
-      message(sprintf("Creating local branch %s from %s", branch, remote_branch))
+      inform(sprintf("Creating local branch %s from %s", branch, remote_branch))
       git_branch_create(branch, remote_branch, checkout = FALSE, repo = repo)
     }
   }

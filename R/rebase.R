@@ -46,7 +46,7 @@ git_rebase <- function(upstream, commit_changes, repo){
   if(commit_changes){
     new_head <- ifelse(nrow(df) > 0, utils::tail(df$commit, 1), upstream[1])
     git_branch_set_target(ref = new_head, repo = repo)
-    message(sprintf("Resetting %s to %s", info$shorthand, new_head))
+    inform(sprintf("Resetting %s to %s", info$shorthand, new_head))
   }
   return(df)
 }

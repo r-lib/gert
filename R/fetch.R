@@ -31,7 +31,7 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass, ssh_key
     if(is.na(match("origin", git_remote_list(repo = repo)$name))){
       stop("No remote is set for this branch")
     } else {
-      message("No remote set for this branch, using default remote 'origin'")
+      inform("No remote set for this branch, using default remote 'origin'")
       remote <- "origin"
     }
   }
@@ -66,7 +66,7 @@ git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
     if(is.na(match("origin", git_remote_list(repo = repo)$name))){
       stop("No remote is set for this branch")
     } else {
-      message("No remote set for this branch, using default remote 'origin'")
+      inform("No remote set for this branch, using default remote 'origin'")
       remote <- "origin"
     }
   }
@@ -183,7 +183,7 @@ git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.'){
     try(git_fetch_pull_requests(pr = pr, remote = remote, repo = repo))
   }
   if(git_branch_exists(upstream, local = TRUE, repo = repo)){
-    message("Local upstream, skipping fetch")
+    inform("Local upstream, skipping fetch")
   } else {
     git_fetch(remote, ..., repo = repo)
     if(!git_branch_exists(upstream, local = FALSE, repo = repo))

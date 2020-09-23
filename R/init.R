@@ -52,3 +52,24 @@ as_string <- function(x){
 is_windows <- function(){
   identical(.Platform$OS.type, "windows")
 }
+
+inform <- function(message) {
+  cnd <- structure(
+    list(message = paste0(message, "\n")),
+    class = c("message", "condition")
+  )
+  withRestarts(
+    muffleMessage = function() NULL,
+    {
+      signalCondition(cnd)
+      cat(
+        conditionMessage(cnd),
+        file = if (interactive()) stdout() else stderr()
+      )
+    }
+  )
+}
+
+message <- function(...) {
+  stop("Internal error: use inform() instead of message()")
+}
