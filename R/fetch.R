@@ -56,6 +56,7 @@ git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
                      force = FALSE, verbose = interactive(), repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
+  verbose <- as.logical(verbose)
 
   if(!length(remote))
     remote <- info$remote
@@ -66,7 +67,9 @@ git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
     if(is.na(match("origin", git_remote_list(repo = repo)$name))){
       stop("No remote is set for this branch")
     } else {
-      inform("No remote set for this branch, using default remote 'origin'")
+      if (verbose) {
+        inform("No remote set for this branch, using default remote 'origin'")
+      }
       remote <- "origin"
     }
   }
@@ -82,8 +85,6 @@ git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
   refspec <- as.character(refspec)
   if(isTRUE(force))
     refspec <- sub("^\\+?","+", refspec)
-
-  verbose <- as.logical(verbose)
 
   host <- remote_to_host(repo, remote)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
