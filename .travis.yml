@@ -7,7 +7,6 @@ pandoc: false
 matrix:
   include:
     - r: 3.3
-      dist: trusty
     - dist: xenial
     - os: osx
       brew_packages: libgit2
