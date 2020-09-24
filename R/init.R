@@ -2,17 +2,17 @@
   config <- libgit2_config()
   ssh <- ifelse(config$ssh, "YES", "NO")
   https <- ifelse(config$https, "YES", "NO")
-  packageStartupInform(sprintf(
+  packageStartupInform(
     "Linking to libgit2 v%s, ssh support: %s",
-    as.character(config$version), ssh))
+    as.character(config$version), ssh)
   user_config <- config$config.global
   if(length(user_config) && nchar(user_config)){
     if(is_windows()){
       user_config <- normalizePath(user_config, mustWork = FALSE)
     }
-    packageStartupInform(paste0("Global config: ", user_config))
+    packageStartupInform("Global config: %s", user_config)
   } else {
-    packageStartupInform(paste("No global .gitconfig found in:", config$config.home))
+    packageStartupInform("No global .gitconfig found in: %s", config$config.home)
   }
   if(length(config$config.system) && nchar(config$config.system))
     packageStartupInform(paste0("System config: ", config$config.system))
@@ -21,7 +21,7 @@
     name <- subset(settings, name == 'user.name')$value
     email <- subset(settings, name == 'user.email')$value
     if(length(name) || length(email)){
-      packageStartupInform(sprintf("Default user: %s <%s>", as_string(name), as_string(email)))
+      packageStartupInform("Default user: %s <%s>", as_string(name), as_string(email))
     } else {
       packageStartupInform("No default user configured")
     }
@@ -71,10 +71,10 @@ inform_impl <- function(message, subclass = NULL) {
 }
 
 
-inform <- function(message) inform_impl(message)
+inform <- function(...) inform_impl(sprintf(...))
 
-packageStartupInform <- function(message) {
-  inform_impl(message, subclass = "packageStartupMessage")
+packageStartupInform <- function(...) {
+  inform_impl(sprintf(...), subclass = "packageStartupMessage")
 }
 
 message <- function(...) {
