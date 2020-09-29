@@ -20,6 +20,9 @@ test_that("private ssh remotes with key", {
   # Test errors
   expect_error(git_clone(remote, path = target, ssh_key = 'doesnotexist'))
   expect_error(git_clone(remote, path = target, ssh_key = 'pat.bin'))
+
+  # Test ls-remote auth
+  git_remote_ls(repo = target, ssh_key = 'key.pem', password = function(...){ 'testingjerry'})
 })
 
 # Access token for dummy account with minimal rights
@@ -52,9 +55,11 @@ test_that("HTTP user/pass auth", {
   target4 <- file.path(tempdir(), 'testprivate4')
   repo <- git_clone('https://github.com/ropensci/testprivate', path = target4)
   expect_true(file.exists(file.path(target4, 'hello')))
+  expect_is(git_remote_ls(repo = repo), 'data.frame')
 
   # Try with user in URL
   target5 <- file.path(tempdir(), 'testprivate5')
   repo <- git_clone('https://nobody@github.com/ropensci/testprivate', path = target5)
   expect_true(file.exists(file.path(target5, 'hello')))
+  expect_is(git_remote_ls(repo = repo), 'data.frame')
 })
