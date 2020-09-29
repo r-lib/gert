@@ -47,6 +47,31 @@ git_fetch <- function(remote = NULL, refspec = NULL, password = askpass, ssh_key
 
 #' @export
 #' @rdname git_fetch
+#' @useDynLib gert R_git_remote_ls
+git_remote_ls <- function(remote = NULL, password = askpass, ssh_key = NULL,
+                                   verbose = interactive(), repo = '.'){
+  repo <- git_open(repo)
+  info <- git_info(repo)
+  if(!length(remote))
+    remote <- info$remote
+  remote <- as.character(remote)
+  if(!length(remote) || is.na(remote)){
+    if(is.na(match("origin", git_remote_list(repo = repo)$name))){
+      stop("No remote is set for this branch")
+    } else {
+      inform("No remote set for this branch, using default remote 'origin'")
+      remote <- "origin"
+    }
+  }
+  verbose <- as.logical(verbose)
+  host <- remote_to_host(repo, remote)
+  key_cb <- make_key_cb(ssh_key, host = host, password = password)
+  cred_cb <- make_cred_cb(password = password, verbose = verbose)
+  .Call(R_git_remote_ls, repo, remote, key_cb, cred_cb, verbose)
+}
+
+#' @export
+#' @rdname git_fetch
 #' @param set_upstream change the branch default upstream to `remote`.
 #' If `NULL`, this will set the branch upstream only if the push was
 #' successful and if the branch does not have an upstream set yet.

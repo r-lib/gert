@@ -2,6 +2,7 @@
 % Please edit documentation in R/fetch.R
 \name{git_fetch}
 \alias{git_fetch}
+\alias{git_remote_ls}
 \alias{git_push}
 \alias{git_clone}
 \alias{git_pull}
@@ -13,6 +14,14 @@ git_fetch(
   password = askpass,
   ssh_key = NULL,
   prune = FALSE,
+  verbose = interactive(),
+  repo = "."
+)
+
+git_remote_ls(
+  remote = NULL,
+  password = askpass,
+  ssh_key = NULL,
   verbose = interactive(),
   repo = "."
 )

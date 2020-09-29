@@ -401,3 +401,44 @@ SEXP R_set_session_keyphrase(SEXP key){
   session_keyphrase(CHAR(STRING_ELT(key, 0)));
   return R_NilValue;
 }
+
+SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbose){
+  git_remote *remote = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
+    if(git_remote_create_anonymous(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0)
+      Rf_error("Remote must either be an existing remote or URL");
+  }
+  git_remote_callbacks callbacks = GIT_REMOTE_CALLBACKS_INIT;
+  auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
+  callbacks.payload = &data_cb;
+  callbacks.credentials = auth_callback;
+
+  /* Also enables download progress and user interrupt */
+  if(Rf_asLogical(verbose)){
+    callbacks.update_tips = &update_cb;
+    callbacks.transfer_progress = fetch_progress;
+    callbacks.push_transfer_progress = print_progress;
+    callbacks.push_update_reference = remote_message;
+  }
+  bail_if(git_remote_connect(remote, GIT_DIRECTION_FETCH, &callbacks, NULL, NULL), "git_remote_connect");
+
+  /* We are connected */
+  size_t refs_len;
+  const git_remote_head **refs;
+  bail_if(git_remote_ls(&refs, &refs_len, remote), "git_remote_ls");
+
+  /* Collect references */
+  SEXP names = PROTECT(Rf_allocVector(STRSXP, refs_len));
+  SEXP oids = PROTECT(Rf_allocVector(STRSXP, refs_len));
+  SEXP syms = PROTECT(Rf_allocVector(STRSXP, refs_len));
+  for (int i = 0; i < refs_len; i++) {
+    char oid[GIT_OID_HEXSZ + 1] = {0};
+    git_oid_fmt(oid, &refs[i]->oid);
+    SET_STRING_ELT(names, i, safe_char(refs[i]->name));
+    SET_STRING_ELT(oids, i, safe_char(oid));
+    SET_STRING_ELT(syms, i, safe_char(refs[i]->symref_target));
+  }
+  git_remote_free(remote);
+  return build_tibble(3, "ref", names, "symref", syms, "oid", oids);
+}
