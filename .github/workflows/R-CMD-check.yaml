@@ -50,8 +50,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ matrix.config.r }}-2-${{ hashFiles('depends.Rds') }}
-          restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-2-
+          key: ${{ matrix.config.os }}-r-${{ matrix.config.r }}-2-${{ hashFiles('depends.Rds') }}
+          restore-keys: ${{ matrix.config.os }}-r-${{ matrix.config.r }}-2-
 
       - name: Install macOS system dependencies
         if: runner.os == 'macOS'
