@@ -37,7 +37,8 @@ git_open <- function(repo = '.'){
 }
 
 is_rstudio_ide <- function(){
-  interactive() && identical(Sys.getenv('RSTUDIO'), '1') && !nchar(Sys.getenv('Disable_vcsRefresh'))
+  interactive() && identical(Sys.getenv('RSTUDIO'), '1') &&
+    !nchar(Sys.getenv('Disable_vcsRefresh')) && rstudioapi::isAvailable()
 }
 
 #' @export
