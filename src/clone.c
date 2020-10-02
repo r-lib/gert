@@ -404,8 +404,10 @@ SEXP R_set_session_keyphrase(SEXP key){
 
 SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbose){
   git_remote *remote = NULL;
+  const char *remote_name = CHAR(STRING_ELT(name, 0));
   git_repository *repo = get_git_repository(ptr);
-  if(git_remote_lookup(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0){
+  if(git_remote_lookup(&remote, repo, remote_name) < 0){
+    remote_name = NULL;
     if(git_remote_create_anonymous(&remote, repo, CHAR(STRING_ELT(name, 0))) < 0)
       Rf_error("Remote must either be an existing remote or URL");
   }
@@ -427,6 +429,15 @@ SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbos
   size_t refs_len;
   const git_remote_head **refs;
   bail_if(git_remote_ls(&refs, &refs_len, remote), "git_remote_ls");
+
+  /* Store the default branch, if known */
+  if (remote_name && refs_len && refs[0]->symref_target){
+    char buf[1000] = {0};
+    git_reference *ref = NULL;
+    sprintf(buf, "refs/remotes/%s/HEAD", git_remote_name(remote));
+    git_reference_symbolic_create(&ref, repo, buf, refs[0]->symref_target, 1, "Updated default branch!");
+    git_reference_free(ref);
+  }
 
   /* Collect references */
   SEXP names = PROTECT(Rf_allocVector(STRSXP, refs_len));
