@@ -430,12 +430,19 @@ SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbos
   const git_remote_head **refs;
   bail_if(git_remote_ls(&refs, &refs_len, remote), "git_remote_ls");
 
-  /* Store the default branch, if known */
+  /* Store the default branch (remote HEAD) */
   if (remote_name && refs_len && refs[0]->symref_target){
-    char buf[1000] = {0};
+    char head[1000] = {0};
+    char target[1000] = {0};
+    sprintf(head, "refs/remotes/%s/HEAD", git_remote_name(remote));
+    const char *symref = refs[0]->symref_target;
+    if(strncmp(symref, "refs/heads/", 11) == 0){
+      sprintf(target, "refs/remotes/%s/%s", git_remote_name(remote), symref + 11);
+    } else {
+      strcpy(target, symref);
+    }
     git_reference *ref = NULL;
-    sprintf(buf, "refs/remotes/%s/HEAD", git_remote_name(remote));
-    git_reference_symbolic_create(&ref, repo, buf, refs[0]->symref_target, 1, "Updated default branch!");
+    git_reference_symbolic_create(&ref, repo, head, target, 1, "Updated default branch!");
     git_reference_free(ref);
   }
 

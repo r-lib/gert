@@ -57,7 +57,7 @@ test_that("HTTP user/pass auth", {
   expect_true(file.exists(file.path(target4, 'hello')))
   heads <- git_remote_ls(repo = repo)
   expect_is(heads, 'data.frame')
-  expect_equal(git_remote_info(repo = repo)$head, heads$symref[1])
+  expect_equal(git_remote_info(repo = repo)$head, "refs/remotes/origin/master")
 
   # Try with user in URL
   target5 <- file.path(tempdir(), 'testprivate5')
@@ -65,5 +65,5 @@ test_that("HTTP user/pass auth", {
   expect_true(file.exists(file.path(target5, 'hello')))
   heads <- git_remote_ls(repo = repo)
   expect_is(heads, 'data.frame')
-  expect_equal(git_remote_info(repo = repo)$head, heads$symref[1])
+  expect_equal(git_remote_info(repo = repo)$head, "refs/remotes/origin/master")
 })
