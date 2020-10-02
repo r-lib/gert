@@ -441,9 +441,15 @@ SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbos
     } else {
       strcpy(target, symref);
     }
-    git_reference *ref = NULL;
-    git_reference_symbolic_create(&ref, repo, head, target, 1, "Updated default branch!");
-    git_reference_free(ref);
+    git_object *revision = NULL;
+    if(git_revparse_single(&revision, repo, target) == GIT_OK){
+      git_object_free(revision);
+      git_reference *ref = NULL;
+      git_reference_symbolic_create(&ref, repo, head, target, 1, "Updated default branch!");
+      git_reference_free(ref);
+    } else {
+      REprintf("Remote default branch %s not found locally (fetch first)\n", target);
+    }
   }
 
   /* Collect references */
