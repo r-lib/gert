@@ -390,7 +390,7 @@ SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP getc
     opts.callbacks.push_transfer_progress = print_progress;
     opts.callbacks.push_update_reference = remote_message;
   }
-  bail_if(git_remote_push(remote, rs, &opts), "git_remote_fetch");
+  bail_if(git_remote_push(remote, rs, &opts), "git_remote_push");
   git_remote_free(remote);
   return ptr;
 }

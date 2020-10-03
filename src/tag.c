@@ -4,7 +4,7 @@
 SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
   git_repository *repo = get_git_repository(ptr);
   git_strarray tag_list;
-  bail_if(git_tag_list_match(&tag_list, CHAR(STRING_ELT(pattern, 0)), repo), "git_tag_list");
+  bail_if(git_tag_list_match(&tag_list, CHAR(STRING_ELT(pattern, 0)), repo), "git_tag_list_match");
   SEXP names = PROTECT(Rf_allocVector(STRSXP, tag_list.count));
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, tag_list.count));
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, tag_list.count));

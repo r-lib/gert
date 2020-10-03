@@ -263,7 +263,7 @@ SEXP R_git_remote_info(SEXP ptr, SEXP name){
   git_strarray fetchspecs = {0};
   git_strarray pushspecs = {0};
   bail_if(git_remote_get_fetch_refspecs(&fetchspecs, remote), "git_remote_get_fetch_refspecs");
-  bail_if(git_remote_get_push_refspecs(&pushspecs, remote), "git_remote_get_fetch_refspecs");
+  bail_if(git_remote_get_push_refspecs(&pushspecs, remote), "git_remote_get_push_refspecs");
   SEXP fetch = PROTECT(Rf_allocVector(STRSXP, fetchspecs.count));
   SEXP push = PROTECT(Rf_allocVector(STRSXP, pushspecs.count));
   for(int i = 0; i < fetchspecs.count; i++)

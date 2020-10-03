@@ -92,7 +92,7 @@ SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){
   bail_if(git_repository_index(&index, repo), "git_repository_index");
   git_strarray *paths = files_to_array(files);
   git_index_add_option_t flags = Rf_asLogical(force) ? GIT_INDEX_ADD_FORCE : GIT_INDEX_ADD_DEFAULT;
-  bail_if(git_index_add_all(index, paths, flags, NULL, NULL), "git_index_add_bypath");
+  bail_if(git_index_add_all(index, paths, flags, NULL, NULL), "git_index_add_all");
   bail_if(git_index_write(index), "git_index_write");
   git_strarray_free(paths);
   git_index_free(index);
