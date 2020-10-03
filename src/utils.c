@@ -27,6 +27,37 @@ void bail_if_null(void * ptr, const char * what){
     bail_if(-1, what);
 }
 
+#ifndef GIT_OBJECT_COMMIT
+#define GIT_OBJECT_COMMIT GIT_OBJ_COMMIT
+#endif
+
+git_object * resolve_refish(SEXP string, git_repository *repo){
+  if(!Rf_isString(string) || !Rf_length(string))
+    Rf_error("Reference is not a string");
+  const char *str = CHAR(STRING_ELT(string, 0));
+  git_reference *ref = NULL;
+  git_object *obj = NULL;
+  if(git_reference_dwim(&ref, repo, str) == GIT_OK){
+    if(git_reference_peel(&obj, ref, GIT_OBJECT_COMMIT) == GIT_OK){
+      git_reference_free(ref);
+      return obj;
+    }
+  }
+  if(git_revparse_single(&obj, repo, str) == GIT_OK){
+    return obj;
+  } else {
+    Rf_error("Failed to find git reference '%s'", str);
+  }
+}
+
+git_commit *ref_to_commit(SEXP ref, git_repository *repo){
+  git_commit *commit = NULL;
+  git_object *revision = resolve_refish(ref, repo);
+  bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
+  git_object_free(revision);
+  return commit;
+}
+
 SEXP safe_string(const char *x){
   return Rf_ScalarString(safe_char(x));
 }

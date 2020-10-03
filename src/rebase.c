@@ -118,10 +118,9 @@ SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
 
 SEXP R_git_ahead_behind(SEXP ptr, SEXP local, SEXP upstream){
   size_t ahead, behind;
-  git_object *rev_local = NULL, *rev_upstream = NULL;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_revparse_single(&rev_local, repo, CHAR(STRING_ELT(local, 0))), "git_revparse_single");
-  bail_if(git_revparse_single(&rev_upstream, repo, CHAR(STRING_ELT(upstream, 0))), "git_revparse_single");
+  git_object *rev_local = resolve_refish(local, repo);
+  git_object *rev_upstream = resolve_refish(upstream, repo);
   bail_if(git_graph_ahead_behind(&ahead, &behind, repo,
                                  git_object_id(rev_local), git_object_id(rev_upstream)), "git_graph_ahead_behind");
   git_object_free(rev_local);

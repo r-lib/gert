@@ -24,12 +24,11 @@ SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
 SEXP R_git_tag_create(SEXP ptr, SEXP name, SEXP message, SEXP ref){
   git_oid tag;
   git_signature *me = NULL;
-  git_object *revision = NULL;
   const char *cname = CHAR(STRING_ELT(name, 0));
   const char *cmsg = CHAR(STRING_ELT(message, 0));
   git_repository *repo = get_git_repository(ptr);
+  git_object *revision = resolve_refish(ref, repo);
   bail_if(git_signature_default(&me, repo), "git_signature_default");
-  bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
   bail_if(git_tag_create(&tag, repo, cname, revision, me, cmsg, 0), "git_tag_create");
   git_signature_free(me);
   git_object_free(revision);
