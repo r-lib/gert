@@ -71,10 +71,10 @@ inform_impl <- function(message, subclass = NULL) {
 }
 
 
-inform <- function(...) inform_impl(sprintf(...))
+inform <- function(...) inform_impl(sprintf(...), subclass = "gertMessage")
 
 packageStartupInform <- function(...) {
-  inform_impl(sprintf(...), subclass = "packageStartupMessage")
+  inform_impl(sprintf(...), subclass = c("gertMessage", "packageStartupMessage"))
 }
 
 message <- function(...) {
