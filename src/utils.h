@@ -11,6 +11,8 @@ SEXP make_strvec(int n, ...);
 SEXP build_list(int n, ...);
 SEXP list_to_tibble(SEXP df);
 git_repository *get_git_repository(SEXP ptr);
+git_object *resolve_refish(SEXP string, git_repository *repo);
+git_commit *ref_to_commit(SEXP ref, git_repository *repo);
 
 #define build_tibble(...) list_to_tibble(build_list( __VA_ARGS__))
 

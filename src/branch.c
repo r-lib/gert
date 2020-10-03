@@ -2,9 +2,8 @@
 #include "utils.h"
 
 SEXP R_git_reset(SEXP ptr, SEXP ref, SEXP typenum){
-  git_object *revision = NULL;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
+  git_object *revision = resolve_refish(ref, repo);
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
   opts.checkout_strategy = GIT_CHECKOUT_SAFE;
   set_checkout_notify_cb(&opts);
@@ -31,14 +30,13 @@ SEXP R_git_branch_exists(SEXP ptr, SEXP name, SEXP local){
 SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
   git_object *obj;
   git_commit *commit = NULL;
-  git_object *revision = NULL;
   git_reference *branch = NULL;
   const char *source = CHAR(STRING_ELT(ref, 0));
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
   opts.checkout_strategy = GIT_CHECKOUT_SAFE;
   set_checkout_notify_cb(&opts);
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_revparse_single(&revision, repo, source), "git_revparse_single");
+  git_object *revision = resolve_refish(ref, repo);
   bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
   git_object_free(revision);
   bail_if(git_branch_create(&branch, repo, CHAR(STRING_ELT(name, 0)), commit, 0), "git_branch_create");
@@ -91,13 +89,11 @@ SEXP R_git_checkout_ref(SEXP ptr, SEXP ref, SEXP force){
   set_checkout_notify_cb(&opts);
 
   /* Parse the branch/tag/ref string */
-  git_object *treeish = NULL;
-  const char *refstring = CHAR(STRING_ELT(ref, 0));
-  bail_if(git_revparse_single(&treeish, repo, refstring), "git_revparse_single");
+  git_object *treeish = resolve_refish(ref, repo);
   bail_if(git_checkout_tree(repo, treeish, &opts), "git_checkout_tree");
   git_object_free(treeish);
   char buf[1000];
-  snprintf(buf, 999, "refs/heads/%s", refstring);
+  snprintf(buf, 999, "refs/heads/%s", CHAR(STRING_ELT(ref, 0)));
   bail_if(git_repository_set_head(repo, buf), "git_repository_set_head");
   return ptr;
 }

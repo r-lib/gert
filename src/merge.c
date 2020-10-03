@@ -3,13 +3,12 @@
 
 /* I think this does exactly the same as GIT_RESET_MIXED */
 SEXP R_git_branch_set_target(SEXP ptr, SEXP ref){
-  git_object *revision = NULL;
   git_reference *head = NULL;
   git_reference *out_target = NULL;
   git_repository *repo = get_git_repository(ptr);
+  git_object *revision = resolve_refish(ref, repo);
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
   bail_if(git_repository_head(&head, repo), "git_repository_head");
-  bail_if(git_revparse_single(&revision, repo, CHAR(STRING_ELT(ref, 0))), "git_revparse_single");
   bail_if(git_checkout_tree(repo, revision, &opts), "git_checkout_tree");
   bail_if(git_reference_set_target(&out_target, head, git_object_id(revision), NULL), "git_reference_set_target");
   git_reference_free(out_target);
@@ -19,12 +18,10 @@ SEXP R_git_branch_set_target(SEXP ptr, SEXP ref){
 }
 
 SEXP R_git_merge_find_base(SEXP ptr, SEXP ref1, SEXP ref2){
-  git_object *t1 = NULL;
-  git_object *t2 = NULL;
   git_oid base = {{0}};
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_revparse_single(&t1, repo, CHAR(STRING_ELT(ref1, 0))), "git_revparse_single");
-  bail_if(git_revparse_single(&t2, repo, CHAR(STRING_ELT(ref2, 0))), "git_revparse_single");
+  git_object *t1 = resolve_refish(ref1, repo);
+  git_object *t2 = resolve_refish(ref2, repo);
   bail_if(git_merge_base(&base, repo, git_object_id(t1), git_object_id(t2)), "git_merge_base");
   git_object_free(t1);
   git_object_free(t2);

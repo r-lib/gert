@@ -28,15 +28,6 @@ static SEXP make_author(const git_signature *p){
   return safe_char(buf);
 }
 
-static git_commit *find_commit_from_string(git_repository *repo, const char * ref){
-  git_commit *commit = NULL;
-  git_object *revision = NULL;
-  bail_if(git_revparse_single(&revision, repo, ref), "git_revparse_single");
-  bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
-  git_object_free(revision);
-  return commit;
-}
-
 static git_diff *commit_to_diff(git_repository *repo, git_commit *commit, git_diff_options *opt){
   git_diff *diff = NULL;
   git_tree *old_tree = NULL;
@@ -176,7 +167,7 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
 SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
   git_commit *commit = NULL;
   git_repository *repo = get_git_repository(ptr);
-  git_commit *head = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+  git_commit *head = ref_to_commit(ref, repo);
 
   /* Find out how many ancestors we have */
   int len = count_commit_ancestors(head, Rf_asInteger(max));
@@ -211,7 +202,7 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
   if(Rf_length(ref)){
-    git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+    git_commit *commit = ref_to_commit(ref, repo);
     diff = commit_to_diff(repo, commit, &opt);
   } else {
     // NB: this does not list 'staged' changes, as does: git_diff_tree_to_workdir_with_index()
@@ -245,7 +236,7 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
 
 SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
-  git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+  git_commit *commit = ref_to_commit(ref, repo);
   SEXP id = PROTECT(safe_string(git_oid_tostr_s(git_commit_id(commit))));
   SEXP parent = PROTECT(safe_string(git_oid_tostr_s(git_commit_parent_id(commit, 0))));
   SEXP author = PROTECT(Rf_ScalarString(make_author(git_commit_author(commit))));
@@ -258,6 +249,6 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
 
 SEXP R_git_commit_id(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
-  git_commit *commit = find_commit_from_string(repo, CHAR(STRING_ELT(ref, 0)));
+  git_commit *commit = ref_to_commit(ref, repo);
   return safe_string(git_oid_tostr_s(git_commit_id(commit)));
 }
