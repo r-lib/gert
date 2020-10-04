@@ -123,7 +123,13 @@ SEXP R_git_ahead_behind(SEXP ptr, SEXP local, SEXP upstream){
   git_object *rev_upstream = resolve_refish(upstream, repo);
   bail_if(git_graph_ahead_behind(&ahead, &behind, repo,
                                  git_object_id(rev_local), git_object_id(rev_upstream)), "git_graph_ahead_behind");
+  SEXP local_string = PROTECT(safe_string(git_oid_tostr_s(git_object_id(rev_local))));
+  SEXP upstream_string = PROTECT(safe_string(git_oid_tostr_s(git_object_id(rev_upstream))));
   git_object_free(rev_local);
   git_object_free(rev_upstream);
-  return build_list(2, "ahead", PROTECT(Rf_ScalarInteger(ahead)), "behind", PROTECT(Rf_ScalarInteger(behind)));
+  return build_list(4,
+                    "ahead", PROTECT(Rf_ScalarInteger(ahead)),
+                    "behind", PROTECT(Rf_ScalarInteger(behind)),
+                    "local", local_string,
+                    "upstream", upstream_string);
 }
