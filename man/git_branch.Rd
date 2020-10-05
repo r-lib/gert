@@ -23,7 +23,7 @@ git_branch_delete(branch, repo = ".")
 
 git_branch_fast_forward(ref, repo = ".")
 
-git_branch_set_upstream(upstream, repo = ".")
+git_branch_set_upstream(upstream, branch = git_branch(repo), repo = ".")
 
 git_branch_exists(branch, local = TRUE, repo = ".")
 }

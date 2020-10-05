@@ -82,9 +82,11 @@ git_branch_fast_forward <- function(ref, repo = '.'){
 #' @rdname git_branch
 #' @param upstream remote branch from [git_branch_list], for example `"origin/master"`
 #' @useDynLib gert R_git_branch_set_upstream
-git_branch_set_upstream <- function(upstream, repo = '.'){
+git_branch_set_upstream <- function(upstream, branch = git_branch(repo), repo = '.'){
   repo <- git_open(repo)
-  branch <- NULL
+  stopifnot(is.character(upstream))
+  if(!git_branch_exists(upstream, local = FALSE))
+    stop(sprintf("No remote branch found: %s, maybe fetch first?", upstream))
   .Call(R_git_branch_set_upstream, repo, upstream, branch)
   git_repo_path(repo)
 }
@@ -101,7 +103,7 @@ git_branch_exists <- function(branch, local = TRUE, repo = '.'){
 }
 
 #' @useDynLib gert R_git_branch_set_target
-git_branch_set_target <- function(ref, repo = '.'){
+git_branch_set_target <- function(ref, branch, repo){
   repo <- git_open(repo)
   ref <- as.character(ref)
   .Call(R_git_branch_set_target, repo, ref)
