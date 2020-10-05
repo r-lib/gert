@@ -41,24 +41,23 @@ git_branch_checkout <- function(branch, force = FALSE, repo = '.'){
 #' @export
 #' @rdname git_branch
 #' @useDynLib gert R_git_create_branch
-#' @param name string with name of the branch / tag / etc
 #' @param ref string with a branch/tag/commit
 #' @param checkout move HEAD to the newly created branch
-git_branch_create <- function(name, ref = "HEAD", checkout = TRUE, repo = '.'){
+git_branch_create <- function(branch, ref = "HEAD", checkout = TRUE, repo = '.'){
   repo <- git_open(repo)
-  name <- as.character(name)
+  branch <- as.character(branch)
   ref <- as.character(ref)
   checkout <- as.logical(checkout)
-  invisible(.Call(R_git_create_branch, repo, name, ref, checkout))
+  invisible(.Call(R_git_create_branch, repo, branch, ref, checkout))
 }
 
 #' @export
 #' @rdname git_branch
 #' @useDynLib gert R_git_delete_branch
-git_branch_delete <- function(name, repo = '.'){
+git_branch_delete <- function(branch, repo = '.'){
   repo <- git_open(repo)
-  name <- as.character(name)
-  .Call(R_git_delete_branch, repo, name)
+  branch <- as.character(branch)
+  .Call(R_git_delete_branch, repo, branch)
   git_repo_path(repo)
 }
 
@@ -73,12 +72,12 @@ git_branch_fast_forward <- function(ref, repo = '.'){
 
 #' @export
 #' @rdname git_branch
-#' @param remote name of existing remote from [git_remote_list]
+#' @param upstream remote branch from [git_branch_list], for example `"origin/master"`
 #' @useDynLib gert R_git_branch_set_upstream
-git_branch_set_upstream <- function(remote = "origin", repo = '.'){
+git_branch_set_upstream <- function(upstream, repo = '.'){
   repo <- git_open(repo)
   branch <- NULL
-  .Call(R_git_branch_set_upstream, repo, remote, branch)
+  .Call(R_git_branch_set_upstream, repo, upstream, branch)
   git_repo_path(repo)
 }
 
@@ -86,11 +85,11 @@ git_branch_set_upstream <- function(remote = "origin", repo = '.'){
 #' @rdname git_branch
 #' @param local set FALSE to check for remote branch names.
 #' @useDynLib gert R_git_branch_exists
-git_branch_exists <- function(name, local = TRUE, repo = '.'){
+git_branch_exists <- function(branch, local = TRUE, repo = '.'){
   repo <- git_open(repo)
-  name <- as.character(name)
+  branch <- as.character(branch)
   local <- as.logical(local)
-  .Call(R_git_branch_exists, repo, name, local)
+  .Call(R_git_branch_exists, repo, branch, local)
 }
 
 #' @useDynLib gert R_git_branch_set_target

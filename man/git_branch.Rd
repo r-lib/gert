@@ -15,15 +15,15 @@ git_branch_list(repo = ".")
 
 git_branch_checkout(branch, force = FALSE, repo = ".")
 
-git_branch_create(name, ref = "HEAD", checkout = TRUE, repo = ".")
+git_branch_create(branch, ref = "HEAD", checkout = TRUE, repo = ".")
 
-git_branch_delete(name, repo = ".")
+git_branch_delete(branch, repo = ".")
 
 git_branch_fast_forward(ref, repo = ".")
 
-git_branch_set_upstream(remote = "origin", repo = ".")
+git_branch_set_upstream(upstream, repo = ".")
 
-git_branch_exists(name, local = TRUE, repo = ".")
+git_branch_exists(branch, local = TRUE, repo = ".")
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -34,13 +34,11 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 
 \item{force}{ignore conflicts and overwrite modified files}
 
-\item{name}{string with name of the branch / tag / etc}
-
 \item{ref}{string with a branch/tag/commit}
 
 \item{checkout}{move HEAD to the newly created branch}
 
-\item{remote}{name of existing remote from \link{git_remote_list}}
+\item{upstream}{remote branch from \link{git_branch_list}, for example \code{"origin/master"}}
 
 \item{local}{set FALSE to check for remote branch names.}
 }
