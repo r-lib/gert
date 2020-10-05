@@ -7,6 +7,14 @@
 #' @name git_branch
 #' @family git
 #' @inheritParams git_open
+#' @useDynLib gert R_git_branch_current
+git_branch <- function(repo = '.'){
+  repo <- git_open(repo)
+  .Call(R_git_branch_current, repo)
+}
+
+#' @export
+#' @rdname git_branch
 #' @useDynLib gert R_git_branch_list
 git_branch_list <- function(repo = '.'){
   repo <- git_open(repo)

@@ -37,7 +37,7 @@ Create and list tags.
 \seealso{
 Other git: 
 \code{\link{git_archive}},
-\code{\link{git_branch}},
+\code{\link{git_branch}()},
 \code{\link{git_commit}()},
 \code{\link{git_config}()},
 \code{\link{git_diff}()},

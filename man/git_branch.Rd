@@ -11,6 +11,8 @@
 \alias{git_branch_exists}
 \title{Git Branch}
 \usage{
+git_branch(repo = ".")
+
 git_branch_list(repo = ".")
 
 git_branch_checkout(branch, force = FALSE, repo = ".")

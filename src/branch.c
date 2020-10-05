@@ -21,6 +21,17 @@ static int branch_exists(git_repository *repo, const char *name, git_branch_t br
   return 0;
 }
 
+SEXP R_git_branch_current(SEXP ptr){
+  git_repository *repo = get_git_repository(ptr);
+  git_reference *head = NULL;
+  if(git_repository_head(&head, repo) == GIT_OK){
+    SEXP out = safe_string(git_reference_shorthand(head));
+    git_reference_free(head);
+    return out;
+  }
+  return R_NilValue;
+}
+
 SEXP R_git_branch_exists(SEXP ptr, SEXP name, SEXP local){
   git_repository *repo = get_git_repository(ptr);
   git_branch_t type = Rf_asLogical(local) ? GIT_BRANCH_LOCAL : GIT_BRANCH_REMOTE;
