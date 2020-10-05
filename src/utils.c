@@ -51,7 +51,9 @@ git_object * resolve_refish(SEXP string, git_repository *repo){
       git_object_free(obj);
       return peeled;
     }
-    Rf_error("Reference does not point to a commit '%s'", str);
+    const char *type = git_object_type2string(git_object_type(obj));
+    git_object_free(obj);
+    Rf_error("Reference is a %s and does not point to a commit: %s", type, str);
   } else {
     Rf_error("Failed to find git reference '%s'", str);
   }
