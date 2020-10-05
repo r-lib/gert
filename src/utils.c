@@ -44,7 +44,14 @@ git_object * resolve_refish(SEXP string, git_repository *repo){
     }
   }
   if(git_revparse_single(&obj, repo, str) == GIT_OK){
-    return obj;
+    if(git_object_type(obj) == GIT_OBJECT_COMMIT)
+      return obj;
+    git_object *peeled = NULL;
+    if(git_object_peel(&peeled, obj, GIT_OBJECT_COMMIT) == GIT_OK){
+      git_object_free(obj);
+      return peeled;
+    }
+    Rf_error("Reference does not point to a commit '%s'", str);
   } else {
     Rf_error("Failed to find git reference '%s'", str);
   }
