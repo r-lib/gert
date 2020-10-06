@@ -12,12 +12,12 @@ Description: Simple git client for R based on 'libgit2' with support for SSH and
     and data-frames) for their arguments and return values. User credentials are
     shared with command line 'git' through the git-credential store and ssh keys
     stored on disk or ssh-agent. On Linux, a somewhat recent version of 'libgit2'
-    is required; we provide a PPA for older Ubuntu LTS versions. 
+    is required; we provide a 'PPA' for older Ubuntu 'LTS' versions. 
 License: MIT + file LICENSE
-URL: https://docs.ropensci.org/gert (website),
+URL: https://docs.ropensci.org/gert/ (website),
     https://github.com/r-lib/gert (devel), 
     https://libgit2.org (upstream)
-BugReports: http://github.com/r-lib/gert/issues
+BugReports: https://github.com/r-lib/gert/issues
 Imports:
     askpass,
     credentials (>= 1.2.1),
