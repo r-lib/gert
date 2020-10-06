@@ -62,12 +62,13 @@ static char* get_password(SEXP cb, const char *url, const char **username, int f
   return strdup(CHAR(STRING_ELT(res, 1)));
 }
 
-static int get_key_files(SEXP cb, auth_key_data *out){
+static int get_key_files(SEXP cb, auth_key_data *out, int verbose){
   if(!Rf_isFunction(cb))
     Rf_error("cb must be a function");
   int err;
   SEXP call = PROTECT(Rf_lcons(cb, R_NilValue));
-  SEXP res = PROTECT(R_tryEval(call, R_GlobalEnv, &err));
+  SEXP res = PROTECT(verbose ? R_tryEval(call, R_GlobalEnv, &err) :
+                       R_tryEvalSilent(call, R_GlobalEnv, &err));
   if(err || !Rf_isString(res)){
     UNPROTECT(2);
     return -1;
@@ -185,15 +186,13 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
     if(cb_data->retries == 1) {
       cb_data->retries++;
       auth_key_data key_data = {0};
-      if(!get_key_files(cb_data->getkey, &key_data) &&
+      if(!get_key_files(cb_data->getkey, &key_data, verbose) &&
          !git_cred_ssh_key_new(cred, ssh_user, key_data.pubkey_path,
                                key_data.key_path, key_data.pass_phrase)){
         print_if_verbose("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
-      } else {
-        const char *err = R_curErrorBuf();
-        if(err)
-          snprintf(custom_callback_error, 999, "SSH authentication failure: %s", err);
+      } else if(R_curErrorBuf()){
+        snprintf(custom_callback_error, 999, "SSH authentication failure: %s", R_curErrorBuf());
       }
     }
 
