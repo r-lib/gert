@@ -194,7 +194,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
         const char *err = R_curErrorBuf();
         if(err)
           snprintf(custom_callback_error, 999, "SSH authentication failure: %s", err);
-        }
+      }
     }
 
     // Third is just bail with an error
