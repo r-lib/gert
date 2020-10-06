@@ -161,6 +161,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   auth_callback_data_t *cb_data = payload;
   const char * ssh_user = username ? username : "git";
   int verbose = cb_data->verbose;
+  char custom_callback_error[1000] = "Authentication failure";
 
 #if AT_LEAST_LIBGIT2(0, 20)
 
@@ -189,7 +190,11 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
                                key_data.key_path, key_data.pass_phrase)){
         print_if_verbose("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
-      }
+      } else {
+        const char *err = R_curErrorBuf();
+        if(err)
+          snprintf(custom_callback_error, 999, "SSH authentication failure: %s", err);
+        }
     }
 
     // Third is just bail with an error
@@ -229,7 +234,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   }
   print_if_verbose("All authentication methods failed\n");
 failure:
-  giterr_set_str(GIT_ERROR_CALLBACK, "Authentication failure");
+  giterr_set_str(GIT_ERROR_CALLBACK, custom_callback_error);
   return GIT_EAUTH;
 }
 
