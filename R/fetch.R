@@ -120,7 +120,7 @@ git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
     set_upstream <- isTRUE(is.na(info$upstream)) && !isTRUE(info$bare)
 
   if(isTRUE(set_upstream)){
-    git_branch_set_upstream(paste0(remote, "/", info$shorthand), repo)
+    git_branch_set_upstream(paste0(remote, "/", info$shorthand), repo = repo)
   }
   git_repo_path(repo)
 }
