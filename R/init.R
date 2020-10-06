@@ -26,13 +26,6 @@
       packageStartupInform("No default user configured")
     }
   })
-
-  # Load tibble (if available) for pretty printing
-  if(interactive() && is.null(.getNamespace('tibble'))){
-    tryCatch({
-      getNamespace('tibble')
-    }, error = function(e){})
-  }
 }
 
 .onLoad <- function(libname, pkgname) {
@@ -40,6 +33,13 @@
   if (identical(Sys.getenv("IN_PKGDOWN"), "true") &&
       !global_user_is_configured()) {
     configure_global_user()
+  }
+
+  # Load tibble (if available) for pretty printing
+  if(interactive() && is.null(.getNamespace('tibble'))){
+    tryCatch({
+      getNamespace('tibble')
+    }, error = function(e){})
   }
 
   invisible()
