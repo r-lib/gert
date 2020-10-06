@@ -1,4 +1,9 @@
-#' Push and Pull
+#' Push and pull
+#'
+#' Functions to connect with a git server (remote) to fetch or push changes.
+#' The 'credentials' package is used to handle authentication, the
+#' [credentials vignette](https://cran.r-project.org/web/packages/credentials/vignettes/intro.html)
+#' explains the various authentication methods for SSH and HTTPS remotes.
 #'
 #' Use [git_fetch()] and [git_push()] to sync a local branch with a remote
 #' branch. Here [git_pull()] is a wrapper for [git_fetch()] which then tries to

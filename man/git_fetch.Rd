@@ -6,7 +6,7 @@
 \alias{git_push}
 \alias{git_clone}
 \alias{git_pull}
-\title{Push and Pull}
+\title{Push and pull}
 \usage{
 git_fetch(
   remote = NULL,
@@ -99,6 +99,12 @@ is not possible in case of conflicts (you will get an error).}
 \item{...}{arguments passed to \link{git_fetch}}
 }
 \description{
+Functions to connect with a git server (remote) to fetch or push changes.
+The 'credentials' package is used to handle authentication, the
+\href{https://cran.r-project.org/web/packages/credentials/vignettes/intro.html}{credentials vignette}
+explains the various authentication methods for SSH and HTTPS remotes.
+}
+\details{
 Use \code{\link[=git_fetch]{git_fetch()}} and \code{\link[=git_push]{git_push()}} to sync a local branch with a remote
 branch. Here \code{\link[=git_pull]{git_pull()}} is a wrapper for \code{\link[=git_fetch]{git_fetch()}} which then tries to
 \link[=git_branch_fast_forward]{fast-forward} the local branch after fetching.
