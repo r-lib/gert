@@ -13,7 +13,7 @@
 \usage{
 git_remote_list(repo = ".")
 
-git_remote_add(url, remote = "origin", refspec = NULL, repo = ".")
+git_remote_add(url, name = "origin", refspec = NULL, repo = ".")
 
 git_remote_remove(remote, repo = ".")
 
@@ -32,9 +32,12 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 
 \item{url}{server url (https or ssh)}
 
-\item{remote}{unique name of the remote}
+\item{name}{unique name for the new remote}
 
 \item{refspec}{optional string with the remote fetch value}
+
+\item{remote}{name of an existing remote. Default \code{NULL} means the remote
+from the upstream of the current branch.}
 }
 \description{
 List, add, configure, or remove remotes.

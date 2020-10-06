@@ -7,7 +7,8 @@
 #' @name git_remote
 #' @family git
 #' @inheritParams git_open
-#' @param remote unique name of the remote
+#' @param remote name of an existing remote. Default `NULL` means the remote
+#' from the upstream of the current branch.
 #' @param url server url (https or ssh)
 #' @useDynLib gert R_git_remote_list
 git_remote_list <- function(repo = '.'){
@@ -17,14 +18,15 @@ git_remote_list <- function(repo = '.'){
 
 #' @export
 #' @rdname git_remote
+#' @param name unique name for the new remote
 #' @param refspec optional string with the remote fetch value
 #' @useDynLib gert R_git_remote_add
-git_remote_add <- function(url, remote = "origin", refspec = NULL, repo = '.'){
+git_remote_add <- function(url, name = "origin", refspec = NULL, repo = '.'){
   repo <- git_open(repo)
-  remote <- as.character(remote)
+  name <- as.character(name)
   url <- as.character(url)
   refspec <- as.character(refspec)
-  invisible(.Call(R_git_remote_add, repo, remote, url, refspec))
+  invisible(.Call(R_git_remote_add, repo, name, url, refspec))
 }
 
 #' @export
