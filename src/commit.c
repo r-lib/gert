@@ -256,6 +256,17 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
                     "message", message, "diff", diff);
 }
 
+SEXP R_git_commit_descendant(SEXP ptr, SEXP ref, SEXP ancestor){
+  git_repository *repo = get_git_repository(ptr);
+  git_object *a = resolve_refish(ref, repo);
+  git_object *b = resolve_refish(ancestor, repo);
+  int res = git_graph_descendant_of(repo, git_object_id(a), git_object_id(b));
+  if(res == 1 || res == 0)
+    return Rf_ScalarLogical(res);
+  bail_if(res, "git_graph_descendant_of");
+  return R_NilValue;
+}
+
 SEXP R_git_commit_id(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = ref_to_commit(ref, repo);

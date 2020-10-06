@@ -5,6 +5,7 @@
 \alias{git_commit_all}
 \alias{git_commit_info}
 \alias{git_commit_id}
+\alias{git_commit_descendant_of}
 \alias{git_add}
 \alias{git_rm}
 \alias{git_status}
@@ -20,6 +21,8 @@ git_commit_all(message, author = NULL, committer = NULL, repo = ".")
 git_commit_info(ref = "HEAD", repo = ".")
 
 git_commit_id(ref = "HEAD", repo = ".")
+
+git_commit_descendant_of(ancestor, ref = "HEAD", repo = ".")
 
 git_add(files, force = FALSE, repo = ".")
 
@@ -45,6 +48,8 @@ repository, parent directories are considered (see \link{git_find}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 
 \item{ref}{revision string with a branch/tag/commit value}
+
+\item{ancestor}{a reference to a potential ancestor commit}
 
 \item{files}{vector of paths relative to the git root directory.
 Use \code{"."} to stage all changed files.}
