@@ -234,16 +234,25 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
   return build_tibble(4, "status", status, "old", oldfiles, "new", newfiles, "patch", patches);
 }
 
+static SEXP get_parents(git_commit *commit){
+  int n = git_commit_parentcount(commit);
+  SEXP out = Rf_allocVector(STRSXP, n);
+  for(int i = 0; i < n; i++){
+    SET_STRING_ELT(out, i, safe_char(git_oid_tostr_s(git_commit_parent_id(commit, i))));
+  }
+  return out;
+}
+
 SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = ref_to_commit(ref, repo);
   SEXP id = PROTECT(safe_string(git_oid_tostr_s(git_commit_id(commit))));
-  SEXP parent = PROTECT(safe_string(git_oid_tostr_s(git_commit_parent_id(commit, 0))));
+  SEXP parents = PROTECT(get_parents(commit));
   SEXP author = PROTECT(Rf_ScalarString(make_author(git_commit_author(commit))));
   SEXP committer = PROTECT(Rf_ScalarString(make_author(git_commit_committer(commit))));
   SEXP message = PROTECT(safe_string(git_commit_message(commit)));
   SEXP diff = PROTECT(R_git_diff_list(ptr, ref));
-  return build_list(6, "id", id, "parent", parent, "author", author, "committer", committer,
+  return build_list(6, "id", id, "parents", parents, "author", author, "committer", committer,
                     "message", message, "diff", diff);
 }
 
