@@ -193,7 +193,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
       print_if_verbose("Failed to authenticate over SSH. You either need to provide a key or setup ssh-agent\n");
       if(strcmp(ssh_user, "git"))
         print_if_verbose("Are you sure ssh address has username '%s'? (ssh remotes usually have username 'git')\n", ssh_user);
-      return GIT_EUSER;
+      goto failure;
     }
   }
 
@@ -217,13 +217,15 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
       char *pass = get_password(cb_data->getcred, url, &username, cb_data->retries > 2);
       if(!username || !pass){
         print_if_verbose("Credential lookup failed\n");
-        return GIT_EUSER;
+        goto failure;
       } else {
         return git_cred_userpass_plaintext_new(cred, username, pass);
       }
     }
   }
   print_if_verbose("All authentication methods failed\n");
+failure:
+  giterr_set_str(GIT_ERROR_CALLBACK, "Authentication failure");
   return GIT_EUSER;
 }
 
