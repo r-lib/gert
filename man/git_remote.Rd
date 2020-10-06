@@ -13,17 +13,17 @@
 \usage{
 git_remote_list(repo = ".")
 
-git_remote_add(url, name = "origin", refspec = NULL, repo = ".")
+git_remote_add(url, remote = "origin", refspec = NULL, repo = ".")
 
-git_remote_remove(name, repo = ".")
+git_remote_remove(remote, repo = ".")
 
-git_remote_info(name = NULL, repo = ".")
+git_remote_info(remote = NULL, repo = ".")
 
-git_remote_set_url(url, name = NULL, repo = ".")
+git_remote_set_url(url, remote = NULL, repo = ".")
 
-git_remote_set_pushurl(url, name = NULL, repo = ".")
+git_remote_set_pushurl(url, remote = NULL, repo = ".")
 
-git_remote_refspecs(name = NULL, repo = ".")
+git_remote_refspecs(remote = NULL, repo = ".")
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -32,7 +32,7 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 
 \item{url}{server url (https or ssh)}
 
-\item{name}{unique name of the remote}
+\item{remote}{unique name of the remote}
 
 \item{refspec}{optional string with the remote fetch value}
 }
