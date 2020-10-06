@@ -47,7 +47,7 @@ test_that("HTTP user/pass auth", {
 
   # Test that repo is private
   expect_error(git_clone('https://nobody@github.com/ropensci/testprivate',
-                         password = "bla", path = tempfile()))
+                         password = "bla", path = tempfile()), 'Authentication', class = 'GIT_EAUTH')
 
   # Test with PAT
   Sys.setenv(GITHUB_PAT = rawToChar(dec))

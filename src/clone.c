@@ -5,6 +5,10 @@
 #include <string.h>
 #include "utils.h"
 
+#ifndef GIT_ERROR_CALLBACK
+#define GIT_ERROR_CALLBACK GITERR_CALLBACK
+#endif
+
 #define print_if_verbose(...) print_log(verbose, __VA_ARGS__)
 
 typedef struct {
@@ -226,7 +230,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   print_if_verbose("All authentication methods failed\n");
 failure:
   giterr_set_str(GIT_ERROR_CALLBACK, "Authentication failure");
-  return GIT_EUSER;
+  return GIT_EAUTH;
 }
 
 static auth_callback_data_t auth_callback_data(SEXP getkey, SEXP getcred, int verbose){
