@@ -1,6 +1,6 @@
 #' Git Remotes
 #'
-#' Add, remove and list remotes.
+#' List, add, configure, or remove remotes.
 #'
 #' @export
 #' @rdname git_remote

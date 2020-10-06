@@ -37,7 +37,7 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}.}
 \item{refspec}{optional string with the remote fetch value}
 }
 \description{
-Add, remove and list remotes.
+List, add, configure, or remove remotes.
 }
 \seealso{
 Other git: 
