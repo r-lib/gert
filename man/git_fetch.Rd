@@ -101,7 +101,7 @@ is not possible in case of conflicts (you will get an error).}
 \description{
 Functions to connect with a git server (remote) to fetch or push changes.
 The 'credentials' package is used to handle authentication, the
-\href{https://cran.r-project.org/web/packages/credentials/vignettes/intro.html}{credentials vignette}
+\href{https://docs.ropensci.org/credentials/articles/intro.html}{credentials vignette}
 explains the various authentication methods for SSH and HTTPS remotes.
 }
 \details{
