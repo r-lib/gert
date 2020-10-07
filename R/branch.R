@@ -85,7 +85,7 @@ git_branch_fast_forward <- function(ref, repo = '.'){
 git_branch_set_upstream <- function(upstream, branch = git_branch(repo), repo = '.'){
   repo <- git_open(repo)
   stopifnot(is.character(upstream))
-  if(!git_branch_exists(upstream, local = FALSE))
+  if(!git_branch_exists(upstream, local = FALSE, repo = repo))
     stop(sprintf("No remote branch found: %s, maybe fetch first?", upstream))
   .Call(R_git_branch_set_upstream, repo, upstream, branch)
   git_repo_path(repo)
