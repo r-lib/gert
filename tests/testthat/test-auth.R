@@ -7,6 +7,8 @@ test_that("public ssh remotes with random key", {
   expect_true(file.exists(file.path(target, 'DESCRIPTION')))
 })
 
+isOldWindows <- Sys.info()[["sysname"]] == "Windows" && grepl('Windows Server 2008', osVersion)
+
 # Even for public repos, Github only allows keys that it knows.
 test_that("private ssh remotes with key", {
   skip_if_offline()
@@ -45,9 +47,13 @@ test_that("HTTP user/pass auth", {
                             rawToChar(dec)), path = target3)
   expect_true(file.exists(file.path(target3, 'hello')))
 
-  # Test that repo is private
-  expect_error(git_clone('https://nobody@github.com/ropensci/testprivate',
-                         password = "bla", path = tempfile()), 'Authentication', class = 'GIT_EAUTH')
+
+  # This seems to fail on WinBuilder due to some syscall
+  if(!isTRUE(isOldWindows)){
+    # Test that repo is private
+    expect_error(git_clone('https://nobody@github.com/ropensci/testprivate',
+                           password = "bla", path = tempfile()), 'Authentication', class = 'GIT_EAUTH')
+  }
 
   # Test with PAT
   Sys.setenv(GITHUB_PAT = rawToChar(dec))
