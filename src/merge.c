@@ -50,7 +50,7 @@ static const char *analysis_to_str(git_merge_analysis_t analysis, git_merge_pref
 
 static git_annotated_commit** refs_to_git(SEXP refs, git_repository *repo){
   int n = Rf_length(refs);
-  git_annotated_commit **commits = calloc(n, sizeof(*commits));
+  git_annotated_commit **commits = calloc(n, sizeof *commits);
   for(int i = 0; i < n; i++){
     bail_if(git_annotated_commit_from_revspec(&commits[i], repo, CHAR(STRING_ELT(refs, i))),
             "git_annotated_commit_from_revspec");
