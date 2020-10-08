@@ -174,7 +174,7 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP msg = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP author = PROTECT(Rf_allocVector(STRSXP, len));
-  SEXP time = PROTECT(Rf_allocVector(REALSXP, len));
+  SEXP times = PROTECT(Rf_allocVector(REALSXP, len));
   SEXP files = PROTECT(Rf_allocVector(INTSXP, len));
   SEXP merger = PROTECT(Rf_allocVector(LGLSXP, len));
 
@@ -182,7 +182,7 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
     SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(head))));
     SET_STRING_ELT(msg, i, safe_char(git_commit_message(head)));
     SET_STRING_ELT(author, i, make_author(git_commit_author(head)));
-    REAL(time)[i] = git_commit_time(head);
+    REAL(times)[i] = git_commit_time(head);
     INTEGER(files)[i] = count_commit_changes(repo, head);
     LOGICAL(merger)[i] = git_commit_parentcount(head) > 1;
 
@@ -192,8 +192,8 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
     git_commit_free(head);
     head = commit;
   }
-  Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_tibble(6, "commit", ids, "author", author, "time", time,
+  Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  return build_tibble(6, "commit", ids, "author", author, "time", times,
                       "files", files, "merge", merger, "message", msg);
 }
 
@@ -252,10 +252,10 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   SEXP committer = PROTECT(Rf_ScalarString(make_author(git_commit_committer(commit))));
   SEXP message = PROTECT(safe_string(git_commit_message(commit)));
   SEXP diff = PROTECT(R_git_diff_list(ptr, ref));
-  SEXP time = PROTECT(Rf_ScalarReal(git_commit_time(commit)));
-  Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_list(6, "id", id, "parents", parents, "author", author, "committer", committer,
-                    "message", message, "time", time, "diff", diff);
+  SEXP times = PROTECT(Rf_ScalarReal(git_commit_time(commit)));
+  Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  return build_list(7, "id", id, "parents", parents, "author", author, "committer", committer,
+                    "message", message, "time", times, "diff", diff);
 }
 
 SEXP R_git_commit_descendant(SEXP ptr, SEXP ref, SEXP ancestor){

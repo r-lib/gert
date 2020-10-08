@@ -113,6 +113,7 @@ SEXP R_git_branch_list(SEXP ptr){
   int res = 0;
   int count = 0;
   git_branch_t type;
+  git_commit* commit;
   git_reference *ref;
   git_branch_iterator *iter;
   git_repository *repo = get_git_repository(ptr);
@@ -129,6 +130,7 @@ SEXP R_git_branch_list(SEXP ptr){
   SEXP refs = PROTECT(Rf_allocVector(STRSXP, count));
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, count));
   SEXP upstreams = PROTECT(Rf_allocVector(STRSXP, count));
+  SEXP times = PROTECT(Rf_allocVector(REALSXP, count));
   bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
   for(int i = 0; i < count; i++){
     bail_if(git_branch_next(&ref, &type, iter), "git_branch_next");
@@ -137,14 +139,19 @@ SEXP R_git_branch_list(SEXP ptr){
       SET_STRING_ELT(names, i, safe_char(name));
     LOGICAL(islocal)[i] = (type == GIT_BRANCH_LOCAL);
     SET_STRING_ELT(refs, i, safe_char(git_reference_name(ref)));
-    if(git_reference_target(ref))
-      SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_reference_target(ref))));
+    if(git_reference_target(ref) && !git_commit_lookup(&commit, repo, git_reference_target(ref))){
+      SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(commit))));
+      REAL(times)[i] = git_commit_time(commit);
+      git_commit_free(commit);
+    }
     git_reference *upstream = NULL;
     SET_STRING_ELT(upstreams, i, safe_char(git_branch_upstream(&upstream, ref) ? NULL : git_reference_name(upstream)));
     git_reference_free(ref);
   }
   git_branch_iterator_free(iter);
-  return build_tibble(5, "name", names, "local", islocal, "ref", refs,"upstream", upstreams, "commit", ids);
+  Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  return build_tibble(6, "name", names, "local", islocal, "ref", refs,"upstream", upstreams,
+                         "commit", ids, "updated", times);
 }
 
 SEXP R_git_remote_list(SEXP ptr){
