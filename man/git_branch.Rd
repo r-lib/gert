@@ -30,7 +30,9 @@ git_branch_exists(branch, local = TRUE, repo = ".")
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable
-this search, provide the filepath protected with \code{\link[=I]{I()}}.}
+this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
+parameter, always explicitly call by name (i.e. \verb{repo = }) because future
+versions of gert may have additional parameters.}
 
 \item{local}{set TRUE to only check for local branches, FALSE to check for remote
 branches. Use NULL to return all branches.}
