@@ -16,7 +16,7 @@ git_branch <- function(repo = '.'){
 #' @export
 #' @rdname git_branch
 #' @useDynLib gert R_git_branch_list
-git_branch_list <- function(repo = '.', local = NULL){
+git_branch_list <- function(local = NULL, repo = '.'){
   repo <- git_open(repo)
   local <- as.logical(local)
   .Call(R_git_branch_list, repo, local)

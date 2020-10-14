@@ -13,7 +13,7 @@
 \usage{
 git_branch(repo = ".")
 
-git_branch_list(repo = ".", local = NULL)
+git_branch_list(local = NULL, repo = ".")
 
 git_branch_checkout(branch, force = FALSE, repo = ".")
 
