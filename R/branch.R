@@ -16,9 +16,10 @@ git_branch <- function(repo = '.'){
 #' @export
 #' @rdname git_branch
 #' @useDynLib gert R_git_branch_list
-git_branch_list <- function(repo = '.'){
+git_branch_list <- function(repo = '.', local = NULL){
   repo <- git_open(repo)
-  .Call(R_git_branch_list, repo)
+  local <- as.logical(local)
+  .Call(R_git_branch_list, repo, local)
 }
 
 #' @export
@@ -93,7 +94,8 @@ git_branch_set_upstream <- function(upstream, branch = git_branch(repo), repo = 
 
 #' @export
 #' @rdname git_branch
-#' @param local set FALSE to check for remote branch names.
+#' @param local set TRUE to only check for local branches, FALSE to check for remote
+#' branches. Use NULL to return all branches.
 #' @useDynLib gert R_git_branch_exists
 git_branch_exists <- function(branch, local = TRUE, repo = '.'){
   repo <- git_open(repo)

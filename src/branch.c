@@ -12,6 +12,12 @@ SEXP R_git_reset(SEXP ptr, SEXP ref, SEXP typenum){
   return ptr;
 }
 
+git_branch_t r_branch_type(SEXP local){
+  if(!Rf_length(local) || Rf_asInteger(local) == NA_LOGICAL)
+    return GIT_BRANCH_ALL;
+  return Rf_asLogical(local) ? GIT_BRANCH_LOCAL : GIT_BRANCH_REMOTE;
+}
+
 static int branch_exists(git_repository *repo, const char *name, git_branch_t branch_type){
   git_reference *ref = NULL;
   if(git_branch_lookup(&ref, repo, name, branch_type) == GIT_OK){
@@ -34,8 +40,7 @@ SEXP R_git_branch_current(SEXP ptr){
 
 SEXP R_git_branch_exists(SEXP ptr, SEXP name, SEXP local){
   git_repository *repo = get_git_repository(ptr);
-  git_branch_t type = Rf_asLogical(local) ? GIT_BRANCH_LOCAL : GIT_BRANCH_REMOTE;
-  return Rf_ScalarLogical(branch_exists(repo, CHAR(STRING_ELT(name, 0)), type));
+  return Rf_ScalarLogical(branch_exists(repo, CHAR(STRING_ELT(name, 0)), r_branch_type(local)));
 }
 
 SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
@@ -109,7 +114,7 @@ SEXP R_git_checkout_ref(SEXP ptr, SEXP ref, SEXP force){
   return ptr;
 }
 
-SEXP R_git_branch_list(SEXP ptr){
+SEXP R_git_branch_list(SEXP ptr, SEXP local){
   int res = 0;
   int count = 0;
   git_branch_t type;
@@ -117,7 +122,8 @@ SEXP R_git_branch_list(SEXP ptr){
   git_reference *ref;
   git_branch_iterator *iter;
   git_repository *repo = get_git_repository(ptr);
-  bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
+  git_branch_t filtertype = r_branch_type(local);
+  bail_if(git_branch_iterator_new(&iter, repo, filtertype), "git_branch_iterator_new");
   while((res = git_branch_next(&ref, &type, iter)) != GIT_ITEROVER){
     bail_if(res, "git_branch_next");
     git_reference_free(ref);
@@ -131,7 +137,7 @@ SEXP R_git_branch_list(SEXP ptr){
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, count));
   SEXP upstreams = PROTECT(Rf_allocVector(STRSXP, count));
   SEXP times = PROTECT(Rf_allocVector(REALSXP, count));
-  bail_if(git_branch_iterator_new(&iter, repo, GIT_BRANCH_ALL), "git_branch_iterator_new");
+  bail_if(git_branch_iterator_new(&iter, repo, filtertype), "git_branch_iterator_new");
   for(int i = 0; i < count; i++){
     bail_if(git_branch_next(&ref, &type, iter), "git_branch_next");
     const char * name = NULL;
