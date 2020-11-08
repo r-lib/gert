@@ -31,7 +31,7 @@ git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.'){
   if(state == "up_to_date"){
     inform("Already up to date, nothing to merge")
   } else if(state == "fastforward"){
-    inform("Performing fast-foward merge, no commit needed")
+    inform("Performing fast-forward merge, no commit needed")
     git_branch_fast_forward(ref = ref, repo = repo)
   } else if(state == "normal"){
     merged_without_conflict <- git_merge_stage_only(ref = ref, squash = squash, repo = repo)
