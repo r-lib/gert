@@ -3,7 +3,7 @@
 
 static int submodule_count(git_submodule *submod, const char *name, void *payload){
   int *count = payload;
-  *count = ++(*count);
+  *count = (*count) + 1;
   return 0;
 }
 
@@ -40,4 +40,25 @@ SEXP R_git_submodule_list(SEXP ptr){
   git_submodule_foreach(repo, submodule_fill, df);
   UNPROTECT(1);
   return df;
+}
+
+SEXP R_git_submodule_init(SEXP ptr, SEXP name, SEXP overwrite){
+  git_repository *repo = get_git_repository(ptr);
+  git_submodule *sm = NULL;
+  bail_if(git_submodule_lookup(&sm, repo, CHAR(STRING_ELT(name, 0))), "git_submodule_lookup");
+  bail_if(git_submodule_init(sm, Rf_asLogical(overwrite)), "git_submodule_init");
+  SEXP path = safe_string(git_submodule_path(sm));
+  git_submodule_free(sm);
+  return path;
+}
+
+SEXP R_git_submodule_update(SEXP ptr, SEXP name, SEXP init){
+  git_repository *repo = get_git_repository(ptr);
+  git_submodule *sm = NULL;
+  bail_if(git_submodule_lookup(&sm, repo, CHAR(STRING_ELT(name, 0))), "git_submodule_lookup");
+  git_submodule_update_options opt = GIT_SUBMODULE_UPDATE_OPTIONS_INIT;
+  bail_if(git_submodule_update(sm, Rf_asLogical(init), &opt), "git_submodule_update");
+  SEXP path = safe_string(git_submodule_path(sm));
+  git_submodule_free(sm);
+  return path;
 }

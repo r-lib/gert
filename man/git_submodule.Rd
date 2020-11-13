@@ -2,9 +2,15 @@
 % Please edit documentation in R/submodules.R
 \name{git_submodule_list}
 \alias{git_submodule_list}
+\alias{git_submodule_init}
+\alias{git_submodule_update}
 \title{Submodules}
 \usage{
 git_submodule_list(repo = ".")
+
+git_submodule_init(submodule, overwrite = FALSE, repo = ".")
+
+git_submodule_update(submodule, init = TRUE, repo = ".")
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -12,7 +18,13 @@ repository, parent directories are considered (see \link{git_find}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
+
+\item{submodule}{name of the submodule}
+
+\item{overwrite}{overwrite existing entries}
+
+\item{init}{automatically initialize before updating}
 }
 \description{
-Interact with submodules
+Interact with submodules in the repository.
 }
