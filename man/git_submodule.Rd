@@ -2,11 +2,14 @@
 % Please edit documentation in R/submodules.R
 \name{git_submodule_list}
 \alias{git_submodule_list}
+\alias{git_submodule_info}
 \alias{git_submodule_init}
 \alias{git_submodule_update}
 \title{Submodules}
 \usage{
 git_submodule_list(repo = ".")
+
+git_submodule_info(submodule, repo = ".")
 
 git_submodule_init(submodule, overwrite = FALSE, repo = ".")
 

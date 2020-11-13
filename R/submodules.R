@@ -13,6 +13,15 @@ git_submodule_list <- function(repo = '.'){
 
 #' @export
 #' @rdname git_submodule
+#' @useDynLib gert R_git_submodule_info
+git_submodule_info <- function(submodule, repo = '.'){
+  repo <- git_open(repo)
+  submodule <- as.character(submodule)
+  .Call(R_git_submodule_info, repo, submodule)
+}
+
+#' @export
+#' @rdname git_submodule
 #' @useDynLib gert R_git_submodule_init
 #' @param submodule name of the submodule
 #' @param overwrite overwrite existing entries

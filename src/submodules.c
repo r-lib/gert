@@ -42,6 +42,20 @@ SEXP R_git_submodule_list(SEXP ptr){
   return df;
 }
 
+SEXP R_git_submodule_info(SEXP ptr, SEXP name){
+  git_repository *repo = get_git_repository(ptr);
+  git_submodule *sm = NULL;
+  bail_if(git_submodule_lookup(&sm, repo, CHAR(STRING_ELT(name, 0))), "git_submodule_lookup");
+  SEXP out = build_list(5,
+                        "name", PROTECT(safe_string(git_submodule_name(sm))),
+                        "path", PROTECT(safe_string(git_submodule_path(sm))),
+                        "url", PROTECT(safe_string(git_submodule_url(sm))),
+                        "branch", PROTECT(safe_string(git_submodule_branch(sm))),
+                        "head", PROTECT(safe_string(git_oid_tostr_s(git_submodule_head_id(sm)))));
+  git_submodule_free(sm);
+  return out;
+}
+
 SEXP R_git_submodule_init(SEXP ptr, SEXP name, SEXP overwrite){
   git_repository *repo = get_git_repository(ptr);
   git_submodule *sm = NULL;
