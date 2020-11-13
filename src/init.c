@@ -63,6 +63,7 @@ extern SEXP R_git_stash_list(SEXP);
 extern SEXP R_git_stash_pop(SEXP, SEXP);
 extern SEXP R_git_stash_save(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_status_list(SEXP, SEXP);
+extern SEXP R_git_submodule_list(SEXP);
 extern SEXP R_git_tag_create(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_delete(SEXP, SEXP);
 extern SEXP R_git_tag_list(SEXP, SEXP);
@@ -123,6 +124,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_stash_pop",          (DL_FUNC) &R_git_stash_pop,          2},
   {"R_git_stash_save",         (DL_FUNC) &R_git_stash_save,         5},
   {"R_git_status_list",        (DL_FUNC) &R_git_status_list,        2},
+  {"R_git_submodule_list",     (DL_FUNC) &R_git_submodule_list,     1},
   {"R_git_tag_create",         (DL_FUNC) &R_git_tag_create,         4},
   {"R_git_tag_delete",         (DL_FUNC) &R_git_tag_delete,         2},
   {"R_git_tag_list",           (DL_FUNC) &R_git_tag_list,           2},
