@@ -87,7 +87,7 @@ static void fin_git_repository(SEXP ptr){
   R_ClearExternalPtr(ptr);
 }
 
-static SEXP new_git_repository(git_repository *repo){
+SEXP new_git_repository(git_repository *repo){
   SEXP ptr = PROTECT(R_MakeExternalPtr(repo, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(ptr, fin_git_repository, 1);
   Rf_setAttrib(ptr, R_ClassSymbol, Rf_mkString("git_repo_ptr"));

@@ -76,3 +76,36 @@ SEXP R_git_submodule_update(SEXP ptr, SEXP name, SEXP init){
   git_submodule_free(sm);
   return path;
 }
+
+SEXP R_git_submodule_setup(SEXP ptr, SEXP url, SEXP path){
+  git_submodule *sm = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_submodule_add_setup(&sm, repo, CHAR(STRING_ELT(url, 0)),
+                                  CHAR(STRING_ELT(path, 0)), 1), "git_submodule_add_setup");
+  git_repository *subrepo = NULL;
+  bail_if(git_submodule_open(&subrepo, sm), "git_submodule_open");
+  git_submodule_free(sm);
+  return new_git_repository(subrepo);
+}
+
+SEXP R_git_submodule_save(SEXP ptr, SEXP submodule){
+  git_submodule *sm = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_submodule_lookup(&sm, repo, CHAR(STRING_ELT(submodule, 0))), "git_submodule_lookup");
+  bail_if(git_submodule_add_finalize(sm), "git_submodule_add_finalize");
+  return submodule;
+}
+
+SEXP R_git_create_link_entry(SEXP ptr, SEXP path, SEXP oid){
+  git_repository *repo = get_git_repository(ptr);
+  git_index_entry entry = {{0}};
+  bail_if(git_oid_fromstr(&entry.id, CHAR(STRING_ELT(oid, 0))), "git_oid_fromstr");
+  entry.path = CHAR(STRING_ELT(path, 0));
+  entry.mode = GIT_FILEMODE_LINK;
+  git_index *index;
+  bail_if(git_repository_index(&index, repo), "git_repository_index");
+  bail_if(git_index_add(index, &entry), "git_index_add");
+  git_index_write(index);
+  git_index_free(index);
+  return path;
+}
