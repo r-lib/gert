@@ -47,13 +47,22 @@ git_submodule_update <- function(submodule, init = TRUE, repo = '.'){
 #' @export
 #' @rdname git_submodule
 #' @useDynLib gert R_git_submodule_set_to
-#' @param id full commit hash to point the submodule at
-git_submodule_set_to <- function(submodule, id, repo = '.'){
+#' @param ref branch or tag to point the submodule at. If checkout = FALSE, you
+#' can pass a commit hash before downloading the submodule.
+#' @param checkout actually switch the contents of the directory to this commit
+git_submodule_set_to <- function(submodule, ref, checkout = TRUE, repo = '.'){
   repo <- git_open(repo)
   submodule <- as.character(submodule)
-  if(!is_full_hash(id))
-    stop("Parameter oid must be a full hash")
- .Call(R_git_submodule_set_to, repo, submodule, id)
+  info <- git_submodule_info(submodule, repo = repo)
+  if(isTRUE(checkout)){
+    git_reset_hard(ref = ref, repo = I(info$path))
+    ref <- git_info(repo = I(info$path))$commit
+  } else if(!is_full_hash(ref)) {
+    ref <- git_commit_info(ref, repo = I(info$path))$id
+  }
+  if(!is_full_hash(ref))
+    stop("When checkout = FALSE, parameter ref must be a full hash")
+ .Call(R_git_submodule_set_to, repo, submodule, ref)
 }
 
 #' @export

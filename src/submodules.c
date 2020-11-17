@@ -105,11 +105,11 @@ SEXP R_git_submodule_set_to(SEXP ptr, SEXP submodule, SEXP oid){
   bail_if(git_oid_fromstr(&entry.id, CHAR(STRING_ELT(oid, 0))), "git_oid_fromstr");
   entry.path = git_submodule_path(sm);
   entry.mode = GIT_FILEMODE_COMMIT;
-  git_submodule_free(sm);
   git_index *index;
   bail_if(git_repository_index(&index, repo), "git_repository_index");
   bail_if(git_index_add(index, &entry), "git_index_add");
   git_index_write(index);
   git_index_free(index);
+  git_submodule_free(sm);
   return oid;
 }

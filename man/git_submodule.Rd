@@ -17,7 +17,7 @@ git_submodule_init(submodule, overwrite = FALSE, repo = ".")
 
 git_submodule_update(submodule, init = TRUE, repo = ".")
 
-git_submodule_set_to(submodule, id, repo = ".")
+git_submodule_set_to(submodule, ref, checkout = TRUE, repo = ".")
 
 git_submodule_add(url, path = basename(url), ref = "HEAD", ..., repo = ".")
 }
@@ -34,13 +34,13 @@ versions of gert may have additional parameters.}
 
 \item{init}{automatically initialize before updating}
 
-\item{id}{full commit hash to point the submodule at}
+\item{ref}{a branch or tag or hash with}
+
+\item{checkout}{actually switch the contents of the directory to this commit}
 
 \item{url}{full git url of the submodule}
 
 \item{path}{relative of the submodule}
-
-\item{ref}{a branch or tag or hash with}
 
 \item{...}{extra arguments for \link{git_fetch} for authentication things}
 }
