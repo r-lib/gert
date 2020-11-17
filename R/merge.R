@@ -43,7 +43,7 @@ git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.'){
         git_commit(commit_message, repo = repo)
         inform(commit_message)
       } else {
-        inform("Merge was not be committed due to merge conflict(s). Please fix and run git_commit() or git_merge_abort()")
+        inform("Merge was not committed due to merge conflict(s). Please fix and run git_commit() or git_merge_abort()")
       }
     } else {
       inform("Merge has resulted in merge conflict(s).")
