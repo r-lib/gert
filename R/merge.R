@@ -51,6 +51,7 @@ git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.'){
   } else {
     stop(sprintf("State is '%s', not sure what to do", state))
   }
+  invisible(state)
 }
 
 #' @export
