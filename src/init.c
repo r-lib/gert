@@ -26,7 +26,7 @@ extern SEXP R_git_config_list(SEXP);
 extern SEXP R_git_config_set(SEXP, SEXP, SEXP);
 extern SEXP R_git_conflict_list(SEXP);
 extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP);
-extern SEXP R_git_create_link_entry(SEXP, SEXP, SEXP);
+extern SEXP R_git_submodule_set_to(SEXP, SEXP, SEXP);
 extern SEXP R_git_delete_branch(SEXP, SEXP);
 extern SEXP R_git_diff_list(SEXP, SEXP);
 extern SEXP R_git_merge_analysis(SEXP, SEXP);
@@ -93,7 +93,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_config_set",          (DL_FUNC) &R_git_config_set,          3},
   {"R_git_conflict_list",       (DL_FUNC) &R_git_conflict_list,       1},
   {"R_git_create_branch",       (DL_FUNC) &R_git_create_branch,       4},
-  {"R_git_create_link_entry",   (DL_FUNC) &R_git_create_link_entry,   3},
+  {"R_git_submodule_set_to",    (DL_FUNC) &R_git_submodule_set_to,    3},
   {"R_git_delete_branch",       (DL_FUNC) &R_git_delete_branch,       2},
   {"R_git_diff_list",           (DL_FUNC) &R_git_diff_list,           2},
   {"R_git_merge_analysis",      (DL_FUNC) &R_git_merge_analysis,      2},

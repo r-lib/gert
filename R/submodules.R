@@ -46,6 +46,18 @@ git_submodule_update <- function(submodule, init = TRUE, repo = '.'){
 
 #' @export
 #' @rdname git_submodule
+#' @useDynLib gert R_git_submodule_set_to
+#' @param id full commit hash to point the submodule at
+git_submodule_set_to <- function(submodule, id, repo = '.'){
+  repo <- git_open(repo)
+  submodule <- as.character(submodule)
+  if(!is_full_hash(id))
+    stop("Parameter oid must be a full hash")
+ .Call(R_git_submodule_set_to, repo, submodule, id)
+}
+
+#' @export
+#' @rdname git_submodule
 #' @param url full git url of the submodule
 #' @param path relative of the submodule
 #' @param ref a branch or tag or hash with
@@ -82,14 +94,10 @@ git_submodule_save <- function(submodule, repo){
   .Call(R_git_submodule_save, repo, submodule)
 }
 
-#' @useDynLib gert R_git_create_link_entry
-git_create_link <- function(path, oid, repo){
-  repo <- git_open(repo)
-  path <- as.character(path)
-  oid <- as.character(oid)
-  .Call(R_git_create_link_entry, repo, path, oid)
-}
-
 is_a_hash <- function(x){
   grepl('^[a-f0-9]{7,}$', tolower(x))
+}
+
+is_full_hash <- function(x){
+  grepl('^[a-f0-9]{40}$', tolower(x))
 }
