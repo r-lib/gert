@@ -108,7 +108,7 @@ git_submodule_fetch <- function(submodule, ..., repo = '.'){
     }
     git_reset_hard(remote_head, repo = I(sm$path))
   }
-  git_submodule_info(submodule = submodule, repo = repo)
+  git_commit_id(repo = subrepo)
 }
 
 #' @useDynLib gert R_git_submodule_setup
