@@ -10,6 +10,7 @@ SEXP safe_char(const char *x);
 SEXP make_strvec(int n, ...);
 SEXP build_list(int n, ...);
 SEXP list_to_tibble(SEXP df);
+SEXP new_git_repository(git_repository *repo);
 git_repository *get_git_repository(SEXP ptr);
 git_object *resolve_refish(SEXP string, git_repository *repo);
 git_commit *ref_to_commit(SEXP ref, git_repository *repo);

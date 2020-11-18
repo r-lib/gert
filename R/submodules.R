@@ -43,3 +43,70 @@ git_submodule_update <- function(submodule, init = TRUE, repo = '.'){
   init <- as.logical(init)
   .Call(R_git_submodule_update, repo, submodule, init)
 }
+
+#' @export
+#' @rdname git_submodule
+#' @useDynLib gert R_git_submodule_set_to
+#' @param ref branch or tag to point the submodule at. If checkout = FALSE, you
+#' can pass a commit hash before downloading the submodule.
+#' @param checkout actually switch the contents of the directory to this commit
+git_submodule_set_to <- function(submodule, ref, checkout = TRUE, repo = '.'){
+  repo <- git_open(repo)
+  submodule <- as.character(submodule)
+  info <- git_submodule_info(submodule, repo = repo)
+  if(isTRUE(checkout)){
+    git_reset_hard(ref = ref, repo = I(info$path))
+    ref <- git_info(repo = I(info$path))$commit
+  } else if(!is_full_hash(ref)) {
+    ref <- git_commit_info(ref, repo = I(info$path))$id
+  }
+  if(!is_full_hash(ref))
+    stop("When checkout = FALSE, parameter ref must be a full hash")
+ .Call(R_git_submodule_set_to, repo, submodule, ref)
+}
+
+#' @export
+#' @rdname git_submodule
+#' @param url full git url of the submodule
+#' @param path relative of the submodule
+#' @param ref a branch or tag or hash with
+#' @param ... extra arguments for [git_fetch] for authentication things
+git_submodule_add <- function(url, path = basename(url), ref = 'HEAD', ..., repo = '.'){
+  if(!is_a_hash(ref)){
+    upstream_refs <- git_remote_ls(url, ..., repo = repo)
+    ref_match <- sub("refs/(heads|tags)/","", upstream_refs$ref) == ref
+    if(!any(ref_match)){
+      stop(sprintf("Upstream repo %s does not have a branch or tag named '%s'",
+                   basename(url), ref))
+    }
+    ref <- upstream_refs$oid[ref_match]
+  }
+  submodule <- git_submodule_setup(url = url, path = path, repo = repo)
+  git_fetch('origin', ..., repo = submodule)
+  git_reset_hard(ref, repo = submodule)
+  git_submodule_save(path, repo = repo)
+  git_submodule_info(path, repo = repo)
+}
+
+#' @useDynLib gert R_git_submodule_setup
+git_submodule_setup <- function(url, path, repo){
+  repo <- git_open(repo)
+  path <- as.character(path)
+  url <- as.character(url)
+  .Call(R_git_submodule_setup, repo, url, path)
+}
+
+#' @useDynLib gert R_git_submodule_save
+git_submodule_save <- function(submodule, repo){
+  repo <- git_open(repo)
+  submodule <- as.character(submodule)
+  .Call(R_git_submodule_save, repo, submodule)
+}
+
+is_a_hash <- function(x){
+  grepl('^[a-f0-9]{7,}$', tolower(x))
+}
+
+is_full_hash <- function(x){
+  grepl('^[a-f0-9]{40}$', tolower(x))
+}
