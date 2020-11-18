@@ -5,6 +5,7 @@
 \alias{git_submodule_info}
 \alias{git_submodule_init}
 \alias{git_submodule_update}
+\alias{git_submodule_fetch}
 \alias{git_submodule_set_to}
 \alias{git_submodule_add}
 \title{Submodules}
@@ -16,6 +17,8 @@ git_submodule_info(submodule, repo = ".")
 git_submodule_init(submodule, overwrite = FALSE, repo = ".")
 
 git_submodule_update(submodule, init = TRUE, repo = ".")
+
+git_submodule_fetch(submodule, ..., repo = ".")
 
 git_submodule_set_to(submodule, ref, checkout = TRUE, repo = ".")
 
@@ -34,6 +37,8 @@ versions of gert may have additional parameters.}
 
 \item{init}{automatically initialize before updating}
 
+\item{...}{extra arguments for \link{git_fetch} for authentication things}
+
 \item{ref}{a branch or tag or hash with}
 
 \item{checkout}{actually switch the contents of the directory to this commit}
@@ -41,8 +46,6 @@ versions of gert may have additional parameters.}
 \item{url}{full git url of the submodule}
 
 \item{path}{relative of the submodule}
-
-\item{...}{extra arguments for \link{git_fetch} for authentication things}
 }
 \description{
 Interact with submodules in the repository.

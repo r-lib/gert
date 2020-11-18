@@ -88,6 +88,29 @@ git_submodule_add <- function(url, path = basename(url), ref = 'HEAD', ..., repo
   git_submodule_info(path, repo = repo)
 }
 
+#' @export
+#' @rdname git_submodule
+git_submodule_fetch <- function(submodule, ..., repo = '.'){
+  sm <- git_submodule_info(submodule = submodule, repo = repo)
+  subrepo = I(sm$path)
+  tryCatch(git_info(repo = subrepo), error = function(e){
+    inform("Cloning submodule '%s'", submodule)
+    git_submodule_update(submodule, repo = repo)
+  })
+  git_fetch('origin', ..., repo = subrepo)
+  if(length(sm$branch) && !is.na(sm$branch)){
+    git_reset_hard(sm$branch, repo = subrepo)
+  } else {
+    remote_head <- git_remote_info('origin', repo = subrepo)$head
+    if(!length(remote_head)){
+      git_remote_ls('origin', ..., repo = subrepo)
+      remote_head <- git_remote_info('origin', repo = subrepo)$head
+    }
+    git_reset_hard(remote_head, repo = I(sm$path))
+  }
+  git_submodule_info(submodule = submodule, repo = repo)
+}
+
 #' @useDynLib gert R_git_submodule_setup
 git_submodule_setup <- function(url, path, repo){
   repo <- git_open(repo)
