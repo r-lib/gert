@@ -9,8 +9,6 @@ matrix:
     - r: 3.3
     - dist: xenial
     - os: osx
-      brew_packages: libgit2
-    - os: osx
       disable_homebrew: true
       osx_image: xcode11.4
       r_check_args: ""
