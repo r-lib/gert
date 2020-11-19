@@ -34,18 +34,6 @@ git_submodule_init <- function(submodule, overwrite = FALSE, repo = '.'){
 
 #' @export
 #' @rdname git_submodule
-#' @useDynLib gert R_git_submodule_update
-#' @param submodule name of the submodule
-#' @param init automatically initialize before updating
-git_submodule_update <- function(submodule, init = TRUE, repo = '.'){
-  repo <- git_open(repo)
-  submodule <- as.character(submodule)
-  init <- as.logical(init)
-  .Call(R_git_submodule_update, repo, submodule, init)
-}
-
-#' @export
-#' @rdname git_submodule
 #' @useDynLib gert R_git_submodule_set_to
 #' @param ref branch or tag to point the submodule at. If checkout = FALSE, you
 #' can pass a commit hash before downloading the submodule.
@@ -93,11 +81,12 @@ git_submodule_add <- function(url, path = basename(url), ref = 'HEAD', ..., repo
 git_submodule_fetch <- function(submodule, ..., repo = '.'){
   sm <- git_submodule_info(submodule = submodule, repo = repo)
   subrepo = I(sm$path)
-  tryCatch(git_info(repo = subrepo), error = function(e){
-    inform("Cloning submodule '%s'", submodule)
-    git_submodule_update(submodule, repo = repo)
+  tryCatch({
+    git_fetch('origin', ..., repo = subrepo)
+  }, GIT_ENOTFOUND = function(e){
+    inform("Initial clone for submodule '%s'", submodule)
+    git_clone(sm$url, ..., path = subrepo)
   })
-  git_fetch('origin', ..., repo = subrepo)
   if(length(sm$branch) && !is.na(sm$branch)){
     git_reset_hard(sm$branch, repo = subrepo)
   } else {
@@ -124,6 +113,16 @@ git_submodule_save <- function(submodule, repo){
   repo <- git_open(repo)
   submodule <- as.character(submodule)
   .Call(R_git_submodule_save, repo, submodule)
+}
+
+# I find this confusing, also doesn't support auth.
+# Better use git_submodule_fetch()
+#' @useDynLib gert R_git_submodule_update
+git_submodule_update <- function(submodule, init = TRUE, repo = '.'){
+  repo <- git_open(repo)
+  submodule <- as.character(submodule)
+  init <- as.logical(init)
+  .Call(R_git_submodule_update, repo, submodule, init)
 }
 
 is_a_hash <- function(x){
