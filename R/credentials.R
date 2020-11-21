@@ -51,7 +51,7 @@ make_cred_cb <- function(password = askpass, verbose = TRUE){
 
       # Try looking for (cached) gitcreds, mainly to support GHE
       # This should never cause a prompt! It either returns creds or errors.
-      if(requireNamespace('gitcreds')){
+      if(requireNamespace('gitcreds', quietly = TRUE)){
         creds <- tryCatch(gitcreds::gitcreds_get(url, set_cache = FALSE), error = function(e){})
         if(length(creds) && length(creds$username)){
           return(c(creds$username, creds$password))
