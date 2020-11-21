@@ -25,6 +25,7 @@ Imports:
     rstudioapi (>= 0.11),
     zip (>= 2.1.0)
 Suggests:
+    gitcreds,
     spelling, 
     knitr,
     rmarkdown,

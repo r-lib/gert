@@ -48,6 +48,15 @@ make_cred_cb <- function(password = askpass, verbose = TRUE){
       if(nchar(github_pat) > 0 && grepl('^https?://([^/]*@)?github.com', url)){
         return(c("git", github_pat))
       }
+
+      # Try looking for (cached) gitcreds, mainly to support GHE
+      # This should never cause a prompt! It either returns creds or errors.
+      if(requireNamespace('gitcreds')){
+        creds <- tryCatch(gitcreds::gitcreds_get(url, set_cache = FALSE), error = function(e){})
+        if(length(creds) && length(creds$username)){
+          return(c(creds$username, creds$password))
+        }
+      }
     }
 
     # Retrieve a password from the credential manager
