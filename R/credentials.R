@@ -33,7 +33,7 @@ make_cred_cb <- function(password = askpass, verbose = TRUE){
   if(!is.character(password) && !is.function(password)){
     stop("Password parameter must be string or callback function")
   }
-  function(url, username, force_forget){
+  function(url, username, retries){
     # Case of hardcoded (string) password
     if(is.character(password)){
       if(!length(username) || is.na(username)){
@@ -42,8 +42,16 @@ make_cred_cb <- function(password = askpass, verbose = TRUE){
       return(c(username, password))
     }
 
+    # Look for GITHUB_PAT variable
+    if(retries < 2){
+      github_pat <- Sys.getenv('GITHUB_PAT')
+      if(nchar(github_pat) > 0 && grepl('^https?://([^/]*@)?github.com', url)){
+        return(c("git", github_pat))
+      }
+    }
+
     # Retrieve a password from the credential manager
-    if(isTRUE(force_forget)){
+    if(retries > 2){
       try(git_credential_forget(url))
     }
     cred <- try(git_credential_ask(url, verbose = verbose), silent = !verbose)

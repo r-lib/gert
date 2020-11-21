@@ -42,13 +42,13 @@ static const char *session_keyphrase(const char *set){
   return key;
 }
 
-static char* get_password(SEXP cb, const char *url, const char **username, int force_forget){
+static char* get_password(SEXP cb, const char *url, const char **username, int retries){
   if(!Rf_isFunction(cb))
     Rf_error("cb must be a function");
   int err;
   SEXP call = PROTECT(Rf_lcons(cb, Rf_lcons(safe_string(url),
                                    Rf_lcons(safe_string(*username),
-                                   Rf_lcons(Rf_ScalarLogical(force_forget),
+                                   Rf_lcons(Rf_ScalarInteger(retries),
                                    R_NilValue)))));
   SEXP res = PROTECT(R_tryEval(call, R_GlobalEnv, &err));
   if(err || !Rf_isString(res) || Rf_length(res) < 2){
@@ -135,26 +135,6 @@ static void checkout_progress(const char *path, size_t cur, size_t tot, void *pa
   }
 }
 
-/* We only want to send the PAT to Github */
-static int url_is_github(const char *url, const char *user){
-  if(url == NULL)
-    return 0;
-  if(strstr(url, "http://github.com") == url)
-    return 1;
-  if(strstr(url, "https://github.com") == url)
-    return 1;
-  if(user){
-    char buf[4000];
-    snprintf(buf, 3999, "http://%s@github.com", user);
-    if(strstr(url, buf) == url)
-      return 1;
-    snprintf(buf, 3999, "https://%s@github.com", user);
-    if(strstr(url, buf) == url)
-      return 1;
-  }
-  return 0;
-}
-
 /* Examples: https://github.com/libgit2/libgit2/blob/master/tests/online/clone.c */
 static int auth_callback(git_cred **cred, const char *url, const char *username,
                                unsigned int allowed_types, void *payload){
@@ -213,16 +193,9 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
       print_if_verbose("Failed password authentiation %d times. Giving up\n", cb_data->retries - 1);
       cb_data->retries = 0;
     } else {
-      if(cb_data->retries == 0){
-        cb_data->retries++;
-        if(url_is_github(url, username) && getenv("GITHUB_PAT")){
-          print_if_verbose("Trying to authenticate with your GITHUB_PAT\n");
-          return git_cred_userpass_plaintext_new(cred, "git", getenv("GITHUB_PAT"));
-        }
-      }
       cb_data->retries++;
       print_if_verbose("Looking up https credentials for %s\n", url);
-      char *pass = get_password(cb_data->getcred, url, &username, cb_data->retries > 2);
+      char *pass = get_password(cb_data->getcred, url, &username, cb_data->retries);
       if(!username || !pass){
         print_if_verbose("Credential lookup failed\n");
         goto failure;
