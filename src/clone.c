@@ -6,7 +6,7 @@
 #include "utils.h"
 
 /* Workaround for performance bug: https://github.com/libgit2/libgit2/issues/5725 */
-#if LIBGIT2_VER_MAJOR == 1 && LIBGIT2_VER_MINOR < 2
+#if AT_LEAST_LIBGIT2(0, 26)
 #define USE_SUBMODULE_CACHE
 #endif
 
