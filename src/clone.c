@@ -5,6 +5,15 @@
 #include <string.h>
 #include "utils.h"
 
+/* Workaround for performance bug: https://github.com/libgit2/libgit2/issues/5725 */
+#if AT_LEAST_LIBGIT2(0, 26)
+#define USE_SUBMODULE_CACHE
+#endif
+
+#ifdef USE_SUBMODULE_CACHE
+#include <git2/sys/repository.h>
+#endif
+
 #ifndef GIT_ERROR_CALLBACK
 #define GIT_ERROR_CALLBACK GITERR_CALLBACK
 #endif
@@ -242,6 +251,9 @@ SEXP R_git_repository_open(SEXP path, SEXP search){
   } else {
     bail_if(git_repository_open(&repo, CHAR(STRING_ELT(path, 0))), "git_repository_open");
   }
+#ifdef USE_SUBMODULE_CACHE
+  git_repository_submodule_cache_all(repo);
+#endif
   return new_git_repository(repo);
 }
 
