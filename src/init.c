@@ -145,11 +145,7 @@ static const R_CallMethodDef CallEntries[] = {
 };
 
 attribute_visible void R_init_gert(DllInfo *dll) {
-#if LIBGIT2_VER_MAJOR == 0 && LIBGIT2_VER_MINOR < 22
-  git_threads_init();
-#else
   git_libgit2_init();
-#endif
 #ifdef _WIN32
   const char *userprofile = getenv("USERPROFILE");
   if(userprofile)

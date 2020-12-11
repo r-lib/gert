@@ -19,14 +19,4 @@ git_commit *ref_to_commit(SEXP ref, git_repository *repo);
 
 #define AT_LEAST_LIBGIT2(x,y) (LIBGIT2_VER_MAJOR > x || LIBGIT2_VER_MINOR >= y)
 
-/* Some compatibility macros */
-#if !AT_LEAST_LIBGIT2(0, 22)
-#define git_remote_lookup(a,b,c) git_remote_load(a,b,c)
-#endif
-
-#if ! AT_LEAST_LIBGIT2(0, 21)
-#define git_checkout_options git_checkout_opts
-#define GIT_CHECKOUT_OPTIONS_INIT GIT_CHECKOUT_OPTS_INIT
-#endif
-
 void set_checkout_notify_cb(git_checkout_options *opts);
