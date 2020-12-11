@@ -1,5 +1,6 @@
 1.1.0
   - Add functions to work with submodules
+  - Globally enable submodule-caching for faster diffing
 
 1.0.2
   - git_branch_list() gains a parameter 'local'
