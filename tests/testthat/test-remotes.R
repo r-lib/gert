@@ -1,4 +1,5 @@
 test_that("remotes from new repo",{
+  skip_if_offline()
   repo <- git_init(tempfile("gert-tests-remote"))
   on.exit(unlink(repo, recursive = TRUE))
   expect_equal(nrow(git_remote_list(repo = repo)), 0)
