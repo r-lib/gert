@@ -16,7 +16,7 @@ PKG_CFLAGS=""
 
 # Use pkg-config if available
 pkg-config ${PKG_CONFIG_NAME} --atleast-version=0.19 2>/dev/null
-if [ $? -eq 0 ]; then
+if [ -z "$DOWNLOAD_STATIC_LIBGIT2" ] && [ $? -eq 0 ]; then
   PKGCONFIG_CFLAGS=`pkg-config --cflags --silence-errors ${PKG_CONFIG_NAME}`
   PKGCONFIG_LIBS=`pkg-config --libs ${PKG_CONFIG_NAME}`
 fi
@@ -40,6 +40,9 @@ elif [ `uname` = "Darwin" ]; then
     curl -sfL "https://autobrew.github.io/scripts/$PKG_BREW_NAME" > autobrew
     . autobrew
   fi
+elif [ "$DOWNLOAD_STATIC_LIBGIT2" ]; then
+  ${R_HOME}/bin/R -q -e 'curl::curl_download("http://r-lib.github.io/gert/get-libgit2-linux.sh","get-libgit2-linux.sh")'
+  . ./get-libgit2-linux.sh
 fi
 
 # Find compiler
@@ -61,6 +64,12 @@ if [ $? -ne 0 ]; then
   echo " * brew: $PKG_BREW_NAME (MacOS)"
   echo " * deb: $PKG_DEB_NAME (Debian, Ubuntu, etc)"
   echo " * rpm: $PKG_RPM_NAME (Fedora, CentOS, RHEL)"
+if [ `arch` = "x86_64" ]; then
+  echo "ALTERNATIVELY, on x86_64 Linux you can set an environment variable:"
+  echo "  DOWNLOAD_STATIC_LIBGIT2=1"
+  echo "To automatically download a precompiled static libgit2 for Linux."
+  echo ""
+fi
   echo "If $PKG_CONFIG_NAME is already installed, check that 'pkg-config' is in your"
   echo "PATH and PKG_CONFIG_PATH contains a $PKG_CONFIG_NAME.pc file. If pkg-config"
   echo "is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:"
