@@ -29,6 +29,15 @@
 }
 
 .onLoad <- function(libname, pkgname) {
+  # This should usually correspond to 'openssl version -d'
+  if(isTRUE(have_static_libgit2() || is_solaris())){
+    certpath <- find_cert_dir()
+    if(length(certpath)){
+      set_cert_locations(NULL, certpath)
+    } else {
+      warning("Unable to find directory with certificates", immediate. = TRUE)
+    }
+  }
 
   if (identical(Sys.getenv("IN_PKGDOWN"), "true") &&
       !global_user_is_configured()) {
@@ -51,6 +60,10 @@ as_string <- function(x){
 
 is_windows <- function(){
   identical(.Platform$OS.type, "windows")
+}
+
+is_solaris <- function(){
+  isTRUE(grepl('solaris', R.version$platform, ignore.case = TRUE))
 }
 
 inform_impl <- function(message, subclass = NULL) {
