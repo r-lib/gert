@@ -72,7 +72,7 @@ if [ $? -ne 0 ]; then
   echo " * deb: $PKG_DEB_NAME (Debian, Ubuntu, etc)"
   echo " * rpm: $PKG_RPM_NAME (Fedora, CentOS, RHEL)"
 if [ `arch` = "x86_64" ]; then
-  echo "ALTERNATIVELY, on x86_64 Linux you can set an environment variable:"
+  echo "Alternatively on x86_64 Linux you can set an environment variable:"
   echo "  DOWNLOAD_STATIC_LIBGIT2=1"
   echo "To automatically download a precompiled static libgit2 for Linux."
   echo ""
@@ -110,10 +110,9 @@ if [ $? -ne 0 ]; then
     echo "  sudo apt-get update"
     echo "  sudo apt-get install libssh2-1-dev libgit2-dev"
     echo ""
-    echo "ALTERNATIVELY, on x86_64 Linux you can set an environment variable:"
+    echo "Alternatively on x86_64 Linux you can set an environment variable:"
     echo "  DOWNLOAD_STATIC_LIBGIT2=1"
     echo "To automatically download a precompiled static libgit2 for Linux."
-    echo ""
     echo "--------------------------------------------------------------------"
     exit 1
   else
