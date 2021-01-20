@@ -15,7 +15,7 @@ PKG_LIBS="-lgit2"
 PKG_CFLAGS=""
 
 # On CentOS / RHEL, default to downloading our static libgit2 (stock libgit2 is fubar)
-if [ -z "FORCE_SYSTEM_LIBGIT2" ] && [ `arch` = "x86_64" ] && [ -f "/etc/redhat-release" ]; then
+if [ -z "$FORCE_SYSTEM_LIBGIT2" ] && [ `arch` = "x86_64" ] && [ -f "/etc/redhat-release" ]; then
 if ! grep -q "Fedora" "/etc/redhat-release"; then
 DOWNLOAD_STATIC_LIBGIT2=1
 fi
