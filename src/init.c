@@ -26,7 +26,6 @@ extern SEXP R_git_config_list(SEXP);
 extern SEXP R_git_config_set(SEXP, SEXP, SEXP);
 extern SEXP R_git_conflict_list(SEXP);
 extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP);
-extern SEXP R_git_submodule_set_to(SEXP, SEXP, SEXP);
 extern SEXP R_git_delete_branch(SEXP, SEXP);
 extern SEXP R_git_diff_list(SEXP, SEXP);
 extern SEXP R_git_merge_analysis(SEXP, SEXP);
@@ -68,12 +67,15 @@ extern SEXP R_git_submodule_info(SEXP, SEXP);
 extern SEXP R_git_submodule_init(SEXP, SEXP, SEXP);
 extern SEXP R_git_submodule_list(SEXP);
 extern SEXP R_git_submodule_save(SEXP, SEXP);
+extern SEXP R_git_submodule_set_to(SEXP, SEXP, SEXP);
 extern SEXP R_git_submodule_setup(SEXP, SEXP, SEXP);
 extern SEXP R_git_submodule_update(SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_create(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_delete(SEXP, SEXP);
 extern SEXP R_git_tag_list(SEXP, SEXP);
 extern SEXP R_libgit2_config();
+extern SEXP R_set_cert_locations(SEXP, SEXP);
+extern SEXP R_static_libgit2();
 
 static const R_CallMethodDef CallEntries[] = {
   {"R_git_ahead_behind",        (DL_FUNC) &R_git_ahead_behind,        3},
@@ -93,7 +95,6 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_config_set",          (DL_FUNC) &R_git_config_set,          3},
   {"R_git_conflict_list",       (DL_FUNC) &R_git_conflict_list,       1},
   {"R_git_create_branch",       (DL_FUNC) &R_git_create_branch,       4},
-  {"R_git_submodule_set_to",    (DL_FUNC) &R_git_submodule_set_to,    3},
   {"R_git_delete_branch",       (DL_FUNC) &R_git_delete_branch,       2},
   {"R_git_diff_list",           (DL_FUNC) &R_git_diff_list,           2},
   {"R_git_merge_analysis",      (DL_FUNC) &R_git_merge_analysis,      2},
@@ -135,12 +136,15 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_submodule_init",      (DL_FUNC) &R_git_submodule_init,      3},
   {"R_git_submodule_list",      (DL_FUNC) &R_git_submodule_list,      1},
   {"R_git_submodule_save",      (DL_FUNC) &R_git_submodule_save,      2},
+  {"R_git_submodule_set_to",    (DL_FUNC) &R_git_submodule_set_to,    3},
   {"R_git_submodule_setup",     (DL_FUNC) &R_git_submodule_setup,     3},
   {"R_git_submodule_update",    (DL_FUNC) &R_git_submodule_update,    3},
   {"R_git_tag_create",          (DL_FUNC) &R_git_tag_create,          4},
   {"R_git_tag_delete",          (DL_FUNC) &R_git_tag_delete,          2},
   {"R_git_tag_list",            (DL_FUNC) &R_git_tag_list,            2},
   {"R_libgit2_config",          (DL_FUNC) &R_libgit2_config,          0},
+  {"R_set_cert_locations",      (DL_FUNC) &R_set_cert_locations,      2},
+  {"R_static_libgit2",          (DL_FUNC) &R_static_libgit2,          0},
   {NULL, NULL, 0}
 };
 
