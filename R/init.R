@@ -33,7 +33,10 @@
   if(isTRUE(have_static_libgit2() || is_solaris())){
     certpath <- find_cert_dir()
     if(length(certpath)){
-      set_cert_locations(NULL, certpath)
+      cafile <- file.path(dirname(certpath), 'cert.pem')
+      if(!file.exists(cafile))
+        cafile <- NULL
+      set_cert_locations(cafile, certpath)
     } else {
       warning("Unable to find directory with certificates", immediate. = TRUE)
     }
