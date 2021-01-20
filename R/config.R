@@ -161,3 +161,15 @@ user_is_configured <- function(repo = ".") {
   user_email_exists <- any(cfg$name == "user.email")
   user_name_exists && user_email_exists
 }
+
+#' @useDynLib gert R_static_libgit2
+have_static_libgit2 <- function(){
+  .Call(R_static_libgit2)
+}
+
+#' @useDynLib gert R_set_cert_locations
+set_cert_locations <- function(file, path){
+  file <- as.character(file)
+  path <- as.character(path)
+  .Call(R_set_cert_locations, file, path)
+}

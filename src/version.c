@@ -2,6 +2,21 @@
 #include <Rinternals.h>
 #include "utils.h"
 
+SEXP R_static_libgit2(){
+#ifdef STATIC_LIBGIT2
+  return Rf_ScalarLogical(1);
+#else
+  return Rf_ScalarLogical(0);
+#endif
+}
+
+SEXP R_set_cert_locations(SEXP file, SEXP path){
+  const char *cafile = Rf_length(file) ? CHAR(STRING_ELT(file, 0)) : NULL;
+  const char *capath = Rf_length(path) ? CHAR(STRING_ELT(path, 0)) : NULL;
+  git_libgit2_opts(GIT_OPT_SET_SSL_CERT_LOCATIONS, cafile, capath);
+  return R_NilValue;
+}
+
 SEXP R_libgit2_config(){
   char buffer[100];
   snprintf(buffer, 99, "%d.%d.%d", LIBGIT2_VER_MAJOR, LIBGIT2_VER_MINOR, LIBGIT2_VER_REVISION);
