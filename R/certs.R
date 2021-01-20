@@ -19,7 +19,8 @@ find_cert_dir <- function(){
       txt <- sys::as_text(out$stdout)
       path <- utils::tail(strsplit(txt, ' ', fixed = TRUE)[[1]], 1)
       path <- gsub('"', "", path, fixed = TRUE)
-      if(file.exists(path)){
+      path <- file.path(path, 'certs')
+      if(file.exists(path) && length(list.files(path))){
         return(path)
       }
     }
