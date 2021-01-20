@@ -12,6 +12,10 @@ set_cert_locations <- function(file, path){
   .Call(R_set_cert_locations, file, path)
 }
 
+has_files <- function(x){
+  isTRUE(file.exists(x) && length(list.files(x)) > 0)
+}
+
 find_cert_dir <- function(){
   if(nchar(Sys.which('openssl')) > 0){
     out <- sys::exec_internal('openssl', c('version', '-d'), error = FALSE)
@@ -20,14 +24,14 @@ find_cert_dir <- function(){
       path <- utils::tail(strsplit(txt, ' ', fixed = TRUE)[[1]], 1)
       path <- gsub('"', "", path, fixed = TRUE)
       path <- file.path(path, 'certs')
-      if(file.exists(path) && length(list.files(path))){
+      if(has_files(path)){
         return(path)
       }
     }
   }
   default_paths <- c('/etc/pki/tls/certs', '/etc/ssl/certs/', '/etc/opt/csw/ssl/certs')
   for(x in default_paths){
-    if(file.exists(x)){
+    if(has_files(x)){
       return(x)
     }
   }
