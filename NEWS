@@ -1,6 +1,8 @@
 1.1.0
   - Add functions to work with submodules
   - Globally enable submodule-caching for faster diffing
+  - On x86_64 Linux systems where libgit2 is not available, you can set a variable
+    during installation: DOWNLOAD_STATIC_LIBGIT2 to use a precompiled libgit2.
 
 1.0.2
   - git_branch_list() gains a parameter 'local'
