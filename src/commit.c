@@ -236,10 +236,11 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
 
 static SEXP get_parents(git_commit *commit){
   int n = git_commit_parentcount(commit);
-  SEXP out = Rf_allocVector(STRSXP, n);
+  SEXP out = PROTECT(Rf_allocVector(STRSXP, n));
   for(int i = 0; i < n; i++){
     SET_STRING_ELT(out, i, safe_char(git_oid_tostr_s(git_commit_parent_id(commit, i))));
   }
+  UNPROTECT(1);
   return out;
 }
 
