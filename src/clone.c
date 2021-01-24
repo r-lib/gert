@@ -55,17 +55,19 @@ static char* get_password(SEXP cb, const char *url, const char **username, int r
   if(!Rf_isFunction(cb))
     Rf_error("cb must be a function");
   int err;
-  SEXP call = PROTECT(Rf_lang4(cb, safe_string(url), safe_string(*username),
-                               Rf_ScalarInteger(retries)));
+  SEXP call = PROTECT(Rf_lang4(cb,
+                               PROTECT(safe_string(url)),
+                               PROTECT(safe_string(*username)),
+                               PROTECT(Rf_ScalarInteger(retries))));
   SEXP res = PROTECT(R_tryEval(call, R_GlobalEnv, &err));
   if(err || !Rf_isString(res) || Rf_length(res) < 2){
-    UNPROTECT(2);
+    UNPROTECT(5);
     return NULL;
   }
   if(*username == NULL){
     *username = strdup(CHAR(STRING_ELT(res, 0)));
   }
-  UNPROTECT(2);
+  UNPROTECT(5);
   return strdup(CHAR(STRING_ELT(res, 1)));
 }
 
