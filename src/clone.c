@@ -459,5 +459,7 @@ SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbos
     SET_STRING_ELT(syms, i, safe_char(refs[i]->symref_target));
   }
   git_remote_free(remote);
-  return build_tibble(3, "ref", names, "symref", syms, "oid", oids);
+  SEXP out = build_tibble(3, "ref", names, "symref", syms, "oid", oids);
+  UNPROTECT(3);
+  return out;
 }

@@ -62,7 +62,9 @@ SEXP R_git_config_list(SEXP ptr){
   }
   git_config_iterator_free(iter);
   git_config_free(cfg);
-  return build_tibble(3, "name", names, "value", values, "level", levels);
+  SEXP out = build_tibble(3, "name", names, "value", values, "level", levels);
+  UNPROTECT(3);
+  return out;
 }
 
 SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value){

@@ -18,7 +18,9 @@ SEXP R_git_tag_list(SEXP ptr, SEXP pattern){
       SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(&oid)));
   }
   git_strarray_free(&tag_list);
-  return build_tibble(3, "name", names, "ref", refs, "commit", ids);
+  SEXP out = build_tibble(3, "name", names, "ref", refs, "commit", ids);
+  UNPROTECT(3);
+  return out;
 }
 
 SEXP R_git_tag_create(SEXP ptr, SEXP name, SEXP message, SEXP ref){

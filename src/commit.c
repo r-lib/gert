@@ -67,7 +67,9 @@ static SEXP signature_data(git_signature *sig){
   Rf_setAttrib(time, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   Rf_setAttrib(time, PROTECT(Rf_install("tz")), PROTECT(safe_string("UTC")));
   UNPROTECT(2);
-  return build_list(4, "name", name, "email", email, "time", time, "offset", offset);
+  SEXP out = build_list(4, "name", name, "email", email, "time", time, "offset", offset);
+  UNPROTECT(4);
+  return out;
 }
 
 SEXP R_git_signature_default(SEXP ptr){
@@ -193,8 +195,10 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max){
     head = commit;
   }
   Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_tibble(6, "commit", ids, "author", author, "time", times,
+  SEXP out = build_tibble(6, "commit", ids, "author", author, "time", times,
                       "files", files, "merge", merger, "message", msg);
+  UNPROTECT(6);
+  return out;
 }
 
 SEXP R_git_diff_list(SEXP ptr, SEXP ref){
@@ -231,7 +235,9 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
     }
   }
   git_diff_free(diff);
-  return build_tibble(4, "status", status, "old", oldfiles, "new", newfiles, "patch", patches);
+  SEXP out = build_tibble(4, "status", status, "old", oldfiles, "new", newfiles, "patch", patches);
+  UNPROTECT(4);
+  return out;
 }
 
 static SEXP get_parents(git_commit *commit){
@@ -255,8 +261,10 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   SEXP diff = PROTECT(R_git_diff_list(ptr, ref));
   SEXP times = PROTECT(Rf_ScalarReal(git_commit_time(commit)));
   Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_list(7, "id", id, "parents", parents, "author", author, "committer", committer,
+  SEXP out = build_list(7, "id", id, "parents", parents, "author", author, "committer", committer,
                     "message", message, "time", times, "diff", diff);
+  UNPROTECT(7);
+  return out;
 }
 
 SEXP R_git_commit_descendant(SEXP ptr, SEXP ref, SEXP ancestor){
