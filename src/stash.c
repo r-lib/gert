@@ -54,6 +54,7 @@ SEXP R_git_stash_list(SEXP ptr){
   SEXP messages = PROTECT(Rf_allocVector(STRSXP, count));
   SEXP oidstr = PROTECT(Rf_allocVector(STRSXP, count));
   SEXP df = PROTECT(build_tibble(3, "index", indexes, "message", messages, "oid", oidstr));
+  UNPROTECT(3);
   if(count > 0)
     git_stash_foreach(repo, stash_ls_cb, df);
   UNPROTECT(1);

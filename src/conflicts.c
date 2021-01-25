@@ -31,5 +31,7 @@ SEXP R_git_conflict_list(SEXP ptr){
     git_index_conflict_iterator_free(iter);
   }
   git_index_free(index);
-  return build_tibble(3, "ancestor", ancestor, "our", our, "their", their);
+  SEXP out = build_tibble(3, "ancestor", ancestor, "our", our, "their", their);
+  UNPROTECT(3);
+  return out;
 }

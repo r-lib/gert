@@ -156,8 +156,10 @@ SEXP R_git_branch_list(SEXP ptr, SEXP local){
   }
   git_branch_iterator_free(iter);
   Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_tibble(6, "name", names, "local", islocal, "ref", refs,"upstream", upstreams,
+  SEXP out = build_tibble(6, "name", names, "local", islocal, "ref", refs,"upstream", upstreams,
                          "commit", ids, "updated", times);
+  UNPROTECT(6);
+  return out;
 }
 
 SEXP R_git_remote_list(SEXP ptr){
@@ -176,7 +178,9 @@ SEXP R_git_remote_list(SEXP ptr){
     }
     free(name);
   }
-  return build_tibble(2, "name", names, "url", url);
+  SEXP out = build_tibble(2, "name", names, "url", url);
+  UNPROTECT(2);
+  return out;
 }
 
 SEXP R_git_remote_add(SEXP ptr, SEXP name, SEXP url, SEXP refspec){
@@ -265,8 +269,10 @@ SEXP R_git_remote_refspecs(SEXP ptr, SEXP name){
     SET_STRING_ELT(dest, i, safe_char(git_refspec_dst(refspec)));
     LOGICAL(force)[i] = git_refspec_force(refspec);
   }
-  return build_tibble(7, "name", names, "url", urls, "direction", directions,
+  SEXP out = build_tibble(7, "name", names, "url", urls, "direction", directions,
                       "refspec", string, "src", src, "dest", dest, "force", force);
+  UNPROTECT(7);
+  return out;
 }
 
 SEXP R_git_remote_add_fetch(SEXP ptr, SEXP remote, SEXP refspec){
@@ -304,6 +310,7 @@ SEXP R_git_remote_info(SEXP ptr, SEXP name){
     "fetch", fetch,
     "push", push
   );
+  UNPROTECT(6);
   git_remote_free(remote);
   return out;
 }

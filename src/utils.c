@@ -108,7 +108,7 @@ SEXP build_list(int n, ...){
   }
   va_end(args);
   Rf_setAttrib(vec, R_NamesSymbol, names);
-  UNPROTECT(2 + n);
+  UNPROTECT(2);
   return vec;
 }
 

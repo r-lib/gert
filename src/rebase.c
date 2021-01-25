@@ -65,7 +65,9 @@ SEXP R_git_rebase(SEXP ptr, SEXP upstream, SEXP commit_changes){
   }
   git_rebase_finish(rebase, NULL); //is no-op for in-memory rebase
   git_rebase_free(rebase);
-  return build_tibble(3, "commit", oids, "type", types, "conflicts", conflicts);
+  SEXP out = build_tibble(3, "commit", oids, "type", types, "conflicts", conflicts);
+  UNPROTECT(3);
+  return out;
 }
 
 static int count_changes(git_repository *repo){
@@ -127,9 +129,11 @@ SEXP R_git_ahead_behind(SEXP ptr, SEXP local, SEXP upstream){
   SEXP upstream_string = PROTECT(safe_string(git_oid_tostr_s(git_object_id(rev_upstream))));
   git_object_free(rev_local);
   git_object_free(rev_upstream);
-  return build_list(4,
+  SEXP out = build_list(4,
                     "ahead", PROTECT(Rf_ScalarInteger(ahead)),
                     "behind", PROTECT(Rf_ScalarInteger(behind)),
                     "local", local_string,
                     "upstream", upstream_string);
+  UNPROTECT(4);
+  return out;
 }

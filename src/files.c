@@ -51,8 +51,10 @@ SEXP R_git_repository_info(SEXP ptr){
     git_reference_free(head);
   }
 
-  return build_list(8, "path", path, "bare", bare, "head", headref, "shorthand", shorthand,
+  SEXP out = build_list(8, "path", path, "bare", bare, "head", headref, "shorthand", shorthand,
                     "commit", target, "remote", remote, "upstream", upstream, "reflist", refs);
+  UNPROTECT(8);
+  return out;
 }
 
 SEXP R_git_repository_path(SEXP ptr){
@@ -83,7 +85,9 @@ SEXP R_git_repository_ls(SEXP ptr){
   git_index_free(index);
   Rf_setAttrib(mtimes, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   Rf_setAttrib(ctimes, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  return build_tibble(4, "path", paths, "filesize", sizes, "modified", mtimes, "created", ctimes);
+  SEXP out = build_tibble(4, "path", paths, "filesize", sizes, "modified", mtimes, "created", ctimes);
+  UNPROTECT(4);
+  return out;
 }
 
 SEXP R_git_repository_add(SEXP ptr, SEXP files, SEXP force){
@@ -188,5 +192,7 @@ SEXP R_git_status_list(SEXP ptr, SEXP show_staged){
     LOGICAL(staged)[i] = isstaged;
   }
   git_status_list_free(list);
-  return build_tibble(3, "file", files, "status", statuses, "staged", staged);
+  SEXP out = build_tibble(3, "file", files, "status", statuses, "staged", staged);
+  UNPROTECT(3);
+  return out;
 }
