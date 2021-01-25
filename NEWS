@@ -2,6 +2,7 @@
   - On x86_64 Linux systems where libgit2 is too old or unavailable, we automatically
     try to download a precompiled static version of libgit2. This includes CentOS 7/8
     as well as Ubuntu 16.04 and 18.04. Therefore the PPA should no longer be needed.
+    You can opt-out of this by setting an envvar: USE_SYSTEM_LIBGIT2=1
   - Add tooling to manually find and set the location of the system SSL certificates
     on such static builds, and also for Solaris.
   - Add several functions to work with submodules.
