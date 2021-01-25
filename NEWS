@@ -1,11 +1,12 @@
 1.1.0
-  - Add functions to work with submodules
-  - Globally enable submodule-caching for faster diffing
-  - On x86_64 Linux systems where libgit2 is not available, you can set a variable
-    during installation: DOWNLOAD_STATIC_LIBGIT2 to use a precompiled libgit2.
-  - On static builds and Solaris manually try to find and set the location of
-    the system SSL certificate bundles.
-  - Refactor internal code to please rchk analysis tool
+  - On x86_64 Linux systems where libgit2 is too old or unavailable, we automatically
+    try to download a precompiled static version of libgit2. This includes CentOS 7/8
+    as well as Ubuntu 16.04 and 18.04. Therefore the PPA should no longer be needed.
+  - Add tooling to manually find and set the location of the system SSL certificates
+    on such static builds, and also for Solaris.
+  - Add several functions to work with submodules.
+  - Globally enable submodule-caching for faster diffing.
+  - Refactor internal code to please rchk analysis tool.
 
 1.0.2
   - git_branch_list() gains a parameter 'local'
