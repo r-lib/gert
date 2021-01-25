@@ -5,6 +5,7 @@
     during installation: DOWNLOAD_STATIC_LIBGIT2 to use a precompiled libgit2.
   - On static builds and Solaris manually try to find and set the location of
     the system SSL certificate bundles.
+  - Refactor internal code to please rchk analysis tool
 
 1.0.2
   - git_branch_list() gains a parameter 'local'
