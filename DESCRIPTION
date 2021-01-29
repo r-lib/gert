@@ -11,8 +11,7 @@ Description: Simple git client for R based on 'libgit2' with support for SSH and
     HTTPS remotes. All functions in 'gert' use basic R data types (such as vectors
     and data-frames) for their arguments and return values. User credentials are
     shared with command line 'git' through the git-credential store and ssh keys
-    stored on disk or ssh-agent. On Linux, a somewhat recent version of 'libgit2'
-    is required; we provide a 'PPA' for older Ubuntu 'LTS' versions. 
+    stored on disk or ssh-agent.
 License: MIT + file LICENSE
 URL: https://docs.ropensci.org/gert/ (website),
     https://github.com/r-lib/gert (devel), 
@@ -35,6 +34,5 @@ VignetteBuilder:
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb).
-    A PPA is available for older Ubuntu LTS versions.
+SystemRequirements: libgit2 (>= 0.26): libgit2-devel (rpm) or libgit2-dev (deb)
 Language: en-US
