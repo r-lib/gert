@@ -1,5 +1,6 @@
 1.2.0
-  - Change default proxy behavior to GIT_PROXY_AUTO to mimic git.
+  - Change default proxy behavior to GIT_PROXY_AUTO to mimic git. This will
+    use 'http.proxy' config options or envvars https_proxy and https_proxy.
 
 1.1.0
   - On x86_64 Linux systems where libgit2 is too old or unavailable, we automatically
