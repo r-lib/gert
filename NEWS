@@ -1,3 +1,6 @@
+1.2.0
+  - Change default proxy behavior to GIT_PROXY_AUTO to mimic git.
+
 1.1.0
   - On x86_64 Linux systems where libgit2 is too old or unavailable, we automatically
     try to download a precompiled static version of libgit2. This includes CentOS 7/8

@@ -299,6 +299,7 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   clone_opts.fetch_opts.callbacks.payload = &data_cb;
   clone_opts.fetch_opts.callbacks.credentials = auth_callback;
+  clone_opts.fetch_opts.proxy_opts.type = GIT_PROXY_AUTO;
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
@@ -354,6 +355,7 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP get
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;
   opts.callbacks.credentials = auth_callback;
+  opts.proxy_opts.type = GIT_PROXY_AUTO;
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
@@ -377,6 +379,7 @@ SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP getc
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;
   opts.callbacks.credentials = auth_callback;
+  opts.proxy_opts.type = GIT_PROXY_AUTO;
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
@@ -418,7 +421,10 @@ SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbos
     callbacks.push_transfer_progress = print_progress;
     callbacks.push_update_reference = remote_message;
   }
-  bail_if(git_remote_connect(remote, GIT_DIRECTION_FETCH, &callbacks, NULL, NULL), "git_remote_connect");
+
+  git_proxy_options proxy = GIT_PROXY_OPTIONS_INIT;
+  proxy.type = GIT_PROXY_AUTO;
+  bail_if(git_remote_connect(remote, GIT_DIRECTION_FETCH, &callbacks, &proxy, NULL), "git_remote_connect");
 
   /* We are connected */
   size_t refs_len;
