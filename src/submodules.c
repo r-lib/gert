@@ -73,6 +73,7 @@ SEXP R_git_submodule_update(SEXP ptr, SEXP name, SEXP init){
   git_submodule *sm = NULL;
   bail_if(git_submodule_lookup(&sm, repo, CHAR(STRING_ELT(name, 0))), "git_submodule_lookup");
   git_submodule_update_options opt = GIT_SUBMODULE_UPDATE_OPTIONS_INIT;
+  opt.fetch_opts.proxy_opts.type = GIT_PROXY_AUTO;
   bail_if(git_submodule_update(sm, Rf_asLogical(init), &opt), "git_submodule_update");
   SEXP path = safe_string(git_submodule_path(sm));
   git_submodule_free(sm);
