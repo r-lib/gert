@@ -28,7 +28,7 @@ static SEXP make_author(const git_signature *p){
   return safe_char(buf);
 }
 
-static git_diff *commit_to_diff(git_repository *repo, git_commit *commit, git_diff_options *opt){
+static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
   git_diff *diff = NULL;
   git_tree *old_tree = NULL;
   git_tree *new_tree = NULL;
@@ -43,15 +43,15 @@ static git_diff *commit_to_diff(git_repository *repo, git_commit *commit, git_di
     bail_if(git_commit_tree(&old_tree, parent), "git_commit_tree");
     git_commit_free(parent);
   }
-  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, opt), "git_diff_tree_to_tree");
+  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
+  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
   git_tree_free(old_tree);
   git_tree_free(new_tree);
   return diff;
 }
 
 static int count_commit_changes(git_repository *repo, git_commit *commit){
-  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
-  git_diff *diff = commit_to_diff(repo, commit, &opt);
+  git_diff *diff = commit_to_diff(repo, commit);
   if(diff == NULL)
     return NA_INTEGER;
   int count = git_diff_num_deltas(diff);
@@ -207,7 +207,7 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
   if(Rf_length(ref)){
     git_commit *commit = ref_to_commit(ref, repo);
-    diff = commit_to_diff(repo, commit, &opt);
+    diff = commit_to_diff(repo, commit);
   } else {
     // NB: this does not list 'staged' changes, as does: git_diff_tree_to_workdir_with_index()
     bail_if(git_diff_index_to_workdir(&diff, repo, NULL, &opt), "git_diff_index_to_workdir");
@@ -282,4 +282,48 @@ SEXP R_git_commit_id(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = ref_to_commit(ref, repo);
   return safe_string(git_oid_tostr_s(git_commit_id(commit)));
+}
+
+SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
+  git_commit *parent = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  git_commit *commit = ref_to_commit(ref, repo);
+
+  int nfiles = Rf_length(files);
+  SEXP created = PROTECT(Rf_allocVector(REALSXP, nfiles));
+  SEXP modified = PROTECT(Rf_allocVector(REALSXP, nfiles));
+  SEXP changes = PROTECT(Rf_allocVector(INTSXP, nfiles));
+
+  for(int fi = 0; fi < nfiles; fi++){
+    REAL(created)[fi] = NA_REAL;
+    REAL(modified)[fi] = NA_REAL;
+    INTEGER(changes)[fi] = 0L;
+  }
+  while(1) {
+    git_diff *diff = commit_to_diff(repo, commit);
+    for(int di = 0; di < git_diff_num_deltas(diff); di++){
+      const git_diff_delta *delta = git_diff_get_delta(diff, di);
+      for(int fi = 0; fi < nfiles; fi++){
+        int count = INTEGER(changes)[fi];
+        const char *filename = CHAR(STRING_ELT(files, fi));
+        if(!strcmp(filename, delta->new_file.path) || !strcmp(filename, delta->old_file.path)){
+          if(count == 0)
+            REAL(modified)[fi] = git_commit_time(commit);
+          REAL(created)[fi] = git_commit_time(commit);
+          INTEGER(changes)[fi] = count + 1;
+        }
+      }
+      if(di % 100 == 0) R_CheckUserInterrupt();
+    }
+    git_diff_free(diff);
+    if(git_commit_parentcount(commit) == 0)
+      break;
+    bail_if(git_commit_parent(&parent, commit, 0), "git_commit_parent");
+    commit = parent;
+  }
+  Rf_setAttrib(created, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  Rf_setAttrib(modified, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  SEXP out = build_tibble(4, "file", files, "created", created, "modified", modified, "commits", changes);
+  UNPROTECT(3);
+  return out;
 }

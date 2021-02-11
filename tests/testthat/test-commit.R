@@ -39,9 +39,14 @@ test_that("creating a commit", {
   configure_local_user(repo)
 
   expect_equal(nrow(git_ls(repo)), 0)
-  write.csv(cars, file.path(repo, 'cars.csv'))
-  git_add('cars.csv', repo = repo)
+  dir.create(file.path(repo, 'src'))
+  write.csv(cars, file.path(repo, 'src', 'cars.csv'))
+  git_add('src/cars.csv', repo = repo)
   git_commit("Added cars.csv file", repo = repo)
+  stats <- git_stat_files('src/cars.csv', repo = repo)
+  expect_equal(stats$file, 'src/cars.csv')
+  expect_equal(stats$commits, 1)
+  expect_equal(stats$created, stats$modified)
 
   # Another commit before that
   write.csv(iris, file.path(repo, 'iris.csv'))

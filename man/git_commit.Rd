@@ -12,6 +12,7 @@
 \alias{git_conflicts}
 \alias{git_ls}
 \alias{git_log}
+\alias{git_stat_files}
 \title{Stage and commit changes}
 \usage{
 git_commit(message, author = NULL, committer = NULL, repo = ".")
@@ -35,6 +36,8 @@ git_conflicts(repo = ".")
 git_ls(repo = ".")
 
 git_log(ref = "HEAD", max = 100, repo = ".")
+
+git_stat_files(files, ref = "HEAD", repo = ".")
 }
 \arguments{
 \item{message}{a commit message}

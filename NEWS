@@ -1,3 +1,6 @@
+1.2.0
+  - New git_stat_files() function.
+
 1.1.0
   - On x86_64 Linux systems where libgit2 is too old or unavailable, we automatically
     try to download a precompiled static version of libgit2. This includes CentOS 7/8

@@ -12,7 +12,7 @@
 #' `git_add()` to start tracking new files.
 #'
 #' `git_log()` shows the most recent commits and `git_ls()` lists all the files
-#' that are being tracked in the repository.
+#' that are being tracked in the repository. `git_stat_files()`
 #'
 #' @export
 #' @rdname git_commit
@@ -186,6 +186,15 @@ git_log <- function(ref = "HEAD", max = 100, repo = "."){
   ref <- as.character(ref)
   max <- as.integer(max)
   .Call(R_git_commit_log, repo, ref, max)
+}
+
+#' @export
+#' @rdname git_commit
+#' @useDynLib gert R_git_stat_files
+git_stat_files <- function(files, ref = "HEAD", repo = '.'){
+  repo <- git_open(repo)
+  files <- as.character(files)
+  .Call(R_git_stat_files, repo, files, ref)
 }
 
 assert_string <- function(x){
