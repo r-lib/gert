@@ -301,6 +301,8 @@ SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
   }
   while(1) {
     git_diff *diff = commit_to_diff(repo, commit);
+    if(diff == NULL)
+      Rf_error("Failed to get parent commit. Is this a shallow clone?");
     for(int di = 0; di < git_diff_num_deltas(diff); di++){
       const git_diff_delta *delta = git_diff_get_delta(diff, di);
       for(int fi = 0; fi < nfiles; fi++){
