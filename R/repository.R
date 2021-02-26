@@ -19,6 +19,7 @@
 #' @useDynLib gert R_git_repository_init
 #' @inheritParams git_open
 #' @param path the location of the git repository, see details.
+#' @param bare if true, a Git repository without a working directory is created
 #' @return The path to the Git repository.
 #' @examples
 #' # directory does not yet exist
@@ -42,9 +43,9 @@
 #'
 #' # cleanup
 #' unlink(r, recursive = TRUE)
-git_init <- function(path = '.'){
+git_init <- function(path = '.', bare = FALSE){
   path <- normalizePath(path.expand(path), mustWork = FALSE)
-  repo <- .Call(R_git_repository_init, path)
+  repo <- .Call(R_git_repository_init, path, as.logical(bare))
   git_repo_path(repo)
 }
 

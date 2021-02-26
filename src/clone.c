@@ -238,9 +238,9 @@ static git_strarray *files_to_array(SEXP files){
   return paths;
 }
 
-SEXP R_git_repository_init(SEXP path){
+SEXP R_git_repository_init(SEXP path, SEXP is_bare){
   git_repository *repo = NULL;
-  bail_if(git_repository_init(&repo, CHAR(STRING_ELT(path, 0)), 0), "git_repository_init");
+  bail_if(git_repository_init(&repo, CHAR(STRING_ELT(path, 0)), Rf_asLogical(is_bare)), "git_repository_init");
   return new_git_repository(repo);
 }
 

@@ -7,7 +7,7 @@
 \alias{git_info}
 \title{Create or discover a local Git repository}
 \usage{
-git_init(path = ".")
+git_init(path = ".", bare = FALSE)
 
 git_find(path = ".")
 
@@ -15,6 +15,8 @@ git_info(repo = ".")
 }
 \arguments{
 \item{path}{the location of the git repository, see details.}
+
+\item{bare}{if true, a Git repository without a working directory is created}
 
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable
