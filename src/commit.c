@@ -293,11 +293,13 @@ SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
   SEXP created = PROTECT(Rf_allocVector(REALSXP, nfiles));
   SEXP modified = PROTECT(Rf_allocVector(REALSXP, nfiles));
   SEXP changes = PROTECT(Rf_allocVector(INTSXP, nfiles));
+  SEXP hashes = PROTECT(Rf_allocVector(STRSXP, nfiles));
 
   for(int fi = 0; fi < nfiles; fi++){
     REAL(created)[fi] = NA_REAL;
     REAL(modified)[fi] = NA_REAL;
     INTEGER(changes)[fi] = 0L;
+    SET_STRING_ELT(hashes, fi, NA_STRING);
   }
   while(1) {
     git_diff *diff = commit_to_diff(repo, commit);
@@ -309,8 +311,10 @@ SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
         int count = INTEGER(changes)[fi];
         const char *filename = CHAR(STRING_ELT(files, fi));
         if(!strcmp(filename, delta->new_file.path) || !strcmp(filename, delta->old_file.path)){
-          if(count == 0)
+          if(count == 0){
             REAL(modified)[fi] = git_commit_time(commit);
+            SET_STRING_ELT(hashes, fi, safe_char(git_oid_tostr_s(git_commit_id(commit))));
+          }
           REAL(created)[fi] = git_commit_time(commit);
           INTEGER(changes)[fi] = count + 1;
         }
@@ -325,7 +329,8 @@ SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
   }
   Rf_setAttrib(created, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   Rf_setAttrib(modified, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  SEXP out = build_tibble(4, "file", files, "created", created, "modified", modified, "commits", changes);
-  UNPROTECT(3);
+  SEXP out = build_tibble(5, "file", files, "created", created, "modified",
+                          modified, "commits", changes, "latest", hashes);
+  UNPROTECT(4);
   return out;
 }
