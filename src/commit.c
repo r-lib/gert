@@ -330,7 +330,7 @@ SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
   Rf_setAttrib(created, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   Rf_setAttrib(modified, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   SEXP out = build_tibble(5, "file", files, "created", created, "modified",
-                          modified, "commits", changes, "latest", hashes);
+                          modified, "commits", changes, "head", hashes);
   UNPROTECT(4);
   return out;
 }
