@@ -1,3 +1,4 @@
+#!/bin/sh
 # Anticonf (tm) script by Jeroen Ooms (2020)
 # This script will query 'pkg-config' for the required cflags and ldflags.
 # On MacOS and Linux, if libgit2 is not found or too old, we try to downoad
