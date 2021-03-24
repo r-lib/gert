@@ -33,7 +33,7 @@ SEXP R_libgit2_config(){
   SEXP config_system = PROTECT(safe_string(buf.ptr));
   git_buf_free(&buf);
   git_libgit2_opts(GIT_OPT_GET_SEARCH_PATH, GIT_CONFIG_LEVEL_GLOBAL, &buf);
-  SEXP config_search_path = PROTECT(Rf_ScalarString(Rf_mkCharLenCE(buf.ptr, buf.size, CE_UTF8)));
+  SEXP config_search_path = PROTECT(safe_string(buf.ptr));
   git_buf_free(&buf);
   SEXP out = build_list(7, "version", version, "ssh", ssh, "https", https, "threads", threads,
                     "config.global", config_global, "config.system", config_system,
