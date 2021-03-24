@@ -154,8 +154,12 @@ attribute_visible void R_init_gert(DllInfo *dll) {
   git_libgit2_init();
 #ifdef _WIN32
   const char *userprofile = getenv("USERPROFILE");
-  if(userprofile)
-    git_libgit2_opts(GIT_OPT_SET_SEARCH_PATH, GIT_CONFIG_LEVEL_GLOBAL, userprofile);
+  if(userprofile){
+    /* Need to convert to UTF-8 for libgit2 */
+    SEXP home = PROTECT(Rf_mkChar(userprofile));
+    git_libgit2_opts(GIT_OPT_SET_SEARCH_PATH, GIT_CONFIG_LEVEL_GLOBAL, Rf_translateCharUTF8(home));
+    UNPROTECT(1);
+  }
 #endif
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
