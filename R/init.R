@@ -100,3 +100,8 @@ message <- function(...) {
 packageStartupMessage <- function(...) {
   stop("Internal error: use packageStartupInform() instead of packageStartupMessage()")
 }
+
+# libgit2 wants all paths utf-8
+normalizePath <- function(...){
+  enc2utf8(base::normalizePath(...))
+}
