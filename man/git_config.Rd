@@ -49,6 +49,11 @@ the four possible combinations of getting vs setting and global vs. local.\tabul
    set \tab \code{git_config_set()} \tab \code{git_config_global_set()} \cr
 }
 }
+\note{
+All entries in the \code{name} column are automatically normalised to
+lowercase (see
+\url{https://libgit2.org/libgit2/#HEAD/type/git_config_entry} for details).
+}
 \examples{
 # Set and inspect a local, custom Git option
 r <- file.path(tempdir(), "gert-demo")
