@@ -25,6 +25,10 @@
 #'   `name` in local or global config, respectively. If this option was
 #'   previously unset, returns `NULL`. Returns invisibly.
 #'
+#' @note All entries in the `name` column are automatically normalised to 
+#'   lowercase (see
+#'   <https://libgit2.org/libgit2/#HEAD/type/git_config_entry> for details).
+#'
 #' @examples
 #' # Set and inspect a local, custom Git option
 #' r <- file.path(tempdir(), "gert-demo")
