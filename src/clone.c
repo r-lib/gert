@@ -3,7 +3,7 @@
 #endif
 
 #if defined(__sun)
-#define NO_VERIFY_CERT
+#define SKIP_CERTIFICATE_CHECK
 #endif
 
 #include <string.h>
@@ -100,7 +100,7 @@ static void fin_git_repository(SEXP ptr){
   R_ClearExternalPtr(ptr);
 }
 
-#ifdef NO_VERIFY_CERT
+#ifdef SKIP_CERTIFICATE_CHECK
 static int no_verify_cert(struct git_cert *cert, int valid, const char *host, void *payload){
   return 0;
 }
