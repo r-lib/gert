@@ -2,6 +2,10 @@
 #define _GNU_SOURCE 1
 #endif
 
+#if defined(__sun)
+#define NO_VERIFY_CERT
+#endif
+
 #include <string.h>
 #include "utils.h"
 
@@ -95,6 +99,17 @@ static void fin_git_repository(SEXP ptr){
   git_repository_free(R_ExternalPtrAddr(ptr));
   R_ClearExternalPtr(ptr);
 }
+
+#ifdef NO_VERIFY_CERT
+static int no_verify_cert(struct git_cert *cert, int valid, const char *host, void *payload){
+  return 0;
+}
+void set_verify_handler(git_remote_callbacks *callbacks){
+  callbacks->certificate_check = no_verify_cert;
+}
+#else
+#define set_verify_handler(x)
+#endif
 
 SEXP new_git_repository(git_repository *repo){
   SEXP ptr = PROTECT(R_MakeExternalPtr(repo, R_NilValue, R_NilValue));
@@ -299,6 +314,7 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   clone_opts.fetch_opts.callbacks.payload = &data_cb;
   clone_opts.fetch_opts.callbacks.credentials = auth_callback;
+  set_verify_handler(&clone_opts.fetch_opts.callbacks);
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
@@ -354,6 +370,7 @@ SEXP R_git_remote_fetch(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP get
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   opts.callbacks.payload = &data_cb;
   opts.callbacks.credentials = auth_callback;
+  set_verify_handler(&opts.callbacks);
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
@@ -385,6 +402,8 @@ SEXP R_git_remote_push(SEXP ptr, SEXP name, SEXP refspec, SEXP getkey, SEXP getc
     opts.callbacks.push_transfer_progress = print_progress;
     opts.callbacks.push_update_reference = remote_message;
   }
+  set_verify_handler(&opts.callbacks);
+
   bail_if(git_remote_push(remote, rs, &opts), "git_remote_push");
   git_remote_free(remote);
   return ptr;
@@ -410,6 +429,7 @@ SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbos
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   callbacks.payload = &data_cb;
   callbacks.credentials = auth_callback;
+  set_verify_handler(&callbacks);
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){

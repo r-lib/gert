@@ -30,7 +30,7 @@
 
 .onLoad <- function(libname, pkgname) {
   # This should usually correspond to 'openssl version -d'
-  if(isTRUE(have_static_libgit2() || is_solaris())){
+  if(isTRUE(have_static_libgit2())){
     certpath <- find_cert_dir()
     if(length(certpath)){
       cafile <- file.path(dirname(certpath), 'cert.pem')
