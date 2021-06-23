@@ -4,7 +4,7 @@ RWINLIB = ../windows/libgit2-${VERSION}
 PKG_CPPFLAGS = -I${RWINLIB}/include \
 	-DR_NO_REMAP -DSTRICT_R_HEADERS
 
-PKG_LIBS = -L${RWINLIB}/lib${R_ARCH} \
+PKG_LIBS = -L${RWINLIB}/lib${R_ARCH}${CRT} \
 	-lgit2 -lssh2 -lz -lssl -lcrypto \
 	-lwinhttp -lws2_32 -lcrypt32 -lole32 -lrpcrt4
 
