@@ -51,7 +51,7 @@ test_that("HTTP user/pass auth", {
   # This seems to fail on WinBuilder due to some syscall
   if(!isTRUE(isOldWindows)){
     # Test that repo is private
-    expect_error(git_clone('https://nobody@github.com/ropensci/testprivate',
+    expect_error(git_clone('https://github.com/ropensci/testprivate',
                            password = "bla", path = tempfile()), 'Authentication', class = 'GIT_EAUTH')
   }
 
