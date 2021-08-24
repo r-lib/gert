@@ -26,12 +26,18 @@ git_branch_list <- function(local = NULL, repo = '.'){
 #' @rdname git_branch
 #' @param branch name of branch to check out
 #' @param force ignore conflicts and overwrite modified files
-#' @useDynLib gert R_git_checkout_branch
-git_branch_checkout <- function(branch, force = FALSE, repo = '.'){
+#' @param orphan if branch does not exist, checkout unborn branch
+#' @useDynLib gert R_git_checkout_branch R_git_checkout_unborn
+git_branch_checkout <- function(branch, force = FALSE, orphan = FALSE, repo = '.'){
   repo <- git_open(repo)
   branch <- as.character(branch)
   force <- as.logical(force)
   if(!git_branch_exists(branch, repo = repo)){
+    if(isTRUE(orphan)){
+      ref <- paste0('refs/heads/', branch)
+      .Call(R_git_checkout_unborn, repo, ref)
+      return(ref)
+    }
     all_branches <- subset(git_branch_list(repo = repo), local == FALSE)$name
     candidate <- sub("^[^/]+/", "", all_branches) == branch
     if(sum(candidate) > 1){

@@ -16,6 +16,7 @@ extern SEXP R_git_branch_list(SEXP, SEXP);
 extern SEXP R_git_branch_set_target(SEXP, SEXP);
 extern SEXP R_git_branch_set_upstream(SEXP, SEXP, SEXP);
 extern SEXP R_git_checkout_branch(SEXP, SEXP, SEXP);
+extern SEXP R_git_checkout_unborn(SEXP, SEXP);
 extern SEXP R_git_cherry_pick(SEXP, SEXP);
 extern SEXP R_git_commit_create(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_descendant(SEXP, SEXP, SEXP);
@@ -86,6 +87,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_branch_set_target",   (DL_FUNC) &R_git_branch_set_target,   2},
   {"R_git_branch_set_upstream", (DL_FUNC) &R_git_branch_set_upstream, 3},
   {"R_git_checkout_branch",     (DL_FUNC) &R_git_checkout_branch,     3},
+  {"R_git_checkout_unborn",     (DL_FUNC) &R_git_checkout_unborn,     2},
   {"R_git_cherry_pick",         (DL_FUNC) &R_git_cherry_pick,         2},
   {"R_git_commit_create",       (DL_FUNC) &R_git_commit_create,       5},
   {"R_git_commit_descendant",   (DL_FUNC) &R_git_commit_descendant,   3},

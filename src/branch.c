@@ -98,6 +98,12 @@ SEXP R_git_checkout_branch(SEXP ptr, SEXP branch, SEXP force){
   return ptr;
 }
 
+SEXP R_git_checkout_unborn(SEXP ptr, SEXP ref){
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_repository_set_head(repo, CHAR(STRING_ELT(ref, 0))), "git_repository_set_head");
+  return ptr;
+}
+
 SEXP R_git_checkout_ref(SEXP ptr, SEXP ref, SEXP force){
   git_repository *repo = get_git_repository(ptr);
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;

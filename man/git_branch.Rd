@@ -15,7 +15,7 @@ git_branch(repo = ".")
 
 git_branch_list(local = NULL, repo = ".")
 
-git_branch_checkout(branch, force = FALSE, repo = ".")
+git_branch_checkout(branch, force = FALSE, orphan = FALSE, repo = ".")
 
 git_branch_create(branch, ref = "HEAD", checkout = TRUE, repo = ".")
 
@@ -40,6 +40,8 @@ branches. Use NULL to return all branches.}
 \item{branch}{name of branch to check out}
 
 \item{force}{ignore conflicts and overwrite modified files}
+
+\item{orphan}{if branch does not exist, checkout unborn branch}
 
 \item{ref}{string with a branch/tag/commit}
 
