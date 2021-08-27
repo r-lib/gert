@@ -78,6 +78,18 @@ git_branch_delete <- function(branch, repo = '.'){
 
 #' @export
 #' @rdname git_branch
+#' @useDynLib gert R_git_branch_move
+#' @param new_branch target name of the branch once the move is performed; this name is validated for consistency.
+git_branch_move <- function(branch, new_branch, force = FALSE, repo = '.'){
+  repo <- git_open(repo)
+  branch <- as.character(branch)
+  new_branch <- as.character(new_branch)
+  .Call(R_git_branch_move, repo, branch, new_branch, as.logical(force))
+  git_repo_path(repo)
+}
+
+#' @export
+#' @rdname git_branch
 git_branch_fast_forward <- function(ref, repo = '.'){
   analysis <- git_merge_analysis(ref = ref, repo = repo)
   if(analysis != "fastforward")

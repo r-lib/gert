@@ -6,6 +6,7 @@
 \alias{git_branch_checkout}
 \alias{git_branch_create}
 \alias{git_branch_delete}
+\alias{git_branch_move}
 \alias{git_branch_fast_forward}
 \alias{git_branch_set_upstream}
 \alias{git_branch_exists}
@@ -20,6 +21,8 @@ git_branch_checkout(branch, force = FALSE, orphan = FALSE, repo = ".")
 git_branch_create(branch, ref = "HEAD", checkout = TRUE, repo = ".")
 
 git_branch_delete(branch, repo = ".")
+
+git_branch_move(branch, new_branch, force = FALSE, repo = ".")
 
 git_branch_fast_forward(ref, repo = ".")
 
@@ -46,6 +49,8 @@ branches. Use NULL to return all branches.}
 \item{ref}{string with a branch/tag/commit}
 
 \item{checkout}{move HEAD to the newly created branch}
+
+\item{new_branch}{target name of the branch once the move is performed; this name is validated for consistency.}
 
 \item{upstream}{remote branch from \link{git_branch_list}, for example \code{"origin/master"}}
 }

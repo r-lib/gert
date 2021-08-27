@@ -85,7 +85,7 @@ new, untracked files to the repository. You need to make an explicit call to
 \code{git_add()} to start tracking new files.
 
 \code{git_log()} shows the most recent commits and \code{git_ls()} lists all the files
-that are being tracked in the repository.
+that are being tracked in the repository. \code{git_stat_files()}
 }
 \examples{
 oldwd <- getwd()

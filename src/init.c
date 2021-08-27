@@ -13,6 +13,7 @@ extern SEXP R_git_ahead_behind(SEXP, SEXP, SEXP);
 extern SEXP R_git_branch_current(SEXP);
 extern SEXP R_git_branch_exists(SEXP, SEXP, SEXP);
 extern SEXP R_git_branch_list(SEXP, SEXP);
+extern SEXP R_git_branch_move(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_branch_set_target(SEXP, SEXP);
 extern SEXP R_git_branch_set_upstream(SEXP, SEXP, SEXP);
 extern SEXP R_git_checkout_branch(SEXP, SEXP, SEXP);
@@ -84,6 +85,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_branch_current",      (DL_FUNC) &R_git_branch_current,      1},
   {"R_git_branch_exists",       (DL_FUNC) &R_git_branch_exists,       3},
   {"R_git_branch_list",         (DL_FUNC) &R_git_branch_list,         2},
+  {"R_git_branch_move",         (DL_FUNC) &R_git_branch_move,         4},
   {"R_git_branch_set_target",   (DL_FUNC) &R_git_branch_set_target,   2},
   {"R_git_branch_set_upstream", (DL_FUNC) &R_git_branch_set_upstream, 3},
   {"R_git_checkout_branch",     (DL_FUNC) &R_git_checkout_branch,     3},

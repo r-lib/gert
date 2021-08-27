@@ -71,6 +71,18 @@ SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
   return out;
 }
 
+SEXP R_git_branch_move(SEXP ptr, SEXP branch, SEXP new_branch, SEXP force){
+  git_reference *ref;
+  git_repository *repo = get_git_repository(ptr);
+  bail_if(git_branch_lookup(&ref, repo, CHAR(STRING_ELT(branch, 0)), GIT_BRANCH_LOCAL), "git_branch_lookup");
+  git_reference *out;
+  bail_if(git_branch_move(&out, ref, CHAR(STRING_ELT(new_branch, 0)), Rf_asInteger(force)), "git_branch_move");
+  git_reference_free(ref);
+  SEXP res = Rf_mkString(git_reference_name(out));
+  git_reference_free(out);
+  return res;
+}
+
 SEXP R_git_delete_branch(SEXP ptr, SEXP branch){
   git_reference *ref;
   git_repository *repo = get_git_repository(ptr);
