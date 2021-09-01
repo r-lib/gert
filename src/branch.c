@@ -163,10 +163,14 @@ SEXP R_git_branch_list(SEXP ptr, SEXP local){
       SET_STRING_ELT(names, i, safe_char(name));
     LOGICAL(islocal)[i] = (type == GIT_BRANCH_LOCAL);
     SET_STRING_ELT(refs, i, safe_char(git_reference_name(ref)));
-    if(git_reference_target(ref) && !git_commit_lookup(&commit, repo, git_reference_target(ref))){
-      SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(commit))));
-      REAL(times)[i] = git_commit_time(commit);
-      git_commit_free(commit);
+    git_object *obj = NULL;
+    if(git_reference_peel(&obj, ref, GIT_OBJECT_COMMIT) == GIT_OK){
+      if(git_commit_lookup(&commit, repo, git_object_id(obj)) == GIT_OK){
+        SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(commit))));
+        REAL(times)[i] = git_commit_time(commit);
+        git_commit_free(commit);
+      }
+      git_object_free(obj);
     }
     git_reference *upstream = NULL;
     SET_STRING_ELT(upstreams, i, safe_char(git_branch_upstream(&upstream, ref) ? NULL : git_reference_name(upstream)));
