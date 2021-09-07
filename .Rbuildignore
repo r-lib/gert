@@ -9,3 +9,6 @@ README.md
 ^configure.log$
 ^docs$
 ^\.github$
+\.dll$
+\.so$
+\.o$
