@@ -1,5 +1,7 @@
 1.4.0
   - Windows / MacOS: update to libgit2 1.2.0
+  - New function git_branch_move()
+  - git_branch_checkout gains 'orphan' parameter
 
 1.3.2
   - Fix unit test because GitHub has disabled user/pass auth
