@@ -1,3 +1,7 @@
+1.4.1
+  - Fix compile error with some older version of libgit2
+  - MacOS: automatically enable autobrew in CI.
+
 1.4.0
   - Windows / MacOS: update to libgit2 1.2.0
   - New function git_branch_move()
