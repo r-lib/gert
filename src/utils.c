@@ -27,10 +27,6 @@ void bail_if_null(void * ptr, const char * what){
     bail_if(-1, what);
 }
 
-#ifndef GIT_OBJECT_COMMIT
-#define GIT_OBJECT_COMMIT GIT_OBJ_COMMIT
-#endif
-
 git_object * resolve_refish(SEXP string, git_repository *repo){
   if(!Rf_isString(string) || !Rf_length(string))
     Rf_error("Reference is not a string");
