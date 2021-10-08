@@ -7,8 +7,9 @@
 
 <!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![r-universe](https://ropensci.r-universe.dev/badges/gert)](https://ropensci.r-universe.dev/)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/gert)](https://cran.r-project.org/package=gert)
+![runiverse-name](https://ropensci.r-universe.dev/badges/:name)
+![runiverse-package](https://ropensci.r-universe.dev/badges/gert)
+![cran-badge](http://www.r-pkg.org/badges/version/gert)
 <!-- badges: end -->
 
 Simple git client for R based on 'libgit2' with support for SSH and 
@@ -25,17 +26,16 @@ is required; we provide a PPA for older Ubuntu LTS versions.
 
 ## Installation
 
-Get the latest version from CRAN:
+Get the latest version from CRAN or R-universe:
 
 ```r
+# Install the CRAN version:
 install.packages("gert")
 
-```
-
-Or install the development version:
-
-``` r
-remotes::install_github("r-lib/gert")
+# Install the dev version
+install.packages("gert", repos = c(
+    ropensci = 'https://ropensci.r-universe.dev',
+    CRAN = 'https://cloud.r-project.org'))
 ```
 
 On Linux you need to install libgit2:
