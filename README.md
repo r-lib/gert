@@ -21,16 +21,14 @@ is required; we provide a PPA for older Ubuntu LTS versions.
 
 ## Installation
 
-Get the latest version from CRAN or R-universe:
-
 ```r
-# Install the CRAN version:
-install.packages("gert")
-
-# Install the dev version
+# To install the latest version
 install.packages("gert", repos = c(
     ropensci = 'https://ropensci.r-universe.dev',
     CRAN = 'https://cloud.r-project.org'))
+    
+# To install the CRAN release:
+install.packages("gert")
 ```
 
 On Linux you need to install libgit2:
