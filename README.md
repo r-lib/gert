@@ -19,11 +19,6 @@ shared with command line 'git' through the git-credential store and ssh keys
 stored on disk or ssh-agent. On Linux, a somewhat recent version of 'libgit2'
 is required; we provide a PPA for older Ubuntu LTS versions.
 
-## Documentation:
-
- - homepage: https://docs.ropensci.org/gert
- - slides: https://jeroen.github.io/gert2019/#1
-
 ## Installation
 
 Get the latest version from CRAN or R-universe:
@@ -52,6 +47,12 @@ sudo apt-get install libgit2-dev
 ```
  
 It is still possible to install the package with older versions of libgit2 (e.g. on CentOS) however these do not support authentication over ssh/https remotes. Offline functionality should work fine.
+
+
+## Documentation:
+
+ - homepage: https://docs.ropensci.org/gert
+ - slides: https://jeroen.github.io/gert2019/#1
 
 ## Hello world
 
