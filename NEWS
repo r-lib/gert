@@ -1,5 +1,5 @@
 1.4.2
-  - Make unit tests robust against network fail and renamed branches
+  - Make unit tests more robust against network fail and renamed branches
   - Windows / MacOS: update to libgit2 1.3.0
 
 1.4.1
