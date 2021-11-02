@@ -11,7 +11,7 @@ test_that("rebasing things", {
   git_reset_hard('HEAD~5', repo = repo)
   expect_equal(git_log(max = 5, repo = repo)$commit, utils::tail(orig$commit, 5))
   expect_equal(git_ahead_behind(repo = repo), list(ahead = 0, behind = 5,
-    local = git_commit_id(repo = repo), upstream = git_commit_id('origin/master', repo = repo)))
+    local = git_commit_id(repo = repo), upstream = git_commit_id('origin/HEAD', repo = repo)))
   git_pull(repo = repo)
   expect_equal(orig, git_log(max = 10, repo = repo))
 
@@ -19,7 +19,7 @@ test_that("rebasing things", {
   git_reset_hard('HEAD~5', repo = repo)
   expect_equal(git_log(max = 5, repo = repo)$commit, utils::tail(orig$commit, 5))
   expect_equal(git_ahead_behind(repo = repo), list(ahead = 0, behind = 5,
-    local = git_commit_id(repo = repo), upstream = git_commit_id('origin/master', repo = repo)))
+    local = git_commit_id(repo = repo), upstream = git_commit_id('origin/HEAD', repo = repo)))
   git_pull(rebase = TRUE, repo = repo)
   expect_equal(orig, git_log(max = 10, repo = repo))
 
@@ -33,7 +33,7 @@ test_that("rebasing things", {
 
   # We are 1 ahead and 5 behind
   expect_equal(git_ahead_behind(repo = repo), list(ahead = 1, behind = 5,
-    local = git_commit_id(repo = repo), upstream = git_commit_id('origin/master', repo = repo)))
+    local = git_commit_id(repo = repo), upstream = git_commit_id('origin/HEAD', repo = repo)))
 
   # Confirm that we cannot fast forward
   upstream <- git_info(repo = repo)$upstream
@@ -47,18 +47,19 @@ test_that("rebasing things", {
   expect_equal(c(commit_msg, orig$message), newlog$message)
   expect_equal(orig$commit, newlog$commit[-1])
   expect_equal(git_ahead_behind(repo = repo), list(ahead = 1, behind = 0,
-    local = git_commit_id(repo = repo), upstream = git_commit_id('origin/master', repo = repo)))
+    local = git_commit_id(repo = repo), upstream = git_commit_id('origin/HEAD', repo = repo)))
 
   # Check that patch matches
   expect_equal(git_diff(commit_id, repo = repo), git_diff(newlog$commit[1], repo = repo))
 
   # Merge changes into another branch
+  main <- git_info(repo = repo)$shorthand
   git_branch_checkout('backup', repo = repo)
-  git_merge("master", repo = repo)
+  git_merge(main, repo = repo)
   expect_equal(newlog, git_log(max = 11, repo = repo))
 
   # Cleanup from master
-  git_branch_checkout('master', repo = repo)
+  git_branch_checkout(main, repo = repo)
   git_reset_hard("HEAD^", repo = repo)
   git_branch_delete('backup', repo = repo)
 })
