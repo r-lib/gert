@@ -4,7 +4,7 @@ test_that("cloning repositories works", {
   repo <- git_clone('https://github.com/r-lib/gert', path = path)
   expect_true(file.exists(file.path(path, 'DESCRIPTION')))
   info <- git_info(repo)
-  default_head <- git_remote_ls('https://github.com/r-lib/gert')$symref[1]
+  default_head <- git_remote_ls(repo = repo)$symref[1]
   default_branch <- basename(default_head)
   expect_equal(info$head, default_head)
   expect_equal(info$shorthand, default_branch)
