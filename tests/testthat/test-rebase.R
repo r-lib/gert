@@ -1,5 +1,5 @@
 test_that("rebasing things", {
-  skip_if_offline()
+  skip_if_offline('github.com')
   repo <- file.path(tempdir(), 'gert')
   if(!file.exists(repo)) git_clone('https://github.com/r-lib/gert', path = repo)
   git_branch_create('backup', checkout = FALSE, repo = repo)

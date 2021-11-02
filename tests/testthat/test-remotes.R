@@ -1,5 +1,5 @@
 test_that("remotes from new repo",{
-  skip_if_offline()
+  skip_if_offline('github.com')
   repo <- git_init(tempfile("gert-tests-remote"))
   on.exit(unlink(repo, recursive = TRUE))
   expect_equal(nrow(git_remote_list(repo = repo)), 0)
@@ -23,7 +23,7 @@ test_that("remotes from new repo",{
 })
 
 test_that("remotes after clone", {
-  skip_if_offline()
+  skip_if_offline('github.com')
   repo <- file.path(tempdir(), 'gert')
   if(!file.exists(repo)) git_clone('https://github.com/r-lib/gert', path = repo)
   info <- git_remote_info(repo = repo)
