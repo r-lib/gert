@@ -36,15 +36,7 @@ On Linux you need to install libgit2:
  - Debian: [libgit2-dev](https://packages.debian.org/buster/libgit2-dev)
  - Fedora / CentOS: [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2)
  
-For Ubuntu Trusty and Xenial, you can use libgit2 backports from [this ppa](https://launchpad.net/~cran/+archive/ubuntu/libgit2):
-
-```sh
-sudo add-apt-repository ppa:cran/libgit2
-sudo apt-get update
-sudo apt-get install libgit2-dev
-```
- 
-It is still possible to install the package with older versions of libgit2 (e.g. on CentOS) however these do not support authentication over ssh/https remotes. Offline functionality should work fine.
+If no suitable version of libgit2 is found, the package automatically tries to download a static build.
 
 
 ## Documentation:
