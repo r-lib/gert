@@ -4,7 +4,6 @@
 
 > Simple Git Client for R
 
-
 <!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![runiverse-name](https://ropensci.r-universe.dev/badges/:name)
