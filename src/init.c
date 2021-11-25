@@ -4,6 +4,10 @@
 #include <R_ext/Visibility.h>
 #include <git2.h>
 
+#ifdef _WIN32
+#include <sys/stat.h>
+#endif
+
 /* FIXME:
  Check these declarations against the C/Fortran source code.
  */
@@ -158,6 +162,15 @@ attribute_visible void R_init_gert(DllInfo *dll) {
   git_libgit2_init();
 #ifdef _WIN32
   const char *userprofile = getenv("USERPROFILE");
+  if(getenv("HOMEDRIVE") && getenv("HOMEPATH")){
+    char homedir[8000] = {0};
+    strcat(homedir, getenv("HOMEDRIVE"));
+    strcat(homedir, getenv("HOMEPATH"));
+    struct stat sb = {0};
+    if (stat(homedir, &sb) == 0 && S_ISDIR(sb.st_mode)){
+      userprofile = homedir;
+    }
+  }
   if(userprofile){
     /* Need to convert to UTF-8 for libgit2 */
     SEXP home = PROTECT(Rf_mkChar(userprofile));

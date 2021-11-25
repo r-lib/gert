@@ -1,3 +1,7 @@
+1.4.4
+  - Windows: use ${HOMEDRIVE}${HOMEPATH} path as home if it exists, to match
+    git-for-windows. On most systems this is the same as ${USERPROFILE}.
+
 1.4.3
   - Fix a unit test for some older versions of libgit2
 
