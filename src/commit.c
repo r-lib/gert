@@ -258,12 +258,11 @@ SEXP R_git_commit_info(SEXP ptr, SEXP ref){
   SEXP author = PROTECT(Rf_ScalarString(make_author(git_commit_author(commit))));
   SEXP committer = PROTECT(Rf_ScalarString(make_author(git_commit_committer(commit))));
   SEXP message = PROTECT(safe_string(git_commit_message(commit)));
-  SEXP diff = PROTECT(R_git_diff_list(ptr, ref));
   SEXP times = PROTECT(Rf_ScalarReal(git_commit_time(commit)));
   Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  SEXP out = build_list(7, "id", id, "parents", parents, "author", author, "committer", committer,
-                    "message", message, "time", times, "diff", diff);
-  UNPROTECT(7);
+  SEXP out = build_list(6, "id", id, "parents", parents, "author", author, "committer", committer,
+                    "message", message, "time", times);
+  UNPROTECT(6);
   return out;
 }
 

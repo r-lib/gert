@@ -1,3 +1,7 @@
+1.5.0
+  - git_commit_info() no longer includes $diff by default because it can be huge.
+    Please use git_diff() instead if you need it.
+
 1.4.4
   - Windows: use ${HOMEDRIVE}${HOMEPATH} path as home if it exists, to match
     git-for-windows. On most systems this is the same as ${USERPROFILE}.
