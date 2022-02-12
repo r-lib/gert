@@ -99,7 +99,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_commit_descendant",   (DL_FUNC) &R_git_commit_descendant,   3},
   {"R_git_commit_id",           (DL_FUNC) &R_git_commit_id,           2},
   {"R_git_commit_info",         (DL_FUNC) &R_git_commit_info,         2},
-  {"R_git_commit_log",          (DL_FUNC) &R_git_commit_log,          3},
+  {"R_git_commit_log",          (DL_FUNC) &R_git_commit_log,          4},
   {"R_git_config_list",         (DL_FUNC) &R_git_config_list,         1},
   {"R_git_config_set",          (DL_FUNC) &R_git_config_set,          3},
   {"R_git_conflict_list",       (DL_FUNC) &R_git_conflict_list,       1},
