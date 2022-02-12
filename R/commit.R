@@ -181,11 +181,14 @@ git_ls <- function(repo = '.'){
 #' @useDynLib gert R_git_commit_log
 #' @param ref revision string with a branch/tag/commit value
 #' @param max lookup at most latest n parent commits
-git_log <- function(ref = "HEAD", max = 100, repo = "."){
+#' @param after date or timestamp: only include commits starting this date
+git_log <- function(ref = "HEAD", max = 100, after = NULL, repo = "."){
   repo <- git_open(repo)
   ref <- as.character(ref)
   max <- as.integer(max)
-  .Call(R_git_commit_log, repo, ref, max)
+  if(length(after))
+    after <- as.POSIXct(after)
+  .Call(R_git_commit_log, repo, ref, max, after)
 }
 
 #' @export

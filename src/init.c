@@ -27,7 +27,7 @@ extern SEXP R_git_commit_create(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_descendant(SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_id(SEXP, SEXP);
 extern SEXP R_git_commit_info(SEXP, SEXP);
-extern SEXP R_git_commit_log(SEXP, SEXP, SEXP);
+extern SEXP R_git_commit_log(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_config_list(SEXP);
 extern SEXP R_git_config_set(SEXP, SEXP, SEXP);
 extern SEXP R_git_conflict_list(SEXP);

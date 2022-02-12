@@ -35,7 +35,7 @@ git_conflicts(repo = ".")
 
 git_ls(repo = ".")
 
-git_log(ref = "HEAD", max = 100, repo = ".")
+git_log(ref = "HEAD", max = 100, after = NULL, repo = ".")
 
 git_stat_files(files, ref = "HEAD", repo = ".")
 }
@@ -65,6 +65,8 @@ Use \code{"."} to stage all changed files.}
 Use \code{NULL} or \code{NA} to show both (default).}
 
 \item{max}{lookup at most latest n parent commits}
+
+\item{after}{date or timestamp: only include commits starting this date}
 }
 \value{
 \itemize{
