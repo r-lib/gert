@@ -157,14 +157,3 @@ As usual, those who install gert as a source package, by choice on Windows and m
   * [libgit2](https://archlinux.org/packages/extra/x86_64/libgit2) on Arch Linux
   * [Homebrew libgit2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/libgit2.rb) on macOS
   * [rtools40 libgit2](https://github.com/r-windows/rtools-packages/blob/master/mingw-w64-libgit2/PKGBUILD) on Windows
-
-One disadvantage of this approach is that on very old versions of Ubuntu, the system-provided version of libgit2 is out of date, and we need to enable a PPA with more recent libgit2 backports. This is the case for Ubuntu Xenial (16.04) which is a system from 2016 that will be EOL in April 2021.
-
-```sh
-# Needed on Ubuntu 16.04
-sudo add-apt-repository ppa:cran/libgit2
-sudo apt-get install libgit2-dev
-```
-
-CI users do not need to worry about this, because we automatically enable this PPA on Travis and GitHub Actions. Outside of CI systems, very few people are running Ubuntu 16 anymore, most production servers have updated to Ubuntu 18 or 20 by now, so this is rarely an issue in practice.
-
