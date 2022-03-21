@@ -1,5 +1,6 @@
 1.6.0
   - git_log() gains a parameter 'after'
+  - Windows: update to libgit2 1.4.2
 
 1.5.0
   - Windows: use ${HOMEDRIVE}${HOMEPATH} path as home if it exists, to match
