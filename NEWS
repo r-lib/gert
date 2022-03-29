@@ -1,6 +1,8 @@
 1.6.0
-  - git_log() gains a parameter 'after'
+  - We recommend at least libgit2 1.0 now
   - Windows: update to libgit2 1.4.2
+  - Tests: switch to ECDSA keys for ssh remote unit tests
+  - git_log() gains a parameter 'after'
 
 1.5.0
   - Windows: use ${HOMEDRIVE}${HOMEPATH} path as home if it exists, to match
