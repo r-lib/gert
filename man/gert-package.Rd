@@ -8,14 +8,13 @@
 \description{
 \if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
 
-Simple git client for R based on 'libgit2' with support for SSH and HTTPS remotes. All functions in 'gert' use basic R data types (such as vectors and data-frames) for their arguments and return values. User credentials are shared with command line 'git' through the git-credential store and ssh keys stored on disk or ssh-agent.
+Simple git client for R based on 'libgit2' <https://libgit2.org> with support for SSH and HTTPS remotes. All functions in 'gert' use basic R data types (such as vectors and data-frames) for their arguments and return values. User credentials are shared with command line 'git' through the git-credential store and ssh keys stored on disk or ssh-agent.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://docs.ropensci.org/gert/ (website)}
-  \item \url{https://github.com/r-lib/gert (devel)}
-  \item \url{https://libgit2.org (upstream)}
+  \item \url{https://docs.ropensci.org/gert/}
+  \item \url{https://github.com/r-lib/gert}
   \item Report bugs at \url{https://github.com/r-lib/gert/issues}
 }
 
