@@ -23,7 +23,7 @@ if [ $? -eq 0 ]; then
 fi
 
 # On Linux distros with old libgit2, try downloading our static build.
-if [ -z "$USE_SYSTEM_LIBGIT2" ] && [ `uname` = "Linux" ] && [ `arch` = "x86_64" ]; then
+if [ -z "$USE_SYSTEM_LIBGIT2" ] && [ `uname -sm` = "Linux x86_64" ]; then
   ${R_HOME}/bin/R -q -e 'curl::curl_download("https://r-lib.github.io/gert/get-libgit2-linux.sh","get-libgit2-linux.sh")' || true
   if [ -f "get-libgit2-linux.sh" ]; then
   . ./get-libgit2-linux.sh
