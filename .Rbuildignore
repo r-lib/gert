@@ -12,3 +12,5 @@ README.md
 \.dll$
 \.so$
 \.o$
+^get-libgit2-linux.sh$
+^libgit2$
