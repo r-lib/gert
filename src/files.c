@@ -165,7 +165,7 @@ static void extract_entry_data(const git_status_entry *file, char *status, char 
   }
 }
 
-SEXP R_git_status_list(SEXP ptr, SEXP show_staged){
+SEXP R_git_status_list(SEXP ptr, SEXP show_staged, SEXP path_spec){
   git_status_list *list = NULL;
   git_repository *repo = get_git_repository(ptr);
   git_status_options opts = GIT_STATUS_OPTIONS_INIT;
@@ -173,6 +173,11 @@ SEXP R_git_status_list(SEXP ptr, SEXP show_staged){
     opts.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR;
   } else {
     opts.show = Rf_asLogical(show_staged) ? GIT_STATUS_SHOW_INDEX_ONLY : GIT_STATUS_SHOW_WORKDIR_ONLY;
+  }
+  if(Rf_length(path_spec)){
+    git_strarray *pathspec = files_to_array(path_spec);
+    git_strarray_copy(&opts.pathspec, pathspec);
+    git_strarray_free(pathspec);
   }
   opts.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED |
     GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX |

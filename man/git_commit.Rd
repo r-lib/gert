@@ -29,7 +29,7 @@ git_add(files, force = FALSE, repo = ".")
 
 git_rm(files, repo = ".")
 
-git_status(staged = NULL, repo = ".")
+git_status(staged = NULL, pathspec = NULL, repo = ".")
 
 git_conflicts(repo = ".")
 
@@ -63,6 +63,8 @@ Use \code{"."} to stage all changed files.}
 
 \item{staged}{return only staged (TRUE) or unstaged files (FALSE).
 Use \code{NULL} or \code{NA} to show both (default).}
+
+\item{pathspec}{character vector with paths to match}
 
 \item{max}{lookup at most latest n parent commits}
 

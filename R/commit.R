@@ -153,10 +153,12 @@ git_rm <- function(files, repo = '.'){
 #' @useDynLib gert R_git_status_list
 #' @param staged return only staged (TRUE) or unstaged files (FALSE).
 #' Use `NULL` or `NA` to show both (default).
-git_status <- function(staged = NULL, repo = '.'){
+#' @param pathspec character vector with paths to match
+git_status <- function(staged = NULL, pathspec = NULL, repo = '.'){
   repo <- git_open(repo)
   staged <- as.logical(staged)
-  df <- .Call(R_git_status_list, repo, staged)
+  pathspec <- as.character(pathspec)
+  df <- .Call(R_git_status_list, repo, staged, pathspec)
   df[order(df$file), ,drop = FALSE]
 }
 
