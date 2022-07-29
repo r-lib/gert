@@ -33,7 +33,7 @@ git_status(staged = NULL, pathspec = NULL, repo = ".")
 
 git_conflicts(repo = ".")
 
-git_ls(ref = NULL, repo = ".")
+git_ls(repo = ".", ref = NULL)
 
 git_log(ref = "HEAD", max = 100, after = NULL, repo = ".")
 

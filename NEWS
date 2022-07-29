@@ -1,5 +1,6 @@
 1.7.0
   - git_status() gains parameter pathspec
+  - git_ls() gains paremeter 'ref' and works with bare repositories
 
 1.6.0
   - We recommend at least libgit2 1.0 now
