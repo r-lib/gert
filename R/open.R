@@ -10,6 +10,7 @@
 #' this search, provide the filepath protected with [I()]. When using this
 #' parameter, always explicitly call by name (i.e. `repo = `) because future
 #' versions of gert may have additional parameters.
+#' @param bare opens a bare (server-side) repository without a working tree
 #' @return an pointer to the libgit2 repository
 #' @useDynLib gert R_git_repository_open
 #' @examples
@@ -22,7 +23,7 @@
 #'
 #' # cleanup
 #' unlink(r, recursive = TRUE)
-git_open <- function(repo = '.'){
+git_open <- function(repo = '.', bare = FALSE){
   if(inherits(repo, 'git_repo_ptr')){
     return(repo)
   } else if(!is.character(repo)){
@@ -30,7 +31,7 @@ git_open <- function(repo = '.'){
   }
   search <- !inherits(repo, 'AsIs')
   path <- normalizePath(path.expand(repo), mustWork = FALSE)
-  out <- .Call(R_git_repository_open, path, search)
+  out <- .Call(R_git_repository_open, path, search, isTRUE(bare))
   if(is_rstudio_ide()){
     cl <- substitute(rstudioapi::executeCommand("vcsRefresh"))
     do.call(on.exit, list(cl, add = TRUE), envir = parent.frame())

@@ -57,7 +57,7 @@ extern SEXP R_git_repository_find(SEXP);
 extern SEXP R_git_repository_info(SEXP);
 extern SEXP R_git_repository_init(SEXP, SEXP);
 extern SEXP R_git_repository_ls(SEXP);
-extern SEXP R_git_repository_open(SEXP, SEXP);
+extern SEXP R_git_repository_open(SEXP, SEXP, SEXP);
 extern SEXP R_git_repository_path(SEXP);
 extern SEXP R_git_repository_rm(SEXP, SEXP);
 extern SEXP R_git_reset(SEXP, SEXP, SEXP);
@@ -129,7 +129,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_repository_info",     (DL_FUNC) &R_git_repository_info,     1},
   {"R_git_repository_init",     (DL_FUNC) &R_git_repository_init,     2},
   {"R_git_repository_ls",       (DL_FUNC) &R_git_repository_ls,       1},
-  {"R_git_repository_open",     (DL_FUNC) &R_git_repository_open,     2},
+  {"R_git_repository_open",     (DL_FUNC) &R_git_repository_open,     3},
   {"R_git_repository_path",     (DL_FUNC) &R_git_repository_path,     1},
   {"R_git_repository_rm",       (DL_FUNC) &R_git_repository_rm,       2},
   {"R_git_reset",               (DL_FUNC) &R_git_reset,               3},

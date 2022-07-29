@@ -4,7 +4,7 @@
 \alias{git_open}
 \title{Open local repository}
 \usage{
-git_open(repo = ".")
+git_open(repo = ".", bare = FALSE)
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -12,6 +12,8 @@ repository, parent directories are considered (see \link{git_find}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
+
+\item{bare}{opens a bare (server-side) repository without a working tree}
 }
 \value{
 an pointer to the libgit2 repository
