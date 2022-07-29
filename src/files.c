@@ -67,7 +67,7 @@ SEXP R_git_repository_path(SEXP ptr){
 SEXP R_git_repository_ls(SEXP ptr, SEXP ref){
   git_index *index = NULL;
   git_repository *repo = get_git_repository(ptr);
-  if(Rf_length(ref) && Rf_isString(ref) && strcmp("HEAD", CHAR(STRING_ELT(ref, 0)))){
+  if(Rf_length(ref) && Rf_isString(ref)){
     git_object *revision = resolve_refish(ref, repo);
     git_commit *commit = NULL;
     git_tree *tree = NULL;

@@ -173,8 +173,13 @@ git_conflicts <- function(repo = '.'){
 #' @export
 #' @rdname git_commit
 #' @useDynLib gert R_git_repository_ls
-git_ls <- function(ref = "HEAD", repo = '.'){
+git_ls <- function(ref = NULL, repo = '.'){
   repo <- git_open(repo)
+  if(!length(ref)){
+    info <- git_info(repo = repo)
+    if(isTRUE(info$bare))
+      ref <- info$head
+  }
   .Call(R_git_repository_ls, repo, ref = ref)
 }
 
