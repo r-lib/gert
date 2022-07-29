@@ -4,6 +4,7 @@ reference:
   - git_repo
   - git_open
   - git_archive
+  - git_submodule_list
 
 - title: Local operations
   desc: Functions that work with local repositories.
