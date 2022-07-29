@@ -88,12 +88,13 @@ SEXP R_git_repository_ls(SEXP ptr, SEXP ref){
   SEXP mtimes = PROTECT(Rf_allocVector(REALSXP, entry_count));
   SEXP ctimes = PROTECT(Rf_allocVector(REALSXP, entry_count));
 
+  int isbare = git_repository_is_bare(repo);
   for(size_t i = 0; i < entry_count; i++){
     const git_index_entry *entry = git_index_get_byindex(index, i);
     SET_STRING_ELT(paths, i, safe_char(entry->path));
-    REAL(sizes)[i] = (double) entry->file_size;
-    REAL(mtimes)[i] = (double) entry->mtime.seconds + entry->mtime.nanoseconds * 1e-9;
-    REAL(ctimes)[i] = (double) entry->ctime.seconds + entry->ctime.nanoseconds * 1e-9;
+    REAL(sizes)[i] = isbare ? NA_REAL : (double) entry->file_size;
+    REAL(mtimes)[i] = isbare ? NA_REAL : (double) entry->mtime.seconds + entry->mtime.nanoseconds * 1e-9;
+    REAL(ctimes)[i] = isbare ? NA_REAL : (double) entry->ctime.seconds + entry->ctime.nanoseconds * 1e-9;
   }
   git_index_free(index);
   Rf_setAttrib(mtimes, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
