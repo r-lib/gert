@@ -11,7 +11,7 @@ test_that("cloning repositories works", {
   repo2 <- git_open(path)
   info2 <- git_info(repo2)
   expect_equal(info, info2)
-  expect_is(git_ls(repo), 'data.frame')
+  expect_is(git_ls(repo = repo), 'data.frame')
   expect_is(git_log(repo = repo), 'data.frame')
   heads <- git_remote_ls(repo = repo)
   expect_is(heads, 'data.frame')
