@@ -86,32 +86,6 @@ fi
 # Write to Makevars
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
 
-# Allow for skipping test
-if [ "$SKIP_LIBGIT2_VERSION_TEST" ]; then
-  exit 0
-fi
-
-# Test version of libgit2
-${CC} ${CPPFLAGS} ${PKG_CFLAGS} ${CFLAGS} -E ${PKG_TEST_FILE} >/dev/null 2>&1
-
-# On Ubuntu we enforce using the PPA
-if [ $? -ne 0 ]; then
-  lsb_release -c 2>/dev/null | grep -E 'trusty|xenial' 2>/dev/null
-  if [ $? -eq 0 ]; then
-    echo "------------------------- ANTICONF ERROR ---------------------------"
-    echo "Configuration failed because $PKG_CONFIG_NAME is too old."
-    echo "Please install it from the following PPA for Ubuntu Trusty or Xenial:"
-    echo ""
-    echo "  sudo add-apt-repository ppa:cran/libgit2"
-    echo "  sudo apt-get update"
-    echo "  sudo apt-get install libssh2-1-dev libgit2-dev"
-    echo "--------------------------------------------------------------------"
-    exit 1
-  else
-    echo "WARNING: your version of libgit2 is really old! HTTPS / SSH might not work"
-  fi
-fi
-
 # Success
 echo "Configuration OK!"
 exit 0
