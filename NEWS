@@ -1,3 +1,13 @@
+1.8.0
+  - The static libgit2 for win/mac/linux are all 1.4.2 with a patched version
+    of libssh 1.10.1. This should fix problems with the latest release versions
+    of libgit2 and libssh2.
+  - The patched libssh2 builds should now support RSA-SHA2, which re-enables
+    authentication with GitHub using an RSA key.
+  - On production Linux systems (x64 RHEL/Ubuntu) default to building using the
+    static libgit2 because of above reasons. Set USE_SYSTEM_LIBGIT2=1 to force
+    building against a local libgit2 on these platforms.
+
 1.7.1
   - The static libgit2 for linux has been updated to 1.5.0 (this is only used
     on linux systems where no sufficient libgit2 is available).

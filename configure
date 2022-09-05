@@ -14,12 +14,23 @@ PKG_TEST_FILE="tools/version.c"
 PKG_LIBS="-lgit2"
 PKG_CFLAGS=""
 
+# Test for production platforms
+if test -f "/etc/redhat-release" && ! grep -Fq Fedora "/etc/redhat-release"; then
+PREFER_STATIC_LIBGIT2=1
+elif test -f "/etc/os-release" && grep -Fq Ubuntu "/etc/os-release"; then
+PREFER_STATIC_LIBGIT2=1
+fi
+
 # Use pkg-config if available
 pkg-config ${PKG_CONFIG_NAME} --atleast-version=0.19 2>/dev/null
 if [ $? -eq 0 ]; then
   PKGCONFIG_CFLAGS=`pkg-config --cflags --silence-errors ${PKG_CONFIG_NAME}`
   PKGCONFIG_LIBS=`pkg-config --libs ${PKG_CONFIG_NAME}`
-  pkg-config ${PKG_CONFIG_NAME} --atleast-version=1.0 && USE_SYSTEM_LIBGIT2=1
+
+  # Test if the local system version of libgit2 is recent enough
+  if [ -z "$PREFER_STATIC_LIBGIT2" ]; then
+    pkg-config ${PKG_CONFIG_NAME} --atleast-version=1.0 && USE_SYSTEM_LIBGIT2=1
+  fi
 fi
 
 # On Linux distros with old libgit2, try downloading our static build.

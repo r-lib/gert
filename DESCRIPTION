@@ -1,7 +1,7 @@
 Type: Package
 Package: gert
 Title: Simple Git Client for R
-Version: 1.7.1
+Version: 1.8.0
 Authors@R: c(
     person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
       comment = c(ORCID = "0000-0002-4035-0289")),
