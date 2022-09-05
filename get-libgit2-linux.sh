@@ -8,7 +8,7 @@ URL="https://r-lib.github.io/gert/libgit2-1.1.0.x86_64_legacy-linux.tar.gz"
 PKG_CFLAGS="-DSTATIC_LIBGIT2 -I${PWD}/libgit2/include"
 PKG_LIBS="-L${PWD}/libgit2/lib -lgit2 -lrt -lpthread -lssh2 -lssl -lcrypto -ldl -lpcre -lz"
 else
-URL="https://r-lib.github.io/gert/libgit2-1.4.2-x86_64_linux.tar.gz"
+URL="https://autobrew.github.io/archive/x86_64_linux/libgit2-1.4.2-x86_64_linux.tar.gz"
 PKG_CFLAGS="-DSTATIC_LIBGIT2 -I${PWD}/libgit2-1.4.2-x86_64_linux/include"
 PKG_LIBS="-L${PWD}/libgit2-1.4.2-x86_64_linux/lib -lgit2 -lrt -lpthread -lssh2 -lssl -lcrypto -ldl"
 fi
