@@ -15,16 +15,18 @@ test_that("private ssh remotes with key", {
   remote <- 'git@github.com:jeroenooms/testprivate.git'
   target <- file.path(tempdir(), basename(remote))
 
-  # Also test password as a callback function
-  repo <- git_clone(remote, path = target, ssh_key = 'ecdsa.key', password = function(...){ 'testingjerry'})
-  expect_true(file.exists(file.path(target, 'hello')))
-
   # Test errors
   expect_error(git_clone(remote, path = tempfile(), ssh_key = 'doesnotexist'), 'load key', class = 'GIT_EAUTH')
   expect_error(git_clone(remote, path = tempfile(), ssh_key = 'pat.bin'), 'load key', class = 'GIT_EAUTH')
 
-  # Test ls-remote auth
-  git_remote_ls(repo = target, ssh_key = 'ecdsa.key', password = function(...){ 'testingjerry'})
+  # Also test password as a callback function
+  for(keyfile in c("ecdsa.key", "rsa3072.key", "ed25519.key")){
+    repo <- git_clone(remote, path = target, ssh_key = keyfile, password = function(...){ 'testingjerry'})
+    expect_true(file.exists(file.path(target, 'hello')))
+
+    # Test ls-remote auth
+    git_remote_ls(repo = target, ssh_key = keyfile, password = function(...){ 'testingjerry'})
+  }
 })
 
 # Access token for dummy account with minimal rights
