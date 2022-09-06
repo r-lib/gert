@@ -1,9 +1,9 @@
 # Even for public repos, Github only allows keys that it knows.
 test_that("public ssh remotes with random key", {
-  skip_if_offline('github.com')
+  skip_if_offline('github.com')  #Also skips on_cran
   remote <- 'git@github.com:jeroen/webp.git'
   target <- file.path(tempdir(), basename(remote))
-  repo <- git_clone(remote, path = target, ssh_key = 'ssh.key', password = 'testingjerry')
+  repo <- git_clone(remote, path = target, ssh_key = 'ecdsa.key', password = 'testingjerry')
   expect_true(file.exists(file.path(target, 'DESCRIPTION')))
 })
 
@@ -11,20 +11,22 @@ isOldWindows <- Sys.info()[["sysname"]] == "Windows" && grepl('Windows Server 20
 
 # Even for public repos, Github only allows keys that it knows.
 test_that("private ssh remotes with key", {
-  skip_if_offline('github.com')
+  skip_if_offline('github.com') #Also skips on_cran
   remote <- 'git@github.com:jeroenooms/testprivate.git'
-  target <- file.path(tempdir(), basename(remote))
-
-  # Also test password as a callback function
-  repo <- git_clone(remote, path = target, ssh_key = 'ssh.key', password = function(...){ 'testingjerry'})
-  expect_true(file.exists(file.path(target, 'hello')))
 
   # Test errors
   expect_error(git_clone(remote, path = tempfile(), ssh_key = 'doesnotexist'), 'load key', class = 'GIT_EAUTH')
   expect_error(git_clone(remote, path = tempfile(), ssh_key = 'pat.bin'), 'load key', class = 'GIT_EAUTH')
 
-  # Test ls-remote auth
-  git_remote_ls(repo = target, ssh_key = 'ssh.key', password = function(...){ 'testingjerry'})
+  # Also test password as a callback function
+  for(keyfile in c("ecdsa.key", "rsa3072.key")){ #skipped: "ed25519.key"
+    target <- tempfile()
+    repo <- git_clone(remote, path = target, ssh_key = keyfile, password = function(...){ 'testingjerry'})
+    expect_true(file.exists(file.path(target, 'hello')))
+
+    # Test ls-remote auth
+    git_remote_ls(repo = target, ssh_key = keyfile, password = function(...){ 'testingjerry'})
+  }
 })
 
 # Access token for dummy account with minimal rights
