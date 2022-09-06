@@ -1,6 +1,6 @@
 # Even for public repos, Github only allows keys that it knows.
 test_that("public ssh remotes with random key", {
-  skip_if_offline('github.com')
+  skip_if_offline('github.com')  #Also skips on_cran
   remote <- 'git@github.com:jeroen/webp.git'
   target <- file.path(tempdir(), basename(remote))
   repo <- git_clone(remote, path = target, ssh_key = 'ecdsa.key', password = 'testingjerry')
@@ -11,7 +11,7 @@ isOldWindows <- Sys.info()[["sysname"]] == "Windows" && grepl('Windows Server 20
 
 # Even for public repos, Github only allows keys that it knows.
 test_that("private ssh remotes with key", {
-  skip_if_offline('github.com')
+  skip_if_offline('github.com') #Also skips on_cran
   remote <- 'git@github.com:jeroenooms/testprivate.git'
 
   # Test errors
