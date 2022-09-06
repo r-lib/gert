@@ -3,7 +3,7 @@ test_that("public ssh remotes with random key", {
   skip_if_offline('github.com')
   remote <- 'git@github.com:jeroen/webp.git'
   target <- file.path(tempdir(), basename(remote))
-  repo <- git_clone(remote, path = target, ssh_key = 'ssh.key', password = 'testingjerry')
+  repo <- git_clone(remote, path = target, ssh_key = 'ecdsa.key', password = 'testingjerry')
   expect_true(file.exists(file.path(target, 'DESCRIPTION')))
 })
 
@@ -16,7 +16,7 @@ test_that("private ssh remotes with key", {
   target <- file.path(tempdir(), basename(remote))
 
   # Also test password as a callback function
-  repo <- git_clone(remote, path = target, ssh_key = 'ssh.key', password = function(...){ 'testingjerry'})
+  repo <- git_clone(remote, path = target, ssh_key = 'ecdsa.key', password = function(...){ 'testingjerry'})
   expect_true(file.exists(file.path(target, 'hello')))
 
   # Test errors
@@ -24,7 +24,7 @@ test_that("private ssh remotes with key", {
   expect_error(git_clone(remote, path = tempfile(), ssh_key = 'pat.bin'), 'load key', class = 'GIT_EAUTH')
 
   # Test ls-remote auth
-  git_remote_ls(repo = target, ssh_key = 'ssh.key', password = function(...){ 'testingjerry'})
+  git_remote_ls(repo = target, ssh_key = 'ecdsa.key', password = function(...){ 'testingjerry'})
 })
 
 # Access token for dummy account with minimal rights
