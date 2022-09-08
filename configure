@@ -15,9 +15,7 @@ PKG_LIBS="-lgit2"
 PKG_CFLAGS=""
 
 # Test for production platforms
-if test -f "/etc/redhat-release" && ! grep -Fq Fedora "/etc/redhat-release"; then
-PREFER_STATIC_LIBGIT2=1
-elif test -f "/etc/os-release" && grep -Fq Ubuntu "/etc/os-release"; then
+if test -f "/etc/os-release" && grep -Fq Ubuntu "/etc/os-release"; then
 PREFER_STATIC_LIBGIT2=1
 fi
 
