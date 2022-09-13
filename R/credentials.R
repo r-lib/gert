@@ -1,4 +1,4 @@
-#' @importFrom openssl write_ssh write_pem write_pkcs1
+#' @importFrom openssl write_ssh write_pem write_pkcs1 write_openssh_pem
 #' @importFrom credentials ssh_key_info git_credential_forget ssh_read_key
 #' @importFrom askpass askpass
 make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
@@ -18,7 +18,7 @@ make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
     tmp_key <- if(inherits(key, c("rsa", "dsa", "ecdsa"))){
       write_pkcs1(key, tempfile())
     } else {
-      openssl:::write_openssh_key(key, tempfile())
+      write_openssh_pem(key, tempfile())
     }
     if(.Platform$OS.type == "unix"){
       Sys.chmod(tmp_pub, '0644')

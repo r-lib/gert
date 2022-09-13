@@ -18,7 +18,7 @@ BugReports: https://github.com/r-lib/gert/issues
 Imports:
     askpass,
     credentials (>= 1.2.1),
-    openssl (>= 1.4.1),
+    openssl (>= 2.0.3),
     rstudioapi (>= 0.11),
     sys,
     zip (>= 2.1.0)
