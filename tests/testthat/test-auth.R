@@ -19,7 +19,7 @@ test_that("private ssh remotes with key", {
   expect_error(git_clone(remote, path = tempfile(), ssh_key = 'pat.bin'), 'load key', class = 'GIT_EAUTH')
 
   # Also test password as a callback function
-  for(keyfile in c("ecdsa.key", "rsa3072.key")){ #skipped: "ed25519.key"
+  for(keyfile in c("ecdsa.key", "rsa3072.key", "ed25519.key")){
     target <- tempfile()
     repo <- git_clone(remote, path = target, ssh_key = keyfile, password = function(...){ 'testingjerry'})
     expect_true(file.exists(file.path(target, 'hello')))

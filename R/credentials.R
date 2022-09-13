@@ -18,7 +18,7 @@ make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
     tmp_key <- if(inherits(key, c("rsa", "dsa", "ecdsa"))){
       write_pkcs1(key, tempfile())
     } else {
-      write_pem(key, tempfile())
+      openssl:::write_openssh_key(key, tempfile())
     }
     if(.Platform$OS.type == "unix"){
       Sys.chmod(tmp_pub, '0644')
