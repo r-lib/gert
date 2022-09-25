@@ -150,7 +150,7 @@ The git2r package takes another approach by bundling the libgit2 source code in 
 
 However the problem is that configuring and building libgit2 is complicated (like most system libraries) and requires several platform-specific flags and system dependencies. As a result, git2r is sometimes installed with missing functionality, depending on what was detected during compilation. On macOS for example, some git2r users have SSH support but others do not. Weird problems due to missing libgit2 features turn out to be very persistent, and have caused a lot of frustration. For this reason, gert does not bundle and compile the libgit2 source, but instead always links to system libraries.
 
-As usual, those who install gert as a source package, by choice on Windows and macOS or by necessity on Linux, **do** need to ensure the necessary system libraries are present, e.g.:
+We provide prebuilt versions of libgit2 for Windows, MacOS and Linux-x86_64 that are automatically downloaded upon installation. Alternatively on some platforms you can build gert against the system version of libgit2, e.g.:
 
   * [libgit2-dev](https://packages.ubuntu.com/focal/libgit2-dev) on Debian/Ubuntu
   * [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2) on Fedora
