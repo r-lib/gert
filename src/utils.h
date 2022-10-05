@@ -5,7 +5,7 @@
 #define GIT_OBJECT_COMMIT GIT_OBJ_COMMIT
 #endif
 
-void warn_last_msg();
+void warn_last_msg(void);
 void bail_if(int err, const char *what);
 void bail_if_null(void * ptr, const char * what);
 SEXP string_or_null(const char *x);

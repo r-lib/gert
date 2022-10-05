@@ -2,7 +2,7 @@
 #include <Rinternals.h>
 #include "utils.h"
 
-SEXP R_static_libgit2(){
+SEXP R_static_libgit2(void){
 #ifdef STATIC_LIBGIT2
   return Rf_ScalarLogical(1);
 #else
@@ -17,7 +17,7 @@ SEXP R_set_cert_locations(SEXP file, SEXP path){
   return R_NilValue;
 }
 
-SEXP R_libgit2_config(){
+SEXP R_libgit2_config(void){
   char buffer[100];
   snprintf(buffer, 99, "%d.%d.%d", LIBGIT2_VER_MAJOR, LIBGIT2_VER_MINOR, LIBGIT2_VER_REVISION);
   SEXP version = PROTECT(Rf_mkString(buffer));

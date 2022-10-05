@@ -15,7 +15,7 @@ void bail_if(int err, const char *what){
   }
 }
 
-void warn_last_msg(){
+void warn_last_msg(void){
   const git_error *info = giterr_last();
   if (info){
     Rf_warningcall_immediate(R_NilValue, "libgit2 warning: %s (%d)\n", info->message, info->klass);

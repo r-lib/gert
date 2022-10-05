@@ -80,9 +80,9 @@ extern SEXP R_git_submodule_update(SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_create(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_delete(SEXP, SEXP);
 extern SEXP R_git_tag_list(SEXP, SEXP);
-extern SEXP R_libgit2_config();
+extern SEXP R_libgit2_config(void);
 extern SEXP R_set_cert_locations(SEXP, SEXP);
-extern SEXP R_static_libgit2();
+extern SEXP R_static_libgit2(void);
 
 static const R_CallMethodDef CallEntries[] = {
   {"R_git_ahead_behind",        (DL_FUNC) &R_git_ahead_behind,        3},
