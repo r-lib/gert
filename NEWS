@@ -1,3 +1,6 @@
+1.9.1
+  - Use special static libgit2 bundle for openssl-3 distros.
+
 1.9.0
   - Add support for the new ED25519 keys when authenticating over SSH
 

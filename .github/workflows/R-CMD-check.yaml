@@ -21,7 +21,8 @@ jobs:
           - {os: windows-latest, r: '4.1'}
           - {os: windows-2022, r: 'devel'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-22.04,   r: 'release'}
+          - {os: ubuntu-20.04,   r: 'release'}
           - {os: ubuntu-18.04,   r: 'oldrel-4'}
 
     env:
