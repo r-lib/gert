@@ -6,9 +6,9 @@
 
 <!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-![runiverse-name](https://ropensci.r-universe.dev/badges/:name)
-![runiverse-package](https://ropensci.r-universe.dev/badges/gert)
-![cran-badge](http://www.r-pkg.org/badges/version/gert)
+[![runiverse-name](https://ropensci.r-universe.dev/badges/:name)](https://ropensci.r-universe.dev)
+[![runiverse-package](https://ropensci.r-universe.dev/badges/gert)](https://ropensci.r-universe.dev/ui#package:gert)
+[![cran-badge](http://www.r-pkg.org/badges/version/gert)](https://cran.r-project.org/package=gert)
 <!-- badges: end -->
 
 Simple git client for R based on 'libgit2' with support for SSH and 
