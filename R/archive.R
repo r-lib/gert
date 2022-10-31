@@ -28,8 +28,25 @@ git_archive_internal <- function(outfile, repo){
     on.exit(git_stash_pop(repo = repo))
   }, GIT_ENOTFOUND = function(e){})
   files <- git_ls(repo = repo)$path
+  files <- setdiff(files, git_archive_gitattributes())
   wd <- getwd()
   on.exit(setwd(wd), add = TRUE)
   setwd(git_info(repo = repo)$path)
   zip::zip(outfile, files = files, recurse = FALSE)
+}
+
+git_archive_gitattributes <- function() {
+
+  if (!file.exists(".gitattributes")) {
+    return("")
+  }
+  .data <- scan(".gitattributes", character(), sep = "\n", quiet = T)
+  .data <- .data[!grepl("^#", .data)]
+  .data <- .data[grepl(" export-ignore", .data)]
+  .data <- gsub(" export-ignore", "", .data)
+  .data <- trimws(.data)
+  .files <- .data[!grepl("/$", .data)]
+  .data <- gsub("/$", "", .data)
+  .folder_files <- unlist(lapply(.data, function(x) list.files(x, full.names = T, recursive = T, all.files = T)))
+  return(c(.files, .folder_files))
 }
