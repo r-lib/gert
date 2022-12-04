@@ -449,10 +449,10 @@ SEXP R_git_remote_ls(SEXP ptr, SEXP name, SEXP getkey, SEXP getcred, SEXP verbos
   if (remote_name && refs_len && refs[0]->symref_target){
     char head[1000] = {0};
     char target[1000] = {0};
-    sprintf(head, "refs/remotes/%s/HEAD", git_remote_name(remote));
+    snprintf(head, 1000, "refs/remotes/%s/HEAD", git_remote_name(remote));
     const char *symref = refs[0]->symref_target;
     if(strncmp(symref, "refs/heads/", 11) == 0){
-      sprintf(target, "refs/remotes/%s/%s", git_remote_name(remote), symref + 11);
+      snprintf(target, 1000, "refs/remotes/%s/%s", git_remote_name(remote), symref + 11);
     } else {
       strcpy(target, symref);
     }

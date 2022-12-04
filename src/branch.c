@@ -321,7 +321,7 @@ SEXP R_git_remote_info(SEXP ptr, SEXP name){
   git_strarray_free(&fetchspecs);
   git_strarray_free(&pushspecs);
   char buf[1000] = {0};
-  sprintf(buf, "refs/remotes/%s/HEAD", git_remote_name(remote));
+  snprintf(buf, 1000, "refs/remotes/%s/HEAD", git_remote_name(remote));
   git_reference *remote_head = NULL;
   int has_default = git_reference_lookup(&remote_head, repo, buf) == GIT_OK;
   SEXP out = build_list(6,
