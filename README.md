@@ -9,6 +9,7 @@
 ![runiverse-name](https://ropensci.r-universe.dev/badges/:name)
 ![runiverse-package](https://ropensci.r-universe.dev/badges/gert)
 ![cran-badge](http://www.r-pkg.org/badges/version/gert)
+[![R-CMD-check](https://github.com/r-lib/gert/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/gert/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Simple git client for R based on 'libgit2' with support for SSH and 
