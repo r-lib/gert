@@ -256,6 +256,9 @@ static git_strarray *files_to_array(SEXP files){
 SEXP R_git_repository_init(SEXP path, SEXP is_bare){
   git_repository *repo = NULL;
   bail_if(git_repository_init(&repo, CHAR(STRING_ELT(path, 0)), Rf_asLogical(is_bare)), "git_repository_init");
+#ifdef USE_SUBMODULE_CACHE
+  git_repository_submodule_cache_all(repo);
+#endif
   return new_git_repository(repo);
 }
 
@@ -306,6 +309,14 @@ int create_remote_mirror(git_remote **out, git_repository *repo, const char *nam
   return error;
 }
 
+static int repository_enable_cache(git_repository **out, const char *path, int bare, void *payload) {
+  int res = git_repository_init(out, path, bare);
+#ifdef USE_SUBMODULE_CACHE
+  git_repository_submodule_cache_all(*out);
+#endif
+  return res;
+}
+
 SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP getcred,
                             SEXP bare, SEXP mirror, SEXP verbose){
   git_repository *repo = NULL;
@@ -314,6 +325,8 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   auth_callback_data_t data_cb = auth_callback_data(getkey, getcred, Rf_asLogical(verbose));
   clone_opts.fetch_opts.callbacks.payload = &data_cb;
   clone_opts.fetch_opts.callbacks.credentials = auth_callback;
+  clone_opts.repository_cb = repository_enable_cache;
+
   set_verify_handler(&clone_opts.fetch_opts.callbacks);
 
   /* Also enables download progress and user interrupt */
