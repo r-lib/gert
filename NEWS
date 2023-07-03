@@ -1,3 +1,6 @@
+1.9.3
+  - Add git_commit_stats() function
+
 1.9.2
   - Replace sprintf with snprintf for CRAN
 
