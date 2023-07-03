@@ -115,6 +115,14 @@ git_commit_id <- function(ref = "HEAD", repo = '.'){
 
 #' @export
 #' @rdname git_commit
+#' @useDynLib gert R_git_commit_stats
+git_commit_stats <- function(ref = "HEAD", repo = '.'){
+  repo <- git_open(repo)
+  .Call(R_git_commit_stats, repo, ref)
+}
+
+#' @export
+#' @rdname git_commit
 #' @param ancestor a reference to a potential ancestor commit
 #' @useDynLib gert R_git_commit_descendant
 git_commit_descendant_of <- function(ancestor, ref = 'HEAD', repo = '.'){
