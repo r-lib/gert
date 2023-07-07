@@ -13,6 +13,11 @@ knitr::opts_chunk$set(
   comment = "#>",
   error = TRUE
 )
+
+if (identical(Sys.getenv("IN_PKGDOWN"), "true") &&
+    !gert:::global_user_is_configured()) {
+  gert:::configure_global_user()
+}
 ```
 
 gert is a simple git client based on 'libgit2' ([libgit2.org](https://libgit2.org)):
