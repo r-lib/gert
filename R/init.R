@@ -42,11 +42,6 @@
     }
   }
 
-  if (identical(Sys.getenv("IN_PKGDOWN"), "true") &&
-      !global_user_is_configured()) {
-    configure_global_user()
-  }
-
   # Load tibble (if available) for pretty printing
   if(interactive() && is.null(.getNamespace('tibble'))){
     tryCatch({
