@@ -2,7 +2,9 @@
 #define _GNU_SOURCE 1
 #endif
 
-#if defined(__sun)
+/* Beginning in libgit2 v1.4.5 and v1.5.1, libgit2 will now perform host key checking by default.
+ * However on Windows libssh does not have access to the cert store */
+#if defined(__sun) || defined(_WIN32)
 #define SKIP_CERTIFICATE_CHECK
 #endif
 
