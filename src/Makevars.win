@@ -1,4 +1,4 @@
-VERSION = 1.4.2-fixed
+VERSION = 1.7.0
 RWINLIB = ../windows/libgit2-$(VERSION)
 TARGET = lib$(subst gcc,,$(COMPILED_BY))$(R_ARCH)
 
