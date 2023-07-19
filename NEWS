@@ -1,3 +1,6 @@
+2.0.0
+  - Windows: update to libgit2 version 1.7.0
+
 1.9.3
   - Add git_commit_stats() function
 
