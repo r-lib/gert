@@ -31,6 +31,7 @@ Other git:
 \code{\link{git_config}()},
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
+\code{\link{git_ignore}},
 \code{\link{git_merge}()},
 \code{\link{git_rebase}()},
 \code{\link{git_remote}},
