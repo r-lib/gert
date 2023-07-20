@@ -4,8 +4,8 @@
 
 /* Beginning in libgit2 v1.4.5 and v1.5.1, libgit2 will now perform host key checking by default.
  * However on Windows libssh does not have access to the cert store */
-#if defined(__sun) || defined(_WIN32)
-#define SKIP_CERTIFICATE_CHECK
+#if defined(_WIN32)
+#define SKIP_HOSTKEY_CHECK
 #endif
 
 #include <string.h>
@@ -102,12 +102,14 @@ static void fin_git_repository(SEXP ptr){
   R_ClearExternalPtr(ptr);
 }
 
-#ifdef SKIP_CERTIFICATE_CHECK
-static int no_verify_cert(struct git_cert *cert, int valid, const char *host, void *payload){
-  return 0;
+#ifdef SKIP_HOSTKEY_CHECK
+static int skip_hostkey_check(struct git_cert *cert, int valid, const char *host, void *payload){
+  if(cert->cert_type == GIT_CERT_HOSTKEY_LIBSSH2)
+    return 0;
+  return valid;
 }
 void set_verify_handler(git_remote_callbacks *callbacks){
-  callbacks->certificate_check = no_verify_cert;
+  callbacks->certificate_check = skip_hostkey_check;
 }
 #else
 #define set_verify_handler(x)
