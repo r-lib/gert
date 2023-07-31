@@ -37,9 +37,8 @@ SEXP R_git_submodule_list(SEXP ptr){
                          "url", PROTECT(Rf_allocVector(STRSXP, n)),
                          "branch", PROTECT(Rf_allocVector(STRSXP, n)),
                          "head", PROTECT(Rf_allocVector(STRSXP, n))));
-  UNPROTECT(5);
   git_submodule_foreach(repo, submodule_fill, df);
-  UNPROTECT(1);
+  UNPROTECT(6);
   return df;
 }
 
