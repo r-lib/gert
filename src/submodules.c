@@ -8,6 +8,7 @@ static int submodule_count(git_submodule *submod, const char *name, void *payloa
 }
 
 static int submodule_fill(git_submodule *sm, const char *name, void *payload){
+  REprintf(".");
   SEXP df = payload;
   SEXP names = VECTOR_ELT(df, 0);
   SEXP paths = VECTOR_ELT(df, 1);
@@ -37,7 +38,9 @@ SEXP R_git_submodule_list(SEXP ptr){
                          "url", PROTECT(Rf_allocVector(STRSXP, n)),
                          "branch", PROTECT(Rf_allocVector(STRSXP, n)),
                          "head", PROTECT(Rf_allocVector(STRSXP, n))));
+  REprintf("Filling: ");
   git_submodule_foreach(repo, submodule_fill, df);
+  REprintf("\nDONE\n");
   UNPROTECT(6);
   return df;
 }
