@@ -1,5 +1,7 @@
 1.9.3
   - Add git_commit_stats() function
+  - Add git_ignore_path_is_ignored() function
+  - Fix protect bug in git_submodule_list()
 
 1.9.2
   - Replace sprintf with snprintf for CRAN
