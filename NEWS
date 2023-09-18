@@ -1,5 +1,5 @@
 2.0.0
-  - Windows: update to libgit2-1.7.0 + libssh-1.11.0 + openssl-3.1.1
+  - Windows: update to libgit2-1.7.1 + libssh-1.11.0 + openssl-3.1.2
 
 1.9.3
   - Add git_commit_stats() function
