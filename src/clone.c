@@ -157,7 +157,7 @@ static void checkout_progress(const char *path, size_t cur, size_t tot, void *pa
   static size_t prev = 0;
   if(prev != cur){
     prev = cur;
-    REprintf("\rChecked out %d of %d commits...", cur, tot);
+    REprintf("\rChecked out %zu of %zu commits...", cur, tot);
     if(cur == tot)
       REprintf(" done!\n");
   }
