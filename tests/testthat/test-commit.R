@@ -61,6 +61,19 @@ test_that("creating a commit", {
   expect_equal(log$time[1], timestamp)
 })
 
+test_that("Passing ref into git_ls gives correct info", {
+  t <- tempfile()
+  dir.create(t)
+  writeLines(c("# Example", "", "example repo"), file.path(t, "README.md"))
+  git_init(t)
+  git_add(".", repo = t)
+  user <- "author <author@example.com>"
+  sha <- git_commit("initial", author = user, committer = user, repo = t)
+  without_ref <- git_ls(repo = t)
+  with_ref <- git_ls(repo = t, ref = "HEAD")
+  expect_equal(with_ref, without_ref)
+})
+
 test_that("creating a commit in another directory without author works", {
   path <- tempfile("gert-tests-commit")
   on.exit(unlink(path, recursive = TRUE))
