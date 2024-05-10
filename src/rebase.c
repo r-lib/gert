@@ -102,7 +102,7 @@ SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
   git_reference *head = NULL;
   bail_if(git_repository_head(&head, repo), "git_repository_head");
   bail_if(git_commit_lookup(&parent, repo, git_reference_target(head)), "git_commit_lookup");
-  const git_commit *parents[1] = {parent}; // This ignores (aka squashes) other parents from a merge-commit
+  git_commit * parents[1] = {parent}; // This ignores (aka squashes) other parents from a merge-commit
   bail_if(git_repository_index(&index, repo), "git_repository_index");
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
   bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");

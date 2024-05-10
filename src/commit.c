@@ -113,13 +113,13 @@ SEXP R_git_signature_parse(SEXP x){
   return signature_data(parse_signature(x));
 }
 
-static void free_commit_list(const git_commit **list, int len){
+static void free_commit_list(git_commit **list, int len){
   for(int i = 0; i < len; i++){
     git_commit_free((git_commit*) list[i]);
   }
 }
 
-static int create_commit_list(const git_commit **list, git_repository *repo, SEXP merge_parents){
+static int create_commit_list(git_commit **list, git_repository *repo, SEXP merge_parents){
   git_commit *commit = NULL;
   git_reference *head = NULL;
   int err = git_repository_head(&head, repo);
@@ -151,7 +151,7 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
   git_signature *commitsig = parse_signature(committer);
   bail_if(git_message_prettify(&msg, Rf_translateCharUTF8(STRING_ELT(message, 0)), 0, 0),
           "git_message_prettify");
-  const git_commit *parents[10] = {0};
+  git_commit *parents[10] = {0};
   int number_parents = create_commit_list(parents, repo, merge_parents);
 
   // Setup tree, see: https://libgit2.org/docs/examples/init/
@@ -159,7 +159,7 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
   bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");
   bail_if(git_commit_create(&commit_id, repo, "HEAD", authsig, commitsig, "UTF-8",
-                            msg.ptr, tree, number_parents, parents), "git_commit_create");
+                            msg.ptr, tree, number_parents, (git_commit **) parents), "git_commit_create");
   if(number_parents > 1)
     bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
   free_commit_list(parents, number_parents);
