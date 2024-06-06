@@ -63,3 +63,25 @@ test_that("rebasing things", {
   git_reset_hard("HEAD^", repo = repo)
   git_branch_delete('backup', repo = repo)
 })
+
+test_that("cherry-picking things", {
+  repo <- tempfile()
+  gert::git_init(path = repo)
+  writeLines("hello", file.path(repo, 'hello.txt'))
+  git_add('hello.txt', repo = repo)
+  first_commit <- git_commit("First commit", author = "jeroen <jeroen@blabla.nl>", repo = repo)
+
+  # Create a feature branch with a new commit
+  mainbranch <- gert::git_branch(repo = repo)
+  git_branch_create('feature', repo = repo)
+  write.csv(iris, file.path(repo, 'iris.csv'))
+  git_add('iris.csv', repo = repo)
+  commit <- git_commit("Added iris.csv file", author = "maelle <maelle@salmon.fish>", repo = repo)
+
+  # Cherry pick the commit onto main
+  git_branch_checkout(mainbranch, repo = repo)
+  expect_equal(git_log(repo=repo)$commit, first_commit)
+  short_commit <- substr(commit, 1, 7)
+  expect_equal(git_cherry_pick(short_commit, repo = repo), commit)
+  expect_length(git_log(repo = repo)$commit, 2)
+})
