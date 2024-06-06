@@ -83,9 +83,6 @@ git_reset <- function(type = c("soft", "hard", "mixed"), ref = "HEAD", repo = ".
 #' @useDynLib gert R_git_cherry_pick
 #' @param commit id of the commit to cherry pick
 git_cherry_pick <- function(commit, repo = '.'){
-  if (!is_full_hash(commit)) {
-    commit <- git_commit_info(commit, repo = repo)$id
-  }
   repo <- git_open(repo)
   assert_string(commit)
   .Call(R_git_cherry_pick, repo, commit)
