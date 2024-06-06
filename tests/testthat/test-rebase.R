@@ -63,3 +63,24 @@ test_that("rebasing things", {
   git_reset_hard("HEAD^", repo = repo)
   git_branch_delete('backup', repo = repo)
 })
+
+test_that("cherry-picking things", {
+  repo <- file.path(tempdir(), 'gert')
+  if(!file.exists(repo)) git_clone('https://github.com/r-lib/gert', path = repo)
+  git_branch_create('backup', checkout = FALSE, repo = repo)
+
+  write.csv(iris, file.path(repo, 'iris.csv'))
+  git_add('iris.csv', repo = repo)
+  commit <- git_commit("Added iris.csv file", repo = repo)
+
+  git_branch_checkout('backup', repo = repo)
+
+  # full ID
+  expect_type(git_cherry_pick(commit, repo = repo), "character")
+
+  git_reset_hard("HEAD^", repo = repo)
+
+  # shortened ID
+  short_commit <- substr(commit, 1, 7)
+  expect_type(git_cherry_pick(short_commit, repo = repo), "character")
+})
