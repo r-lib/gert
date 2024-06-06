@@ -51,20 +51,30 @@ git_rebase <- function(upstream, commit_changes, repo){
   return(df)
 }
 
+#' Reset your repo to a previous state
+#'
+#' * `git_reset_hard()` reverts to a point in history
+#' * `git_reset_soft()` uncommits changes, but keeps the chsange uncommited
+#' * `git_reset_mixed()` performs a simple `git reset`.
+#'
+#' @family git
+#' @inheritParams git_rebase
+#'
 #' @export
-#' @rdname git_rebase
+#' @name git_reset
+#' @rdname git_reset
 git_reset_hard <- function(ref = "HEAD", repo = "."){
   git_reset("hard", ref = ref, repo = repo)
 }
 
 #' @export
-#' @rdname git_rebase
+#' @rdname git_reset
 git_reset_soft <- function(ref = "HEAD", repo = "."){
   git_reset("soft", ref = ref, repo = repo)
 }
 
 #' @export
-#' @rdname git_rebase
+#' @rdname git_reset
 git_reset_mixed <- function(ref = "HEAD", repo = "."){
   git_reset("mixed", ref = ref, repo = repo)
 }
