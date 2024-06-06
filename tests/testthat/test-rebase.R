@@ -65,18 +65,13 @@ test_that("rebasing things", {
 })
 
 test_that("cherry-picking things", {
-  if(!user_is_configured()){
-    git_config_set("user.name", "Jerry")
-    git_config_set("user.email", "jerry@gmail.com")
-  }
-
   repo <- file.path(tempdir(), 'gert')
   if(!file.exists(repo)) git_clone('https://github.com/r-lib/gert', path = repo)
   git_branch_create('backup', checkout = FALSE, repo = repo)
 
   write.csv(iris, file.path(repo, 'iris.csv'))
   git_add('iris.csv', repo = repo)
-  commit <- git_commit("Added iris.csv file", repo = repo)
+  commit <- git_commit("Added iris.csv file", author = "maelle <maelle@salmon.fish>", repo = repo)
 
   git_branch_checkout('backup', repo = repo)
 
