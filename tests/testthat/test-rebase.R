@@ -65,6 +65,11 @@ test_that("rebasing things", {
 })
 
 test_that("cherry-picking things", {
+  if(!user_is_configured()){
+    git_config_set("user.name", "Jerry")
+    git_config_set("user.email", "jerry@gmail.com")
+  }
+
   repo <- file.path(tempdir(), 'gert')
   if(!file.exists(repo)) git_clone('https://github.com/r-lib/gert', path = repo)
   git_branch_create('backup', checkout = FALSE, repo = repo)
