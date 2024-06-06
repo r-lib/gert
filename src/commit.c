@@ -159,7 +159,7 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
   bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");
   bail_if(git_commit_create(&commit_id, repo, "HEAD", authsig, commitsig, "UTF-8",
-                            msg.ptr, tree, number_parents, parents), "git_commit_create");
+                            msg.ptr, tree, number_parents, no_const_workaround parents), "git_commit_create");
   if(number_parents > 1)
     bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
   free_commit_list(parents, number_parents);

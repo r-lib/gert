@@ -165,9 +165,9 @@ static const R_CallMethodDef CallEntries[] = {
 attribute_visible void R_init_gert(DllInfo *dll) {
   git_libgit2_init();
 #ifdef _WIN32
+  char homedir[8000] = {0};
   const char *userprofile = getenv("USERPROFILE");
   if(getenv("HOMEDRIVE") && getenv("HOMEPATH")){
-    char homedir[8000] = {0};
     strcat(homedir, getenv("HOMEDRIVE"));
     strcat(homedir, getenv("HOMEPATH"));
     struct stat sb = {0};

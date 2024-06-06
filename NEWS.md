@@ -1,3 +1,7 @@
+# gert 2.0.2
+
+- Workaround for accidental API change in libgit2 1.8.0
+
 # gert 2.0.1
 
 - Fix a printf warning for cran
