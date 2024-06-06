@@ -80,7 +80,7 @@ test_that("cherry-picking things", {
 
   # Cherry pick the commit onto main
   git_branch_checkout(mainbranch, repo = repo)
-  expect_equal(gert::git_log(repo=repo)$commit, first_commit)
+  expect_equal(git_log(repo=repo)$commit, first_commit)
   short_commit <- substr(commit, 1, 7)
   expect_equal(git_cherry_pick(short_commit, repo = repo), commit)
   expect_length(git_log(repo = repo)$commit, 2)
