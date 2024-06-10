@@ -15,6 +15,7 @@
 #' @family git
 #' @inheritParams git_open
 #' @param message a commit message
+#' @param ref revision string with a branch/tag/commit value
 #' @param author A [git_signature] value, default is [git_signature_default()].
 #' @param committer A [git_signature] value, default is same as `author`
 #' @return
@@ -204,7 +205,6 @@ git_ls <- function(repo = '.', ref = NULL){
 #' @export
 #' @rdname git_history
 #' @useDynLib gert R_git_commit_log
-#' @param ref revision string with a branch/tag/commit value
 #' @param max lookup at most latest n parent commits
 #' @param after date or timestamp: only include commits starting this date
 git_log <- function(ref = "HEAD", max = 100, after = NULL, repo = "."){

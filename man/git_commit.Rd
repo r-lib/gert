@@ -43,6 +43,8 @@ versions of gert may have additional parameters.}
 Use \code{NULL} or \code{NA} to show both (default).}
 
 \item{pathspec}{character vector with paths to match}
+
+\item{ref}{revision string with a branch/tag/commit value}
 }
 \value{
 \itemize{
