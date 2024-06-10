@@ -10,6 +10,7 @@
 
 #include <string.h>
 #include "utils.h"
+#include <Rversion.h>
 
 /* Workaround for performance bug: https://github.com/libgit2/libgit2/issues/5725 */
 #if AT_LEAST_LIBGIT2(0, 26)
@@ -199,8 +200,11 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
                                key_data.key_path, key_data.pass_phrase)){
         print_if_verbose("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
+#if R_VERSION < 263424
+        //TODO: better fallback for this non-API call in R 4.5....
       } else if(R_curErrorBuf()){
         snprintf(custom_callback_error, 999, "SSH authentication failure: %s", R_curErrorBuf());
+#endif
       }
     }
 
