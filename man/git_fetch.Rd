@@ -64,7 +64,7 @@ or password protected ssh keys. Defaults to \link[askpass:askpass]{askpass} whic
 checks \code{getOption('askpass')}.}
 
 \item{ssh_key}{path or object containing your ssh private key. By default we
-look for keys in \code{ssh-agent} and \link[credentials:ssh_credentials]{credentials::ssh_key_info}.}
+look for keys in \code{ssh-agent} and \code{\link[credentials:ssh_credentials]{credentials::ssh_key_info()}}.}
 
 \item{prune}{delete tracking branches that no longer exist on the remote, or
 are not in the refspec (such as pull requests).}
@@ -72,7 +72,7 @@ are not in the refspec (such as pull requests).}
 \item{verbose}{display some progress info while downloading}
 
 \item{repo}{The path to the git repository. If the directory is not a
-repository, parent directories are considered (see \link{git_find}). To disable
+repository, parent directories are considered (see \code{\link[=git_find]{git_find()}}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
@@ -98,7 +98,7 @@ private repos. You will be prompted for a password or pat when needed.}
 \item{rebase}{if TRUE we try to rebase instead of merge local changes. This
 is not possible in case of conflicts (you will get an error).}
 
-\item{...}{arguments passed to \link{git_fetch}}
+\item{...}{arguments passed to \code{git_fetch()}}
 }
 \description{
 Functions to connect with a git server (remote) to fetch or push changes.
@@ -148,6 +148,7 @@ Other git:
 \code{\link{git_commit}()},
 \code{\link{git_config}()},
 \code{\link{git_diff}()},
+\code{\link{git_history}},
 \code{\link{git_ignore}},
 \code{\link{git_merge}()},
 \code{\link{git_rebase}()},

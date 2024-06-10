@@ -19,10 +19,10 @@ git_ahead_behind(upstream = NULL, ref = "HEAD", repo = ".")
 \arguments{
 \item{upstream}{branch to which you want to rewind and re-apply your
 local commits. The default uses the remote upstream branch with the
-current state on the git server, simulating \link{git_pull}.}
+current state on the git server, simulating \code{\link[=git_pull]{git_pull()}}.}
 
 \item{repo}{The path to the git repository. If the directory is not a
-repository, parent directories are considered (see \link{git_find}). To disable
+repository, parent directories are considered (see \code{\link[=git_find]{git_find()}}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
@@ -32,18 +32,24 @@ versions of gert may have additional parameters.}
 \item{ref}{string with a branch/tag/commit}
 }
 \description{
-A cherry-pick applies the changes from a given commit (from another branch)
-onto the current branch. A rebase resets the branch to the state of another
-branch (upstream) and then re-applies your local changes by cherry-picking
-each of your local commits onto the upstream commit history.
+\itemize{
+\item \code{git_cherry_pick()} applies the changes from a given commit (from another branch)
+onto the current branch.
+*\code{git_rebase_commit()} resets the branch to the state of another branch (upstream)
+and then re-applies your local changes by cherry-picking each of your local
+commits onto the upstream commit history.
+*\code{git_rebase_list()} shows your local commits that are missing from the \code{upstream}
+history, and if they conflict with upstream changes.
+}
 }
 \details{
-\code{git_rebase_list} shows your local commits that are missing from the \code{upstream}
-history, and if they conflict with upstream changes. It does so by performing
-a rebase dry-run, without committing anything. If there are no conflicts, you
-can use \code{git_rebase_commit} to rewind and rebase your branch onto \code{upstream}.
+To find if your local commits are missing from \code{upstream},
+\code{git_rebase_list()} first performs a rebase dry-run, without committing
+anything. If there are no conflicts, you can use \code{git_rebase_commit()}
+to rewind and rebase your branch onto \code{upstream}.
+
 Gert only support a clean rebase; it never leaves the repository in unfinished
-"rebasing" state. If conflicts arise, \code{git_rebase_commit} will raise an error
+"rebasing" state. If conflicts arise, \code{git_rebase_commit()} will raise an error
 without making changes.
 }
 \seealso{
@@ -54,6 +60,7 @@ Other git:
 \code{\link{git_config}()},
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
+\code{\link{git_history}},
 \code{\link{git_ignore}},
 \code{\link{git_merge}()},
 \code{\link{git_remote}},
