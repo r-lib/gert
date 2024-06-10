@@ -13,7 +13,7 @@ Description: Simple git client for R based on 'libgit2' <https://libgit2.org> wi
     User credentials are shared with command line 'git' through the git-credential
     store and ssh keys stored on disk or ssh-agent.
 License: MIT + file LICENSE
-URL: https://docs.ropensci.org/gert/
+URL: https://docs.ropensci.org/gert/,
     https://ropensci.r-universe.dev/gert
 BugReports: https://github.com/r-lib/gert/issues
 Imports:
@@ -32,6 +32,6 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 SystemRequirements: libgit2 (>= 1.0): libgit2-devel (rpm) or libgit2-dev (deb)
 Language: en-US
