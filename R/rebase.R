@@ -26,7 +26,7 @@
 #' @family git
 #' @param upstream branch to which you want to rewind and re-apply your
 #' local commits. The default uses the remote upstream branch with the
-#' current state on the git server, simulating [git_pull].
+#' current state on the git server, simulating [git_pull()].
 #' @inheritParams git_open
 #' @inheritParams git_branch
 git_rebase_list <- function(upstream = NULL, repo = '.'){

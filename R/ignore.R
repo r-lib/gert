@@ -11,6 +11,7 @@
 #' @return A logical vector the same length as `path`, indicating if the
 #' paths would be ignored.
 #' @useDynLib gert R_git_ignore_path_is_ignored
+#' @seealso `usethis::use_git_ignore()` to add a path to `.gitignore`.
 git_ignore_path_is_ignored <- function(path, repo = '.') {
   repo <- git_open(repo)
   path <- as.character(path)
