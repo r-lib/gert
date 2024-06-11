@@ -1,6 +1,7 @@
 # gert 2.0.2
 
 - Workaround for accidental API change in libgit2 1.8.0
+- Disable a non-api call in R >= 4.5.0 for now
 
 # gert 2.0.1
 
