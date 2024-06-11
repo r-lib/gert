@@ -201,9 +201,13 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
         print_if_verbose("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
 #if R_VERSION < 263424
-        //TODO: better fallback for this non-API call in R 4.5....
       } else if(R_curErrorBuf()){
         snprintf(custom_callback_error, 999, "SSH authentication failure: %s", R_curErrorBuf());
+#else
+      } else {
+        SEXP errmsg = PROTECT(R_ParseEvalString("geterrmessage()", R_GlobalEnv));
+        snprintf(custom_callback_error, 999, "SSH authentication failure: %s", CHAR(STRING_ELT(errmsg, 0));
+        UNPROTECT(1)
 #endif
       }
     }
