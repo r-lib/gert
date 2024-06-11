@@ -138,10 +138,10 @@ git_push <- function(remote = NULL, refspec = NULL, set_upstream = NULL,
 #' private repos. You will be prompted for a password or pat when needed.
 #' @param path Directory of the Git repository to create.
 #' @param ssh_key path or object containing your ssh private key. By default we
-#' look for keys in `ssh-agent` and [credentials::ssh_key_info].
+#' look for keys in `ssh-agent` and [credentials::ssh_key_info()].
 #' @param branch name of branch to check out locally
 #' @param password a string or a callback function to get passwords for authentication
-#' or password protected ssh keys. Defaults to [askpass][askpass::askpass] which
+#' or password protected ssh keys. Defaults to [askpass][askpass::askpass()] which
 #' checks `getOption('askpass')`.
 #' @param verbose display some progress info while downloading
 #' @examples {# Clone a small repository
@@ -192,7 +192,7 @@ git_clone <- function(url, path = NULL, branch = NULL, password = askpass, ssh_k
 #' @rdname git_fetch
 #' @param rebase if TRUE we try to rebase instead of merge local changes. This
 #' is not possible in case of conflicts (you will get an error).
-#' @param ... arguments passed to [git_fetch]
+#' @param ... arguments passed to `git_fetch()`
 git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.'){
   repo <- git_open(repo)
   info <- git_info(repo)
