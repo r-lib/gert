@@ -173,7 +173,7 @@ static void checkout_progress(const char *path, size_t cur, size_t tot, void *pa
 static int auth_callback(git_cred **cred, const char *url, const char *username,
                                unsigned int allowed_types, void *payload){
   /* First get a username */
-  last_callback_error[0] = '\0';
+  strncpy(last_callback_error, "Authentication failure", 1000);
   auth_callback_data_t *cb_data = payload;
   const char * ssh_user = username ? username : "git";
   int verbose = cb_data->verbose;
@@ -238,7 +238,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   }
   print_if_verbose("All authentication methods failed\n");
 failure:
-  giterr_set_str(GIT_ERROR_CALLBACK, strlen(last_callback_error) ? last_callback_error : "Authentication failure");
+  giterr_set_str(GIT_ERROR_CALLBACK, last_callback_error);
   return GIT_EAUTH;
 }
 
