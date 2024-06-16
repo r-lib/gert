@@ -67,6 +67,7 @@ SEXP R_git_repository_path(SEXP ptr){
 SEXP R_git_repository_ls(SEXP ptr, SEXP ref){
   git_index *index = NULL;
   git_repository *repo = get_git_repository(ptr);
+  bail_if(git_repository_index(&index, repo), "git_repository_index");
   if(Rf_length(ref) && Rf_isString(ref)){
     git_object *revision = resolve_refish(ref, repo);
     git_commit *commit = NULL;
@@ -74,12 +75,9 @@ SEXP R_git_repository_ls(SEXP ptr, SEXP ref){
     bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
     git_object_free(revision);
     bail_if(git_commit_tree(&tree, commit), "git_commit_tree");
-    bail_if(git_index_new(&index), "git_index_new");
     bail_if(git_index_read_tree(index, tree), "git_index_read_tree");
     git_commit_free(commit);
     git_tree_free(tree);
-  } else {
-    bail_if(git_repository_index(&index, repo), "git_repository_index");
   }
 
   size_t entry_count = git_index_entrycount(index);

@@ -28,12 +28,14 @@ extern SEXP R_git_commit_descendant(SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_id(SEXP, SEXP);
 extern SEXP R_git_commit_info(SEXP, SEXP);
 extern SEXP R_git_commit_log(SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_commit_stats(SEXP, SEXP);
 extern SEXP R_git_config_list(SEXP);
 extern SEXP R_git_config_set(SEXP, SEXP, SEXP);
 extern SEXP R_git_conflict_list(SEXP);
 extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_delete_branch(SEXP, SEXP);
 extern SEXP R_git_diff_list(SEXP, SEXP);
+extern SEXP R_git_ignore_path_is_ignored(SEXP ptr, SEXP path);
 extern SEXP R_git_merge_analysis(SEXP, SEXP);
 extern SEXP R_git_merge_cleanup(SEXP);
 extern SEXP R_git_merge_find_base(SEXP, SEXP, SEXP);
@@ -100,12 +102,14 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_commit_id",           (DL_FUNC) &R_git_commit_id,           2},
   {"R_git_commit_info",         (DL_FUNC) &R_git_commit_info,         2},
   {"R_git_commit_log",          (DL_FUNC) &R_git_commit_log,          4},
+  {"R_git_commit_stats",        (DL_FUNC) &R_git_commit_stats,        2},
   {"R_git_config_list",         (DL_FUNC) &R_git_config_list,         1},
   {"R_git_config_set",          (DL_FUNC) &R_git_config_set,          3},
   {"R_git_conflict_list",       (DL_FUNC) &R_git_conflict_list,       1},
   {"R_git_create_branch",       (DL_FUNC) &R_git_create_branch,       4},
   {"R_git_delete_branch",       (DL_FUNC) &R_git_delete_branch,       2},
   {"R_git_diff_list",           (DL_FUNC) &R_git_diff_list,           2},
+  {"R_git_ignore_path_is_ignored", (DL_FUNC) &R_git_ignore_path_is_ignored, 2},
   {"R_git_merge_analysis",      (DL_FUNC) &R_git_merge_analysis,      2},
   {"R_git_merge_cleanup",       (DL_FUNC) &R_git_merge_cleanup,       1},
   {"R_git_merge_find_base",     (DL_FUNC) &R_git_merge_find_base,     3},
@@ -161,9 +165,9 @@ static const R_CallMethodDef CallEntries[] = {
 attribute_visible void R_init_gert(DllInfo *dll) {
   git_libgit2_init();
 #ifdef _WIN32
+  char homedir[8000] = {0};
   const char *userprofile = getenv("USERPROFILE");
   if(getenv("HOMEDRIVE") && getenv("HOMEPATH")){
-    char homedir[8000] = {0};
     strcat(homedir, getenv("HOMEDRIVE"));
     strcat(homedir, getenv("HOMEPATH"));
     struct stat sb = {0};

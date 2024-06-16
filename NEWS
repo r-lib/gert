@@ -1,3 +1,21 @@
+2.0.2
+  - Workaround for accidental API change in libgit2 1.8.0
+  - Disable a non-api call in R >= 4.5.0 for now
+
+2.0.1
+  - Fix a printf warning for cran
+
+2.0.0
+  - Windows: update to libgit2-1.7.1 + libssh-1.11.0 + openssl-3.1.2
+
+1.9.3
+  - Add git_commit_stats() function
+  - Add git_ignore_path_is_ignored() function
+  - Fix protect bug in git_submodule_list()
+
+1.9.2
+  - Replace sprintf with snprintf for CRAN
+
 1.9.1
   - Fix the Wstrict-prototype warnings
   - Use special static libgit2 bundle for openssl-3 distros.

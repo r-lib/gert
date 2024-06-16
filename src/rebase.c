@@ -81,7 +81,6 @@ static int count_changes(git_repository *repo){
 }
 
 SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
-  git_oid oid = {{0}};
   git_oid tree_id = {{0}};
   git_tree *tree = NULL;
   git_index *index = NULL;
@@ -89,8 +88,8 @@ SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
   git_repository *repo = get_git_repository(ptr);
   git_cherrypick_options opt = GIT_CHERRYPICK_OPTIONS_INIT;
   opt.merge_opts.flags = GIT_MERGE_FAIL_ON_CONFLICT;
-  bail_if(git_oid_fromstr(&oid, CHAR(STRING_ELT(commit_id, 0))), "git_oid_fromstr");
-  bail_if(git_commit_lookup(&orig, repo, &oid), "git_commit_lookup");
+  git_object *revision = resolve_refish(commit_id, repo);
+  bail_if(git_commit_lookup(&orig, repo, git_object_id(revision)), "git_commit_lookup");
   bail_if(git_cherrypick(repo, orig, &opt), "git_cherrypick");
   bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
   git_oid new_oid = {{0}};
@@ -108,8 +107,9 @@ SEXP R_git_cherry_pick(SEXP ptr, SEXP commit_id){
   bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");
   bail_if(git_commit_create(&new_oid, repo, "HEAD", git_commit_author(orig),
                             git_commit_committer(orig), git_commit_message_encoding(orig),
-                            git_commit_message(orig), tree, 1, parents), "git_commit_create");
+                            git_commit_message(orig), tree, 1, no_const_workaround parents), "git_commit_create");
   bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
+  git_object_free(revision);
   git_reference_free(head);
   git_commit_free(parent);
   git_index_free(index);

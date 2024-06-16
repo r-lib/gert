@@ -30,13 +30,26 @@ git_open <- function(repo = '.'){
   }
   search <- !inherits(repo, 'AsIs')
   path <- normalizePath(path.expand(repo), mustWork = FALSE)
-  out <- .Call(R_git_repository_open, path, search)
+  out <- git_repository_open(path, search)
   if(is_rstudio_ide()){
     cl <- substitute(rstudioapi::executeCommand("vcsRefresh"))
     do.call(on.exit, list(cl, add = TRUE), envir = parent.frame())
   }
   return(out)
 }
+
+
+git_repository_open <- local({
+  cache <- new.env(parent = emptyenv())
+  function(path, search){
+    key <- digest(list(path, search))
+    if(!exists(key, envir = cache) || !isTRUE(getOption('gert.use.repo.cache'))){
+      val <- .Call(R_git_repository_open, path, search)
+      assign(key, val, envir = cache)
+    }
+    get0(key, cache)
+  }
+})
 
 is_rstudio_ide <- function(){
   interactive() && identical(Sys.getenv('RSTUDIO'), '1') &&
@@ -58,4 +71,8 @@ print.git_repo_ptr <- function(x, ...){
 #' @useDynLib gert R_git_repository_path
 git_repo_path <- function(repo){
   invisible(.Call(R_git_repository_path, repo))
+}
+
+digest <- function(x){
+  as.character(openssl::sha1(serialize(x, NULL)))
 }

@@ -23,4 +23,11 @@ git_commit *ref_to_commit(SEXP ref, git_repository *repo);
 
 #define AT_LEAST_LIBGIT2(x,y) (LIBGIT2_VER_MAJOR > x || LIBGIT2_VER_MINOR >= y)
 
+/* See: https://github.com/libgit2/libgit2/issues/6793 */
+#if AT_LEAST_LIBGIT2(1,8)
+#define no_const_workaround (git_commit **)
+#else
+#define no_const_workaround
+#endif
+
 void set_checkout_notify_cb(git_checkout_options *opts);

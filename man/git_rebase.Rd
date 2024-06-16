@@ -4,9 +4,6 @@
 \alias{git_rebase}
 \alias{git_rebase_list}
 \alias{git_rebase_commit}
-\alias{git_reset_hard}
-\alias{git_reset_soft}
-\alias{git_reset_mixed}
 \alias{git_cherry_pick}
 \alias{git_ahead_behind}
 \title{Cherry-Pick and Rebase}
@@ -14,12 +11,6 @@
 git_rebase_list(upstream = NULL, repo = ".")
 
 git_rebase_commit(upstream = NULL, repo = ".")
-
-git_reset_hard(ref = "HEAD", repo = ".")
-
-git_reset_soft(ref = "HEAD", repo = ".")
-
-git_reset_mixed(ref = "HEAD", repo = ".")
 
 git_cherry_pick(commit, repo = ".")
 
@@ -36,9 +27,9 @@ this search, provide the filepath protected with \code{\link[=I]{I()}}. When usi
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
 
-\item{ref}{string with a branch/tag/commit}
-
 \item{commit}{id of the commit to cherry pick}
+
+\item{ref}{string with a branch/tag/commit}
 }
 \description{
 A cherry-pick applies the changes from a given commit (from another branch)
@@ -63,9 +54,11 @@ Other git:
 \code{\link{git_config}()},
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
+\code{\link{git_ignore}},
 \code{\link{git_merge}()},
 \code{\link{git_remote}},
 \code{\link{git_repo}},
+\code{\link{git_reset}()},
 \code{\link{git_signature}()},
 \code{\link{git_stash}},
 \code{\link{git_tag}}

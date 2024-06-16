@@ -1,5 +1,4 @@
-VERSION = 1.4.2-fixed
-RWINLIB = ../windows/libgit2-$(VERSION)
+RWINLIB = ../windows/libgit2
 TARGET = lib$(subst gcc,,$(COMPILED_BY))$(R_ARCH)
 
 PKG_CPPFLAGS = -I$(RWINLIB)/include \
@@ -7,14 +6,14 @@ PKG_CPPFLAGS = -I$(RWINLIB)/include \
 
 PKG_LIBS = \
 	-L$(RWINLIB)/$(TARGET) \
-	-L$(RWINLIB)/lib$(R_ARCH) \
-	-lgit2 -lssh2 -lz -lssl -lcrypto -liconv \
-	-lwinhttp -lws2_32 -lcrypt32 -lole32 -lrpcrt4
+	-L$(RWINLIB)/lib \
+	-lgit2 -lssh2 -lssl -lcrypto -lz -liconv \
+	-lwinhttp -lws2_32 -lcrypt32 -lole32 -lrpcrt4 -lsecur32
 
 all: clean winlibs
 
 winlibs:
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" $(VERSION)
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
 
 clean:
 	rm -f $(SHLIB) $(OBJECTS)

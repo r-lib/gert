@@ -159,7 +159,7 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
   bail_if(git_index_write_tree(&tree_id, index), "git_index_write_tree");
   bail_if(git_tree_lookup(&tree, repo, &tree_id), "git_tree_lookup");
   bail_if(git_commit_create(&commit_id, repo, "HEAD", authsig, commitsig, "UTF-8",
-                            msg.ptr, tree, number_parents, parents), "git_commit_create");
+                            msg.ptr, tree, number_parents, no_const_workaround parents), "git_commit_create");
   if(number_parents > 1)
     bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
   free_commit_list(parents, number_parents);
@@ -288,6 +288,26 @@ SEXP R_git_commit_id(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = ref_to_commit(ref, repo);
   return safe_string(git_oid_tostr_s(git_commit_id(commit)));
+}
+
+SEXP R_git_commit_stats(SEXP ptr, SEXP ref){
+  git_repository *repo = get_git_repository(ptr);
+  git_commit *commit = ref_to_commit(ref, repo);
+  git_diff *diff = commit_to_diff(repo, commit);
+  if(diff){
+    git_diff_stats *stats = NULL;
+    if(!git_diff_get_stats(&stats, diff) && stats){
+      SEXP id = PROTECT(safe_string(git_oid_tostr_s(git_commit_id(commit))));
+      SEXP statsfiles = PROTECT(Rf_ScalarInteger(git_diff_stats_files_changed(stats)));
+      SEXP insertions = PROTECT(Rf_ScalarInteger(git_diff_stats_insertions(stats)));
+      SEXP deletions = PROTECT(Rf_ScalarInteger(git_diff_stats_deletions(stats)));
+      git_diff_stats_free(stats);
+      SEXP out = build_list(4,"id", id, "files", statsfiles, "insertions", insertions, "deletions", deletions);
+      UNPROTECT(4);
+      return out;
+    }
+  }
+  return R_NilValue;
 }
 
 SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
