@@ -87,7 +87,7 @@ static int get_key_files(SEXP cb, auth_key_data *out, int verbose){
                        R_tryEvalSilent(call, R_GlobalEnv, &err));
   if(err || !Rf_isString(res)){
     if(res && Rf_inherits(res, "try-error")){
-      char custom_callback_error[1000] = {0};
+      static char custom_callback_error[1000] = {0};
       snprintf(custom_callback_error, 999, "SSH authentication failure: %s", CHAR(STRING_ELT(res, 0)));
       giterr_set_str(GIT_ERROR_CALLBACK, custom_callback_error);
     }
