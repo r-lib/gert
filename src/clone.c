@@ -89,8 +89,6 @@ static int get_key_files(SEXP cb, auth_key_data *out, int verbose){
   if(err || !Rf_isString(res)){
     if(res && Rf_inherits(res, "try-error")){
       snprintf(custom_callback_error, 999, "SSH authentication failure: %s", CHAR(STRING_ELT(res, 0)));
-    } else {
-      strncpy(custom_callback_error, "Authentication failure", 23);
     }
     UNPROTECT(2);
     return -1;
@@ -177,6 +175,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   auth_callback_data_t *cb_data = payload;
   const char * ssh_user = username ? username : "git";
   int verbose = cb_data->verbose;
+  strncpy(custom_callback_error, "Authentication failure", 23);
 
 #if AT_LEAST_LIBGIT2(0, 20)
 
