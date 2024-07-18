@@ -93,7 +93,7 @@ static int get_key_files(SEXP cb, auth_key_data *out, int verbose){
     return -1;
   }
   if(err || !Rf_isString(res)){
-    giterr_set_str(GIT_ERROR_CALLBACK, "Unknown SSH authentication failure");
+    giterr_set_str(GIT_ERROR_CALLBACK, "Failed to read local SSH key from callback function");
     UNPROTECT(2);
     return -1;
   }
