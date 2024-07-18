@@ -78,14 +78,20 @@ static char* get_password(SEXP cb, const char *url, const char **username, int r
   return strdup(CHAR(STRING_ELT(res, 1)));
 }
 
+char custom_callback_error[1000] = {0};
 static int get_key_files(SEXP cb, auth_key_data *out, int verbose){
   if(!Rf_isFunction(cb))
     Rf_error("cb must be a function");
-  int err;
+  int err = 0;
   SEXP call = PROTECT(Rf_lcons(cb, R_NilValue));
   SEXP res = PROTECT(verbose ? R_tryEval(call, R_GlobalEnv, &err) :
                        R_tryEvalSilent(call, R_GlobalEnv, &err));
   if(err || !Rf_isString(res)){
+    if(res && Rf_inherits(res, "try-error")){
+      snprintf(custom_callback_error, 999, "SSH authentication failure: %s", CHAR(STRING_ELT(res, 0)));
+    } else {
+      strncpy(custom_callback_error, "Authentication failure", 23);
+    }
     UNPROTECT(2);
     return -1;
   }
@@ -171,7 +177,6 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   auth_callback_data_t *cb_data = payload;
   const char * ssh_user = username ? username : "git";
   int verbose = cb_data->verbose;
-  char custom_callback_error[1000] = "Authentication failure";
 
 #if AT_LEAST_LIBGIT2(0, 20)
 
@@ -200,11 +205,6 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
                                key_data.key_path, key_data.pass_phrase)){
         print_if_verbose("Trying to authenticate '%s' using provided ssh-key...\n", ssh_user);
         return 0;
-#if R_VERSION < 263424
-        //TODO: better fallback for this non-API call in R 4.5....
-      } else if(R_curErrorBuf()){
-        snprintf(custom_callback_error, 999, "SSH authentication failure: %s", R_curErrorBuf());
-#endif
       }
     }
 

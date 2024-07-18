@@ -3,28 +3,30 @@
 #' @importFrom askpass askpass
 make_key_cb <- function(ssh_key = NULL, host = NULL, password = askpass){
   function(){
-    if(is.null(ssh_key)){
-      ssh_key <- try(ssh_key_info(host = host, auto_keygen = FALSE)$key)
-      if(inherits(ssh_key, "try-error"))
-        return(NULL)
-    }
-    key <- tryCatch(ssh_read_key(ssh_key, password = password), error = function(e){
-      stop(sprintf("Unable to load key: %s", ssh_key), call. = FALSE)
-    })
-    # NB: need to add ID for buggy libssh2: https://github.com/libgit2/libgit2/issues/5162
-    writeLines(paste(write_ssh(key$pubkey), "git@localhost"), tmp_pub <- tempfile())
+    try({
+      if(is.null(ssh_key)){
+        ssh_key <- try(ssh_key_info(host = host, auto_keygen = FALSE)$key)
+        if(inherits(ssh_key, "try-error"))
+          return(NULL)
+      }
+      key <- tryCatch(ssh_read_key(ssh_key, password = password), error = function(e){
+        stop(sprintf("Unable to load key: %s", ssh_key), call. = FALSE)
+      })
+      # NB: need to add ID for buggy libssh2: https://github.com/libgit2/libgit2/issues/5162
+      writeLines(paste(write_ssh(key$pubkey), "git@localhost"), tmp_pub <- tempfile())
 
-    # NB: pkcs1 is the only format that works on all libssh2 configurations
-    tmp_key <- if(inherits(key, c("rsa", "dsa", "ecdsa"))){
-      write_pkcs1(key, tempfile())
-    } else {
-      write_openssh_pem(key, tempfile())
-    }
-    if(.Platform$OS.type == "unix"){
-      Sys.chmod(tmp_pub, '0644')
-      Sys.chmod(tmp_key, '0400')
-    }
-    c(tmp_pub, tmp_key, "")
+      # NB: pkcs1 is the only format that works on all libssh2 configurations
+      tmp_key <- if(inherits(key, c("rsa", "dsa", "ecdsa"))){
+        write_pkcs1(key, tempfile())
+      } else {
+        write_openssh_pem(key, tempfile())
+      }
+      if(.Platform$OS.type == "unix"){
+        Sys.chmod(tmp_pub, '0644')
+        Sys.chmod(tmp_key, '0400')
+      }
+      c(tmp_pub, tmp_key, "")
+    })
   }
 }
 
