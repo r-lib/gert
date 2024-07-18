@@ -1,6 +1,7 @@
-2.0.2
+2.1.0
   - Workaround for accidental API change in libgit2 1.8.0
-  - Disable a non-api call in R >= 4.5.0 for now
+  - Refactor authentication callbacks to work around new "non-api"
+    calls in R >= 4.5.0. Hopefully no breakage.
 
 2.0.1
   - Fix a printf warning for cran
