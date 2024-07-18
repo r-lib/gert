@@ -179,7 +179,8 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   auth_callback_data_t *cb_data = payload;
   const char * ssh_user = username ? username : "git";
   int verbose = cb_data->verbose;
-  git_error_clear();
+  giterr_clear();
+
 
 #if AT_LEAST_LIBGIT2(0, 20)
 
