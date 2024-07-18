@@ -85,14 +85,15 @@ static int get_key_files(SEXP cb, auth_key_data *out, int verbose){
   SEXP call = PROTECT(Rf_lcons(cb, R_NilValue));
   SEXP res = PROTECT(verbose ? R_tryEval(call, R_GlobalEnv, &err) :
                        R_tryEvalSilent(call, R_GlobalEnv, &err));
+  if(res && Rf_inherits(res, "try-error")){
+    static char custom_callback_error[1000] = {0};
+    snprintf(custom_callback_error, 999, "SSH authentication failure: %s", CHAR(STRING_ELT(res, 0)));
+    giterr_set_str(GIT_ERROR_CALLBACK, custom_callback_error);
+    UNPROTECT(2);
+    return -1;
+  }
   if(err || !Rf_isString(res)){
-    if(res && Rf_inherits(res, "try-error")){
-      static char custom_callback_error[1000] = {0};
-      snprintf(custom_callback_error, 999, "SSH authentication failure: %s", CHAR(STRING_ELT(res, 0)));
-      giterr_set_str(GIT_ERROR_CALLBACK, custom_callback_error);
-    } else {
-      giterr_set_str(GIT_ERROR_CALLBACK, "SSH authentication failure");
-    }
+    giterr_set_str(GIT_ERROR_CALLBACK, "Unknown SSH authentication failure");
     UNPROTECT(2);
     return -1;
   }
