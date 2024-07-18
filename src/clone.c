@@ -90,6 +90,8 @@ static int get_key_files(SEXP cb, auth_key_data *out, int verbose){
       static char custom_callback_error[1000] = {0};
       snprintf(custom_callback_error, 999, "SSH authentication failure: %s", CHAR(STRING_ELT(res, 0)));
       giterr_set_str(GIT_ERROR_CALLBACK, custom_callback_error);
+    } else {
+      giterr_set_str(GIT_ERROR_CALLBACK, "SSH authentication failure");
     }
     UNPROTECT(2);
     return -1;
@@ -176,7 +178,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   auth_callback_data_t *cb_data = payload;
   const char * ssh_user = username ? username : "git";
   int verbose = cb_data->verbose;
-  giterr_set_str(GIT_ERROR_CALLBACK, "Authentication failure");
+  git_error_clear();
 
 #if AT_LEAST_LIBGIT2(0, 20)
 
@@ -230,6 +232,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
       char *pass = get_password(cb_data->getcred, url, &username, cb_data->retries);
       if(!username || !pass){
         print_if_verbose("Credential lookup failed\n");
+        giterr_set_str(GIT_ERROR_CALLBACK, "HTTPS Authentication failure");
         goto failure;
       } else {
         return git_cred_userpass_plaintext_new(cred, username, pass);
