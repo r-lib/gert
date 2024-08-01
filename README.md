@@ -8,7 +8,7 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![runiverse-name](https://ropensci.r-universe.dev/badges/:name)
 ![runiverse-package](https://ropensci.r-universe.dev/badges/gert)
-![cran-badge](http://www.r-pkg.org/badges/version/gert)
+![cran-badge](https://www.r-pkg.org/badges/version/gert)
 [![R-CMD-check](https://github.com/r-lib/gert/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/gert/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
