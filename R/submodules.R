@@ -1,6 +1,7 @@
 #' Submodules
 #'
-#' Interact with submodules in the repository.
+#' Interact with [submodules](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules)
+#' in the repository.
 #'
 #' @export
 #' @rdname git_submodule
@@ -58,7 +59,7 @@ git_submodule_set_to <- function(submodule, ref, checkout = TRUE, repo = '.'){
 #' @param url full git url of the submodule
 #' @param path relative of the submodule
 #' @param ref a branch or tag or hash with
-#' @param ... extra arguments for [git_fetch] for authentication things
+#' @param ... extra arguments for [git_fetch()] for authentication things
 git_submodule_add <- function(url, path = basename(url), ref = 'HEAD', ..., repo = '.'){
   if(!is_a_hash(ref)){
     upstream_refs <- git_remote_ls(url, ..., repo = repo)

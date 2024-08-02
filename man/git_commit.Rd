@@ -2,81 +2,53 @@
 % Please edit documentation in R/commit.R
 \name{git_commit}
 \alias{git_commit}
-\alias{git_commit_all}
-\alias{git_commit_info}
-\alias{git_commit_id}
-\alias{git_commit_stats}
-\alias{git_commit_descendant_of}
 \alias{git_add}
 \alias{git_rm}
+\alias{git_commit_all}
 \alias{git_status}
-\alias{git_conflicts}
 \alias{git_ls}
-\alias{git_log}
-\alias{git_stat_files}
 \title{Stage and commit changes}
 \usage{
-git_commit(message, author = NULL, committer = NULL, repo = ".")
-
-git_commit_all(message, author = NULL, committer = NULL, repo = ".")
-
-git_commit_info(ref = "HEAD", repo = ".")
-
-git_commit_id(ref = "HEAD", repo = ".")
-
-git_commit_stats(ref = "HEAD", repo = ".")
-
-git_commit_descendant_of(ancestor, ref = "HEAD", repo = ".")
-
 git_add(files, force = FALSE, repo = ".")
 
 git_rm(files, repo = ".")
 
+git_commit(message, author = NULL, committer = NULL, repo = ".")
+
+git_commit_all(message, author = NULL, committer = NULL, repo = ".")
+
 git_status(staged = NULL, pathspec = NULL, repo = ".")
 
-git_conflicts(repo = ".")
-
 git_ls(repo = ".", ref = NULL)
-
-git_log(ref = "HEAD", max = 100, after = NULL, repo = ".")
-
-git_stat_files(files, ref = "HEAD", repo = ".")
 }
 \arguments{
+\item{files}{vector of paths relative to the git root directory.
+Use \code{"."} to stage all changed files.}
+
+\item{force}{add files even if in gitignore}
+
+\item{repo}{The path to the git repository. If the directory is not a
+repository, parent directories are considered (see \code{\link[=git_find]{git_find()}}). To disable
+this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
+parameter, always explicitly call by name (i.e. \verb{repo = }) because future
+versions of gert may have additional parameters.}
+
 \item{message}{a commit message}
 
 \item{author}{A \link{git_signature} value, default is \code{\link[=git_signature_default]{git_signature_default()}}.}
 
 \item{committer}{A \link{git_signature} value, default is same as \code{author}}
 
-\item{repo}{The path to the git repository. If the directory is not a
-repository, parent directories are considered (see \link{git_find}). To disable
-this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
-parameter, always explicitly call by name (i.e. \verb{repo = }) because future
-versions of gert may have additional parameters.}
-
-\item{ref}{revision string with a branch/tag/commit value}
-
-\item{ancestor}{a reference to a potential ancestor commit}
-
-\item{files}{vector of paths relative to the git root directory.
-Use \code{"."} to stage all changed files.}
-
-\item{force}{add files even if in gitignore}
-
 \item{staged}{return only staged (TRUE) or unstaged files (FALSE).
 Use \code{NULL} or \code{NA} to show both (default).}
 
 \item{pathspec}{character vector with paths to match}
 
-\item{max}{lookup at most latest n parent commits}
-
-\item{after}{date or timestamp: only include commits starting this date}
+\item{ref}{revision string with a branch/tag/commit value}
 }
 \value{
 \itemize{
 \item \code{git_status()}, \code{git_ls()}: A data frame with one row per file
-\item \code{git_log()}: A data frame with one row per commit
 \item \code{git_commit()}, \code{git_commit_all()}: A SHA
 }
 }
@@ -90,9 +62,6 @@ with currently staged files.
 commits all modified files. Note that \code{git_commit_all()} does \strong{not} add
 new, untracked files to the repository. You need to make an explicit call to
 \code{git_add()} to start tracking new files.
-
-\code{git_log()} shows the most recent commits and \code{git_ls()} lists all the files
-that are being tracked in the repository. \code{git_stat_files()}
 }
 \examples{
 oldwd <- getwd()
@@ -135,6 +104,7 @@ Other git:
 \code{\link{git_config}()},
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
+\code{\link{git_history}},
 \code{\link{git_ignore}},
 \code{\link{git_merge}()},
 \code{\link{git_rebase}()},
