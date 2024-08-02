@@ -40,7 +40,7 @@
 
 1.7.0
   - git_status() gains parameter pathspec
-  - git_ls() gains paremeter 'ref' and works with bare repositories
+  - git_ls() gains parameter 'ref' and works with bare repositories
 
 1.6.0
   - We recommend at least libgit2 1.0 now
@@ -75,7 +75,7 @@
 
 1.3.1
   - Windows: fix build for ucrt toolchains
-  - Solaris: disable https cert verfication
+  - Solaris: disable https cert verification
 
 1.3.0
   - Some encoding fixes for latin1 paths, especially non-ascii Windows usernames.

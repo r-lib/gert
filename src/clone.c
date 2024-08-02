@@ -226,7 +226,7 @@ static int auth_callback(git_cred **cred, const char *url, const char *username,
   /* This is for HTTP remotes */
   if(allowed_types & GIT_CREDTYPE_USERPASS_PLAINTEXT){
     if(cb_data->retries > 3){
-      print_if_verbose("Failed password authentiation %d times. Giving up\n", cb_data->retries - 1);
+      print_if_verbose("Failed password authentication %d times. Giving up\n", cb_data->retries - 1);
       cb_data->retries = 0;
     } else {
       cb_data->retries++;
