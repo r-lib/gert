@@ -156,5 +156,5 @@ We provide prebuilt versions of libgit2 for Windows, MacOS and Linux-x86_64 that
   * [libgit2-dev](https://packages.ubuntu.com/focal/libgit2-dev) on Debian/Ubuntu
   * [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2) on Fedora
   * [libgit2](https://archlinux.org/packages/extra/x86_64/libgit2) on Arch Linux
-  * [Homebrew libgit2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/libgit2.rb) on macOS
+  * [Homebrew libgit2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/lib/libgit2.rb) on macOS
   * [rtools40 libgit2](https://github.com/r-windows/rtools-packages/blob/master/mingw-w64-libgit2/PKGBUILD) on Windows
