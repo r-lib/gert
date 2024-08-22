@@ -13,8 +13,7 @@ Simple git client for R based on 'libgit2' \url{https://libgit2.org} with suppor
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://docs.ropensci.org/gert/}
-  \item \url{https://github.com/r-lib/gert}
+  \item \url{https://docs.ropensci.org/gert/ https://ropensci.r-universe.dev/gert}
   \item Report bugs at \url{https://github.com/r-lib/gert/issues}
 }
 
