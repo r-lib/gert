@@ -1,3 +1,6 @@
+2.1.1
+  - No visible changes
+
 2.1.0
   - Workaround for accidental API change in libgit2 1.8.0
   - Refactor authentication callbacks to work around new "non-api"

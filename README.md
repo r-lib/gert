@@ -8,7 +8,7 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 ![runiverse-name](https://ropensci.r-universe.dev/badges/:name)
 ![runiverse-package](https://ropensci.r-universe.dev/badges/gert)
-![cran-badge](http://www.r-pkg.org/badges/version/gert)
+![cran-badge](https://www.r-pkg.org/badges/version/gert)
 [![R-CMD-check](https://github.com/r-lib/gert/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/gert/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -156,5 +156,5 @@ We provide prebuilt versions of libgit2 for Windows, MacOS and Linux-x86_64 that
   * [libgit2-dev](https://packages.ubuntu.com/focal/libgit2-dev) on Debian/Ubuntu
   * [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2) on Fedora
   * [libgit2](https://archlinux.org/packages/extra/x86_64/libgit2) on Arch Linux
-  * [Homebrew libgit2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/libgit2.rb) on macOS
+  * [Homebrew libgit2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/lib/libgit2.rb) on macOS
   * [rtools40 libgit2](https://github.com/r-windows/rtools-packages/blob/master/mingw-w64-libgit2/PKGBUILD) on Windows

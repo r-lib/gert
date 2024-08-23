@@ -60,9 +60,9 @@ git_rebase <- function(upstream, commit_changes, repo){
 
 #' Reset your repo to a previous state
 #'
-#' * `git_reset_hard()` reverts to a point in history
-#' * `git_reset_soft()` uncommits changes, but keeps the chsange uncommited
-#' * `git_reset_mixed()` performs a simple `git reset`.
+#' * `git_reset_hard()` resets the index and working tree
+#' * `git_reset_soft()` does not touch the index file or the working tree
+#' * `git_reset_mixed()` resets the index but not the working tree.
 #'
 #' @family git
 #' @inheritParams git_rebase

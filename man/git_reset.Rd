@@ -24,9 +24,9 @@ versions of gert may have additional parameters.}
 }
 \description{
 \itemize{
-\item \code{git_reset_hard()} reverts to a point in history
-\item \code{git_reset_soft()} uncommits changes, but keeps the chsange uncommited
-\item \code{git_reset_mixed()} performs a simple \verb{git reset}.
+\item \code{git_reset_hard()} resets the index and working tree
+\item \code{git_reset_soft()} does not touch the index file or the working tree
+\item \code{git_reset_mixed()} resets the index but not the working tree.
 }
 }
 \seealso{
