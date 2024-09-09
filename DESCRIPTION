@@ -3,9 +3,9 @@ Package: gert
 Title: Simple Git Client for R
 Version: 2.1.2
 Authors@R: c(
-    person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroen@berkeley.edu",
+    person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroenooms@gmail.com",
       comment = c(ORCID = "0000-0002-4035-0289")),
-    person("Jennifer", "Bryan", role = "ctb", email = "jenny@rstudio.com",
+    person("Jennifer", "Bryan", role = "ctb", email = "jenny@posit.co",
       comment = c(ORCID = "0000-0002-6983-2759")))
 Description: Simple git client for R based on 'libgit2' <https://libgit2.org> with
     support for SSH and HTTPS remotes. All functions in 'gert' use basic R data 
