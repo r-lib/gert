@@ -79,5 +79,7 @@ remote_to_host <- function(repo, remote){
 }
 
 url_to_host <- function(url){
-  credentials:::parse_url(url, allow_ssh = TRUE)[['host']]
+  #credentials:::parse_url(url, allow_ssh = TRUE)[['host']]
+  parse_url <- getFromNamespace('parse_url', 'credentials')
+  parse_url(url, allow_ssh = TRUE)[['host']]
 }
