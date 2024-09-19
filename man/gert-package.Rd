@@ -20,11 +20,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jeroen Ooms \email{jeroen@berkeley.edu} (\href{https://orcid.org/0000-0002-4035-0289}{ORCID})
+\strong{Maintainer}: Jeroen Ooms \email{jeroenooms@gmail.com} (\href{https://orcid.org/0000-0002-4035-0289}{ORCID})
 
 Other contributors:
 \itemize{
-  \item Jennifer Bryan \email{jenny@rstudio.com} (\href{https://orcid.org/0000-0002-6983-2759}{ORCID}) [contributor]
+  \item Jennifer Bryan \email{jenny@posit.co} (\href{https://orcid.org/0000-0002-6983-2759}{ORCID}) [contributor]
 }
 
 }
