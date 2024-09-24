@@ -32,7 +32,7 @@ extern SEXP R_git_commit_stats(SEXP, SEXP);
 extern SEXP R_git_config_list(SEXP);
 extern SEXP R_git_config_set(SEXP, SEXP, SEXP);
 extern SEXP R_git_conflict_list(SEXP);
-extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_delete_branch(SEXP, SEXP);
 extern SEXP R_git_diff_list(SEXP, SEXP);
 extern SEXP R_git_ignore_path_is_ignored(SEXP ptr, SEXP path);
@@ -106,7 +106,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_config_list",         (DL_FUNC) &R_git_config_list,         1},
   {"R_git_config_set",          (DL_FUNC) &R_git_config_set,          3},
   {"R_git_conflict_list",       (DL_FUNC) &R_git_conflict_list,       1},
-  {"R_git_create_branch",       (DL_FUNC) &R_git_create_branch,       4},
+  {"R_git_create_branch",       (DL_FUNC) &R_git_create_branch,       5},
   {"R_git_delete_branch",       (DL_FUNC) &R_git_delete_branch,       2},
   {"R_git_diff_list",           (DL_FUNC) &R_git_diff_list,           2},
   {"R_git_ignore_path_is_ignored", (DL_FUNC) &R_git_ignore_path_is_ignored, 2},

@@ -58,12 +58,14 @@ git_branch_checkout <- function(branch, force = FALSE, orphan = FALSE, repo = '.
 #' @useDynLib gert R_git_create_branch
 #' @param ref string with a branch/tag/commit
 #' @param checkout move HEAD to the newly created branch
-git_branch_create <- function(branch, ref = "HEAD", checkout = TRUE, repo = '.'){
+#' @param force overwrite existing branch
+git_branch_create <- function(branch, ref = "HEAD", checkout = TRUE, force = FALSE, repo = '.'){
   repo <- git_open(repo)
   branch <- as.character(branch)
   ref <- as.character(ref)
   checkout <- as.logical(checkout)
-  invisible(.Call(R_git_create_branch, repo, branch, ref, checkout))
+  force <- as.logical(force)
+  invisible(.Call(R_git_create_branch, repo, branch, ref, checkout, force))
 }
 
 #' @export
