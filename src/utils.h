@@ -24,7 +24,7 @@ git_commit *ref_to_commit(SEXP ref, git_repository *repo);
 #define AT_LEAST_LIBGIT2(x,y) (LIBGIT2_VER_MAJOR > x || LIBGIT2_VER_MINOR >= y)
 
 /* Workaround for API change in 1.8.0 and 1.8.1 only: https://github.com/libgit2/libgit2/issues/6793 */
-#if LIBGIT2_VER_MAJOR == 1 && LIBGIT2_VER_MINOR == 8 && LIBGIT2_VER_PATCH < 2
+#if LIBGIT2_VER_MAJOR == 1 && LIBGIT2_VER_MINOR == 8 && LIBGIT2_VER_REVISION < 2
 #define no_const_workaround (git_commit **)
 #else
 #define no_const_workaround
