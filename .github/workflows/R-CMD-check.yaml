@@ -16,7 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
+          - {os: macos-13,       r: 'release'}
+          - {os: macos-14,       r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: windows-latest, r: '4.3'}
           - {os: windows-latest, r: '4.2'}
@@ -30,7 +31,7 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
