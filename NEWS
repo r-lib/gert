@@ -1,4 +1,4 @@
-2.1.3
+2.1.4
   - Fix for libgit2 1.8.2 reverting their API change from 1.8.0
   - New parameter 'force' in git_branch_create() see #239
 
