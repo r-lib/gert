@@ -7,7 +7,7 @@ test_that("public ssh remotes with random key", {
   expect_true(file.exists(file.path(target, 'DESCRIPTION')))
 })
 
-isOldWindows <- Sys.info()[["sysname"]] == "Windows" && grepl('Windows Server 2008', osVersion)
+isOldWindows <- Sys.info()[["sysname"]] == "Windows" && isTRUE(grepl('Windows Server 2008', osVersion))
 
 # Even for public repos, Github only allows keys that it knows.
 test_that("private ssh remotes with key", {
