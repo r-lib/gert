@@ -1,4 +1,4 @@
-RWINLIB = ../windows/libgit2
+RWINLIB = ../.deps/libgit2
 TARGET = lib$(subst gcc,,$(COMPILED_BY))$(R_ARCH)
 
 PKG_CPPFLAGS = -I$(RWINLIB)/include \
@@ -10,12 +10,13 @@ PKG_LIBS = \
 	-lgit2 -lssh2 -lssl -lcrypto -lz -liconv \
 	-lwinhttp -lws2_32 -lcrypt32 -lole32 -lrpcrt4 -lsecur32
 
-all: clean winlibs
+all: $(SHLIB) cleanup
 
-winlibs:
-	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
+# Needed for parallel make
+$(OBJECTS): | $(RWINLIB)
 
-clean:
-	rm -f $(SHLIB) $(OBJECTS)
+$(RWINLIB):
+	@"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
 
-.PHONY: all winlibs clean
+cleanup: $(SHLIB)
+	@rm -Rf $(RWINLIB)

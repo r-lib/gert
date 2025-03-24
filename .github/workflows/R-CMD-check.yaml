@@ -18,6 +18,8 @@ jobs:
         config:
           - {os: macos-13,       r: 'release'}
           - {os: macos-14,       r: 'release'}
+          - {os: macos-15,       r: 'next'}
+          - {os: windows-latest, r: 'devel'}
           - {os: windows-latest, r: 'release'}
           - {os: windows-latest, r: '4.3'}
           - {os: windows-latest, r: '4.2'}
@@ -49,3 +51,5 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+        env:
+          MAKEFLAGS: -j4
