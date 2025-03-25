@@ -1,14 +1,19 @@
 #' Git Diff
 #'
+#' @description
 #' View changes in a commit or in the current working directory.
 #'
+#' * `git_diff()` returns a data frame with information about a commit patch.
+#' * `git_diff_patch()` is shortcode for `git_diff()$patch`.
+#'
 #' @export
-#' @rdname git_diff
-#' @name git_diff
 #' @inheritParams git_open
 #' @family git
 #' @param ref a reference such as `"HEAD"`, or a commit id, or `NULL`
 #' to the diff the working directory against the repository index.
+#' @returns
+#' * `git_diff()` returns a data frame.
+#' * `git_diff_patch()` returns a character vector.
 #' @useDynLib gert R_git_diff_list
 git_diff <- function(ref = NULL, repo = '.'){
   repo <- git_open(repo)
