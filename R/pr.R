@@ -17,7 +17,7 @@ git_checkout_pull_request <- function(pr = 1, remote = NULL, repo = '.'){
   local_branch <- sprintf("pr/%s", pr)
   remote_branch <- sprintf("%s/pr/%s", remote, pr)
   git_fetch_pull_requests(pr = pr, remote = remote, repo = repo)
-  if(git_branch_exists(local_branch)){
+  if(git_branch_exists(local_branch, repo = repo)){
     inform("Continuing on existing pr branch: %s", local_branch)
     git_branch_checkout(local_branch, repo = repo)
     git_pull(repo = repo)
