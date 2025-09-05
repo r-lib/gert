@@ -1,13 +1,17 @@
 RWINLIB = ../.deps/libgit2
 TARGET = lib$(subst gcc,,$(COMPILED_BY))$(R_ARCH)
 
+ifneq ($(R_COMPILED_BY),gcc 8.3.0)
+PCRE=-lpcre2-8
+endif
+
 PKG_CPPFLAGS = -I$(RWINLIB)/include \
 	-DR_NO_REMAP -DSTRICT_R_HEADERS
 
 PKG_LIBS = \
 	-L$(RWINLIB)/$(TARGET) \
 	-L$(RWINLIB)/lib \
-	-lgit2 -lssh2 -lssl -lcrypto -lz -liconv \
+	-lgit2 -lssh2 -lssl -lcrypto $(PCRE) -lz -liconv \
 	-lwinhttp -lws2_32 -lcrypt32 -lole32 -lrpcrt4 -lsecur32
 
 all: $(SHLIB) cleanup
