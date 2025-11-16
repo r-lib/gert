@@ -100,13 +100,14 @@ test_that("status reports a conflicted file", {
   writeLines("cranky-crab-legs", foo_path)
   git_add("foo.txt", repo = repo)
   base <- git_commit("Add a file", repo = repo)
+  main <- git_branch(repo = repo)
 
   git_branch_create("my-branch", repo = repo)
   writeLines("cranky-CRAB-LEGS", foo_path)
   git_add("foo.txt", repo = repo)
   git_commit("Uppercase last 2 words", repo = repo)
 
-  git_branch_checkout("master", repo = repo)
+  git_branch_checkout(main, repo = repo)
   expect_equal(git_merge_analysis("my-branch", repo = repo), "fastforward")
 
   writeLines("CRANKY-CRAB-legs", foo_path)

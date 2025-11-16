@@ -1,5 +1,6 @@
 2.2.0
   - Windows: update to libgit2 1.9.1
+  - Fix unit tests for other default branch names
 
 2.1.4
   - Fix for libgit2 1.8.2 reverting their API change from 1.8.0
