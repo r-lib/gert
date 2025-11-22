@@ -23,7 +23,7 @@ git_submodule_fetch(submodule, ..., repo = ".")
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
-repository, parent directories are considered (see \link{git_find}). To disable
+repository, parent directories are considered (see \code{\link[=git_find]{git_find()}}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
@@ -40,8 +40,9 @@ versions of gert may have additional parameters.}
 
 \item{path}{relative of the submodule}
 
-\item{...}{extra arguments for \link{git_fetch} for authentication things}
+\item{...}{extra arguments for \code{\link[=git_fetch]{git_fetch()}} for authentication things}
 }
 \description{
-Interact with submodules in the repository.
+Interact with \href{https://www.git-scm.com/book/en/v2/Git-Tools-Submodules}{submodules}
+in the repository.
 }

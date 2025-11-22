@@ -1,24 +1,28 @@
-#' Merging tools
+#' Git merge
 #'
-#' Use `git_merge` to merge a branch into the current head. Based on how the branches
+#' @description
+#' Use `git_merge()` to merge a branch into the current head. Based on how the branches
 #' have diverged, the function will select a fast-forward or merge-commit strategy.
 #'
-#' By default `git_merge` automatically commits the merge commit upon success.
+#' Other functions are more low-level tools that are used by `git_merge()`:
+#' * `git_merge_find_base()` looks up the commit where two branches have diverged
+#' (i.e. the youngest common ancestor).
+#' * `git_merge_analysis()` is used to
+#' test if a merge can simply be fast forwarded or not.
+#' * `git_merge_stage_only()` applies and stages changes, without committing or fast-forwarding.
+#'
+#' * `git_conflicts()` lists merge conflicts.
+#'
+#' @details
+#' By default `git_merge()` automatically commits the merge commit upon success.
 #' However if the merge fails with merge-conflicts, or if `commit` is set to
 #' `FALSE`, the changes are staged and the repository is put in merging state,
-#' and you have to manually run `git_commit` or `git_merge_abort` to proceed.
-#'
-#' Other functions are more low-level tools that are used by `git_merge`.
-#' `git_merge_find_base` looks up the commit where two branches have diverged
-#' (i.e. the youngest common ancestor). The `git_merge_analysis` is used to
-#' test if a merge can simply be fast forwarded or not.
-#'
-#' The `git_merge_stage_only` function applies and stages changes, without
-#' committing or fast-forwarding.
+#' and you have to manually run [git_commit()] or `git_merge_abort()` to proceed.
 #'
 #' @export
 #' @family git
 #' @rdname git_merge
+#' @order 1
 #' @name git_merge
 #' @inheritParams git_open
 #' @param ref branch or commit that you want to merge
@@ -55,6 +59,7 @@ git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.'){
 
 #' @export
 #' @rdname git_merge
+#' @order 2
 #' @useDynLib gert R_git_merge_stage
 git_merge_stage_only <- function(ref, squash = FALSE, repo = '.'){
   repo <- git_open(repo)
@@ -66,6 +71,7 @@ git_merge_stage_only <- function(ref, squash = FALSE, repo = '.'){
 
 #' @export
 #' @rdname git_merge
+#' @order 3
 #' @useDynLib gert R_git_merge_find_base
 #' @param target the branch where you want to merge into. Defaults to current `HEAD`.
 git_merge_find_base <- function(ref, target = "HEAD", repo = '.'){
@@ -75,6 +81,7 @@ git_merge_find_base <- function(ref, target = "HEAD", repo = '.'){
 
 #' @export
 #' @rdname git_merge
+#' @order 4
 #' @useDynLib gert R_git_merge_analysis
 git_merge_analysis <- function(ref, repo = '.'){
   repo <- git_open(repo)
@@ -88,6 +95,7 @@ git_merge_cleanup <- function(repo = '.'){
 }
 
 #' @export
+#' @order 5
 #' @rdname git_merge
 git_merge_abort <- function(repo = '.'){
   if(length(git_merge_parent_heads(repo = repo))){

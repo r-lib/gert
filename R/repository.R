@@ -1,13 +1,16 @@
 #' Create or discover a local Git repository
 #'
-#' Use `git_init()` to create a new repository or `git_find()` to discover an
-#' existing local repository. `git_info()` shows basic information about a
-#' repository, such as the SHA and branch of the current HEAD.
+#' * `git_init()` creates a new repository
+#' * `git_find()` to discover an existing local repository.
+#' * `git_info()` shows basic information about a repository, such as the SHA
+#'   and branch of the current HEAD.
 #'
 #' For `git_init()` the `path` parameter sets the directory of the git repository
 #' to create. If this directory already exists, it must be empty. If it does
 #' not exist, it is created, along with any intermediate directories that don't
-#' yet exist. For `git_find()` the `path` arguments specifies the directory at
+#' yet exist.
+#'
+#' For `git_find()`, the `path` parameter specifies the directory at
 #' which to start the search for a git repository. If it is not a git repository
 #' itself, then its parent directory is consulted, then the parent's parent, and
 #' so on.
@@ -20,12 +23,15 @@
 #' @inheritParams git_open
 #' @param path the location of the git repository, see details.
 #' @param bare if true, a Git repository without a working directory is created
-#' @return The path to the Git repository.
+#' @return
+#' * `git_find()` and `git_init()`: the path to the Git repository.
+#' * `git_info()`: A list of information of the Git repository.
 #' @examples
 #' # directory does not yet exist
 #' r <- tempfile(pattern = "gert")
 #' git_init(r)
 #' git_find(r)
+#' git_info(r)
 #'
 #' # create a child directory, then a grandchild, then search
 #' r_grandchild_dir <- file.path(r, "aaa", "bbb")

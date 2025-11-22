@@ -11,7 +11,7 @@ git_ignore_path_is_ignored(path, repo = ".")
 \item{path}{A character vector of paths to test within the repo}
 
 \item{repo}{The path to the git repository. If the directory is not a
-repository, parent directories are considered (see \link{git_find}). To disable
+repository, parent directories are considered (see \code{\link[=git_find]{git_find()}}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
@@ -24,6 +24,8 @@ paths would be ignored.
 Test if files would be ignored by \code{.gitignore} rules
 }
 \seealso{
+\code{usethis::use_git_ignore()} to add a path to \code{.gitignore}.
+
 Other git: 
 \code{\link{git_archive}},
 \code{\link{git_branch}()},
@@ -31,6 +33,7 @@ Other git:
 \code{\link{git_config}()},
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
+\code{\link{git_history}},
 \code{\link{git_merge}()},
 \code{\link{git_rebase}()},
 \code{\link{git_remote}},
