@@ -41,7 +41,7 @@ SEXP R_git_worktree_list(SEXP ptr) {
 SEXP R_git_worktree_exists(SEXP ptr, SEXP name) {
   git_repository *repo = get_git_repository(ptr);
   git_worktree *worktree = NULL;
-  const bool exists = git_worktree_lookup(&worktree, repo, CHAR(STRING_ELT(name, 0))) == GIT_OK;
+  const int exists = git_worktree_lookup(&worktree, repo, CHAR(STRING_ELT(name, 0))) == GIT_OK;
   git_worktree_free(worktree);
   return Rf_ScalarLogical(exists);
 }
@@ -62,7 +62,7 @@ SEXP R_git_worktree_is_valid(SEXP ptr, SEXP name) {
   git_repository *repo = get_git_repository(ptr);
   git_worktree *worktree = NULL;
   bail_if(git_worktree_lookup(&worktree, repo, CHAR(STRING_ELT(name, 0))), "git_worktree_lookup");
-  const bool valid = git_worktree_validate(worktree) == GIT_OK;
+  const int valid = git_worktree_validate(worktree) == GIT_OK;
   git_worktree_free(worktree);
   return Rf_ScalarLogical(valid);
 }
@@ -80,7 +80,7 @@ SEXP R_git_worktree_is_locked(SEXP ptr, SEXP name) {
   git_worktree *worktree = NULL;
   bail_if(git_worktree_lookup(&worktree, repo, CHAR(STRING_ELT(name, 0))), "git_worktree_lookup");
   git_buf *reason_for_being_locked = NULL;
-  const bool locked = git_worktree_is_locked(reason_for_being_locked, worktree) > 0;
+  const int locked = git_worktree_is_locked(reason_for_being_locked, worktree) > 0;
   git_worktree_free(worktree);
   return Rf_ScalarLogical(locked);
 }
@@ -199,7 +199,7 @@ SEXP R_git_worktree_is_prunable(
   if (LOGICAL_ELT(prune_locked, 0)) {
     opts.flags |= GIT_WORKTREE_PRUNE_LOCKED;
   }
-  const bool prunable = git_worktree_is_prunable(worktree, &opts) == 1;
+  const int prunable = git_worktree_is_prunable(worktree, &opts) == 1;
   git_worktree_free(worktree);
   return Rf_ScalarLogical(prunable);
 }
