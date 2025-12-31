@@ -116,7 +116,7 @@ test_that("`git_worktree_is_valid()` works", {
   expect_true(git_worktree_is_valid("worktree", repo = repo))
 
   # Remove the worktree's folder
-  unlink(path, recursive = TRUE)
+  expect_true(unlink(path, recursive = TRUE) == 0L)
   expect_false(git_worktree_is_valid("worktree", repo = repo))
 
   # Still exists even though it is invalid
