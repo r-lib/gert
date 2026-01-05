@@ -18,6 +18,7 @@ SEXP new_git_repository(git_repository *repo);
 git_repository *get_git_repository(SEXP ptr);
 git_object *resolve_refish(SEXP string, git_repository *repo);
 git_commit *ref_to_commit(SEXP ref, git_repository *repo);
+git_branch_t r_branch_type(SEXP local);
 
 #define build_tibble(...) list_to_tibble(build_list( __VA_ARGS__))
 

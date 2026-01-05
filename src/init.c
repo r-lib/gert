@@ -82,6 +82,16 @@ extern SEXP R_git_submodule_update(SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_create(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_delete(SEXP, SEXP);
 extern SEXP R_git_tag_list(SEXP, SEXP);
+extern SEXP R_git_worktree_list(SEXP);
+extern SEXP R_git_worktree_exists(SEXP, SEXP);
+extern SEXP R_git_worktree_path(SEXP, SEXP);
+extern SEXP R_git_worktree_is_valid(SEXP, SEXP);
+extern SEXP R_git_worktree_is_locked(SEXP, SEXP);
+extern SEXP R_git_worktree_lock(SEXP, SEXP);
+extern SEXP R_git_worktree_unlock(SEXP, SEXP);
+extern SEXP R_git_worktree_add(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_worktree_is_prunable(SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_worktree_prune(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_libgit2_config(void);
 extern SEXP R_set_cert_locations(SEXP, SEXP);
 extern SEXP R_static_libgit2(void);
@@ -156,6 +166,16 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_tag_create",          (DL_FUNC) &R_git_tag_create,          4},
   {"R_git_tag_delete",          (DL_FUNC) &R_git_tag_delete,          2},
   {"R_git_tag_list",            (DL_FUNC) &R_git_tag_list,            2},
+  {"R_git_worktree_list",       (DL_FUNC) &R_git_worktree_list,       1},
+  {"R_git_worktree_exists",     (DL_FUNC) &R_git_worktree_exists,     2},
+  {"R_git_worktree_path",       (DL_FUNC) &R_git_worktree_path,       2},
+  {"R_git_worktree_is_valid",   (DL_FUNC) &R_git_worktree_is_valid,   2},
+  {"R_git_worktree_is_locked",  (DL_FUNC) &R_git_worktree_is_locked,  2},
+  {"R_git_worktree_lock",       (DL_FUNC) &R_git_worktree_lock,       2},
+  {"R_git_worktree_unlock",     (DL_FUNC) &R_git_worktree_unlock,     2},
+  {"R_git_worktree_add",        (DL_FUNC) &R_git_worktree_add,        6},
+  {"R_git_worktree_is_prunable",(DL_FUNC) &R_git_worktree_is_prunable,4},
+  {"R_git_worktree_prune",      (DL_FUNC) &R_git_worktree_prune,      5},
   {"R_libgit2_config",          (DL_FUNC) &R_libgit2_config,          0},
   {"R_set_cert_locations",      (DL_FUNC) &R_set_cert_locations,      2},
   {"R_static_libgit2",          (DL_FUNC) &R_static_libgit2,          0},
