@@ -1,3 +1,7 @@
+2.3.0
+  - Add git_worktree() family of functions (#252)
+  - Reformat code with air
+
 2.2.0
   - Windows: update to libgit2 1.9.1
   - Fix unit tests for other default branch names
