@@ -8,7 +8,7 @@ test_that("remotes from new repo",{
   expect_error(git_remote_set_url('https://github.com/foo/bar', repo = repo))
   expect_error(git_remote_set_pushurl('https://github.com/foo/bar', repo = repo))
   expect_equal(git_remote_add('https://github.com/jeroen/webp', name = 'jeroen', repo = repo), 'jeroen')
-  git_fetch('jeroen', repo = repo)
+  git_fetch('jeroen', 'master', repo = repo)
   git_branch_create('master', 'jeroen/master', repo = repo)
   git_branch_create('testje', git_commit_id('jeroen/master', repo = repo), checkout = FALSE, repo = repo)
   git_remote_set_pushurl('https://github.com/foo/baz', repo = repo)
