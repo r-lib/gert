@@ -21,23 +21,23 @@ git_worktree_exists(name, repo = ".")
 
 git_worktree_path(name, repo = ".")
 
-git_worktree_add(name, path, branch, repo = ".", lock = FALSE, local = TRUE)
+git_worktree_add(name, path, branch, lock = FALSE, local = TRUE, repo = ".")
 
 git_worktree_remove(name, repo = ".")
 
 git_worktree_prune(
   name,
-  repo = ".",
   prune_valid = FALSE,
   prune_locked = FALSE,
-  prune_working_tree = FALSE
+  prune_working_tree = FALSE,
+  repo = "."
 )
 
 git_worktree_is_prunable(
   name,
-  repo = ".",
   prune_valid = FALSE,
-  prune_locked = FALSE
+  prune_locked = FALSE,
+  repo = "."
 )
 
 git_worktree_lock(name, repo = ".")

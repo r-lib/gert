@@ -129,9 +129,9 @@ git_worktree_add <- function(
   name,
   path,
   branch,
-  repo = ".",
   lock = FALSE,
-  local = TRUE
+  local = TRUE,
+  repo = "."
 ) {
   repo <- git_open(repo)
   name <- as.character(name)
@@ -176,10 +176,10 @@ git_worktree_remove <- function(name, repo = ".") {
 #' @useDynLib gert R_git_worktree_prune
 git_worktree_prune <- function(
   name,
-  repo = ".",
   prune_valid = FALSE,
   prune_locked = FALSE,
-  prune_working_tree = FALSE
+  prune_working_tree = FALSE,
+  repo = "."
 ) {
   repo <- git_open(repo)
   name <- as.character(name)
@@ -202,9 +202,9 @@ git_worktree_prune <- function(
 #' @useDynLib gert R_git_worktree_is_prunable
 git_worktree_is_prunable <- function(
   name,
-  repo = ".",
   prune_valid = FALSE,
-  prune_locked = FALSE
+  prune_locked = FALSE,
+  repo = "."
 ) {
   repo <- git_open(repo)
   name <- as.character(name)
