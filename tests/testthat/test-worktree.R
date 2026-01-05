@@ -94,6 +94,8 @@ test_that("`git_worktree_lock()`, `git_worktree_unlock()`, and `git_worktree_is_
 })
 
 test_that("`git_worktree_is_valid()` works", {
+  skip_if_not(libgit2_config()$version > "1.1.0", "Skipping Debian 11")
+
   repo <- git_init(tempfile("gert-tests-repo"))
   on.exit(unlink(repo, recursive = TRUE), add = TRUE, after = FALSE)
 
