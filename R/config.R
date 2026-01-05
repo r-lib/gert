@@ -25,7 +25,7 @@
 #'   `name` in local or global config, respectively. If this option was
 #'   previously unset, returns `NULL`. Returns invisibly.
 #'
-#' @note All entries in the `name` column are automatically normalised to 
+#' @note All entries in the `name` column are automatically normalised to
 #'   lowercase (see
 #'   <https://libgit2.org/libgit2/#HEAD/type/git_config_entry> for details).
 #'
@@ -58,14 +58,14 @@
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_config_list
-git_config <- function(repo = '.'){
+git_config <- function(repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_config_list, repo)
 }
 
 #' @export
 #' @rdname git_config
-git_config_global <- function(){
+git_config_global <- function() {
   .Call(R_git_config_list, NULL)
 }
 
@@ -75,7 +75,7 @@ git_config_global <- function(){
 #' @param name Name of the option to set
 #' @param value Value to set. Must be a string, logical, number or `NULL` (to
 #'   unset).
-git_config_set <- function(name, value, repo = '.'){
+git_config_set <- function(name, value, repo = '.') {
   repo <- git_open(repo)
   name <- as.character(name)
   orig_cfg <- git_config(repo = repo)
@@ -90,7 +90,7 @@ git_config_set <- function(name, value, repo = '.'){
 
 #' @export
 #' @rdname git_config
-git_config_global_set <- function(name, value){
+git_config_global_set <- function(name, value) {
   orig_cfg <- git_config_global()
   out <- orig_cfg$value[orig_cfg$name == name]
   .Call(R_git_config_set, NULL, name, value)
@@ -110,7 +110,7 @@ git_config_global_set <- function(name, value){
 #' @useDynLib gert R_libgit2_config
 #' @examples
 #' libgit2_config()
-libgit2_config <- function(){
+libgit2_config <- function() {
   res <- .Call(R_libgit2_config)
   res$version <- as.numeric_version(res$version)
   res

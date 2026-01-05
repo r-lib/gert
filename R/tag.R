@@ -9,7 +9,7 @@
 #' @inheritParams git_open
 #' @param match pattern to filter tags (use `*` for wildcard)
 #' @useDynLib gert R_git_tag_list
-git_tag_list <- function(match = "*", repo = '.'){
+git_tag_list <- function(match = "*", repo = '.') {
   repo <- git_open(repo)
   match <- as.character(match)
   .Call(R_git_tag_list, repo, match)
@@ -21,7 +21,7 @@ git_tag_list <- function(match = "*", repo = '.'){
 #' @param message tag message
 #' @param ref target reference to tag
 #' @useDynLib gert R_git_tag_create
-git_tag_create <- function(name, message, ref = "HEAD", repo = '.'){
+git_tag_create <- function(name, message, ref = "HEAD", repo = '.') {
   repo <- git_open(repo)
   name <- as.character(name)
   message <- as.character(message)
@@ -31,7 +31,7 @@ git_tag_create <- function(name, message, ref = "HEAD", repo = '.'){
 #' @export
 #' @rdname git_tag
 #' @useDynLib gert R_git_tag_delete
-git_tag_delete <- function(name, repo = '.'){
+git_tag_delete <- function(name, repo = '.') {
   repo <- git_open(repo)
   name <- as.character(name)
   .Call(R_git_tag_delete, repo, name)
@@ -40,7 +40,7 @@ git_tag_delete <- function(name, repo = '.'){
 #' @export
 #' @rdname git_tag
 #' @param ... other arguments passed to [git_push]
-git_tag_push <- function(name, ..., repo = '.'){
+git_tag_push <- function(name, ..., repo = '.') {
   ref <- paste0('refs/tags/', name)
   git_push(refspec = ref, ..., repo = repo)
 }

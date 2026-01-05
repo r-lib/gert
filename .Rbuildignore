@@ -15,3 +15,5 @@ README.md
 ^get-libgit2-linux.sh$
 ^libgit2$
 ^libgit2-.*_linux$
+^[.]?air[.]toml$
+^\.vscode$

@@ -43,7 +43,7 @@
 #'
 #' # cleanup
 #' unlink(r, recursive = TRUE)
-git_init <- function(path = '.', bare = FALSE){
+git_init <- function(path = '.', bare = FALSE) {
   path <- normalizePath(path.expand(path), mustWork = FALSE)
   repo <- .Call(R_git_repository_init, path, as.logical(bare))
   git_repo_path(repo)
@@ -52,7 +52,7 @@ git_init <- function(path = '.', bare = FALSE){
 #' @export
 #' @rdname git_repo
 #' @useDynLib gert R_git_repository_find
-git_find <- function(path = '.'){
+git_find <- function(path = '.') {
   path <- normalizePath(path.expand(path), mustWork = FALSE)
   out <- .Call(R_git_repository_find, path)
   dirname(out)
@@ -61,7 +61,7 @@ git_find <- function(path = '.'){
 #' @export
 #' @rdname git_repo
 #' @useDynLib gert R_git_repository_info
-git_info <- function(repo = '.'){
+git_info <- function(repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_repository_info, repo)
 }
