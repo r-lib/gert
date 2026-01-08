@@ -89,7 +89,7 @@ extern SEXP R_git_worktree_is_valid(SEXP, SEXP);
 extern SEXP R_git_worktree_is_locked(SEXP, SEXP);
 extern SEXP R_git_worktree_lock(SEXP, SEXP);
 extern SEXP R_git_worktree_unlock(SEXP, SEXP);
-extern SEXP R_git_worktree_add(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_worktree_add(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_worktree_is_prunable(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_worktree_prune(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_libgit2_config(void);
