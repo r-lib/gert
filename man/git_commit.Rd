@@ -40,7 +40,7 @@ git_ls(repo = ".", ref = NULL)
 
 git_log(ref = "HEAD", max = 100, after = NULL, repo = ".")
 
-git_stat_files(files, ref = "HEAD", repo = ".")
+git_stat_files(files, ref = "HEAD", max = NULL, repo = ".")
 }
 \arguments{
 \item{message}{a commit message}

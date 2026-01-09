@@ -1,3 +1,6 @@
+2.3.1
+  - git_stat_files() gains a 'max' parameter
+  - Fix function declaration error
 2.3.0
   - Add git_worktree() family of functions (#252)
   - Reformat code with air

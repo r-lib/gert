@@ -310,7 +310,7 @@ SEXP R_git_commit_stats(SEXP ptr, SEXP ref){
   return R_NilValue;
 }
 
-SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
+SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref, SEXP max){
   git_commit *parent = NULL;
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = ref_to_commit(ref, repo);
@@ -327,7 +327,8 @@ SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
     INTEGER(changes)[fi] = 0L;
     SET_STRING_ELT(hashes, fi, NA_STRING);
   }
-  while(1) {
+  int max_iter = Rf_length(max) ? Rf_asInteger(max) : 2147483647;
+  for(int iter = 0; iter < max_iter; iter++) {
     git_diff *diff = commit_to_diff(repo, commit);
     if(diff == NULL)
       Rf_error("Failed to get parent commit. Is this a shallow clone?");

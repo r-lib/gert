@@ -216,10 +216,11 @@ git_log <- function(ref = "HEAD", max = 100, after = NULL, repo = ".") {
 #' @export
 #' @rdname git_commit
 #' @useDynLib gert R_git_stat_files
-git_stat_files <- function(files, ref = "HEAD", repo = '.') {
+git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
   repo <- git_open(repo)
   files <- as.character(files)
-  .Call(R_git_stat_files, repo, files, ref)
+  max <- as.integer(max)
+  .Call(R_git_stat_files, repo, files, ref, max)
 }
 
 assert_string <- function(x) {
