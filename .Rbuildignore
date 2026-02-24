@@ -17,3 +17,4 @@ README.md
 ^libgit2-.*_linux$
 ^[.]?air[.]toml$
 ^\.vscode$
+^\.git-blame-ignore-rev$
