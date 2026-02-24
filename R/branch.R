@@ -61,6 +61,10 @@ git_branch_checkout <- function(
   .Call(R_git_checkout_branch, repo, branch, force)
 }
 
+#' @rdname git_branch
+#' @export
+git_branch_switch <- git_branch_checkout
+
 #' @export
 #' @rdname git_branch
 #' @useDynLib gert R_git_create_branch

@@ -4,6 +4,7 @@
 \alias{git_branch}
 \alias{git_branch_list}
 \alias{git_branch_checkout}
+\alias{git_branch_switch}
 \alias{git_branch_create}
 \alias{git_branch_delete}
 \alias{git_branch_move}
@@ -17,6 +18,8 @@ git_branch(repo = ".")
 git_branch_list(local = NULL, repo = ".")
 
 git_branch_checkout(branch, force = FALSE, orphan = FALSE, repo = ".")
+
+git_branch_switch(branch, force = FALSE, orphan = FALSE, repo = ".")
 
 git_branch_create(
   branch,

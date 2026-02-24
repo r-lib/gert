@@ -31,6 +31,6 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+RoxygenNote: 7.3.3.9000
 SystemRequirements: libgit2 (>= 1.0): libgit2-devel (rpm) or libgit2-dev (deb)
 Language: en-US
