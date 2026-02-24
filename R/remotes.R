@@ -45,7 +45,9 @@ git_remote_remove <- function(remote, repo = '.') {
 git_remote_info <- function(remote = NULL, repo = '.') {
   repo <- git_open(repo)
   remote <- as.character(remote)
-  if (!length(remote)) remote <- git_info(repo = repo)$remote
+  if (!length(remote)) {
+    remote <- git_info(repo = repo)$remote
+  }
   .Call(R_git_remote_info, repo, remote)
 }
 
@@ -55,7 +57,9 @@ git_remote_info <- function(remote = NULL, repo = '.') {
 git_remote_set_url <- function(url, remote = NULL, repo = '.') {
   repo <- git_open(repo)
   name <- as.character(remote)
-  if (!length(remote)) remote <- git_info(repo = repo)$remote
+  if (!length(remote)) {
+    remote <- git_info(repo = repo)$remote
+  }
   url <- as.character(url)
   .Call(R_git_remote_set_url, repo, remote, url)
   invisible()
@@ -67,7 +71,9 @@ git_remote_set_url <- function(url, remote = NULL, repo = '.') {
 git_remote_set_pushurl <- function(url, remote = NULL, repo = '.') {
   repo <- git_open(repo)
   remote <- as.character(remote)
-  if (!length(remote)) remote <- git_info(repo = repo)$remote
+  if (!length(remote)) {
+    remote <- git_info(repo = repo)$remote
+  }
   url <- as.character(url)
   .Call(R_git_remote_set_pushurl, repo, remote, url)
   invisible()
@@ -79,7 +85,9 @@ git_remote_set_pushurl <- function(url, remote = NULL, repo = '.') {
 git_remote_refspecs <- function(remote = NULL, repo = '.') {
   repo <- git_open(repo)
   remote <- as.character(remote)
-  if (!length(remote)) remote <- git_info(repo = repo)$remote
+  if (!length(remote)) {
+    remote <- git_info(repo = repo)$remote
+  }
   .Call(R_git_remote_refspecs, repo, remote)
 }
 
@@ -87,7 +95,9 @@ git_remote_refspecs <- function(remote = NULL, repo = '.') {
 git_remote_add_fetch <- function(refspec, remote = NULL, repo = '.') {
   repo <- git_open(repo)
   remote <- as.character(remote)
-  if (!length(remote)) remote <- git_info(repo = repo)$remote
+  if (!length(remote)) {
+    remote <- git_info(repo = repo)$remote
+  }
   refspec <- as.character(refspec)
   .Call(R_git_remote_add_fetch, repo, remote, refspec)
 }

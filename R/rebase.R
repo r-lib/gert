@@ -37,8 +37,11 @@ git_rebase <- function(upstream, commit_changes, repo) {
   repo <- git_open(repo)
   info <- git_info(repo = repo)
   if (!length(upstream)) {
-    if (!length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream))
+    if (
+      !length(info$upstream) || is.na(info$upstream) || !nchar(info$upstream)
+    ) {
       stop("No upstream configured for current HEAD")
+    }
     git_fetch(info$remote, repo = repo)
     upstream <- info$upstream
   }
@@ -107,7 +110,11 @@ git_cherry_pick <- function(commit, repo = '.') {
 #' @useDynLib gert R_git_ahead_behind
 git_ahead_behind <- function(upstream = NULL, ref = 'HEAD', repo = '.') {
   repo <- git_open(repo)
-  if (!length(upstream)) upstream <- git_info(repo = repo)$upstream
-  if (!length(upstream)) stop("No upstream set or specified")
+  if (!length(upstream)) {
+    upstream <- git_info(repo = repo)$upstream
+  }
+  if (!length(upstream)) {
+    stop("No upstream set or specified")
+  }
   .Call(R_git_ahead_behind, repo, ref, upstream)
 }

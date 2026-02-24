@@ -28,8 +28,7 @@ git_archive_internal <- function(outfile, repo) {
       git_stash_save(repo = repo)
       on.exit(git_stash_pop(repo = repo))
     },
-    GIT_ENOTFOUND = function(e) {
-    }
+    GIT_ENOTFOUND = function(e) {}
   )
   files <- git_ls(repo = repo)$path
   wd <- getwd()

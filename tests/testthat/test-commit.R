@@ -10,7 +10,7 @@ test_that("creating signatures", {
   expect_equal(sigdata$email, email)
   expect_lt(difftime(sigdata$time, now, 'secs'), 1)
 
-  yesterday <- now - 24*60*60
+  yesterday <- now - 24 * 60 * 60
   sig <- git_signature(name, email, time = yesterday)
   sigdata <- git_signature_parse(sig)
   expect_equal(sigdata$name, name)
@@ -51,7 +51,7 @@ test_that("creating a commit", {
   # Another commit before that
   write.csv(iris, file.path(repo, 'iris.csv'))
   git_add("iris.csv", repo = repo)
-  timestamp <- round(Sys.time() - 48*60*60)
+  timestamp <- round(Sys.time() - 48 * 60 * 60)
   sig2 <- git_signature('nobody', 'nobody@gmail.com', time = timestamp)
   git_commit("Added iris.csv also", author = sig2, repo = repo)
 
@@ -130,8 +130,11 @@ test_that("status reports a conflicted file", {
   rebase_info <- git_rebase_list("my-branch", repo = repo)
   expect_equal(rebase_info$type, rep("pick", 3))
   expect_equal(rebase_info$commit, rev(head(git_log(repo = repo), -1)$commit))
-  expect_equal(rebase_info$conflicts, c(T,T,F))
-  expect_error(git_rebase_commit("my-branch", repo = repo), class = "GIT_EMERGECONFLICT")
+  expect_equal(rebase_info$conflicts, c(T, T, F))
+  expect_error(
+    git_rebase_commit("my-branch", repo = repo),
+    class = "GIT_EMERGECONFLICT"
+  )
   expect_error(git_branch_fast_forward("my-branch", repo = repo))
 
   # Merge returns FALSE due to conflicts
