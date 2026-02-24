@@ -11,7 +11,9 @@ raise_libgit2_error <- function(code, message, where = "", kclass = 0) {
 
 libgit2_error_name <- function(x) {
   out <- which(libgit2_error_codes == x)
-  if (length(out)) return(names(out))
+  if (length(out)) {
+    return(names(out))
+  }
   return("UNKNOWN_ERROR_CODE")
 }
 

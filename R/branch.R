@@ -112,8 +112,9 @@ git_branch_move <- function(branch, new_branch, force = FALSE, repo = '.') {
 #' @rdname git_branch
 git_branch_fast_forward <- function(ref, repo = '.') {
   analysis <- git_merge_analysis(ref = ref, repo = repo)
-  if (analysis != "fastforward")
+  if (analysis != "fastforward") {
     stop("Branch cannot be fast-forwarded. Use git_merge() instead")
+  }
   git_branch_set_target(ref = ref, repo = repo)
 }
 
@@ -128,8 +129,9 @@ git_branch_set_upstream <- function(
 ) {
   repo <- git_open(repo)
   stopifnot(is.character(upstream))
-  if (!git_branch_exists(upstream, local = FALSE, repo = repo))
+  if (!git_branch_exists(upstream, local = FALSE, repo = repo)) {
     stop(sprintf("No remote branch found: %s, maybe fetch first?", upstream))
+  }
   .Call(R_git_branch_set_upstream, repo, upstream, branch)
   git_repo_path(repo)
 }

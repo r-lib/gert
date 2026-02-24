@@ -19,8 +19,9 @@
       config$config.home
     )
   }
-  if (length(config$config.system) && nchar(config$config.system))
+  if (length(config$config.system) && nchar(config$config.system)) {
     packageStartupInform(paste0("System config: ", config$config.system))
+  }
   try({
     settings <- git_config_global()
     name <- subset(settings, name == 'user.name')$value
@@ -43,7 +44,9 @@
     certpath <- find_cert_dir()
     if (length(certpath)) {
       cafile <- file.path(dirname(certpath), 'cert.pem')
-      if (!file.exists(cafile)) cafile <- NULL
+      if (!file.exists(cafile)) {
+        cafile <- NULL
+      }
       set_cert_locations(cafile, certpath)
     } else {
       warning("Unable to find directory with certificates", immediate. = TRUE)
@@ -56,8 +59,7 @@
       {
         getNamespace('tibble')
       },
-      error = function(e) {
-      }
+      error = function(e) {}
     )
   }
 

@@ -69,9 +69,10 @@ git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.') {
 git_merge_stage_only <- function(ref, squash = FALSE, repo = '.') {
   repo <- git_open(repo)
   success <- .Call(R_git_merge_stage, repo, ref)
-  if (isTRUE(squash))
+  if (isTRUE(squash)) {
     # This turns it in a regular commit
     git_merge_cleanup(repo = repo)
+  }
   return(success)
 }
 

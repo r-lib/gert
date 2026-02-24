@@ -36,7 +36,9 @@ git_fetch <- function(
 ) {
   repo <- git_open(repo)
   info <- git_info(repo)
-  if (!length(remote)) remote <- info$remote
+  if (!length(remote)) {
+    remote <- info$remote
+  }
   remote <- as.character(remote)
   if (!length(remote) || is.na(remote)) {
     if (is.na(match("origin", git_remote_list(repo = repo)$name))) {
@@ -77,7 +79,9 @@ git_remote_ls <- function(
 ) {
   repo <- git_open(repo)
   info <- git_info(repo)
-  if (!length(remote)) remote <- info$remote
+  if (!length(remote)) {
+    remote <- info$remote
+  }
   remote <- as.character(remote)
   if (!length(remote) || is.na(remote)) {
     if (is.na(match("origin", git_remote_list(repo = repo)$name))) {
@@ -115,7 +119,9 @@ git_push <- function(
   info <- git_info(repo)
   verbose <- as.logical(verbose)
 
-  if (!length(remote)) remote <- info$remote
+  if (!length(remote)) {
+    remote <- info$remote
+  }
 
   remote <- as.character(remote)
 
@@ -136,17 +142,22 @@ git_push <- function(
     refs <- refs[!grepl("^refs/pull", refs)]
     refspec <- paste0(refs, ":", refs)
   }
-  if (!length(refspec)) refspec <- info$head
+  if (!length(refspec)) {
+    refspec <- info$head
+  }
   refspec <- as.character(refspec)
-  if (isTRUE(force)) refspec <- sub("^\\+?", "+", refspec)
+  if (isTRUE(force)) {
+    refspec <- sub("^\\+?", "+", refspec)
+  }
 
   host <- remote_to_host(repo, remote)
   key_cb <- make_key_cb(ssh_key, host = host, password = password)
   cred_cb <- make_cred_cb(password = password, verbose = verbose)
 
   .Call(R_git_remote_push, repo, remote, refspec, key_cb, cred_cb, verbose)
-  if (is.null(set_upstream))
+  if (is.null(set_upstream)) {
     set_upstream <- isTRUE(is.na(info$upstream)) && !isTRUE(info$bare)
+  }
 
   if (isTRUE(set_upstream)) {
     git_branch_set_upstream(paste0(remote, "/", info$shorthand), repo = repo)
@@ -207,7 +218,9 @@ git_clone <- function(
   verbose = interactive()
 ) {
   stopifnot(is.character(url))
-  if (!length(path)) path <- file.path(getwd(), basename(url))
+  if (!length(path)) {
+    path <- file.path(getwd(), basename(url))
+  }
   stopifnot(is.character(path))
   stopifnot(is.null(branch) || is.character(branch))
   verbose <- as.logical(verbose)
@@ -238,7 +251,9 @@ git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.') {
   repo <- git_open(repo)
   info <- git_info(repo)
   branch <- info$shorthand
-  if (branch == "HEAD") stop("Repository is currently in a detached head state")
+  if (branch == "HEAD") {
+    stop("Repository is currently in a detached head state")
+  }
 
   upstream <- if (length(remote) && nchar(remote)) {
     paste0(remote, '/', branch)
@@ -246,8 +261,9 @@ git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.') {
     info$upstream
   }
 
-  if (!length(upstream) || is.na(upstream) || !nchar(upstream))
+  if (!length(upstream) || is.na(upstream) || !nchar(upstream)) {
     stop("No upstream configured for current branch, please specify a remote")
+  }
 
   if (grepl(".*/pr/\\d+$", upstream)) {
     pr <- utils::tail(strsplit(upstream, '/pr/', fixed = TRUE)[[1]], 1)
@@ -257,13 +273,15 @@ git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.') {
     inform("Local upstream, skipping fetch")
   } else {
     git_fetch(remote, ..., repo = repo)
-    if (!git_branch_exists(upstream, local = FALSE, repo = repo))
+    if (!git_branch_exists(upstream, local = FALSE, repo = repo)) {
       stop("Failed to fetch upstream branch: ", upstream)
+    }
   }
   if (isTRUE(rebase)) {
     rebase_df <- git_rebase_list(upstream = upstream, repo = repo)
-    if (any(rebase_df$conflicts))
+    if (any(rebase_df$conflicts)) {
       stop("Found conflicts, rebase not possible. Retry with rebase = FALSE")
+    }
     git_rebase_commit(upstream = upstream, repo = repo)
   } else {
     git_merge(upstream, repo = repo)

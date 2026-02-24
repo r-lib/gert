@@ -5,7 +5,7 @@ test_that("merge analysis works", {
   on.exit(setwd(oldwd), add = TRUE)
   setwd(repo)
   configure_local_user()
-  for(i in 1:5){
+  for (i in 1:5) {
     writeLines(paste('Blabla', i), "test.txt")
     git_add("test.txt")
     git_commit(paste("This is commit number:", i))
@@ -15,7 +15,7 @@ test_that("merge analysis works", {
   first_commit <- tail(master_log$commit, 1)
   git_branch_create('new', first_commit)
   git_branch_checkout('new')
-  expect_equal(git_log()$commit, tail(master_log,1)$commit)
+  expect_equal(git_log()$commit, tail(master_log, 1)$commit)
   expect_equal(git_merge_analysis(main), 'fastforward')
 
   # Expect no merge commit (ffwd)
@@ -42,4 +42,3 @@ test_that("merge analysis works", {
   git_merge(main)
   expect_equal(git_log(), newlog)
 })
-

@@ -4,7 +4,10 @@ test_that("cloning repositories works", {
   repo <- git_clone('https://github.com/r-lib/gert', path = path)
   expect_true(file.exists(file.path(path, 'DESCRIPTION')))
   info <- git_info(repo)
-  default_head <- git_remote_ls('https://github.com/r-lib/gert', repo = repo)$symref[1]
+  default_head <- git_remote_ls(
+    'https://github.com/r-lib/gert',
+    repo = repo
+  )$symref[1]
   default_branch <- basename(default_head)
   expect_equal(info$head, default_head)
   expect_equal(info$shorthand, default_branch)
@@ -15,7 +18,10 @@ test_that("cloning repositories works", {
   expect_is(git_log(repo = repo), 'data.frame')
   heads <- git_remote_ls(repo = repo)
   expect_is(heads, 'data.frame')
-  expect_equal(git_remote_info(repo = repo)$head, paste0("refs/remotes/origin/", default_branch))
+  expect_equal(
+    git_remote_info(repo = repo)$head,
+    paste0("refs/remotes/origin/", default_branch)
+  )
 
   # Test remotes
   remotes <- git_remote_list(repo)
@@ -24,6 +30,6 @@ test_that("cloning repositories works", {
 
   # Test archive
   expect_equal(git_archive_zip(repo = repo), 'gert.zip')
-  expect_equal(zip::zip_list('gert.zip')$filename, git_ls(repo=repo)$path)
+  expect_equal(zip::zip_list('gert.zip')$filename, git_ls(repo = repo)$path)
   unlink('gert.zip')
 })

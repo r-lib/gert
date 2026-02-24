@@ -74,8 +74,9 @@ git_commit <- function(message, author = NULL, committer = NULL, repo = '.') {
   }
   stopifnot(is.character(message), length(message) == 1)
   status <- git_status(repo = repo)
-  if (!any(status$staged))
+  if (!any(status$staged)) {
     stop("No staged files to commit. Run git_add() to select files.")
+  }
   merge_parents <- git_merge_parent_heads(repo = repo)
   .Call(R_git_commit_create, repo, message, author, committer, merge_parents)
 }
@@ -94,10 +95,14 @@ git_commit_all <- function(
   changes <- unstaged$file[
     unstaged$status %in% c("modified", "renamed", "typechange")
   ]
-  if (length(changes)) git_add(changes, repo = repo)
+  if (length(changes)) {
+    git_add(changes, repo = repo)
+  }
 
   deleted <- unstaged$file[unstaged$status == "deleted"]
-  if (length(deleted)) git_rm(deleted, repo = repo)
+  if (length(deleted)) {
+    git_rm(deleted, repo = repo)
+  }
 
   git_commit(
     message = message,
@@ -209,7 +214,9 @@ git_log <- function(ref = "HEAD", max = 100, after = NULL, repo = ".") {
   repo <- git_open(repo)
   ref <- as.character(ref)
   max <- as.integer(max)
-  if (length(after)) after <- as.POSIXct(after)
+  if (length(after)) {
+    after <- as.POSIXct(after)
+  }
   .Call(R_git_commit_log, repo, ref, max, after)
 }
 
@@ -224,6 +231,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 }
 
 assert_string <- function(x) {
-  if (!is.character(x) || !length(x))
+  if (!is.character(x) || !length(x)) {
     stop("Argument must be a string of length 1")
+  }
 }

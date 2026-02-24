@@ -48,8 +48,9 @@ git_submodule_set_to <- function(submodule, ref, checkout = TRUE, repo = '.') {
   } else if (!is_full_hash(ref)) {
     ref <- git_commit_info(ref, repo = I(info$path))$id
   }
-  if (!is_full_hash(ref))
+  if (!is_full_hash(ref)) {
     stop("When checkout = FALSE, parameter ref must be a full hash")
+  }
   .Call(R_git_submodule_set_to, repo, submodule, ref)
 }
 

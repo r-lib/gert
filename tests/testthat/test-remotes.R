@@ -1,4 +1,4 @@
-test_that("remotes from new repo",{
+test_that("remotes from new repo", {
   skip_if_offline('github.com')
   repo <- git_init(tempfile("gert-tests-remote"))
   on.exit(unlink(repo, recursive = TRUE))
@@ -6,11 +6,26 @@ test_that("remotes from new repo",{
   expect_error(git_remote_info(repo = repo))
   expect_error(git_remote_refspecs(repo = repo))
   expect_error(git_remote_set_url('https://github.com/foo/bar', repo = repo))
-  expect_error(git_remote_set_pushurl('https://github.com/foo/bar', repo = repo))
-  expect_equal(git_remote_add('https://github.com/jeroen/webp', name = 'jeroen', repo = repo), 'jeroen')
+  expect_error(git_remote_set_pushurl(
+    'https://github.com/foo/bar',
+    repo = repo
+  ))
+  expect_equal(
+    git_remote_add(
+      'https://github.com/jeroen/webp',
+      name = 'jeroen',
+      repo = repo
+    ),
+    'jeroen'
+  )
   git_fetch('jeroen', 'master', repo = repo)
   git_branch_create('master', 'jeroen/master', repo = repo)
-  git_branch_create('testje', git_commit_id('jeroen/master', repo = repo), checkout = FALSE, repo = repo)
+  git_branch_create(
+    'testje',
+    git_commit_id('jeroen/master', repo = repo),
+    checkout = FALSE,
+    repo = repo
+  )
   git_remote_set_pushurl('https://github.com/foo/baz', repo = repo)
   info <- git_remote_info(repo = repo)
   expect_equal(info$name, 'jeroen')
@@ -25,7 +40,9 @@ test_that("remotes from new repo",{
 test_that("remotes after clone", {
   skip_if_offline('github.com')
   repo <- file.path(tempdir(), 'gert')
-  if(!file.exists(repo)) git_clone('https://github.com/r-lib/gert', path = repo)
+  if (!file.exists(repo)) {
+    git_clone('https://github.com/r-lib/gert', path = repo)
+  }
   info <- git_remote_info(repo = repo)
   expect_equal(info$name, 'origin')
   expect_equal(info$url, "https://github.com/r-lib/gert")
@@ -36,9 +53,22 @@ test_that("remotes after clone", {
   expect_equal(remotelist$name, 'origin')
   expect_equal(remotelist$url, 'https://github.com/r-lib/gert')
   expect_error(git_remote_add('https://github.com/jeroen/gert', repo = repo))
-  expect_equal(git_remote_add('https://github.com/jeroen/gert', name = 'myfork', repo = repo), 'myfork')
+  expect_equal(
+    git_remote_add(
+      'https://github.com/jeroen/gert',
+      name = 'myfork',
+      repo = repo
+    ),
+    'myfork'
+  )
   remotelist <- git_remote_list(repo = repo)
   expect_equal(sort(remotelist$name), c("myfork", 'origin'))
-  expect_equal(sort(remotelist$url), c("https://github.com/jeroen/gert", 'https://github.com/r-lib/gert'))
-  expect_equal(git_remote_refspecs('myfork', repo = repo)$refspec, '+refs/heads/*:refs/remotes/myfork/*')
+  expect_equal(
+    sort(remotelist$url),
+    c("https://github.com/jeroen/gert", 'https://github.com/r-lib/gert')
+  )
+  expect_equal(
+    git_remote_refspecs('myfork', repo = repo)$refspec,
+    '+refs/heads/*:refs/remotes/myfork/*'
+  )
 })
