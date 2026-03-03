@@ -46,17 +46,22 @@ static int count_commit_changes(git_repository *repo, git_commit *commit){
   return count;
 }
 
+static int include_commit(git_repository *repo, git_commit *x, int64_t time_min, git_strarray *ps){
+  int64_t time = git_commit_time(x);
+  if(time < time_min)
+    return 0;
+  if(ps == NULL)
+    return 1;
+  git_diff *diff = commit_to_diff(repo, x, ps);
+  int include = (diff != NULL) && (git_diff_num_deltas(diff) > 0);
+  if(diff) git_diff_free(diff);
+  return include;
+}
+
 static int count_commit_ancestors(git_repository *repo, git_commit *x, int max, int64_t time_min, git_strarray *ps){
   git_commit *y = NULL;
   for(int i = 1; i < max; i++){
-    int64_t time = git_commit_time(x);
-    int include = (time >= time_min);
-    if(include && ps != NULL){
-      git_diff *diff = commit_to_diff(repo, x, ps);
-      include = (diff != NULL) && (git_diff_num_deltas(diff) > 0);
-      if(diff) git_diff_free(diff);
-    }
-    if(!include)
+    if(!include_commit(repo, x, time_min, ps))
       i--; //do not count this commit, continue searching because history may be non linear
     int res = git_commit_parent(&y, x, 0);
     if(i > 1)
@@ -196,18 +201,11 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after, SEXP path){
   SEXP merger = PROTECT(Rf_allocVector(LGLSXP, len));
 
   for(int i = 0; i < len; i++){
-    int64_t time = git_commit_time(head);
-    int include = (time >= min_date);
-    if(include && psp != NULL){
-      git_diff *diff = commit_to_diff(repo, head, psp);
-      include = (diff != NULL) && (git_diff_num_deltas(diff) > 0);
-      if(diff) git_diff_free(diff);
-    }
-    if(include){
+    if(include_commit(repo, head, min_date, psp)){
       SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(head))));
       SET_STRING_ELT(msg, i, safe_char(git_commit_message(head)));
       SET_STRING_ELT(author, i, make_author(git_commit_author(head)));
-      REAL(times)[i] = (double)time;
+      REAL(times)[i] = git_commit_time(head);
       INTEGER(files)[i] = count_commit_changes(repo, head);
       LOGICAL(merger)[i] = git_commit_parentcount(head) > 1;
     } else {
@@ -219,11 +217,11 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after, SEXP path){
     git_commit_free(head);
     head = commit;
   }
+  if(psp) git_strarray_free(psp);
   Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   SEXP out = build_tibble(6, "commit", ids, "author", author, "time", times,
                       "files", files, "merge", merger, "message", msg);
   UNPROTECT(6);
-  if(psp) git_strarray_free(psp);
   return out;
 }
 
