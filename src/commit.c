@@ -31,7 +31,7 @@ static SEXP make_author(const git_signature *p){
   return safe_char(buf);
 }
 
-static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
+static git_diff *commit_to_diff(git_repository *repo, git_commit *commit, git_strarray *ps){
   git_diff *diff = NULL;
   git_tree *old_tree = NULL;
   git_tree *new_tree = NULL;
@@ -47,6 +47,8 @@ static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
     git_commit_free(parent);
   }
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
+  if(ps != NULL)
+    opt.pathspec = *ps;
   bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
   git_tree_free(old_tree);
   git_tree_free(new_tree);
@@ -54,7 +56,7 @@ static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
 }
 
 static int count_commit_changes(git_repository *repo, git_commit *commit){
-  git_diff *diff = commit_to_diff(repo, commit);
+  git_diff *diff = commit_to_diff(repo, commit, NULL);
   if(diff == NULL)
     return NA_INTEGER;
   int count = git_diff_num_deltas(diff);
@@ -169,29 +171,6 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
   return safe_string(git_oid_tostr_s(&commit_id));
 }
 
-static int commit_touches_pathspec(git_repository *repo, git_commit *commit, git_strarray *ps){
-  git_diff *diff = NULL;
-  git_tree *old_tree = NULL;
-  git_tree *new_tree = NULL;
-  git_commit *parent = NULL;
-  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
-  opt.pathspec = *ps;
-  bail_if(git_commit_tree(&new_tree, commit), "git_commit_tree");
-  if(git_commit_parentcount(commit) > 0){
-    /* Parent may not be available in case of shallow clone */
-    if(git_commit_parent(&parent, commit, 0) == GIT_OK){
-      bail_if(git_commit_tree(&old_tree, parent), "git_commit_tree");
-      git_commit_free(parent);
-    }
-  }
-  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
-  git_tree_free(old_tree);
-  git_tree_free(new_tree);
-  int n = git_diff_num_deltas(diff);
-  git_diff_free(diff);
-  return n > 0;
-}
-
 SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after, SEXP path){
   git_commit *commit = NULL;
   git_repository *repo = get_git_repository(ptr);
@@ -222,8 +201,11 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after, SEXP path){
   while(count < max_count){
     int64_t time = git_commit_time(head);
     int include = (time > min_date);
-    if(include && has_path)
-      include = commit_touches_pathspec(repo, head, &ps);
+    if(include && has_path){
+      git_diff *diff = commit_to_diff(repo, head, &ps);
+      include = (diff != NULL) && (git_diff_num_deltas(diff) > 0);
+      if(diff) git_diff_free(diff);
+    }
     if(include){
       SET_STRING_ELT(ids, count, safe_char(git_oid_tostr_s(git_commit_id(head))));
       SET_STRING_ELT(msg, count, safe_char(git_commit_message(head)));
@@ -284,7 +266,7 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
   if(Rf_length(ref)){
     git_commit *commit = ref_to_commit(ref, repo);
-    diff = commit_to_diff(repo, commit);
+    diff = commit_to_diff(repo, commit, NULL);
   } else {
     // NB: this does not list 'staged' changes, as does: git_diff_tree_to_workdir_with_index()
     bail_if(git_diff_index_to_workdir(&diff, repo, NULL, &opt), "git_diff_index_to_workdir");
@@ -363,7 +345,7 @@ SEXP R_git_commit_id(SEXP ptr, SEXP ref){
 SEXP R_git_commit_stats(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = ref_to_commit(ref, repo);
-  git_diff *diff = commit_to_diff(repo, commit);
+  git_diff *diff = commit_to_diff(repo, commit, NULL);
   if(diff){
     git_diff_stats *stats = NULL;
     if(!git_diff_get_stats(&stats, diff) && stats){
@@ -399,7 +381,7 @@ SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref, SEXP max){
   }
   int max_iter = Rf_length(max) ? Rf_asInteger(max) : 2147483647;
   for(int iter = 0; iter < max_iter; iter++) {
-    git_diff *diff = commit_to_diff(repo, commit);
+    git_diff *diff = commit_to_diff(repo, commit, NULL);
     if(diff == NULL)
       Rf_error("Failed to get parent commit. Is this a shallow clone?");
     for(int di = 0; di < git_diff_num_deltas(diff); di++){
