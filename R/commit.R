@@ -210,14 +210,17 @@ git_ls <- function(repo = '.', ref = NULL) {
 #' @param ref revision string with a branch/tag/commit value
 #' @param max lookup at most latest n parent commits
 #' @param after date or timestamp: only include commits starting this date
-git_log <- function(ref = "HEAD", max = 100, after = NULL, repo = ".") {
+#' @param path character vector with paths to filter on; only commits that
+#' touch these paths are included
+git_log <- function(ref = "HEAD", max = 100, after = NULL, path = NULL, repo = ".") {
   repo <- git_open(repo)
   ref <- as.character(ref)
   max <- as.integer(max)
   if (length(after)) {
     after <- as.POSIXct(after)
   }
-  .Call(R_git_commit_log, repo, ref, max, after)
+  path <- as.character(path)
+  .Call(R_git_commit_log, repo, ref, max, after, path)
 }
 
 #' @export

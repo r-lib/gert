@@ -38,7 +38,7 @@ git_conflicts(repo = ".")
 
 git_ls(repo = ".", ref = NULL)
 
-git_log(ref = "HEAD", max = 100, after = NULL, repo = ".")
+git_log(ref = "HEAD", max = 100, after = NULL, path = NULL, repo = ".")
 
 git_stat_files(files, ref = "HEAD", max = NULL, repo = ".")
 }
@@ -72,6 +72,9 @@ Use \code{NULL} or \code{NA} to show both (default).}
 \item{max}{lookup at most latest n parent commits}
 
 \item{after}{date or timestamp: only include commits starting this date}
+
+\item{path}{character vector with paths to filter on; only commits that
+touch these paths are included}
 }
 \value{
 \itemize{
