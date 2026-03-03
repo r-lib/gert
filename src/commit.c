@@ -169,42 +169,112 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
   return safe_string(git_oid_tostr_s(&commit_id));
 }
 
-SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after){
+static int commit_touches_pathspec(git_repository *repo, git_commit *commit, git_strarray *ps){
+  git_diff *diff = NULL;
+  git_tree *old_tree = NULL;
+  git_tree *new_tree = NULL;
+  git_commit *parent = NULL;
+  git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
+  opt.pathspec = *ps;
+  bail_if(git_commit_tree(&new_tree, commit), "git_commit_tree");
+  if(git_commit_parentcount(commit) > 0){
+    /* Parent may not be available in case of shallow clone */
+    if(git_commit_parent(&parent, commit, 0) == GIT_OK){
+      bail_if(git_commit_tree(&old_tree, parent), "git_commit_tree");
+      git_commit_free(parent);
+    }
+  }
+  bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
+  git_tree_free(old_tree);
+  git_tree_free(new_tree);
+  int n = git_diff_num_deltas(diff);
+  git_diff_free(diff);
+  return n > 0;
+}
+
+SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after, SEXP path){
   git_commit *commit = NULL;
   git_repository *repo = get_git_repository(ptr);
   git_commit *head = ref_to_commit(ref, repo);
 
-  /* Find out how many ancestors we have */
   int min_date = Rf_length(after) ? Rf_asInteger(after) : 0;
-  int len = count_commit_ancestors(head, Rf_asInteger(max), min_date);
-  SEXP ids = PROTECT(Rf_allocVector(STRSXP, len));
-  SEXP msg = PROTECT(Rf_allocVector(STRSXP, len));
-  SEXP author = PROTECT(Rf_allocVector(STRSXP, len));
-  SEXP times = PROTECT(Rf_allocVector(REALSXP, len));
-  SEXP files = PROTECT(Rf_allocVector(INTSXP, len));
-  SEXP merger = PROTECT(Rf_allocVector(LGLSXP, len));
+  int max_count = Rf_asInteger(max);
+  int has_path = Rf_length(path) > 0;
 
-  for(int i = 0; i < len; i++){
-    if(git_commit_time(head) > min_date){
-      SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(head))));
-      SET_STRING_ELT(msg, i, safe_char(git_commit_message(head)));
-      SET_STRING_ELT(author, i, make_author(git_commit_author(head)));
-      REAL(times)[i] = git_commit_time(head);
-      INTEGER(files)[i] = count_commit_changes(repo, head);
-      LOGICAL(merger)[i] = git_commit_parentcount(head) > 1;
-    } else {
-      i--;
+  /* Set up pathspec for path filtering */
+  git_strarray ps = {0};
+  if(has_path){
+    ps.count = Rf_length(path);
+    ps.strings = (char **)R_alloc(ps.count, sizeof(char *));
+    for(int i = 0; i < (int)ps.count; i++)
+      ps.strings[i] = (char *)CHAR(STRING_ELT(path, i));
+  }
+
+  /* Pre-allocate arrays of max_count size */
+  SEXP ids = PROTECT(Rf_allocVector(STRSXP, max_count));
+  SEXP msg = PROTECT(Rf_allocVector(STRSXP, max_count));
+  SEXP author = PROTECT(Rf_allocVector(STRSXP, max_count));
+  SEXP times = PROTECT(Rf_allocVector(REALSXP, max_count));
+  SEXP files = PROTECT(Rf_allocVector(INTSXP, max_count));
+  SEXP merger = PROTECT(Rf_allocVector(LGLSXP, max_count));
+
+  int count = 0;
+  while(count < max_count){
+    int64_t time = git_commit_time(head);
+    int include = (time > min_date);
+    if(include && has_path)
+      include = commit_touches_pathspec(repo, head, &ps);
+    if(include){
+      SET_STRING_ELT(ids, count, safe_char(git_oid_tostr_s(git_commit_id(head))));
+      SET_STRING_ELT(msg, count, safe_char(git_commit_message(head)));
+      SET_STRING_ELT(author, count, make_author(git_commit_author(head)));
+      REAL(times)[count] = (double)time;
+      INTEGER(files)[count] = count_commit_changes(repo, head);
+      LOGICAL(merger)[count] = git_commit_parentcount(head) > 1;
+      count++;
     }
-    /* traverse to next commit (except for the final one) */
-    if(i < len-1)
-      bail_if(git_commit_parent(&commit, head, 0), "git_commit_parent");
+    /* traverse to next commit */
+    if(git_commit_parentcount(head) == 0){
+      git_commit_free(head);
+      head = NULL;
+      break;
+    }
+    bail_if(git_commit_parent(&commit, head, 0), "git_commit_parent");
     git_commit_free(head);
     head = commit;
+    commit = NULL;
   }
+  if(head) git_commit_free(head);
+
   Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
-  SEXP out = build_tibble(6, "commit", ids, "author", author, "time", times,
-                      "files", files, "merge", merger, "message", msg);
-  UNPROTECT(6);
+
+  /* When count equals max_count the pre-alloc vectors are fully used */
+  if(count == max_count){
+    SEXP out = build_tibble(6, "commit", ids, "author", author, "time", times,
+                            "files", files, "merge", merger, "message", msg);
+    UNPROTECT(6);
+    return out;
+  }
+
+  /* Build output with exactly 'count' rows (fewer than max due to filtering) */
+  SEXP out_ids = PROTECT(Rf_allocVector(STRSXP, count));
+  SEXP out_msg = PROTECT(Rf_allocVector(STRSXP, count));
+  SEXP out_author = PROTECT(Rf_allocVector(STRSXP, count));
+  SEXP out_times = PROTECT(Rf_allocVector(REALSXP, count));
+  SEXP out_files = PROTECT(Rf_allocVector(INTSXP, count));
+  SEXP out_merger = PROTECT(Rf_allocVector(LGLSXP, count));
+  for(int i = 0; i < count; i++){
+    SET_STRING_ELT(out_ids, i, STRING_ELT(ids, i));
+    SET_STRING_ELT(out_msg, i, STRING_ELT(msg, i));
+    SET_STRING_ELT(out_author, i, STRING_ELT(author, i));
+  }
+  memcpy(REAL(out_times), REAL(times), count * sizeof(double));
+  memcpy(INTEGER(out_files), INTEGER(files), count * sizeof(int));
+  memcpy(LOGICAL(out_merger), LOGICAL(merger), count * sizeof(int));
+  Rf_setAttrib(out_times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
+  SEXP out = build_tibble(6, "commit", out_ids, "author", out_author, "time", out_times,
+                          "files", out_files, "merge", out_merger, "message", out_msg);
+  UNPROTECT(12);
   return out;
 }
 

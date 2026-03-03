@@ -167,3 +167,32 @@ test_that("status reports a conflicted file", {
   expect_length(git_conflicts(repo = repo)$our, 0)
   expect_length(git_status(repo = repo)$file, 0)
 })
+
+test_that("git_log path filtering works", {
+  repo <- git_init(tempfile("gert-tests-commit"))
+  on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
+
+  writeLines("hello", file.path(repo, "foo.txt"))
+  git_add("foo.txt", repo = repo)
+  git_commit("Add foo.txt", repo = repo)
+
+  writeLines("world", file.path(repo, "bar.txt"))
+  git_add("bar.txt", repo = repo)
+  git_commit("Add bar.txt", repo = repo)
+
+  writeLines("updated", file.path(repo, "foo.txt"))
+  git_add("foo.txt", repo = repo)
+  git_commit("Update foo.txt", repo = repo)
+
+  log_all <- git_log(repo = repo)
+  expect_equal(nrow(log_all), 3)
+
+  log_foo <- git_log(path = "foo.txt", repo = repo)
+  expect_equal(nrow(log_foo), 2)
+  expect_true(all(grepl("foo", log_foo$message)))
+
+  log_bar <- git_log(path = "bar.txt", repo = repo)
+  expect_equal(nrow(log_bar), 1)
+  expect_match(log_bar$message, "bar.txt")
+})
