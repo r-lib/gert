@@ -1,16 +1,6 @@
 #include <string.h>
 #include "utils.h"
 
-static git_strarray *files_to_array(SEXP files){
-  int len = Rf_length(files);
-  git_strarray *paths = malloc(sizeof *paths);
-  paths->count = len;
-  paths->strings = calloc(len, sizeof *paths->strings);
-  for(int i = 0; i < len; i++)
-    paths->strings[i] = strdup(CHAR(STRING_ELT(files, i)));
-  return paths;
-}
-
 SEXP R_git_repository_info(SEXP ptr){
   git_buf buf = {0};
   git_strarray ref_list;

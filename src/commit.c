@@ -184,15 +184,7 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after, SEXP path){
 
   /* Set up pathspec for path filtering */
   int min_date = Rf_length(after) ? Rf_asInteger(after) : 0;
-  git_strarray ps = {0};
-  git_strarray *psp = NULL;
-  if(Rf_length(path) > 0){
-    ps.count = Rf_length(path);
-    ps.strings = (char **)R_alloc(ps.count, sizeof(char *));
-    for(int i = 0; i < (int)ps.count; i++)
-      ps.strings[i] = (char *)CHAR(STRING_ELT(path, i));
-    psp = &ps;
-  }
+  git_strarray *psp = Rf_length(path) > 0 ? files_to_array(path) : NULL;
 
   /* Find out how many ancestors we have */
   int len = count_commit_ancestors(repo, head, Rf_asInteger(max), min_date, psp);
@@ -231,6 +223,7 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after, SEXP path){
   SEXP out = build_tibble(6, "commit", ids, "author", author, "time", times,
                       "files", files, "merge", merger, "message", msg);
   UNPROTECT(6);
+  if(psp) git_strarray_free(psp);
   return out;
 }
 
