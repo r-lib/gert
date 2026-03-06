@@ -47,6 +47,7 @@ to only stage the reverted changes without committing, leaving you free to
 amend or combine them before calling \code{\link[=git_commit]{git_commit()}}.
 }
 \examples{
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 repo <- file.path(tempdir(), "myrepo")
 git_init(repo)
 
@@ -83,6 +84,7 @@ git_revert(bad_commit3, no_commit = TRUE, repo = repo)
 git_status(repo = repo)
 
 unlink(repo, recursive = TRUE)
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other git: 

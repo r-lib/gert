@@ -262,7 +262,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' @param message a commit message. Similar default to `git revert`.
 #' @return The SHA of the new revert commit (invisibly), or `NULL` when
 #'   `no_commit = TRUE`.
-#' @examples
+#' @examplesIf interactive()
 #' repo <- file.path(tempdir(), "myrepo")
 #' git_init(repo)
 #'
