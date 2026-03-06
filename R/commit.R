@@ -255,9 +255,6 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' @inheritParams git_open
 #' @inheritParams git_commit
 #' @inheritParams git_commit_info
-#' @param commit a commit reference (SHA, branch name, or revision expression
-#'   such as `HEAD~1`) identifying the commit to revert. Must be an ancestor of
-#'   the current HEAD.
 #' @param no_commit if `TRUE`, stage the reverted changes without creating a
 #'   commit. Default is `FALSE`, that is to say, by default a commit is made.
 #' @param message a commit message. Similar default to `git revert`.
