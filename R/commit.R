@@ -244,7 +244,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' Applies the inverse of the changes introduced by a given commit, equivalent
 #' to `git revert <commit>`. The commit must be reachable from the current HEAD.
 #'
-#' By default, a new revert commit is created immediately. Set `no_commit = TRUE`
+#' By default, a new revert commit is created immediately. Set `commit = FALSE`
 #' to only stage the reverted changes without committing, leaving you free to
 #' amend or combine them before calling [git_commit()].
 #'
@@ -253,13 +253,12 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' @rdname git_revert
 #' @family git
 #' @inheritParams git_open
-#' @inheritParams git_commit
 #' @inheritParams git_commit_info
-#' @param no_commit if `TRUE`, stage the reverted changes without creating a
-#'   commit. Default is `FALSE`, that is to say, by default a commit is made.
-#' @param message a commit message. Similar default to `git revert`.
+#' @param commit if `FALSE`, stage the reverted changes without creating a
+#'   commit. Default is `TRUE`, that is to say, by default a commit is made.
+#' @param ... parameters passed to `git_commit` such as `message` or `author`
 #' @return The SHA of the new revert commit (invisibly), or `NULL` when
-#'   `no_commit = TRUE`.
+#'   `commit = FALSE`.
 #' @examplesIf interactive()
 #' repo <- file.path(tempdir(), "myrepo")
 #' git_init(repo)
@@ -293,30 +292,27 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' writeLines("again", file.path(repo, "hello.txt"))
 #' git_add("hello.txt", repo = repo)
 #' bad_commit3 <- git_commit("Fourth commit", repo = repo)
-#' git_revert(bad_commit3, no_commit = TRUE, repo = repo)
+#' git_revert(bad_commit3, commit = FALSE, repo = repo)
 #' git_status(repo = repo)
 #'
 #' unlink(repo, recursive = TRUE)
 #' @useDynLib gert R_git_revert
 git_revert <- function(
   ref,
-  message = NULL,
-  author = NULL,
-  committer = NULL,
-  no_commit = FALSE,
+  commit = TRUE,
+  ...,
   repo = '.'
 ) {
   repo <- git_open(repo)
   assert_string(ref)
-  stopifnot(is.logical(no_commit), length(no_commit) == 1)
+  stopifnot(is.logical(commit), length(commit) == 1)
 
-  sha <- try(git_commit_id(ref, repo = repo), silent = TRUE)
-  if (inherits(sha, "try-error")) {
+  sha <- tryCatch(git_commit_id(ref, repo = repo), error = function(e){
     stop(sprintf(
       "Can't find reference/commit '%s' in the current branch history",
       ref
     ))
-  }
+  })
 
   head_sha <- git_commit_id("HEAD", repo = repo)
   sha_descends_from_head <- git_commit_descendant_of(
@@ -330,20 +326,13 @@ git_revert <- function(
 
   .Call(R_git_revert, repo, sha)
 
-  if (no_commit) {
-    return(NULL)
+  if (isTRUE(commit)) {
+    git_revert_commit(repo = repo, sha = sha, ...)
   }
+}
 
-  if (is.null(message)) {
-    message <- revert_message(sha, repo)
-  }
-
-  invisible(git_commit(
-    message,
-    author = author,
-    committer = committer,
-    repo = repo
-  ))
+git_revert_commit <- function(sha, message = revert_message(sha, repo), ..., repo){
+  git_commit(message, ..., repo = repo)
 }
 
 assert_string <- function(x) {

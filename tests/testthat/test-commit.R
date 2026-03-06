@@ -218,11 +218,11 @@ test_that("reverting a commit", {
   expect_match(log$message[1], '^Revert "Second commit"')
   expect_equal(readLines(file.path(repo, "hello.txt")), "hello")
 
-  # no_commit = TRUE: only stages
+  # commit = FALSE: only stages
   writeLines("again", file.path(repo, "hello.txt"))
   git_add("hello.txt", repo = repo)
   third <- git_commit("Third commit", repo = repo)
-  result <- git_revert(third, no_commit = TRUE, repo = repo)
+  result <- git_revert(third, commit = FALSE, repo = repo)
   expect_null(result)
   status <- git_status(repo = repo)
   expect_true(any(status$staged))

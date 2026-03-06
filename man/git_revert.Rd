@@ -4,26 +4,15 @@
 \alias{git_revert}
 \title{Revert a commit}
 \usage{
-git_revert(
-  ref,
-  message = NULL,
-  author = NULL,
-  committer = NULL,
-  no_commit = FALSE,
-  repo = "."
-)
+git_revert(ref, commit = TRUE, ..., repo = ".")
 }
 \arguments{
 \item{ref}{revision string with a branch/tag/commit value}
 
-\item{message}{a commit message. Similar default to \verb{git revert}.}
+\item{commit}{if \code{FALSE}, stage the reverted changes without creating a
+commit. Default is \code{TRUE}, that is to say, by default a commit is made.}
 
-\item{author}{A \link{git_signature} value, default is \code{\link[=git_signature_default]{git_signature_default()}}.}
-
-\item{committer}{A \link{git_signature} value, default is same as \code{author}}
-
-\item{no_commit}{if \code{TRUE}, stage the reverted changes without creating a
-commit. Default is \code{FALSE}, that is to say, by default a commit is made.}
+\item{...}{parameters passed to \code{git_commit} such as \code{message} or \code{author}}
 
 \item{repo}{The path to the git repository. If the directory is not a
 repository, parent directories are considered (see \link{git_find}). To disable
@@ -33,14 +22,14 @@ versions of gert may have additional parameters.}
 }
 \value{
 The SHA of the new revert commit (invisibly), or \code{NULL} when
-\code{no_commit = TRUE}.
+\code{commit = FALSE}.
 }
 \description{
 Applies the inverse of the changes introduced by a given commit, equivalent
 to \verb{git revert <commit>}. The commit must be reachable from the current HEAD.
 }
 \details{
-By default, a new revert commit is created immediately. Set \code{no_commit = TRUE}
+By default, a new revert commit is created immediately. Set \code{commit = FALSE}
 to only stage the reverted changes without committing, leaving you free to
 amend or combine them before calling \code{\link[=git_commit]{git_commit()}}.
 }
@@ -78,7 +67,7 @@ git_log(repo = repo)
 writeLines("again", file.path(repo, "hello.txt"))
 git_add("hello.txt", repo = repo)
 bad_commit3 <- git_commit("Fourth commit", repo = repo)
-git_revert(bad_commit3, no_commit = TRUE, repo = repo)
+git_revert(bad_commit3, commit = FALSE, repo = repo)
 git_status(repo = repo)
 
 unlink(repo, recursive = TRUE)
