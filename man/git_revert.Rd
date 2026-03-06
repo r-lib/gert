@@ -5,7 +5,7 @@
 \title{Revert a commit}
 \usage{
 git_revert(
-  commit,
+  ref,
   message = NULL,
   author = NULL,
   committer = NULL,
@@ -14,9 +14,7 @@ git_revert(
 )
 }
 \arguments{
-\item{commit}{a commit reference (SHA, branch name, or revision expression
-such as \code{HEAD~1}) identifying the commit to revert. Must be an ancestor of
-the current HEAD.}
+\item{ref}{revision string with a branch/tag/commit value}
 
 \item{message}{a commit message. Similar default to \verb{git revert}.}
 
@@ -32,6 +30,10 @@ repository, parent directories are considered (see \link{git_find}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
+
+\item{commit}{a commit reference (SHA, branch name, or revision expression
+such as \code{HEAD~1}) identifying the commit to revert. Must be an ancestor of
+the current HEAD.}
 }
 \value{
 The SHA of the new revert commit (invisibly), or \code{NULL} when

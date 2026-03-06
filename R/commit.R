@@ -254,6 +254,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' @family git
 #' @inheritParams git_open
 #' @inheritParams git_commit
+#' @inheritParams git_commit_info
 #' @param commit a commit reference (SHA, branch name, or revision expression
 #'   such as `HEAD~1`) identifying the commit to revert. Must be an ancestor of
 #'   the current HEAD.
@@ -301,7 +302,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' unlink(repo, recursive = TRUE)
 #' @useDynLib gert R_git_revert
 git_revert <- function(
-  commit,
+  ref,
   message = NULL,
   author = NULL,
   committer = NULL,
@@ -309,14 +310,14 @@ git_revert <- function(
   repo = '.'
 ) {
   repo <- git_open(repo)
-  assert_string(commit)
+  assert_string(ref)
   stopifnot(is.logical(no_commit), length(no_commit) == 1)
 
-  sha <- try(git_commit_id(commit, repo = repo), silent = TRUE)
+  sha <- try(git_commit_id(ref, repo = repo), silent = TRUE)
   if (inherits(sha, "try-error")) {
     stop(sprintf(
-      "Can't find commit '%s' in the current branch history",
-      commit
+      "Can't find reference/commit '%s' in the current branch history",
+      ref
     ))
   }
 
