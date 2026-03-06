@@ -328,7 +328,7 @@ git_revert <- function(
     repo = repo
   )
   if (sha != head_sha && !sha_descends_from_head) {
-    stop(sprintf("commit '%s' is not in the current branch history", commit))
+    stop(sprintf("commit '%s' is not in the current branch history", ref))
   }
 
   .Call(R_git_revert, repo, sha)
