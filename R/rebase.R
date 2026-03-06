@@ -105,7 +105,6 @@ git_cherry_pick <- function(commit, repo = '.') {
   .Call(R_git_cherry_pick, repo, commit)
 }
 
-
 #' @export
 #' @rdname git_rebase
 #' @useDynLib gert R_git_ahead_behind
