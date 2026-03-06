@@ -335,16 +335,11 @@ git_revert <- function(
   if (no_commit) {
     return(NULL)
   }
-  if (!length(message)) {
-    info <- git_commit_info(sha, repo = repo)
-    subject <- strsplit(info$message, "\n")[[1]][1]
-    subject <- sub("\\s+$", "", subject)
-    message <- sprintf(
-      'Revert "%s"\n\nThis reverts commit %s.\n',
-      subject,
-      info$id
-    )
+
+  if (is.null(message)) {
+    message <- revert_message(sha, repo)
   }
+
   invisible(git_commit(
     message,
     author = author,
@@ -357,4 +352,16 @@ assert_string <- function(x) {
   if (!is.character(x) || !length(x)) {
     stop("Argument must be a string of length 1")
   }
+}
+
+revert_message <- function(sha, repo) {
+  info <- git_commit_info(sha, repo = repo)
+  subject <- strsplit(info$message, "\n")[[1]][1]
+  subject <- sub("\\s+$", "", subject)
+
+  sprintf(
+    'Revert "%s"\n\nThis reverts commit %s.\n',
+    subject,
+    info$id
+  )
 }
