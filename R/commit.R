@@ -212,7 +212,13 @@ git_ls <- function(repo = '.', ref = NULL) {
 #' @param after date or timestamp: only include commits starting this date
 #' @param path character vector with paths to filter on; only commits that
 #' touch these paths are included
-git_log <- function(ref = "HEAD", max = 100, after = NULL, path = NULL, repo = ".") {
+git_log <- function(
+  ref = "HEAD",
+  max = 100,
+  after = NULL,
+  path = NULL,
+  repo = "."
+) {
   repo <- git_open(repo)
   ref <- as.character(ref)
   max <- as.integer(max)
@@ -233,8 +239,116 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
   .Call(R_git_stat_files, repo, files, ref, max)
 }
 
+#' Revert a commit
+#'
+#' Applies the inverse of the changes introduced by a given commit, equivalent
+#' to `git revert <commit>`. The commit must be reachable from the current HEAD.
+#'
+#' By default, a new revert commit is created immediately. Set `commit = FALSE`
+#' to only stage the reverted changes without committing, leaving you free to
+#' amend or combine them before calling [git_commit()].
+#'
+#' @export
+#' @name git_revert
+#' @rdname git_revert
+#' @family git
+#' @inheritParams git_open
+#' @inheritParams git_commit_info
+#' @param commit if `FALSE`, stage the reverted changes without creating a
+#'   commit. Default is `TRUE`, that is to say, by default a commit is made.
+#' @param ... parameters passed to `git_commit` such as `message` or `author`
+#' @return The SHA of the new revert commit (invisibly), or `NULL` when
+#'   `commit = FALSE`.
+#' @examplesIf interactive()
+#' repo <- file.path(tempdir(), "myrepo")
+#' git_init(repo)
+#'
+#' # Set a user if no default
+#' if (!user_is_configured()) {
+#'   git_config_set("user.name", "Jerry")
+#'   git_config_set("user.email", "jerry@gmail.com")
+#' }
+#'
+#' writeLines("hello", file.path(repo, "hello.txt"))
+#' git_add("hello.txt", repo = repo)
+#' git_commit("First commit", repo = repo)
+#'
+#' writeLines("world", file.path(repo, "hello.txt"))
+#' git_add("hello.txt", repo = repo)
+#' bad_commit <- git_commit("Second commit", repo = repo)
+#'
+#' # Default: revert and commit with an auto-generated message
+#' git_revert(bad_commit, repo = repo)
+#' git_log(repo = repo)
+#'
+#' # Revert with a custom message
+#' writeLines("oops", file.path(repo, "hello.txt"))
+#' git_add("hello.txt", repo = repo)
+#' bad_commit2 <- git_commit("Third commit", repo = repo)
+#' git_revert(bad_commit2, message = "Undo third commit\n", repo = repo)
+#' git_log(repo = repo)
+#'
+#' # Stage the revert without committing
+#' writeLines("again", file.path(repo, "hello.txt"))
+#' git_add("hello.txt", repo = repo)
+#' bad_commit3 <- git_commit("Fourth commit", repo = repo)
+#' git_revert(bad_commit3, commit = FALSE, repo = repo)
+#' git_status(repo = repo)
+#'
+#' unlink(repo, recursive = TRUE)
+#' @useDynLib gert R_git_revert
+git_revert <- function(
+  ref,
+  commit = TRUE,
+  ...,
+  repo = '.'
+) {
+  repo <- git_open(repo)
+  assert_string(ref)
+  stopifnot(is.logical(commit), length(commit) == 1)
+
+  sha <- tryCatch(git_commit_id(ref, repo = repo), error = function(e){
+    stop(sprintf(
+      "Can't find reference/commit '%s' in the current branch history",
+      ref
+    ))
+  })
+
+  head_sha <- git_commit_id("HEAD", repo = repo)
+  sha_descends_from_head <- git_commit_descendant_of(
+    ancestor = sha,
+    ref = "HEAD",
+    repo = repo
+  )
+  if (sha != head_sha && !sha_descends_from_head) {
+    stop(sprintf("commit '%s' is not in the current branch history", ref))
+  }
+
+  .Call(R_git_revert, repo, sha)
+
+  if (isTRUE(commit)) {
+    git_revert_commit(repo = repo, sha = sha, ...)
+  }
+}
+
+git_revert_commit <- function(sha, message = revert_message(sha, repo), ..., repo){
+  git_commit(message, ..., repo = repo)
+}
+
 assert_string <- function(x) {
   if (!is.character(x) || !length(x)) {
     stop("Argument must be a string of length 1")
   }
+}
+
+revert_message <- function(sha, repo) {
+  info <- git_commit_info(sha, repo = repo)
+  subject <- strsplit(info$message, "\n")[[1]][1]
+  subject <- sub("\\s+$", "", subject)
+
+  sprintf(
+    'Revert "%s"\n\nThis reverts commit %s.\n',
+    subject,
+    info$id
+  )
 }

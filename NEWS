@@ -1,4 +1,5 @@
 2.3.1
+  - Add git_revert() function
   - git_stat_files() gains a 'max' parameter
   - Fix function declaration error
 2.3.0
