@@ -327,6 +327,20 @@ SEXP R_git_commit_stats(SEXP ptr, SEXP ref){
   return R_NilValue;
 }
 
+SEXP R_git_revert(SEXP ptr, SEXP commit_id){
+  git_commit *orig = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  git_revert_options opt = GIT_REVERT_OPTIONS_INIT;
+  opt.merge_opts.flags = GIT_MERGE_FAIL_ON_CONFLICT;
+  git_object *revision = resolve_refish(commit_id, repo);
+  bail_if(git_commit_lookup(&orig, repo, git_object_id(revision)), "git_commit_lookup");
+  bail_if(git_revert(repo, orig, &opt), "git_revert");
+  bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
+  git_object_free(revision);
+  git_commit_free(orig);
+  return R_NilValue;
+}
+
 SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref, SEXP max){
   git_commit *parent = NULL;
   git_repository *repo = get_git_repository(ptr);

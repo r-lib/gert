@@ -196,3 +196,71 @@ test_that("git_log path filtering works", {
   expect_equal(nrow(log_bar), 1)
   expect_match(log_bar$message, "bar.txt")
 })
+
+test_that("reverting a commit", {
+  repo <- git_init(tempfile("gert-tests-revert"))
+  on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
+
+  writeLines("hello", file.path(repo, "hello.txt"))
+  git_add("hello.txt", repo = repo)
+  git_commit("First commit", repo = repo)
+
+  writeLines("world", file.path(repo, "hello.txt"))
+  git_add("hello.txt", repo = repo)
+  second <- git_commit("Second commit", repo = repo)
+
+  # Default: stages + commits
+  revert_sha <- git_revert(second, repo = repo)
+  expect_type(revert_sha, "character")
+  log <- git_log(repo = repo)
+  expect_shape(log, nrow = 3)
+  expect_match(log$message[1], '^Revert "Second commit"')
+  expect_equal(readLines(file.path(repo, "hello.txt")), "hello")
+
+  # no_commit = TRUE: only stages
+  writeLines("again", file.path(repo, "hello.txt"))
+  git_add("hello.txt", repo = repo)
+  third <- git_commit("Third commit", repo = repo)
+  result <- git_revert(third, no_commit = TRUE, repo = repo)
+  expect_null(result)
+  status <- git_status(repo = repo)
+  expect_true(any(status$staged))
+})
+
+test_that("git_revert accepts ancestor references like HEAD~1", {
+  repo <- git_init(tempfile("gert-tests-revert-ancestor"))
+  on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
+
+  writeLines("a", file.path(repo, "a.txt"))
+  git_add("a.txt", repo = repo)
+  git_commit("First commit", repo = repo)
+
+  # Second commit touches its own file so reverting it won't conflict with Third
+  writeLines("b", file.path(repo, "b.txt"))
+  git_add("b.txt", repo = repo)
+  git_commit("Second commit", repo = repo)
+
+  writeLines("c", file.path(repo, "c.txt"))
+  git_add("c.txt", repo = repo)
+  git_commit("Third commit", repo = repo)
+
+  # HEAD~1 resolves to "Second commit"
+  revert_sha <- git_revert("HEAD~1", repo = repo)
+  expect_type(revert_sha, "character")
+  log <- git_log(repo = repo)
+  expect_match(log$message[1], '^Revert "Second commit"')
+})
+
+test_that("git_revert raises an error for an invalid commit", {
+  repo <- git_init(tempfile("gert-tests-revert-invalid"))
+  on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
+
+  writeLines("hello", file.path(repo, "hello.txt"))
+  git_add("hello.txt", repo = repo)
+  git_commit("First commit", repo = repo)
+
+  expect_error(git_revert("notacommit", repo = repo), "notacommit")
+})
