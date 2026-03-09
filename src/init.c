@@ -27,12 +27,12 @@ extern SEXP R_git_commit_create(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_descendant(SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_id(SEXP, SEXP);
 extern SEXP R_git_commit_info(SEXP, SEXP);
-extern SEXP R_git_commit_log(SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_commit_log(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_stats(SEXP, SEXP);
 extern SEXP R_git_config_list(SEXP);
 extern SEXP R_git_config_set(SEXP, SEXP, SEXP);
 extern SEXP R_git_conflict_list(SEXP);
-extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_delete_branch(SEXP, SEXP);
 extern SEXP R_git_diff_list(SEXP, SEXP);
 extern SEXP R_git_ignore_path_is_ignored(SEXP ptr, SEXP path);
@@ -53,6 +53,7 @@ extern SEXP R_git_remote_refspecs(SEXP, SEXP);
 extern SEXP R_git_remote_remove(SEXP, SEXP);
 extern SEXP R_git_remote_set_pushurl(SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_set_url(SEXP, SEXP, SEXP);
+extern SEXP R_git_revert(SEXP, SEXP);
 extern SEXP R_git_repository_add(SEXP, SEXP, SEXP);
 extern SEXP R_git_repository_clone(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_repository_find(SEXP);
@@ -70,7 +71,7 @@ extern SEXP R_git_stash_drop(SEXP, SEXP);
 extern SEXP R_git_stash_list(SEXP);
 extern SEXP R_git_stash_pop(SEXP, SEXP);
 extern SEXP R_git_stash_save(SEXP, SEXP, SEXP, SEXP, SEXP);
-extern SEXP R_git_stat_files(SEXP, SEXP, SEXP);
+extern SEXP R_git_stat_files(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_status_list(SEXP, SEXP, SEXP);
 extern SEXP R_git_submodule_info(SEXP, SEXP);
 extern SEXP R_git_submodule_init(SEXP, SEXP, SEXP);
@@ -82,6 +83,16 @@ extern SEXP R_git_submodule_update(SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_create(SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_tag_delete(SEXP, SEXP);
 extern SEXP R_git_tag_list(SEXP, SEXP);
+extern SEXP R_git_worktree_list(SEXP);
+extern SEXP R_git_worktree_exists(SEXP, SEXP);
+extern SEXP R_git_worktree_path(SEXP, SEXP);
+extern SEXP R_git_worktree_is_valid(SEXP, SEXP);
+extern SEXP R_git_worktree_is_locked(SEXP, SEXP);
+extern SEXP R_git_worktree_lock(SEXP, SEXP);
+extern SEXP R_git_worktree_unlock(SEXP, SEXP);
+extern SEXP R_git_worktree_add(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_worktree_is_prunable(SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_worktree_prune(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_libgit2_config(void);
 extern SEXP R_set_cert_locations(SEXP, SEXP);
 extern SEXP R_static_libgit2(void);
@@ -101,12 +112,12 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_commit_descendant",   (DL_FUNC) &R_git_commit_descendant,   3},
   {"R_git_commit_id",           (DL_FUNC) &R_git_commit_id,           2},
   {"R_git_commit_info",         (DL_FUNC) &R_git_commit_info,         2},
-  {"R_git_commit_log",          (DL_FUNC) &R_git_commit_log,          4},
+  {"R_git_commit_log",          (DL_FUNC) &R_git_commit_log,          5},
   {"R_git_commit_stats",        (DL_FUNC) &R_git_commit_stats,        2},
   {"R_git_config_list",         (DL_FUNC) &R_git_config_list,         1},
   {"R_git_config_set",          (DL_FUNC) &R_git_config_set,          3},
   {"R_git_conflict_list",       (DL_FUNC) &R_git_conflict_list,       1},
-  {"R_git_create_branch",       (DL_FUNC) &R_git_create_branch,       4},
+  {"R_git_create_branch",       (DL_FUNC) &R_git_create_branch,       5},
   {"R_git_delete_branch",       (DL_FUNC) &R_git_delete_branch,       2},
   {"R_git_diff_list",           (DL_FUNC) &R_git_diff_list,           2},
   {"R_git_ignore_path_is_ignored", (DL_FUNC) &R_git_ignore_path_is_ignored, 2},
@@ -137,6 +148,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_repository_path",     (DL_FUNC) &R_git_repository_path,     1},
   {"R_git_repository_rm",       (DL_FUNC) &R_git_repository_rm,       2},
   {"R_git_reset",               (DL_FUNC) &R_git_reset,               3},
+  {"R_git_revert",              (DL_FUNC) &R_git_revert,              2},
   {"R_git_signature_create",    (DL_FUNC) &R_git_signature_create,    4},
   {"R_git_signature_default",   (DL_FUNC) &R_git_signature_default,   1},
   {"R_git_signature_parse",     (DL_FUNC) &R_git_signature_parse,     1},
@@ -144,7 +156,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_stash_list",          (DL_FUNC) &R_git_stash_list,          1},
   {"R_git_stash_pop",           (DL_FUNC) &R_git_stash_pop,           2},
   {"R_git_stash_save",          (DL_FUNC) &R_git_stash_save,          5},
-  {"R_git_stat_files",          (DL_FUNC) &R_git_stat_files,          3},
+  {"R_git_stat_files",          (DL_FUNC) &R_git_stat_files,          4},
   {"R_git_status_list",         (DL_FUNC) &R_git_status_list,         3},
   {"R_git_submodule_info",      (DL_FUNC) &R_git_submodule_info,      2},
   {"R_git_submodule_init",      (DL_FUNC) &R_git_submodule_init,      3},
@@ -156,6 +168,16 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_tag_create",          (DL_FUNC) &R_git_tag_create,          4},
   {"R_git_tag_delete",          (DL_FUNC) &R_git_tag_delete,          2},
   {"R_git_tag_list",            (DL_FUNC) &R_git_tag_list,            2},
+  {"R_git_worktree_list",       (DL_FUNC) &R_git_worktree_list,       1},
+  {"R_git_worktree_exists",     (DL_FUNC) &R_git_worktree_exists,     2},
+  {"R_git_worktree_path",       (DL_FUNC) &R_git_worktree_path,       2},
+  {"R_git_worktree_is_valid",   (DL_FUNC) &R_git_worktree_is_valid,   2},
+  {"R_git_worktree_is_locked",  (DL_FUNC) &R_git_worktree_is_locked,  2},
+  {"R_git_worktree_lock",       (DL_FUNC) &R_git_worktree_lock,       2},
+  {"R_git_worktree_unlock",     (DL_FUNC) &R_git_worktree_unlock,     2},
+  {"R_git_worktree_add",        (DL_FUNC) &R_git_worktree_add,        6},
+  {"R_git_worktree_is_prunable",(DL_FUNC) &R_git_worktree_is_prunable,4},
+  {"R_git_worktree_prune",      (DL_FUNC) &R_git_worktree_prune,      5},
   {"R_libgit2_config",          (DL_FUNC) &R_libgit2_config,          0},
   {"R_set_cert_locations",      (DL_FUNC) &R_set_cert_locations,      2},
   {"R_static_libgit2",          (DL_FUNC) &R_static_libgit2,          0},

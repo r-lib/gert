@@ -20,6 +20,9 @@ git_commit_all(message, author = NULL, committer = NULL, repo = ".")
 git_status(staged = NULL, pathspec = NULL, repo = ".")
 
 git_ls(repo = ".", ref = NULL)
+git_log(ref = "HEAD", max = 100, after = NULL, path = NULL, repo = ".")
+
+git_stat_files(files, ref = "HEAD", max = NULL, repo = ".")
 }
 \arguments{
 \item{files}{vector of paths relative to the git root directory.
@@ -45,6 +48,12 @@ Use \code{NULL} or \code{NA} to show both (default).}
 \item{pathspec}{character vector with paths to match}
 
 \item{ref}{revision string with a branch/tag/commit value}
+\item{max}{lookup at most latest n parent commits}
+
+\item{after}{date or timestamp: only include commits starting this date}
+
+\item{path}{character vector with paths to filter on; only commits that
+touch these paths are included}
 }
 \value{
 \itemize{
@@ -111,8 +120,10 @@ Other git:
 \code{\link{git_remote}},
 \code{\link{git_repo}},
 \code{\link{git_reset}()},
+\code{\link{git_revert}()},
 \code{\link{git_signature}()},
 \code{\link{git_stash}},
-\code{\link{git_tag}}
+\code{\link{git_tag}},
+\code{\link{git_worktree}}
 }
 \concept{git}

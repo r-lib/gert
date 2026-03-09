@@ -255,16 +255,6 @@ static auth_callback_data_t auth_callback_data(SEXP getkey, SEXP getcred, int ve
   return data_cb;
 }
 
-static git_strarray *files_to_array(SEXP files){
-  int len = Rf_length(files);
-  git_strarray *paths = malloc(sizeof *paths);
-  paths->count = len;
-  paths->strings = calloc(len, sizeof *paths->strings);
-  for(int i = 0; i < len; i++)
-    paths->strings[i] = strdup(CHAR(STRING_ELT(files, i)));
-  return paths;
-}
-
 SEXP R_git_repository_init(SEXP path, SEXP is_bare){
   git_repository *repo = NULL;
   bail_if(git_repository_init(&repo, CHAR(STRING_ELT(path, 0)), Rf_asLogical(is_bare)), "git_repository_init");
