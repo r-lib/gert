@@ -1,5 +1,6 @@
 # gert (development version)
 
+ - Add `git_restore()` function (#259)
 - Fix badge links in `README.md` (@dpprdan, #189)
 - Use `NEWS.md` instead of `NEWS` (@olivroy, #209)
 

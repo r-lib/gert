@@ -307,22 +307,7 @@ git_revert <- function(
   assert_string(ref)
   stopifnot(is.logical(commit), length(commit) == 1)
 
-  sha <- tryCatch(git_commit_id(ref, repo = repo), error = function(e){
-    stop(sprintf(
-      "Can't find reference/commit '%s' in the current branch history",
-      ref
-    ))
-  })
-
-  head_sha <- git_commit_id("HEAD", repo = repo)
-  sha_descends_from_head <- git_commit_descendant_of(
-    ancestor = sha,
-    ref = "HEAD",
-    repo = repo
-  )
-  if (sha != head_sha && !sha_descends_from_head) {
-    stop(sprintf("commit '%s' is not in the current branch history", ref))
-  }
+  sha <- check_ref_in_history(ref, repo)
 
   .Call(R_git_revert, repo, sha)
 
@@ -331,7 +316,12 @@ git_revert <- function(
   }
 }
 
-git_revert_commit <- function(sha, message = revert_message(sha, repo), ..., repo){
+git_revert_commit <- function(
+  sha,
+  message = revert_message(sha, repo),
+  ...,
+  repo
+) {
   git_commit(message, ..., repo = repo)
 }
 
