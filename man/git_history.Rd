@@ -15,9 +15,9 @@ git_commit_id(ref = "HEAD", repo = ".")
 
 git_commit_stats(ref = "HEAD", repo = ".")
 
-git_log(ref = "HEAD", max = 100, after = NULL, repo = ".")
+git_log(ref = "HEAD", max = 100, after = NULL, path = NULL, repo = ".")
 
-git_stat_files(files, ref = "HEAD", repo = ".")
+git_stat_files(files, ref = "HEAD", max = NULL, repo = ".")
 }
 \arguments{
 \item{ref}{revision string with a branch/tag/commit value}
@@ -31,6 +31,9 @@ versions of gert may have additional parameters.}
 \item{max}{lookup at most latest n parent commits}
 
 \item{after}{date or timestamp: only include commits starting this date}
+
+\item{path}{character vector with paths to filter on; only commits that
+touch these paths are included}
 
 \item{files}{vector of paths relative to the git root directory.
 Use \code{"."} to stage all changed files.}
@@ -64,8 +67,10 @@ Other git:
 \code{\link{git_remote}},
 \code{\link{git_repo}},
 \code{\link{git_reset}()},
+\code{\link{git_revert}()},
 \code{\link{git_signature}()},
 \code{\link{git_stash}},
-\code{\link{git_tag}}
+\code{\link{git_tag}},
+\code{\link{git_worktree}}
 }
 \concept{git}
