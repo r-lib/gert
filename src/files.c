@@ -41,6 +41,14 @@ SEXP R_git_repository_info(SEXP ptr){
     git_reference_free(head);
   }
 
+  /* If remote still NA (no upstream configured), use sole remote if exactly one */
+  if(STRING_ELT(remote, 0) == NA_STRING){
+    git_strarray remotes = {0};
+    if(git_remote_list(&remotes, repo) == 0 && remotes.count == 1)
+      SET_STRING_ELT(remote, 0, safe_char(remotes.strings[0]));
+    git_strarray_free(&remotes);
+  }
+
   SEXP out = build_list(8, "path", path, "bare", bare, "head", headref, "shorthand", shorthand,
                     "commit", target, "remote", remote, "upstream", upstream, "reflist", refs);
   UNPROTECT(8);
