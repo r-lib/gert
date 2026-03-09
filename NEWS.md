@@ -1,5 +1,6 @@
 # gert (development version)
 
+- Fix badge links in `README.md` (@dpprdan, #189)
 - Use `NEWS.md` instead of `NEWS` (@olivroy, #209)
 
 # 2.3.1
