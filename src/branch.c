@@ -49,7 +49,7 @@ SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout, SEXP forc
   git_reference *branch = NULL;
   const char *source = CHAR(STRING_ELT(ref, 0));
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
-  opts.checkout_strategy = GIT_CHECKOUT_SAFE;
+  opts.checkout_strategy = Rf_asLogical(force) ? GIT_CHECKOUT_FORCE : GIT_CHECKOUT_SAFE;
   set_checkout_notify_cb(&opts);
   git_repository *repo = get_git_repository(ptr);
   git_object *revision = resolve_refish(ref, repo);
