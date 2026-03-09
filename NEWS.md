@@ -1,5 +1,6 @@
 # gert (development version)
 
+- Improve manual pages (@olivroy, #227)
 - Fix badge links in `README.md` (@dpprdan, #189)
 - Use `NEWS.md` instead of `NEWS` (@olivroy, #209)
 
