@@ -21,7 +21,7 @@ git_remote_info(remote = NULL, repo = ".")
 
 git_remote_set_url(url, remote = NULL, repo = ".")
 
-git_remote_set_pushurl(url, remote = NULL, repo = ".")
+git_remote_set_pushurl(url, remote = NULL, add = FALSE, repo = ".")
 
 git_remote_refspecs(remote = NULL, repo = ".")
 }
@@ -40,6 +40,9 @@ versions of gert may have additional parameters.}
 
 \item{remote}{name of an existing remote. Default \code{NULL} means the remote
 from the upstream of the current branch.}
+
+\item{add}{if \code{TRUE}, append the push URL instead of replacing it.
+Equivalent to \verb{git remote set-url --push --add}.}
 }
 \description{
 List, add, configure, or remove remotes.
