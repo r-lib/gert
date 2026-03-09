@@ -14,17 +14,17 @@ Simple git client for R based on 'libgit2' \url{https://libgit2.org} with suppor
 Useful links:
 \itemize{
   \item \url{https://docs.ropensci.org/gert/}
-  \item \url{https://github.com/r-lib/gert}
+  \item \url{https://ropensci.r-universe.dev/gert}
   \item Report bugs at \url{https://github.com/r-lib/gert/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Jeroen Ooms \email{jeroen@berkeley.edu} (\href{https://orcid.org/0000-0002-4035-0289}{ORCID})
+\strong{Maintainer}: Jeroen Ooms \email{jeroenooms@gmail.com} (\href{https://orcid.org/0000-0002-4035-0289}{ORCID})
 
 Other contributors:
 \itemize{
-  \item Jennifer Bryan \email{jenny@rstudio.com} (\href{https://orcid.org/0000-0002-6983-2759}{ORCID}) [contributor]
+  \item Jennifer Bryan \email{jenny@posit.co} (\href{https://orcid.org/0000-0002-6983-2759}{ORCID}) [contributor]
 }
 
 }

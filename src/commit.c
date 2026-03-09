@@ -1,24 +1,6 @@
 #include <string.h>
 #include "utils.h"
 
-static int count_commit_ancestors(git_commit *x, int max, int64_t time_min){
-  git_commit *y = NULL;
-  for(int i = 1; i < max; i++){
-    int64_t time = git_commit_time(x);
-    if(time < time_min)
-      i--; //do not count this commit, continue searching because history may be non linear
-    int res = git_commit_parent(&y, x, 0);
-    if(i > 1)
-      git_commit_free(x);
-    if(res == GIT_ENOTFOUND)
-      return i;
-    bail_if(res, "git_commit_parent");
-    x = y;
-  } //reached max
-  git_commit_free(y);
-  return max;
-}
-
 static SEXP make_author(const git_signature *p){
   char buf[2000] = "";
   if(p->name && p->email){
@@ -31,7 +13,7 @@ static SEXP make_author(const git_signature *p){
   return safe_char(buf);
 }
 
-static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
+static git_diff *commit_to_diff(git_repository *repo, git_commit *commit, git_strarray *ps){
   git_diff *diff = NULL;
   git_tree *old_tree = NULL;
   git_tree *new_tree = NULL;
@@ -47,6 +29,8 @@ static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
     git_commit_free(parent);
   }
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
+  if(ps != NULL)
+    opt.pathspec = *ps;
   bail_if(git_diff_tree_to_tree(&diff, repo, old_tree, new_tree, &opt), "git_diff_tree_to_tree");
   git_tree_free(old_tree);
   git_tree_free(new_tree);
@@ -54,12 +38,41 @@ static git_diff *commit_to_diff(git_repository *repo, git_commit *commit){
 }
 
 static int count_commit_changes(git_repository *repo, git_commit *commit){
-  git_diff *diff = commit_to_diff(repo, commit);
+  git_diff *diff = commit_to_diff(repo, commit, NULL);
   if(diff == NULL)
     return NA_INTEGER;
   int count = git_diff_num_deltas(diff);
   git_diff_free(diff);
   return count;
+}
+
+static int include_commit(git_repository *repo, git_commit *x, int64_t time_min, git_strarray *ps){
+  int64_t time = git_commit_time(x);
+  if(time < time_min)
+    return 0;
+  if(ps == NULL)
+    return 1;
+  git_diff *diff = commit_to_diff(repo, x, ps);
+  int include = (diff != NULL) && (git_diff_num_deltas(diff) > 0);
+  if(diff) git_diff_free(diff);
+  return include;
+}
+
+static int count_commit_ancestors(git_repository *repo, git_commit *x, int max, int64_t time_min, git_strarray *ps){
+  git_commit *y = NULL;
+  for(int i = 1; i < max; i++){
+    if(!include_commit(repo, x, time_min, ps))
+      i--; //do not count this commit, continue searching because history may be non linear
+    int res = git_commit_parent(&y, x, 0);
+    if(i > 1)
+      git_commit_free(x);
+    if(res == GIT_ENOTFOUND)
+      return i;
+    bail_if(res, "git_commit_parent");
+    x = y;
+  } //reached max
+  git_commit_free(y);
+  return max;
 }
 
 static SEXP signature_data(git_signature *sig){
@@ -169,14 +182,17 @@ SEXP R_git_commit_create(SEXP ptr, SEXP message, SEXP author, SEXP committer,
   return safe_string(git_oid_tostr_s(&commit_id));
 }
 
-SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after){
+SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after, SEXP path){
   git_commit *commit = NULL;
   git_repository *repo = get_git_repository(ptr);
   git_commit *head = ref_to_commit(ref, repo);
 
-  /* Find out how many ancestors we have */
+  /* Set up pathspec for path filtering */
   int min_date = Rf_length(after) ? Rf_asInteger(after) : 0;
-  int len = count_commit_ancestors(head, Rf_asInteger(max), min_date);
+  git_strarray *psp = Rf_length(path) > 0 ? files_to_array(path) : NULL;
+
+  /* Find out how many ancestors we have */
+  int len = count_commit_ancestors(repo, head, Rf_asInteger(max), min_date, psp);
   SEXP ids = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP msg = PROTECT(Rf_allocVector(STRSXP, len));
   SEXP author = PROTECT(Rf_allocVector(STRSXP, len));
@@ -185,7 +201,7 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after){
   SEXP merger = PROTECT(Rf_allocVector(LGLSXP, len));
 
   for(int i = 0; i < len; i++){
-    if(git_commit_time(head) > min_date){
+    if(include_commit(repo, head, min_date, psp)){
       SET_STRING_ELT(ids, i, safe_char(git_oid_tostr_s(git_commit_id(head))));
       SET_STRING_ELT(msg, i, safe_char(git_commit_message(head)));
       SET_STRING_ELT(author, i, make_author(git_commit_author(head)));
@@ -201,6 +217,7 @@ SEXP R_git_commit_log(SEXP ptr, SEXP ref, SEXP max, SEXP after){
     git_commit_free(head);
     head = commit;
   }
+  if(psp) git_strarray_free(psp);
   Rf_setAttrib(times, R_ClassSymbol, make_strvec(2, "POSIXct", "POSIXt"));
   SEXP out = build_tibble(6, "commit", ids, "author", author, "time", times,
                       "files", files, "merge", merger, "message", msg);
@@ -214,7 +231,7 @@ SEXP R_git_diff_list(SEXP ptr, SEXP ref){
   git_diff_options opt = GIT_DIFF_OPTIONS_INIT;
   if(Rf_length(ref)){
     git_commit *commit = ref_to_commit(ref, repo);
-    diff = commit_to_diff(repo, commit);
+    diff = commit_to_diff(repo, commit, NULL);
   } else {
     // NB: this does not list 'staged' changes, as does: git_diff_tree_to_workdir_with_index()
     bail_if(git_diff_index_to_workdir(&diff, repo, NULL, &opt), "git_diff_index_to_workdir");
@@ -293,7 +310,7 @@ SEXP R_git_commit_id(SEXP ptr, SEXP ref){
 SEXP R_git_commit_stats(SEXP ptr, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = ref_to_commit(ref, repo);
-  git_diff *diff = commit_to_diff(repo, commit);
+  git_diff *diff = commit_to_diff(repo, commit, NULL);
   if(diff){
     git_diff_stats *stats = NULL;
     if(!git_diff_get_stats(&stats, diff) && stats){
@@ -310,7 +327,21 @@ SEXP R_git_commit_stats(SEXP ptr, SEXP ref){
   return R_NilValue;
 }
 
-SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
+SEXP R_git_revert(SEXP ptr, SEXP commit_id){
+  git_commit *orig = NULL;
+  git_repository *repo = get_git_repository(ptr);
+  git_revert_options opt = GIT_REVERT_OPTIONS_INIT;
+  opt.merge_opts.flags = GIT_MERGE_FAIL_ON_CONFLICT;
+  git_object *revision = resolve_refish(commit_id, repo);
+  bail_if(git_commit_lookup(&orig, repo, git_object_id(revision)), "git_commit_lookup");
+  bail_if(git_revert(repo, orig, &opt), "git_revert");
+  bail_if(git_repository_state_cleanup(repo), "git_repository_state_cleanup");
+  git_object_free(revision);
+  git_commit_free(orig);
+  return R_NilValue;
+}
+
+SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref, SEXP max){
   git_commit *parent = NULL;
   git_repository *repo = get_git_repository(ptr);
   git_commit *commit = ref_to_commit(ref, repo);
@@ -327,8 +358,9 @@ SEXP R_git_stat_files(SEXP ptr, SEXP files, SEXP ref){
     INTEGER(changes)[fi] = 0L;
     SET_STRING_ELT(hashes, fi, NA_STRING);
   }
-  while(1) {
-    git_diff *diff = commit_to_diff(repo, commit);
+  int max_iter = Rf_length(max) ? Rf_asInteger(max) : 2147483647;
+  for(int iter = 0; iter < max_iter; iter++) {
+    git_diff *diff = commit_to_diff(repo, commit, NULL);
     if(diff == NULL)
       Rf_error("Failed to get parent commit. Is this a shallow clone?");
     for(int di = 0; di < git_diff_num_deltas(diff); di++){

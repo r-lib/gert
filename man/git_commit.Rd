@@ -38,9 +38,9 @@ git_conflicts(repo = ".")
 
 git_ls(repo = ".", ref = NULL)
 
-git_log(ref = "HEAD", max = 100, after = NULL, repo = ".")
+git_log(ref = "HEAD", max = 100, after = NULL, path = NULL, repo = ".")
 
-git_stat_files(files, ref = "HEAD", repo = ".")
+git_stat_files(files, ref = "HEAD", max = NULL, repo = ".")
 }
 \arguments{
 \item{message}{a commit message}
@@ -72,6 +72,9 @@ Use \code{NULL} or \code{NA} to show both (default).}
 \item{max}{lookup at most latest n parent commits}
 
 \item{after}{date or timestamp: only include commits starting this date}
+
+\item{path}{character vector with paths to filter on; only commits that
+touch these paths are included}
 }
 \value{
 \itemize{
@@ -141,8 +144,10 @@ Other git:
 \code{\link{git_remote}},
 \code{\link{git_repo}},
 \code{\link{git_reset}()},
+\code{\link{git_revert}()},
 \code{\link{git_signature}()},
 \code{\link{git_stash}},
-\code{\link{git_tag}}
+\code{\link{git_tag}},
+\code{\link{git_worktree}}
 }
 \concept{git}

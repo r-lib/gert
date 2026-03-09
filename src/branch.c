@@ -43,7 +43,7 @@ SEXP R_git_branch_exists(SEXP ptr, SEXP name, SEXP local){
   return Rf_ScalarLogical(branch_exists(repo, CHAR(STRING_ELT(name, 0)), r_branch_type(local)));
 }
 
-SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
+SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout, SEXP force){
   git_object *obj;
   git_commit *commit = NULL;
   git_reference *branch = NULL;
@@ -55,7 +55,7 @@ SEXP R_git_create_branch(SEXP ptr, SEXP name, SEXP ref, SEXP checkout){
   git_object *revision = resolve_refish(ref, repo);
   bail_if(git_commit_lookup(&commit, repo, git_object_id(revision)), "git_commit_lookup");
   git_object_free(revision);
-  bail_if(git_branch_create(&branch, repo, CHAR(STRING_ELT(name, 0)), commit, 0), "git_branch_create");
+  bail_if(git_branch_create(&branch, repo, CHAR(STRING_ELT(name, 0)), commit, Rf_asInteger(force)), "git_branch_create");
   git_commit_free(commit);
   if(branch_exists(repo, source, GIT_BRANCH_REMOTE)){
     bail_if(git_branch_set_upstream(branch, source), "git_branch_set_upstream");

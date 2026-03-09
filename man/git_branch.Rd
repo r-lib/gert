@@ -4,6 +4,7 @@
 \alias{git_branch}
 \alias{git_branch_list}
 \alias{git_branch_checkout}
+\alias{git_branch_switch}
 \alias{git_branch_create}
 \alias{git_branch_delete}
 \alias{git_branch_move}
@@ -18,7 +19,15 @@ git_branch_list(local = NULL, repo = ".")
 
 git_branch_checkout(branch, force = FALSE, orphan = FALSE, repo = ".")
 
-git_branch_create(branch, ref = "HEAD", checkout = TRUE, repo = ".")
+git_branch_switch(branch, force = FALSE, orphan = FALSE, repo = ".")
+
+git_branch_create(
+  branch,
+  ref = "HEAD",
+  checkout = TRUE,
+  force = FALSE,
+  repo = "."
+)
 
 git_branch_delete(branch, repo = ".")
 
@@ -42,7 +51,7 @@ branches. Use NULL to return all branches.}
 
 \item{branch}{name of branch to check out}
 
-\item{force}{ignore conflicts and overwrite modified files}
+\item{force}{overwrite existing branch}
 
 \item{orphan}{if branch does not exist, checkout unborn branch}
 
@@ -70,8 +79,10 @@ Other git:
 \code{\link{git_remote}},
 \code{\link{git_repo}},
 \code{\link{git_reset}()},
+\code{\link{git_revert}()},
 \code{\link{git_signature}()},
 \code{\link{git_stash}},
-\code{\link{git_tag}}
+\code{\link{git_tag}},
+\code{\link{git_worktree}}
 }
 \concept{git}
