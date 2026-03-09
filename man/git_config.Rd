@@ -17,7 +17,7 @@ git_config_global_set(name, value)
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
-repository, parent directories are considered (see \link{git_find}). To disable
+repository, parent directories are considered (see \code{\link[=git_find]{git_find()}}). To disable
 this search, provide the filepath protected with \code{\link[=I]{I()}}. When using this
 parameter, always explicitly call by name (i.e. \verb{repo = }) because future
 versions of gert may have additional parameters.}
@@ -87,6 +87,7 @@ Other git:
 \code{\link{git_commit}()},
 \code{\link{git_diff}()},
 \code{\link{git_fetch}()},
+\code{\link{git_history}},
 \code{\link{git_ignore}},
 \code{\link{git_merge}()},
 \code{\link{git_rebase}()},

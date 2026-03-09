@@ -1,12 +1,12 @@
 #' Open local repository
 #'
-#' Returns a pointer to a libgit2 repository object.This function is mainly
+#' Returns a pointer to a libgit2 repository object. This function is mainly
 #' for internal use; users should simply reference a repository in gert by
 #' by the path to the directory.
 #'
 #' @export
 #' @param repo The path to the git repository. If the directory is not a
-#' repository, parent directories are considered (see [git_find]). To disable
+#' repository, parent directories are considered (see [git_find()]). To disable
 #' this search, provide the filepath protected with [I()]. When using this
 #' parameter, always explicitly call by name (i.e. `repo = `) because future
 #' versions of gert may have additional parameters.

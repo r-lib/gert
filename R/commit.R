@@ -11,20 +11,15 @@
 #' new, untracked files to the repository. You need to make an explicit call to
 #' `git_add()` to start tracking new files.
 #'
-#' `git_log()` shows the most recent commits and `git_ls()` lists all the files
-#' that are being tracked in the repository. `git_stat_files()`
-#'
 #' @export
-#' @rdname git_commit
-#' @name git_commit
 #' @family git
 #' @inheritParams git_open
 #' @param message a commit message
+#' @param ref revision string with a branch/tag/commit value
 #' @param author A [git_signature] value, default is [git_signature_default()].
 #' @param committer A [git_signature] value, default is same as `author`
 #' @return
 #' * `git_status()`, `git_ls()`: A data frame with one row per file
-#' * `git_log()`: A data frame with one row per commit
 #' * `git_commit()`, `git_commit_all()`: A SHA
 #' @useDynLib gert R_git_commit_create
 #' @examples
@@ -112,8 +107,23 @@ git_commit_all <- function(
   )
 }
 
+#' View commit history
+#'
+#' @description
+#'
+#' * `git_commit_stats()` returns information about commit insertion and deletion
+#' * `git_commit_info()` a list of commit info
+#' * `git_commit_id()` is a shortcut for `git_commit_info()$id`
+#' * `git_log()` shows the most recent commits
+#' * `git_ls()` lists all the files that are being tracked in the repository.
+#' * `git_stat_files()` shows information of when `files` was last modified.
+#'
 #' @export
-#' @rdname git_commit
+#' @inheritParams git_commit
+#' @family git
+#' @name git_history
+#' @returns
+#' * `git_commit_info()` and `git_commit_stats()` return a list.
 #' @useDynLib gert R_git_commit_info
 git_commit_info <- function(ref = "HEAD", repo = '.') {
   repo <- git_open(repo)
@@ -121,7 +131,7 @@ git_commit_info <- function(ref = "HEAD", repo = '.') {
 }
 
 #' @export
-#' @rdname git_commit
+#' @rdname git_history
 #' @useDynLib gert R_git_commit_id
 git_commit_id <- function(ref = "HEAD", repo = '.') {
   repo <- git_open(repo)
@@ -129,7 +139,7 @@ git_commit_id <- function(ref = "HEAD", repo = '.') {
 }
 
 #' @export
-#' @rdname git_commit
+#' @rdname git_history
 #' @useDynLib gert R_git_commit_stats
 git_commit_stats <- function(ref = "HEAD", repo = '.') {
   repo <- git_open(repo)
@@ -137,7 +147,7 @@ git_commit_stats <- function(ref = "HEAD", repo = '.') {
 }
 
 #' @export
-#' @rdname git_commit
+#' @rdname git_merge
 #' @param ancestor a reference to a potential ancestor commit
 #' @useDynLib gert R_git_commit_descendant
 git_commit_descendant_of <- function(ancestor, ref = 'HEAD', repo = '.') {
@@ -146,7 +156,9 @@ git_commit_descendant_of <- function(ancestor, ref = 'HEAD', repo = '.') {
 }
 
 #' @export
+#' @order 1
 #' @rdname git_commit
+#' @name git_commit
 #' @param files vector of paths relative to the git root directory.
 #' Use `"."` to stage all changed files.
 #' @param force add files even if in gitignore
@@ -161,6 +173,7 @@ git_add <- function(files, force = FALSE, repo = '.') {
 }
 
 #' @export
+#' @order 2
 #' @rdname git_commit
 #' @useDynLib gert R_git_repository_rm
 git_rm <- function(files, repo = '.') {
@@ -186,7 +199,7 @@ git_status <- function(staged = NULL, pathspec = NULL, repo = '.') {
 }
 
 #' @export
-#' @rdname git_commit
+#' @rdname git_merge
 #' @useDynLib gert R_git_conflict_list
 git_conflicts <- function(repo = '.') {
   repo <- git_open(repo)
@@ -205,9 +218,8 @@ git_ls <- function(repo = '.', ref = NULL) {
 }
 
 #' @export
-#' @rdname git_commit
+#' @rdname git_history
 #' @useDynLib gert R_git_commit_log
-#' @param ref revision string with a branch/tag/commit value
 #' @param max lookup at most latest n parent commits
 #' @param after date or timestamp: only include commits starting this date
 #' @param path character vector with paths to filter on; only commits that
@@ -230,7 +242,7 @@ git_log <- function(
 }
 
 #' @export
-#' @rdname git_commit
+#' @rdname git_history
 #' @useDynLib gert R_git_stat_files
 git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
   repo <- git_open(repo)
@@ -253,7 +265,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' @rdname git_revert
 #' @family git
 #' @inheritParams git_open
-#' @inheritParams git_commit_info
+#' @inheritParams git_history
 #' @param commit if `FALSE`, stage the reverted changes without creating a
 #'   commit. Default is `TRUE`, that is to say, by default a commit is made.
 #' @param ... parameters passed to `git_commit` such as `message` or `author`
@@ -307,7 +319,7 @@ git_revert <- function(
   assert_string(ref)
   stopifnot(is.logical(commit), length(commit) == 1)
 
-  sha <- tryCatch(git_commit_id(ref, repo = repo), error = function(e){
+  sha <- tryCatch(git_commit_id(ref, repo = repo), error = function(e) {
     stop(sprintf(
       "Can't find reference/commit '%s' in the current branch history",
       ref
@@ -331,7 +343,12 @@ git_revert <- function(
   }
 }
 
-git_revert_commit <- function(sha, message = revert_message(sha, repo), ..., repo){
+git_revert_commit <- function(
+  sha,
+  message = revert_message(sha, repo),
+  ...,
+  repo
+) {
   git_commit(message, ..., repo = repo)
 }
 
