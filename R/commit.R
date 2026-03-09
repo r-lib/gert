@@ -265,7 +265,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' @rdname git_revert
 #' @family git
 #' @inheritParams git_open
-#' @inheritParams git_commit_info
+#' @inheritParams git_history
 #' @param commit if `FALSE`, stage the reverted changes without creating a
 #'   commit. Default is `TRUE`, that is to say, by default a commit is made.
 #' @param ... parameters passed to `git_commit` such as `message` or `author`
@@ -319,7 +319,7 @@ git_revert <- function(
   assert_string(ref)
   stopifnot(is.logical(commit), length(commit) == 1)
 
-  sha <- tryCatch(git_commit_id(ref, repo = repo), error = function(e){
+  sha <- tryCatch(git_commit_id(ref, repo = repo), error = function(e) {
     stop(sprintf(
       "Can't find reference/commit '%s' in the current branch history",
       ref
@@ -343,7 +343,12 @@ git_revert <- function(
   }
 }
 
-git_revert_commit <- function(sha, message = revert_message(sha, repo), ..., repo){
+git_revert_commit <- function(
+  sha,
+  message = revert_message(sha, repo),
+  ...,
+  repo
+) {
   git_commit(message, ..., repo = repo)
 }
 

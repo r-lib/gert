@@ -7,6 +7,8 @@
 git_revert(ref, commit = TRUE, ..., repo = ".")
 }
 \arguments{
+\item{ref}{revision string with a branch/tag/commit value}
+
 \item{commit}{if \code{FALSE}, stage the reverted changes without creating a
 commit. Default is \code{TRUE}, that is to say, by default a commit is made.}
 
