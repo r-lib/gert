@@ -51,6 +51,7 @@ extern SEXP R_git_remote_ls(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_push(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_refspecs(SEXP, SEXP);
 extern SEXP R_git_remote_remove(SEXP, SEXP);
+extern SEXP R_git_remote_add_pushurl(SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_set_pushurl(SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_set_url(SEXP, SEXP, SEXP);
 extern SEXP R_git_revert(SEXP, SEXP);
@@ -129,6 +130,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_rebase",              (DL_FUNC) &R_git_rebase,              3},
   {"R_git_remote_add",          (DL_FUNC) &R_git_remote_add,          4},
   {"R_git_remote_add_fetch",    (DL_FUNC) &R_git_remote_add_fetch,    3},
+  {"R_git_remote_add_pushurl",  (DL_FUNC) &R_git_remote_add_pushurl,  3},
   {"R_git_remote_fetch",        (DL_FUNC) &R_git_remote_fetch,        7},
   {"R_git_remote_info",         (DL_FUNC) &R_git_remote_info,         2},
   {"R_git_remote_list",         (DL_FUNC) &R_git_remote_list,         1},

@@ -1,3 +1,33 @@
+test_that("git_remote_set_pushurl with add = TRUE appends push URLs", {
+  repo <- git_init(tempfile("gert-tests-pushurl"))
+  on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
+
+  git_remote_add("https://example.com/fetch", name = "origin", repo = repo)
+
+  git_remote_set_pushurl("https://example.com/push1", remote = "origin", repo = repo)
+  git_remote_set_pushurl("https://example.com/push2", remote = "origin", add = TRUE, repo = repo)
+
+  cfg <- git_config(repo = repo)
+  pushurls <- cfg$value[cfg$name == "remote.origin.pushurl"]
+  expect_setequal(pushurls, c("https://example.com/push1", "https://example.com/push2"))
+})
+
+test_that("git_remote_set_pushurl without add replaces push URL", {
+  repo <- git_init(tempfile("gert-tests-pushurl-replace"))
+  on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
+
+  git_remote_add("https://example.com/fetch", name = "origin", repo = repo)
+
+  git_remote_set_pushurl("https://example.com/push1", remote = "origin", repo = repo)
+  git_remote_set_pushurl("https://example.com/push2", remote = "origin", repo = repo)
+
+  cfg <- git_config(repo = repo)
+  pushurls <- cfg$value[cfg$name == "remote.origin.pushurl"]
+  expect_equal(pushurls, "https://example.com/push2")
+})
+
 test_that("remotes from new repo", {
   skip_if_offline('github.com')
   repo <- git_init(tempfile("gert-tests-remote"))

@@ -1,5 +1,6 @@
 # gert (development version)
 
+- `git_remote_set_pushurl()` gains an `add` argument to append push URLs instead of replacing them. (@robitalec, #128)
 - Improve manual pages (@olivroy, #227)
 - Fix badge links in `README.md` (@dpprdan, #189)
 - Use `NEWS.md` instead of `NEWS` (@olivroy, #209)
