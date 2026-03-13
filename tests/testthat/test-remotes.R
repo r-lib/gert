@@ -6,12 +6,12 @@ test_that("remotes from new repo", {
   expect_error(git_remote_info(repo = repo))
   expect_error(git_remote_refspecs(repo = repo))
   expect_error(git_remote_set_url('https://github.com/foo/bar', repo = repo))
-  expect_error(git_remote_info(repo = repo))
+  expect_error(git_remote_info(repo = repo), "remote 'NA' does not exist")
   expect_error(git_remote_set_pushurl(
     'https://github.com/foo/bar',
     repo = repo
   ))
-  expect_error(git_remote_info(repo = repo))
+  expect_error(git_remote_info(repo = repo), "remote 'NA' does not exist")
   expect_equal(
     git_remote_add(
       'https://github.com/jeroen/webp',
