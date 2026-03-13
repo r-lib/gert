@@ -1,5 +1,6 @@
 # gert (development version)
 
+- `git_remote_set_pushurl()` gains an `add` argument to append push URLs instead of replacing them. (@robitalec, #128)
 - `git_branch_create()`: `force` now also applies to the checkout step, allowing branch creation even when local changes would be overwritten (@MichaelChirico, #177).
 - Improve manual pages (@olivroy, #227)
 - Fix badge links in `README.md` (@dpprdan, #189)

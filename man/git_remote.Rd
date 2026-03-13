@@ -21,7 +21,7 @@ git_remote_info(remote = NULL, repo = ".")
 
 git_remote_set_url(url, remote = NULL, repo = ".")
 
-git_remote_set_pushurl(url, remote = NULL, repo = ".")
+git_remote_set_pushurl(url, remote = NULL, add = FALSE, repo = ".")
 
 git_remote_refspecs(remote = NULL, repo = ".")
 }
@@ -40,26 +40,29 @@ versions of gert may have additional parameters.}
 
 \item{remote}{name of an existing remote. Default \code{NULL} means the remote
 from the upstream of the current branch.}
+
+\item{add}{if \code{TRUE}, append the push URL instead of replacing it.
+Equivalent to \verb{git remote set-url --push --add}.}
 }
 \description{
 List, add, configure, or remove remotes.
 }
 \seealso{
-Other git: 
+Other git:
 \code{\link{git_archive}},
-\code{\link{git_branch}()},
-\code{\link{git_commit}()},
-\code{\link{git_config}()},
-\code{\link{git_diff}()},
-\code{\link{git_fetch}()},
+\code{\link[=git_branch]{git_branch()}},
+\code{\link[=git_commit]{git_commit()}},
+\code{\link[=git_config]{git_config()}},
+\code{\link[=git_diff]{git_diff()}},
+\code{\link[=git_fetch]{git_fetch()}},
 \code{\link{git_history}},
 \code{\link{git_ignore}},
-\code{\link{git_merge}()},
-\code{\link{git_rebase}()},
+\code{\link[=git_merge]{git_merge()}},
+\code{\link[=git_rebase]{git_rebase()}},
 \code{\link{git_repo}},
-\code{\link{git_reset}()},
-\code{\link{git_revert}()},
-\code{\link{git_signature}()},
+\code{\link[=git_reset]{git_reset()}},
+\code{\link[=git_revert]{git_revert()}},
+\code{\link[=git_signature]{git_signature()}},
 \code{\link{git_stash}},
 \code{\link{git_tag}},
 \code{\link{git_worktree}}
