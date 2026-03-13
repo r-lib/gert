@@ -6,10 +6,12 @@ test_that("remotes from new repo", {
   expect_error(git_remote_info(repo = repo))
   expect_error(git_remote_refspecs(repo = repo))
   expect_error(git_remote_set_url('https://github.com/foo/bar', repo = repo))
+  expect_error(git_remote_info(repo = repo), "remote 'NA' does not exist")
   expect_error(git_remote_set_pushurl(
     'https://github.com/foo/bar',
     repo = repo
   ))
+  expect_error(git_remote_info(repo = repo), "remote 'NA' does not exist")
   expect_equal(
     git_remote_add(
       'https://github.com/jeroen/webp',
@@ -18,6 +20,9 @@ test_that("remotes from new repo", {
     ),
     'jeroen'
   )
+  # info should work even when no upstream:
+  info <- git_remote_info(repo = repo)
+  expect_equal(info$url, "https://github.com/jeroen/webp")
   git_fetch('jeroen', 'master', repo = repo)
   git_branch_create('master', 'jeroen/master', repo = repo)
   git_branch_create(
