@@ -53,6 +53,7 @@ extern SEXP R_git_remote_refspecs(SEXP, SEXP);
 extern SEXP R_git_remote_remove(SEXP, SEXP);
 extern SEXP R_git_remote_set_pushurl(SEXP, SEXP, SEXP);
 extern SEXP R_git_remote_set_url(SEXP, SEXP, SEXP);
+extern SEXP R_git_restore(SEXP, SEXP, SEXP);
 extern SEXP R_git_revert(SEXP, SEXP);
 extern SEXP R_git_repository_add(SEXP, SEXP, SEXP);
 extern SEXP R_git_repository_clone(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
@@ -148,6 +149,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_repository_path",     (DL_FUNC) &R_git_repository_path,     1},
   {"R_git_repository_rm",       (DL_FUNC) &R_git_repository_rm,       2},
   {"R_git_reset",               (DL_FUNC) &R_git_reset,               3},
+  {"R_git_restore",             (DL_FUNC) &R_git_restore,             3},
   {"R_git_revert",              (DL_FUNC) &R_git_revert,              2},
   {"R_git_signature_create",    (DL_FUNC) &R_git_signature_create,    4},
   {"R_git_signature_default",   (DL_FUNC) &R_git_signature_default,   1},
