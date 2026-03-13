@@ -2,8 +2,8 @@
 #'
 #' Fetch and checkout pull requests.
 #'
-#' By default `git_fetch_pull_requests` will download all PR branches. To
-#' remove these again simply use `git_fetch(prune = TRUE)`.
+#' By default `git_fetch_pull_requests()` will download all PR branches. To
+#' remove these again simply use [git_fetch(prune = TRUE)][git_fetch()].
 #'
 #' @export
 #' @rdname github
