@@ -75,10 +75,6 @@ git_remote_set_pushurl <- function(
   add = FALSE,
   repo = '.'
 ) {
-  if (!is.logical(add) || length(add) != 1) {
-    stop("Argument add must be a logical of length 1.")
-  }
-
   repo <- git_open(repo)
   remote <- as.character(remote)
   if (!length(remote)) {

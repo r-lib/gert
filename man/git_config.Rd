@@ -13,7 +13,7 @@ git_config_global()
 
 git_config_set(name, value, repo = ".", add = FALSE)
 
-git_config_global_set(name, value)
+git_config_global_set(name, value, add = FALSE)
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a

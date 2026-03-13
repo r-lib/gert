@@ -79,6 +79,9 @@ git_config_global <- function() {
 #'   existing one(s). Equivalent to `git config --add`. Only supported for
 #'   string values.
 git_config_set <- function(name, value, repo = '.', add = FALSE) {
+  if (!is.logical(add) || length(add) != 1) {
+    stop("Argument add must be a logical of length 1.", call. = FALSE)
+  }
   repo <- git_open(repo)
   name <- as.character(name)
   orig_cfg <- git_config(repo = repo)
