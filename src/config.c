@@ -67,7 +67,7 @@ SEXP R_git_config_list(SEXP ptr){
   return out;
 }
 
-SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value){
+SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value, SEXP add){
   git_config *cfg = NULL;
   const char *cname = CHAR(STRING_ELT(name, 0));
   if(Rf_isNull(ptr)) {
@@ -75,25 +75,31 @@ SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value){
   } else {
     bail_if(git_repository_config(&cfg, get_git_repository(ptr)),"git_repository_config");
   }
-  switch(TYPEOF(value)){
-    case STRSXP:
-      bail_if(git_config_set_string(cfg, cname, CHAR(STRING_ELT(value, 0))), "git_config_set_string");
-      break;
-    case LGLSXP:
-      bail_if(git_config_set_bool(cfg, cname, Rf_asLogical(value)), "git_config_set_bool");
-      break;
-    case INTSXP:
-      bail_if(git_config_set_int32(cfg, cname, Rf_asInteger(value)), "git_config_set_int32");
-      break;
-    case REALSXP:
-      //NB: gets stored as string anyway
-      bail_if(git_config_set_int64(cfg, cname, (int64_t) Rf_asReal(value)), "git_config_set_int64");
-      break;
-    case NILSXP:
-      bail_if(git_config_delete_entry(cfg, cname), "git_config_delete_entry");
-      break;
-    default:
-      Rf_error("Option value must be string, boolean, number, or NULL");
+  if(Rf_asLogical(add)) {
+    if(TYPEOF(value) != STRSXP)
+      Rf_error("add = TRUE only supported for string values");
+    bail_if(git_config_set_multivar(cfg, cname, "^$", CHAR(STRING_ELT(value, 0))), "git_config_set_multivar");
+  } else {
+    switch(TYPEOF(value)){
+      case STRSXP:
+        bail_if(git_config_set_string(cfg, cname, CHAR(STRING_ELT(value, 0))), "git_config_set_string");
+        break;
+      case LGLSXP:
+        bail_if(git_config_set_bool(cfg, cname, Rf_asLogical(value)), "git_config_set_bool");
+        break;
+      case INTSXP:
+        bail_if(git_config_set_int32(cfg, cname, Rf_asInteger(value)), "git_config_set_int32");
+        break;
+      case REALSXP:
+        //NB: gets stored as string anyway
+        bail_if(git_config_set_int64(cfg, cname, (int64_t) Rf_asReal(value)), "git_config_set_int64");
+        break;
+      case NILSXP:
+        bail_if(git_config_delete_entry(cfg, cname), "git_config_delete_entry");
+        break;
+      default:
+        Rf_error("Option value must be string, boolean, number, or NULL");
+    }
   }
   git_config_free(cfg);
   return R_NilValue;

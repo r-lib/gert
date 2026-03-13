@@ -69,21 +69,29 @@ git_remote_set_url <- function(url, remote = NULL, repo = '.') {
 #' @rdname git_remote
 #' @param add if `TRUE`, append the push URL instead of replacing it.
 #'   Equivalent to `git remote set-url --push --add`.
-#' @useDynLib gert R_git_remote_set_pushurl
-#' @useDynLib gert R_git_remote_add_pushurl
-git_remote_set_pushurl <- function(url, remote = NULL, add = FALSE, repo = '.') {
+git_remote_set_pushurl <- function(
+  url,
+  remote = NULL,
+  add = FALSE,
+  repo = '.'
+) {
+  if (!is.logical(add) || length(add) != 1) {
+    stop("Argument add must be a logical of length 1.")
+  }
+
   repo <- git_open(repo)
   remote <- as.character(remote)
   if (!length(remote)) {
     remote <- git_info(repo = repo)$remote
   }
   url <- as.character(url)
-  if (isTRUE(add)) {
-    .Call(R_git_remote_add_pushurl, repo, remote, url)
-  } else {
-    .Call(R_git_remote_set_pushurl, repo, remote, url)
-  }
-  invisible()
+
+  git_config_set(
+    paste0("remote.", remote, ".pushurl"),
+    url,
+    repo = repo,
+    add = add
+  )
 }
 
 #' @export
