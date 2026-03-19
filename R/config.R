@@ -119,14 +119,19 @@ git_config_global_get <- function(name) {
 #' @param add if `TRUE`, append a new entry for `name` instead of replacing
 #'   existing one(s). Equivalent to `git config --add`. Only supported for
 #'   string values.
-git_config_set <- function(name, value, add = FALSE, repo = '.') {
-  if (!is.logical(add) || length(add) != 1) {
-    stop("Argument add must be a logical of length 1.", call. = FALSE)
-  }
+#' @param unset if `TRUE`, delete all entries for `name` matching the regular
+#'   expression `value`, equivalent `git config --unset`. If `TRUE` and
+#'   `value == NULL`, delete all entries for `name`, equivalent to
+#'   `git config --unset-all`.
+git_config_set <- function(
+  name, value,
+  add = FALSE, unset = FALSE,
+  repo = '.'
+) {
   repo <- git_open(repo)
   name <- as.character(name)
   out <- git_config_local_get(name, repo = repo)
-  .Call(R_git_config_set, repo, name, value, add)
+  git_config_set_impl(name, value, repo, add, unset)
   if (length(out) > 0) {
     invisible(out)
   } else {
@@ -136,14 +141,28 @@ git_config_set <- function(name, value, add = FALSE, repo = '.') {
 
 #' @export
 #' @rdname git_config
-git_config_global_set <- function(name, value, add = FALSE) {
+git_config_global_set <- function(name, value, add = FALSE, unset = FALSE) {
   out <- git_config_global_get(name)
-  .Call(R_git_config_set, NULL, name, value, add)
+  git_config_set_impl(name, value, repo = NULL, add, unset)
   if (length(out) > 0) {
     invisible(out)
   } else {
     invisible(NULL)
   }
+}
+
+git_config_set_impl <- function(name, value, repo, add, unset) {
+  if (!is.logical(add) || length(add) != 1) {
+    stop("Argument add must be a logical of length 1.", call. = FALSE)
+  }
+  if (!is.logical(unset) || length(unset) != 1) {
+    stop("Argument unset must be a logical of length 1.", call. = FALSE)
+  }
+  if (add && unset) {
+    stop("Arguments 'add' and 'unset' cannot both be TRUE.", call. = FALSE)
+  }
+  name <- as.character(name)
+  .Call(R_git_config_set, repo, name, value, add, unset)
 }
 
 #' Show libgit2 version and capabilities

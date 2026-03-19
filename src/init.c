@@ -30,7 +30,7 @@ extern SEXP R_git_commit_info(SEXP, SEXP);
 extern SEXP R_git_commit_log(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_commit_stats(SEXP, SEXP);
 extern SEXP R_git_config_list(SEXP);
-extern SEXP R_git_config_set(SEXP, SEXP, SEXP, SEXP);
+extern SEXP R_git_config_set(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_conflict_list(SEXP);
 extern SEXP R_git_create_branch(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP R_git_delete_branch(SEXP, SEXP);
@@ -115,7 +115,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"R_git_commit_log",          (DL_FUNC) &R_git_commit_log,          5},
   {"R_git_commit_stats",        (DL_FUNC) &R_git_commit_stats,        2},
   {"R_git_config_list",         (DL_FUNC) &R_git_config_list,         1},
-  {"R_git_config_set",          (DL_FUNC) &R_git_config_set,          4},
+  {"R_git_config_set",          (DL_FUNC) &R_git_config_set,          5},
   {"R_git_conflict_list",       (DL_FUNC) &R_git_conflict_list,       1},
   {"R_git_create_branch",       (DL_FUNC) &R_git_create_branch,       5},
   {"R_git_delete_branch",       (DL_FUNC) &R_git_delete_branch,       2},

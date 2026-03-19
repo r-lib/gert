@@ -38,3 +38,22 @@ test_that("local, custom config roundtrip", {
   expect_equal(orig, "ccc")
   expect_null(git_config_get("aaa.bbb", repo = repo))
 })
+
+test_that("multivar, local, custom config roundtrip", {
+  repo <- git_init(tempfile("gert-tests-config-multivar"))
+  on.exit(unlink(repo, recursive = TRUE))
+
+  git_config_set("aaa.bbb", "ccc", repo = repo, add = TRUE)
+  git_config_set("aaa.bbb", "ddd", repo = repo, add = TRUE)
+  git_config_set("aaa.bbb", "eee", repo = repo, add = TRUE)
+  cfg <- git_config(repo)
+  expect_equal(cfg$value[cfg$name == "aaa.bbb"], c("ccc", "ddd", "eee"))
+
+  git_config_set("aaa.bbb", "ddd", repo = repo, unset = TRUE)
+  cfg <- git_config(repo)
+  expect_equal(cfg$value[cfg$name == "aaa.bbb"], c("ccc", "eee"))
+
+  git_config_set("aaa.bbb", "^[a-z]{3}$", repo = repo, unset = TRUE)
+  cfg <- git_config(repo)
+  expect_equal(cfg$value[cfg$name == "aaa.bbb"], character())
+})
