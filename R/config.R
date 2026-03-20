@@ -79,7 +79,7 @@ git_config_global <- function() {
 #' @param add if `TRUE`, append a new entry for `name` instead of replacing
 #'   existing one(s). Equivalent to `git config --add`. Only supported for
 #'   string values.
-git_config_set <- function(name, value, repo = '.', add = FALSE) {
+git_config_set <- function(name, value, add = FALSE, repo = '.') {
   if (!is.logical(add) || length(add) != 1) {
     stop("Argument add must be a logical of length 1.", call. = FALSE)
   }

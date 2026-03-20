@@ -11,7 +11,7 @@ git_config(repo = ".")
 
 git_config_global()
 
-git_config_set(name, value, repo = ".", add = FALSE)
+git_config_set(name, value, add = FALSE, repo = ".")
 
 git_config_global_set(name, value, add = FALSE)
 }
