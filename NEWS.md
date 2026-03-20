@@ -1,13 +1,14 @@
 # gert (development version)
 
 - Fix `git_info()` for the case when no upstream is configured (@mpage, #263)
+- `git_branch_create()`: `force` now also applies to the checkout step, allowing branch creation even when local changes would be overwritten (@MichaelChirico, #177).
 - Improve manual pages (@olivroy, #227)
 - Fix badge links in `README.md` (@dpprdan, #189)
 - Use `NEWS.md` instead of `NEWS` (@olivroy, #209)
+- Add git_revert() function (#206)
 
 # 2.3.1
 
-- Add git_revert() function
 - git_stat_files() gains a 'max' parameter
 - Fix function declaration error
 
