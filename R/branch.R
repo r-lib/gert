@@ -8,6 +8,7 @@
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_branch_current
+#' @git branch
 git_branch <- function(repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_branch_current, repo)
@@ -28,6 +29,7 @@ git_branch_list <- function(local = NULL, repo = '.') {
 #' @param force ignore conflicts and overwrite modified files
 #' @param orphan if branch does not exist, checkout unborn branch
 #' @useDynLib gert R_git_checkout_branch R_git_checkout_unborn
+#' @git checkout
 git_branch_checkout <- function(
   branch,
   force = FALSE,

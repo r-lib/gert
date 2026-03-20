@@ -15,6 +15,7 @@
 #' * `git_diff()` returns a data frame.
 #' * `git_diff_patch()` returns a character vector.
 #' @useDynLib gert R_git_diff_list
+#' @git diff
 git_diff <- function(ref = NULL, repo = '.') {
   repo <- git_open(repo)
   ref <- as.character(ref)

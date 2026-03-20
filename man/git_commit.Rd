@@ -118,3 +118,5 @@ Other git:
 \code{\link{git_worktree}}
 }
 \concept{git}
+\section{Related libgit2 documentation}{\href{https://libgit2.org/docs/reference/main/commit/index.html}{\code{commit}}, \href{https://libgit2.org/docs/reference/main/index/index.html}{\code{index}}, \href{https://libgit2.org/docs/reference/main/status/index.html}{\code{status}}.}
+

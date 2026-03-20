@@ -58,6 +58,7 @@
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_config_list
+#' @git config
 git_config <- function(repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_config_list, repo)

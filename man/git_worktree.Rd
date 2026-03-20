@@ -179,3 +179,5 @@ Other git:
 \code{\link{git_tag}}
 }
 \concept{git}
+\section{Related libgit2 documentation}{\href{https://libgit2.org/docs/reference/main/worktree/index.html}{\code{worktree}}.}
+

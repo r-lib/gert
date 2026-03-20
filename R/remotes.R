@@ -11,6 +11,7 @@
 #' from the upstream of the current branch.
 #' @param url server url (https or ssh)
 #' @useDynLib gert R_git_remote_list
+#' @git remote
 git_remote_list <- function(repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_remote_list, repo)

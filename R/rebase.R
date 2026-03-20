@@ -29,6 +29,7 @@
 #' current state on the git server, simulating [git_pull()].
 #' @inheritParams git_open
 #' @inheritParams git_branch
+#' @git rebase
 git_rebase_list <- function(upstream = NULL, repo = '.') {
   git_rebase(upstream = upstream, commit_changes = FALSE, repo = repo)
 }
@@ -73,6 +74,7 @@ git_rebase <- function(upstream, commit_changes, repo) {
 #' @export
 #' @name git_reset
 #' @rdname git_reset
+#' @git reset
 git_reset_hard <- function(ref = "HEAD", repo = ".") {
   git_reset("hard", ref = ref, repo = repo)
 }
@@ -106,6 +108,7 @@ git_reset <- function(
 #' @rdname git_rebase
 #' @useDynLib gert R_git_cherry_pick
 #' @param commit id of the commit to cherry pick
+#' @git cherrypick
 git_cherry_pick <- function(commit, repo = '.') {
   repo <- git_open(repo)
   assert_string(commit)
@@ -115,6 +118,7 @@ git_cherry_pick <- function(commit, repo = '.') {
 #' @export
 #' @rdname git_rebase
 #' @useDynLib gert R_git_ahead_behind
+#' @git graph
 git_ahead_behind <- function(upstream = NULL, ref = 'HEAD', repo = '.') {
   repo <- git_open(repo)
   if (!length(upstream)) {

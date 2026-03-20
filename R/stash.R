@@ -8,6 +8,7 @@
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_stash_save
+#' @git stash
 #' @param message optional message to store the stash
 #' @param keep_index changes already added to the index are left intact in
 #' the working directory
