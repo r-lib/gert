@@ -23,6 +23,7 @@
 #' @inheritParams git_open
 #' @param path the location of the git repository, see details.
 #' @param bare if true, a Git repository without a working directory is created
+#' @git repository
 #' @return
 #' * `git_find()` and `git_init()`: the path to the Git repository.
 #' * `git_info()`: A list of information of the Git repository.

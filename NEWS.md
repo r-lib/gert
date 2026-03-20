@@ -1,6 +1,7 @@
 # gert (development version)
 
  - Add `git_restore()` function (#259)
+- Fix `git_info()` for the case when no upstream is configured (@mpage, #263)
 - `git_branch_create()`: `force` now also applies to the checkout step, allowing branch creation even when local changes would be overwritten (@MichaelChirico, #177).
 - Improve manual pages (@olivroy, #227)
 - Fix badge links in `README.md` (@dpprdan, #189)

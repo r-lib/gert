@@ -15,6 +15,7 @@
 #' @rdname git_fetch
 #' @inheritParams git_open
 #' @useDynLib gert R_git_remote_fetch
+#' @git remote
 #' @param remote Optional. Name of a remote listed in [git_remote_list()]. If
 #'   unspecified and the current branch is already tracking branch a remote
 #'   branch, that remote is honored. Otherwise, defaults to `origin`.
@@ -168,6 +169,7 @@ git_push <- function(
 #' @export
 #' @rdname git_fetch
 #' @useDynLib gert R_git_repository_clone
+#' @git clone
 #' @param url remote url. Typically starts with `https://github.com/` for public
 #' repositories, and `https://yourname@github.com/` or `git@github.com/` for
 #' private repos. You will be prompted for a password or pat when needed.

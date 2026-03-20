@@ -1,13 +1,13 @@
 # gert <img src="man/figures/logo.png" align="right" alt="logo" width="120" height = "139" style = "border: none; float: right;">
 
-*This package is a joint effort from [rOpenSci](https://ropensci.org/) and the [Tidyverse](https://www.tidyverse.org/) team.*
+*This package is a joint effort from [rOpenSci](https://ropensci.org/) and the [Tidyverse](https://tidyverse.org/) team.*
 
 > Simple Git Client for R
 
 <!-- badges: start -->
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![runiverse-name](https://ropensci.r-universe.dev/badges/:name)](https://ropensci.r-universe.dev)
-[![runiverse-package](https://ropensci.r-universe.dev/badges/gert)](https://ropensci.r-universe.dev/ui#package:gert)
+[![runiverse-package](https://ropensci.r-universe.dev/badges/gert)](https://ropensci.r-universe.dev/)
 [![cran-badge](https://www.r-pkg.org/badges/version/gert)](https://cran.r-project.org/package=gert)
 [![R-CMD-check](https://github.com/r-lib/gert/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/gert/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
@@ -119,7 +119,7 @@ To authenticate with a remote in git2r, you often need to manually pass your cre
 
 In gert, authentication is done automatically using the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package. This package calls out to the local OS credential store which is also used by the `git` command line. Therefore gert will automatically pick up on https credentials that are safely stored in your OS keychain. 
 
-If no credentials are available from the store, gert will try to authenticate using your `GITHUB_PAT` (if set) for GitHub https remotes. If none of that works, it safely prompts the user for credentials using [askpass](https://github.com/jeroen/askpass#readme). Together, these methods should make https authentication "just work" in any scenario, without having to manually provide passwords in R.
+If no credentials are available from the store, gert will try to authenticate using your `GITHUB_PAT` (if set) for GitHub https remotes. If none of that works, it safely prompts the user for credentials using [askpass](https://github.com/r-lib/askpass). Together, these methods should make https authentication "just work" in any scenario, without having to manually provide passwords in R.
 
 Authentication with ssh remotes is a bit more complicated, but gert will again try to make this as smooth as possible. First of all, gert will tell you if SSH is supported when attaching the package (this will be the case on all modern systems):
 
@@ -130,7 +130,7 @@ Global config: /Users/jeroen/.gitconfig
 Default user: Jeroen Ooms <jeroenooms@gmail.com
 ```
 
-On Mac/Linux, gert first tries to authenticate using credentials from your `ssh-agent`. If that doesn't work it will look for a suitable ssh key on your system (usually `id_rsa`), and if it is protected with a passphrase, gert will safely prompt the user for the passphrase using [askpass](https://github.com/jeroen/askpass#readme).
+On Mac/Linux, gert first tries to authenticate using credentials from your `ssh-agent`. If that doesn't work it will look for a suitable ssh key on your system (usually `id_rsa`), and if it is protected with a passphrase, gert will safely prompt the user for the passphrase using [askpass](https://github.com/r-lib/askpass).
 If the user does not have an SSH key yet, the [credentials](https://docs.ropensci.org/credentials/articles/intro.html) package makes it easy to set that up.
 
 ```r

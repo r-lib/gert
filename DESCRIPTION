@@ -23,10 +23,11 @@ Imports:
     sys,
     zip (>= 2.1.0)
 Suggests:
-    spelling, 
+    spelling,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    roxygen2
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
