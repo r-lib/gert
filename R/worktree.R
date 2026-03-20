@@ -50,6 +50,7 @@
 #' @name git_worktree
 #' @family git
 #' @inheritParams git_open
+#' @git worktree
 #'
 #' @param name The name of the worktree.
 #'

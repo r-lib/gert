@@ -12,3 +12,5 @@ windows
 configure.log
 inst/doc
 docs/
+get-libgit2-linux.sh
+bundle.tar.gz

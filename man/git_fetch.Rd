@@ -64,7 +64,7 @@ or password protected ssh keys. Defaults to \link[askpass:askpass]{askpass} whic
 checks \code{getOption('askpass')}.}
 
 \item{ssh_key}{path or object containing your ssh private key. By default we
-look for keys in \code{ssh-agent} and \code{\link[credentials:ssh_credentials]{credentials::ssh_key_info()}}.}
+look for keys in \code{ssh-agent} and \code{\link[credentials:ssh_key_info]{credentials::ssh_key_info()}}.}
 
 \item{prune}{delete tracking branches that no longer exist on the remote, or
 are not in the refspec (such as pull requests).}
@@ -142,23 +142,25 @@ unlink(git_dir, recursive = TRUE)
 }
 }
 \seealso{
-Other git: 
+Other git:
 \code{\link{git_archive}},
-\code{\link{git_branch}()},
-\code{\link{git_commit}()},
-\code{\link{git_config}()},
-\code{\link{git_diff}()},
+\code{\link[=git_branch]{git_branch()}},
+\code{\link[=git_commit]{git_commit()}},
+\code{\link[=git_config]{git_config()}},
+\code{\link[=git_diff]{git_diff()}},
 \code{\link{git_history}},
 \code{\link{git_ignore}},
-\code{\link{git_merge}()},
-\code{\link{git_rebase}()},
+\code{\link[=git_merge]{git_merge()}},
+\code{\link[=git_rebase]{git_rebase()}},
 \code{\link{git_remote}},
 \code{\link{git_repo}},
-\code{\link{git_reset}()},
-\code{\link{git_revert}()},
-\code{\link{git_signature}()},
+\code{\link[=git_reset]{git_reset()}},
+\code{\link[=git_revert]{git_revert()}},
+\code{\link[=git_signature]{git_signature()}},
 \code{\link{git_stash}},
 \code{\link{git_tag}},
 \code{\link{git_worktree}}
 }
 \concept{git}
+\section{Related libgit2 documentation}{\href{https://libgit2.org/docs/reference/main/remote/index.html}{\code{remote}}, \href{https://libgit2.org/docs/reference/main/clone/index.html}{\code{clone}}.}
+
