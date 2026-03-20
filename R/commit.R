@@ -22,6 +22,7 @@
 #' * `git_status()`, `git_ls()`: A data frame with one row per file
 #' * `git_commit()`, `git_commit_all()`: A SHA
 #' @useDynLib gert R_git_commit_create
+#' @git commit index status
 #' @examples
 #' oldwd <- getwd()
 #' repo <- file.path(tempdir(), "myrepo")
@@ -125,6 +126,7 @@ git_commit_all <- function(
 #' @returns
 #' * `git_commit_info()` and `git_commit_stats()` return a list.
 #' @useDynLib gert R_git_commit_info
+#' @git commit
 git_commit_info <- function(ref = "HEAD", repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_commit_info, repo, ref)
@@ -309,6 +311,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #'
 #' unlink(repo, recursive = TRUE)
 #' @useDynLib gert R_git_revert
+#' @git revert
 git_revert <- function(
   ref,
   commit = TRUE,

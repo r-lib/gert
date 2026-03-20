@@ -50,3 +50,5 @@ Other git:
 \code{\link{git_worktree}}
 }
 \concept{git}
+\section{Related libgit2 documentation}{\href{https://libgit2.org/docs/reference/main/reset/index.html}{\code{reset}}.}
+

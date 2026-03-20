@@ -15,6 +15,7 @@
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_signature_default
+#' @git signature
 #' @examples # Your default user
 #' try(git_signature_default())
 #'

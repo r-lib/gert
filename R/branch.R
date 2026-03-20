@@ -8,6 +8,7 @@
 #' @family git
 #' @inheritParams git_open
 #' @useDynLib gert R_git_branch_current
+#' @git branch
 git_branch <- function(repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_branch_current, repo)

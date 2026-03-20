@@ -3,8 +3,28 @@
 git_links <- function() {
   rlang::check_installed("tibble")
   tibble::tribble(
-    ~command   , ~url                                                          ,
-    "checkout" , "https://libgit2.org/docs/reference/main/checkout/index.html"
+    ~command      , ~url                                                             ,
+    "branch"      , "https://libgit2.org/docs/reference/main/branch/index.html"     ,
+    "cherrypick"  , "https://libgit2.org/docs/reference/main/cherrypick/index.html" ,
+    "checkout"    , "https://libgit2.org/docs/reference/main/checkout/index.html"   ,
+    "clone"       , "https://libgit2.org/docs/reference/main/clone/index.html"      ,
+    "commit"      , "https://libgit2.org/docs/reference/main/commit/index.html"     ,
+    "config"      , "https://libgit2.org/docs/reference/main/config/index.html"     ,
+    "diff"        , "https://libgit2.org/docs/reference/main/diff/index.html"       ,
+    "graph"       , "https://libgit2.org/docs/reference/main/graph/index.html"      ,
+    "ignore"      , "https://libgit2.org/docs/reference/main/ignore/index.html"     ,
+    "index"       , "https://libgit2.org/docs/reference/main/index/index.html"      ,
+    "merge"       , "https://libgit2.org/docs/reference/main/merge/index.html"      ,
+    "rebase"      , "https://libgit2.org/docs/reference/main/rebase/index.html"     ,
+    "remote"      , "https://libgit2.org/docs/reference/main/remote/index.html"     ,
+    "repository"  , "https://libgit2.org/docs/reference/main/repository/index.html" ,
+    "reset"       , "https://libgit2.org/docs/reference/main/reset/index.html"      ,
+    "revert"      , "https://libgit2.org/docs/reference/main/revert/index.html"     ,
+    "signature"   , "https://libgit2.org/docs/reference/main/signature/index.html"  ,
+    "stash"       , "https://libgit2.org/docs/reference/main/stash/index.html"      ,
+    "status"      , "https://libgit2.org/docs/reference/main/status/index.html"     ,
+    "tag"         , "https://libgit2.org/docs/reference/main/tag/index.html"        ,
+    "worktree"    , "https://libgit2.org/docs/reference/main/worktree/index.html"   ,
   )
 }
 

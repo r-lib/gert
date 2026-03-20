@@ -73,3 +73,5 @@ Other git:
 \code{\link{git_worktree}}
 }
 \concept{git}
+\section{Related libgit2 documentation}{\href{https://libgit2.org/docs/reference/main/rebase/index.html}{\code{rebase}}, \href{https://libgit2.org/docs/reference/main/cherrypick/index.html}{\code{cherrypick}}, \href{https://libgit2.org/docs/reference/main/graph/index.html}{\code{graph}}.}
+

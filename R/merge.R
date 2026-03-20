@@ -30,6 +30,7 @@
 #' conflicts. Set this to `FALSE` if you want to customize your commit message/author.
 #' @param squash omits the second parent from the commit, which make the merge a regular
 #' single-parent commit.
+#' @git merge
 git_merge <- function(ref, commit = TRUE, squash = FALSE, repo = '.') {
   state <- git_merge_analysis(ref = ref, repo = repo)
   if (state == "up_to_date") {
