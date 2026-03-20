@@ -236,17 +236,7 @@ SEXP R_git_remote_set_url(SEXP ptr, SEXP name, SEXP url){
   return out;
 }
 
-SEXP R_git_remote_set_pushurl(SEXP ptr, SEXP name, SEXP url){
-  git_remote * remote = NULL;
-  const char *curl = Rf_length(url) ? CHAR(STRING_ELT(url, 0)) : NULL;
-  const char *cname = CHAR(STRING_ELT(name, 0));
-  git_repository *repo = get_git_repository(ptr);
-  bail_if(git_remote_lookup(&remote, repo, cname), "git_remote_lookup");
-  bail_if(git_remote_set_pushurl(repo, cname, curl), "git_remote_set_url");
-  SEXP out = safe_string(git_remote_pushurl(remote));
-  git_remote_free(remote);
-  return out;
-}
+
 
 SEXP R_git_remote_remove(SEXP ptr, SEXP name){
   const char *cname = CHAR(STRING_ELT(name, 0));

@@ -21,7 +21,7 @@
 #'   option is determined from global or local config.
 #' * `git_config_global()`: a `data.frame`, as for `git_config()`, except only
 #'   for global Git options.
-#' * `git_config_set()`, `git_config_global_set()`: The previous value of
+#' * `git_config_set()`, `git_config_global_set()`: The previous value(s) of
 #'   `name` in local or global config, respectively. If this option was
 #'   previously unset, returns `NULL`. Returns invisibly.
 #'
@@ -76,12 +76,18 @@ git_config_global <- function() {
 #' @param name Name of the option to set
 #' @param value Value to set. Must be a string, logical, number or `NULL` (to
 #'   unset).
-git_config_set <- function(name, value, repo = '.') {
+#' @param add if `TRUE`, append a new entry for `name` instead of replacing
+#'   existing one(s). Equivalent to `git config --add`. Only supported for
+#'   string values.
+git_config_set <- function(name, value, add = FALSE, repo = '.') {
+  if (!is.logical(add) || length(add) != 1) {
+    stop("Argument add must be a logical of length 1.", call. = FALSE)
+  }
   repo <- git_open(repo)
   name <- as.character(name)
   orig_cfg <- git_config(repo = repo)
   out <- orig_cfg$value[orig_cfg$name == name & orig_cfg$level == "local"]
-  .Call(R_git_config_set, repo, name, value)
+  .Call(R_git_config_set, repo, name, value, add)
   if (length(out) > 0) {
     invisible(out)
   } else {
@@ -91,10 +97,10 @@ git_config_set <- function(name, value, repo = '.') {
 
 #' @export
 #' @rdname git_config
-git_config_global_set <- function(name, value) {
+git_config_global_set <- function(name, value, add = FALSE) {
   orig_cfg <- git_config_global()
   out <- orig_cfg$value[orig_cfg$name == name]
-  .Call(R_git_config_set, NULL, name, value)
+  .Call(R_git_config_set, NULL, name, value, add)
   if (length(out) > 0) {
     invisible(out)
   } else {

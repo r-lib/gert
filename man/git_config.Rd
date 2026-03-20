@@ -11,9 +11,9 @@ git_config(repo = ".")
 
 git_config_global()
 
-git_config_set(name, value, repo = ".")
+git_config_set(name, value, add = FALSE, repo = ".")
 
-git_config_global_set(name, value)
+git_config_global_set(name, value, add = FALSE)
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -26,6 +26,10 @@ versions of gert may have additional parameters.}
 
 \item{value}{Value to set. Must be a string, logical, number or \code{NULL} (to
 unset).}
+
+\item{add}{if \code{TRUE}, append a new entry for \code{name} instead of replacing
+existing one(s). Equivalent to \verb{git config --add}. Only supported for
+string values.}
 }
 \value{
 \itemize{
@@ -34,7 +38,7 @@ of \code{repo}, one row per option. The \code{level} column reveals whether the
 option is determined from global or local config.
 \item \code{git_config_global()}: a \code{data.frame}, as for \code{git_config()}, except only
 for global Git options.
-\item \code{git_config_set()}, \code{git_config_global_set()}: The previous value of
+\item \code{git_config_set()}, \code{git_config_global_set()}: The previous value(s) of
 \code{name} in local or global config, respectively. If this option was
 previously unset, returns \code{NULL}. Returns invisibly.
 }
