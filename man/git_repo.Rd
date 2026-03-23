@@ -14,7 +14,7 @@ git_find(path = ".")
 git_info(repo = ".")
 }
 \arguments{
-\item{path}{the location of the git repository, see details.}
+\item{path}{the location of the git repository, see the "path" section.}
 
 \item{bare}{if true, a Git repository without a working directory is created}
 
@@ -38,7 +38,9 @@ versions of gert may have additional parameters.}
 and branch of the current HEAD.
 }
 }
-\details{
+\section{Path}{
+
+
 For \code{git_init()} the \code{path} parameter sets the directory of the git repository
 to create. If this directory already exists, it must be empty. If it does
 not exist, it is created, along with any intermediate directories that don't
@@ -49,6 +51,13 @@ which to start the search for a git repository. If it is not a git repository
 itself, then its parent directory is consulted, then the parent's parent, and
 so on.
 }
+
+\section{Detached head}{
+
+If \code{git_info()$shorthand} is equal to \code{HEAD},
+it means the repository is in a \href{https://jvns.ca/blog/2023/11/01/confusing-git-terminology/#detached-head-state}{detached head state}.
+}
+
 \examples{
 # directory does not yet exist
 r <- tempfile(pattern = "gert")
