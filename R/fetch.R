@@ -174,6 +174,9 @@ git_push <- function(
 #' repositories, and `https://yourname@github.com/` or `git@github.com/` for
 #' private repos. You will be prompted for a password or pat when needed.
 #' @param path Directory of the Git repository to create.
+#' By default, the "humanish" part of the URL.
+#' For instance, "git@github.com:someone/myrepo.git" will be cloned to
+#' `myrepo/`.
 #' @param ssh_key path or object containing your ssh private key. By default we
 #' look for keys in `ssh-agent` and [credentials::ssh_key_info()].
 #' @param branch name of branch to check out locally
@@ -220,8 +223,13 @@ git_clone <- function(
   verbose = interactive()
 ) {
   stopifnot(is.character(url))
+  # "humanish" part of the URL
+  # https://github.com/git/git/blob/6e8d538aab8fe4dd07ba9fb87b5c7edcfa5706ad/dir.h#L494
   if (!length(path)) {
-    path <- file.path(getwd(), basename(url))
+    path <- file.path(
+      getwd(),
+      sub("\\.git$", "", sub("/.git$", "", basename(url)))
+    )
   }
   stopifnot(is.character(path))
   stopifnot(is.null(branch) || is.character(branch))
@@ -249,7 +257,7 @@ git_clone <- function(
 #' @param rebase if TRUE we try to rebase instead of merge local changes. This
 #' is not possible in case of conflicts (you will get an error).
 #' @param ... arguments passed to `git_fetch()`
-git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.'){
+git_pull <- function(remote = NULL, rebase = FALSE, ..., repo = '.') {
   repo <- git_open(repo)
   info <- git_info(repo)
   branch <- info$shorthand
