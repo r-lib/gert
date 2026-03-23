@@ -2,12 +2,12 @@ test_that("local, custom config roundtrip", {
   repo <- git_init(tempfile("gert-tests-config"))
   on.exit(unlink(repo, recursive = TRUE))
 
-  orig <- git_config_set("aaa.bbb", "ccc", repo)
+  orig <- git_config_set("aaa.bbb", "ccc", repo = repo)
   expect_null(orig)
   cfg <- git_config(repo)
   expect_equal(cfg$value[cfg$name == "aaa.bbb"], "ccc")
 
-  orig <- git_config_set("aaa.bbb", NULL, repo)
+  orig <- git_config_set("aaa.bbb", NULL, repo = repo)
   expect_equal(orig, "ccc")
   cfg <- git_config(repo)
   expect_equal(cfg$value[cfg$name == "aaa.bbb"], character())
