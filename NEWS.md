@@ -1,5 +1,6 @@
 # gert (development version)
 
+- Add `git_config_get()`, `git_config_local_get()`, and `git_config_global_get()` to retrieve a single named config option, returning `NULL` if unset (#267).
 - `git_remote_set_pushurl()` gains an `add` argument to append push URLs instead of replacing them. (@robitalec, #128)
 - Fix `git_info()` for the case when no upstream is configured (@mpage, #263)
 - `git_branch_create()`: `force` now also applies to the checkout step, allowing branch creation even when local changes would be overwritten (@MichaelChirico, #177).
