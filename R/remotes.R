@@ -81,6 +81,13 @@ git_remote_set_pushurl <- function(
   if (!length(remote)) {
     remote <- git_info(repo = repo)$remote
   }
+  if (!length(remote) || is.na(remote)) {
+    stop("No remote specified and none could be detected", call. = FALSE)
+  }
+  existing <- git_remote_list(repo = repo)$name
+  if (!remote %in% existing) {
+    stop(sprintf("remote '%s' does not exist", remote), call. = FALSE)
+  }
   url <- as.character(url)
 
   git_config_set(
