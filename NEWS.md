@@ -1,5 +1,6 @@
 # gert (development version)
 
+ - Add `git_restore()` function (#259)
 - `git_remote_set_pushurl()` gains an `add` argument to append push URLs instead of replacing them. (@robitalec, #128)
 - Fix `git_info()` for the case when no upstream is configured (@mpage, #263)
 - `git_branch_create()`: `force` now also applies to the checkout step, allowing branch creation even when local changes would be overwritten (@MichaelChirico, #177).
