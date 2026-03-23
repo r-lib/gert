@@ -87,6 +87,7 @@ Other git:
 \code{\link[=git_rebase]{git_rebase()}},
 \code{\link{git_remote}},
 \code{\link[=git_reset]{git_reset()}},
+\code{\link[=git_restore]{git_restore()}},
 \code{\link[=git_revert]{git_revert()}},
 \code{\link[=git_signature]{git_signature()}},
 \code{\link{git_stash}},
