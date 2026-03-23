@@ -5,12 +5,23 @@ test_that("git_remote_set_pushurl with add = TRUE appends push URLs", {
 
   git_remote_add("https://example.com/fetch", name = "origin", repo = repo)
 
-  git_remote_set_pushurl("https://example.com/push1", remote = "origin", repo = repo)
-  git_remote_set_pushurl("https://example.com/push2", remote = "origin", add = TRUE, repo = repo)
+  git_remote_set_pushurl(
+    "https://example.com/push1",
+    remote = "origin",
+    repo = repo
+  )
+  git_remote_set_pushurl(
+    "https://example.com/push2",
+    remote = "origin",
+    add = TRUE,
+    repo = repo
+  )
 
-  cfg <- git_config(repo = repo)
-  pushurls <- cfg$value[cfg$name == "remote.origin.pushurl"]
-  expect_setequal(pushurls, c("https://example.com/push1", "https://example.com/push2"))
+  pushurls <- git_config_get("remote.origin.pushurl", repo = repo)
+  expect_setequal(
+    pushurls,
+    c("https://example.com/push1", "https://example.com/push2")
+  )
 })
 
 test_that("git_remote_set_pushurl without add replaces push URL", {
@@ -20,11 +31,18 @@ test_that("git_remote_set_pushurl without add replaces push URL", {
 
   git_remote_add("https://example.com/fetch", name = "origin", repo = repo)
 
-  git_remote_set_pushurl("https://example.com/push1", remote = "origin", repo = repo)
-  git_remote_set_pushurl("https://example.com/push2", remote = "origin", repo = repo)
+  git_remote_set_pushurl(
+    "https://example.com/push1",
+    remote = "origin",
+    repo = repo
+  )
+  git_remote_set_pushurl(
+    "https://example.com/push2",
+    remote = "origin",
+    repo = repo
+  )
 
-  cfg <- git_config(repo = repo)
-  pushurls <- cfg$value[cfg$name == "remote.origin.pushurl"]
+  pushurls <- git_config_get("remote.origin.pushurl", repo = repo)
   expect_equal(pushurls, "https://example.com/push2")
 })
 
