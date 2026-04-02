@@ -89,7 +89,10 @@ successful and if the branch does not have an upstream set yet.}
 repositories, and \verb{https://yourname@github.com/} or \verb{git@github.com/} for
 private repos. You will be prompted for a password or pat when needed.}
 
-\item{path}{Directory of the Git repository to create.}
+\item{path}{Directory of the Git repository to create.
+By default, the "humanish" part of the URL.
+For instance, "git@github.com:someone/myrepo.git" will be cloned to
+\verb{myrepo/}.}
 
 \item{branch}{name of branch to check out locally}
 
