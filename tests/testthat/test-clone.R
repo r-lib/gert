@@ -33,3 +33,15 @@ test_that("cloning repositories works", {
   expect_equal(zip::zip_list('gert.zip')$filename, git_ls(repo = repo)$path)
   unlink('gert.zip')
 })
+
+test_that("cloning repositories works, no path", {
+  skip_if_offline('github.com')
+  path <- file.path(tempdir(), 'gert-test')
+  dir.create(path)
+  on.exit(unlink(path, recursive = TRUE))
+  oldwd <- getwd()
+  on.exit(setwd(oldwd), add = TRUE)
+  setwd(path)
+  repo <- git_clone('https://github.com/r-lib/gert.git')
+  expect_true(file.exists(file.path(path, "gert", 'DESCRIPTION')))
+})
