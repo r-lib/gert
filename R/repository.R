@@ -5,6 +5,8 @@
 #' * `git_info()` shows basic information about a repository, such as the SHA
 #'   and branch of the current HEAD.
 #'
+#' @section Path:
+#'
 #' For `git_init()` the `path` parameter sets the directory of the git repository
 #' to create. If this directory already exists, it must be empty. If it does
 #' not exist, it is created, along with any intermediate directories that don't
@@ -21,7 +23,7 @@
 #' @family git
 #' @useDynLib gert R_git_repository_init
 #' @inheritParams git_open
-#' @param path the location of the git repository, see details.
+#' @param path the location of the git repository, see the "path" section.
 #' @param bare if true, a Git repository without a working directory is created
 #' @git repository
 #' @return
@@ -68,6 +70,9 @@ git_find <- function(path = '.') {
 #' @export
 #' @rdname git_repo
 #' @useDynLib gert R_git_repository_info
+#' @section Detached head:
+#' If `git_info()$shorthand` is equal to `HEAD`,
+#' it means the repository is in a [detached head state](https://jvns.ca/blog/2023/11/01/confusing-git-terminology/#detached-head-state).
 git_info <- function(repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_repository_info, repo)
