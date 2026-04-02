@@ -1,5 +1,6 @@
 # gert (development version)
 
+- Add `git_config_get()`, `git_config_local_get()`, and `git_config_global_get()` to retrieve a single named config option, returning `NULL` if unset (#267).
 - `git_clone()` without a `path` argument now clones into a directory named after the
 "humanish" part of the URL, so "git@github.com:francisbarton/myrepo.git" gets cloned into `myrepo` (@francisbardon, #192).
 - `git_remote_set_pushurl()` gains an `add` argument to append push URLs instead of replacing them. (@robitalec, #128)
