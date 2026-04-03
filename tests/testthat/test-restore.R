@@ -21,18 +21,24 @@ test_that("git_restore restores from a specific ref", {
 
   writeLines("v1", file.path(repo, "hello.txt"))
   writeLines("v1", file.path(repo, "keep.txt"))
+  writeLines("v1", file.path(repo, "wip.txt"))
+  writeLines("v1", file.path(repo, "untracked.txt"))
 
-  git_add(c("hello.txt", "keep.txt"), repo = repo)
+  git_add(c("hello.txt", "keep.txt", "wip.txt"), repo = repo)
   first <- git_commit("First commit", repo = repo)
 
   writeLines("v2", file.path(repo, "hello.txt"))
   writeLines("v2", file.path(repo, "keep.txt"))
+  writeLines("v2", file.path(repo, "wip.txt"))
   git_add(c("hello.txt", "keep.txt"), repo = repo)
   git_commit("Second commit", repo = repo)
 
   git_restore("hello.txt", ref = first, repo = repo)
   expect_equal(readLines(file.path(repo, "hello.txt")), "v1")
   expect_equal(readLines(file.path(repo, "keep.txt")), "v2")
+  expect_equal(readLines(file.path(repo, "wip.txt")), "v2")
+  expect_equal(readLines(file.path(repo, "untracked.txt")), "v1")
+
 })
 
 test_that("git_restore restores all files with path = '.'", {
