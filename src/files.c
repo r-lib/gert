@@ -211,3 +211,17 @@ SEXP R_git_status_list(SEXP ptr, SEXP show_staged, SEXP path_spec){
   UNPROTECT(3);
   return out;
 }
+
+SEXP R_git_restore(SEXP ptr, SEXP files, SEXP ref){
+  git_repository *repo = get_git_repository(ptr);
+  git_object *obj = resolve_refish(ref, repo);
+  git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
+  opts.checkout_strategy = GIT_CHECKOUT_FORCE;
+  git_strarray *paths = files_to_array(files);
+  opts.paths = *paths;
+  int err = git_checkout_tree(repo, obj, &opts);
+  git_strarray_free(paths);
+  git_object_free(obj);
+  bail_if(err, "git_checkout_tree");
+  return R_NilValue;
+}
