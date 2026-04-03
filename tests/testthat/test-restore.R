@@ -20,15 +20,19 @@ test_that("git_restore restores from a specific ref", {
   configure_local_user(repo)
 
   writeLines("v1", file.path(repo, "hello.txt"))
-  git_add("hello.txt", repo = repo)
+  writeLines("v1", file.path(repo, "keep.txt"))
+
+  git_add(c("hello.txt", "keep.txt"), repo = repo)
   first <- git_commit("First commit", repo = repo)
 
   writeLines("v2", file.path(repo, "hello.txt"))
-  git_add("hello.txt", repo = repo)
+  writeLines("v2", file.path(repo, "keep.txt"))
+  git_add(c("hello.txt", "keep.txt"), repo = repo)
   git_commit("Second commit", repo = repo)
 
   git_restore("hello.txt", ref = first, repo = repo)
   expect_equal(readLines(file.path(repo, "hello.txt")), "v1")
+  expect_equal(readLines(file.path(repo, "keep.txt")), "v2")
 })
 
 test_that("git_restore restores all files with path = '.'", {
