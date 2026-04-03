@@ -216,20 +216,11 @@ SEXP R_git_restore(SEXP ptr, SEXP files, SEXP ref){
   git_repository *repo = get_git_repository(ptr);
   git_object *obj = resolve_refish(ref, repo);
   git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
-  int len = Rf_length(files);
-  const char **strings = NULL;
-  int err;
   opts.checkout_strategy = GIT_CHECKOUT_FORCE;
-  if(len > 0){
-    strings = malloc(len * sizeof(char *));
-    for(int i = 0; i < len; i++){
-      strings[i] = CHAR(STRING_ELT(files, i));
-    }
-    opts.paths.strings = (char **) strings;
-    opts.paths.count = len;
-  }
-  err = git_checkout_tree(repo, obj, &opts);
-  free(strings);
+  git_strarray *paths = files_to_array(files);
+  opts.paths = *paths;
+  int err = git_checkout_tree(repo, obj, &opts);
+  git_strarray_free(paths);
   git_object_free(obj);
   bail_if(err, "git_checkout_tree");
   return R_NilValue;
