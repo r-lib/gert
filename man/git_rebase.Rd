@@ -35,11 +35,14 @@ versions of gert may have additional parameters.}
 \itemize{
 \item \code{git_cherry_pick()} applies the changes from a given commit (from another branch)
 onto the current branch.
-*\code{git_rebase_commit()} resets the branch to the state of another branch (upstream)
+\item \code{git_rebase_commit()} resets the branch to the state of another branch (upstream)
 and then re-applies your local changes by cherry-picking each of your local
 commits onto the upstream commit history.
-*\code{git_rebase_list()} shows your local commits that are missing from the \code{upstream}
+\item \code{git_rebase_list()} shows your local commits that are missing from the \code{upstream}
 history, and if they conflict with upstream changes.
+\item \code{git_ahead_behind()} returns a list containing the number of commits ahead and behind
+comparing \code{upstream} to \code{ref},
+and the HEAD for respectively the \code{ref} and \code{upstream}.
 }
 }
 \details{
@@ -52,23 +55,71 @@ Gert only support a clean rebase; it never leaves the repository in unfinished
 "rebasing" state. If conflicts arise, \code{git_rebase_commit()} will raise an error
 without making changes.
 }
+\examples{
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
+# Cherry-picking
+repo <- tempfile()
+gert::git_init(path = repo)
+writeLines("hello", file.path(repo, 'hello.txt'))
+git_add('hello.txt', repo = repo)
+first_commit <- git_commit(
+    "First commit",
+    author = "Jane Doe <jane@example.com>",
+    repo = repo
+ )
+# Create a feature branch with a new commit
+mainbranch <- gert::git_branch(repo = repo)
+git_branch_create('feature', repo = repo)
+write.csv(mtcars, file.path(repo, 'mtcars.csv'))
+git_add('mtcars.csv', repo = repo)
+commit <- git_commit(
+  "Added mtcars.csv file",
+  author = "Jane Doe <jane@example.com>",
+  repo = repo
+)
+# Cherry pick the commit onto main
+git_branch_switch(mainbranch, repo = repo)
+git_log(repo = repo)
+git_cherry_pick(commit, repo = repo)
+git_log(repo = repo)
+
+# Clean up
+unlink(repo, recursive = TRUE)
+
+# git ahead/behind and git_rebase_list
+repo <- file.path(tempdir(), 'gert')
+if (!file.exists(repo)) {
+ git_clone('https://github.com/r-lib/gert', path = repo)
+}
+# Drop some commits, and fast-forward them back
+git_reset_hard('HEAD~5', repo = repo)
+file.create(file.path(repo, "bla"))
+git_add("bla", repo = repo)
+git_commit("add bla", repo = repo)
+git_ahead_behind(repo = repo)
+git_rebase_list(repo = repo)
+
+# Clean up
+unlink(repo, recursive = TRUE)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
-Other git:
+Other git: 
 \code{\link{git_archive}},
-\code{\link[=git_branch]{git_branch()}},
-\code{\link[=git_commit]{git_commit()}},
-\code{\link[=git_config]{git_config()}},
-\code{\link[=git_diff]{git_diff()}},
-\code{\link[=git_fetch]{git_fetch()}},
+\code{\link{git_branch}()},
+\code{\link{git_commit}()},
+\code{\link{git_config}()},
+\code{\link{git_diff}()},
+\code{\link{git_fetch}()},
 \code{\link{git_history}},
 \code{\link{git_ignore}},
-\code{\link[=git_merge]{git_merge()}},
+\code{\link{git_merge}()},
 \code{\link{git_remote}},
 \code{\link{git_repo}},
-\code{\link[=git_reset]{git_reset()}},
-\code{\link[=git_restore]{git_restore()}},
-\code{\link[=git_revert]{git_revert()}},
-\code{\link[=git_signature]{git_signature()}},
+\code{\link{git_reset}()},
+\code{\link{git_restore}()},
+\code{\link{git_revert}()},
+\code{\link{git_signature}()},
 \code{\link{git_stash}},
 \code{\link{git_tag}},
 \code{\link{git_worktree}}
