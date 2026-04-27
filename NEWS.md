@@ -11,6 +11,7 @@
 - Fix badge links in `README.md` (@dpprdan, #189)
 - Use `NEWS.md` instead of `NEWS` (@olivroy, #209)
 - Add git_revert() function (#206)
+- new function `git_branch_switch()`, an alias to `git_branch_checkout()` (#254)
 
 # 2.3.1
 
