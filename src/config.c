@@ -67,7 +67,7 @@ SEXP R_git_config_list(SEXP ptr){
   return out;
 }
 
-SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value, SEXP add, SEXP unset){
+SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value, SEXP add){
   git_config *cfg = NULL;
   const char *cname = CHAR(STRING_ELT(name, 0));
   if(Rf_isNull(ptr)) {
@@ -79,11 +79,6 @@ SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value, SEXP add, SEXP unset){
     if(TYPEOF(value) != STRSXP)
       Rf_error("add = TRUE only supported for string values");
     bail_if(git_config_set_multivar(cfg, cname, "^$", CHAR(STRING_ELT(value, 0))), "git_config_set_multivar");
-  } else if(Rf_asLogical(unset)) {
-    if(TYPEOF(value) != STRSXP)
-      Rf_error("unset = TRUE only supported for string values");
-    const char *cvalue = Rf_isNull(value) ? "^.*$" : CHAR(STRING_ELT(value, 0));
-    bail_if(git_config_delete_multivar(cfg, cname, cvalue), "git_config_delete_multivar");
   } else {
     switch(TYPEOF(value)){
       case STRSXP:
