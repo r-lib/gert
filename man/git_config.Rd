@@ -8,6 +8,8 @@
 \alias{git_config_global_get}
 \alias{git_config_set}
 \alias{git_config_global_set}
+\alias{git_config_unset}
+\alias{git_config_global_unset}
 \title{Get or set Git configuration}
 \usage{
 git_config(repo = ".")
@@ -23,6 +25,10 @@ git_config_global_get(name)
 git_config_set(name, value, add = FALSE, repo = ".")
 
 git_config_global_set(name, value, add = FALSE)
+
+git_config_unset(name, pattern, fixed = FALSE, repo = ".")
+
+git_config_global_unset(name, pattern, fixed = FALSE)
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -39,6 +45,13 @@ unset).}
 \item{add}{if \code{TRUE}, append a new entry for \code{name} instead of replacing
 existing one(s). Equivalent to \verb{git config --add}. Only supported for
 string values.}
+
+\item{pattern}{Regular expression matching values to unset. Note: the regular
+expressions engine used depends on the libgit2 installation; you can check
+this using \code{libgit2_config()$regex_backend}.}
+
+\item{fixed}{If \code{TRUE}, only unset values that match \code{pattern} entirely and
+as-is.}
 }
 \value{
 \itemize{
@@ -55,17 +68,21 @@ local (repository-level) config only.
 \item \code{git_config_set()}, \code{git_config_global_set()}: The previous value(s) of
 \code{name} in local or global config, respectively. If this option was
 previously unset, returns \code{NULL}. Returns invisibly.
+\item \code{git_config_unset()}, \code{git_config_global_unset()}: The previous value(s) of
+\code{name} that were unset. Returns invisibly.
 }
 }
 \description{
-Get or set Git options, as \verb{git config} does on the command line. \strong{Global}
-settings affect all of a user's Git operations (\verb{git config --global}),
-whereas \strong{local} settings are scoped to a specific repository (\verb{git config --local}). When both exist, local options always win.\tabular{lll}{
+Get, set, or unset Git options, as \verb{git config} does on the command line.
+\strong{Global} settings affect all of a user's Git operations
+(\verb{git config --global}), whereas \strong{local} settings are scoped to a specific
+repository (\verb{git config --local}). When both exist, local options always win.\tabular{lll}{
     \tab \strong{local} \tab \strong{global} \cr
    get all \tab \code{git_config()} \tab \code{git_config_global()} \cr
    get one (local+global) \tab \code{git_config_get()} \tab \code{git_config_get()} \cr
    get one (local or global only) \tab \code{git_config_local_get()} \tab \code{git_config_global_get()} \cr
    set \tab \code{git_config_set()} \tab \code{git_config_global_set()} \cr
+   unset \tab \code{git_config_unset()} \tab \code{git_config_global_unset()} \cr
 }
 }
 \note{

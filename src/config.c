@@ -104,3 +104,17 @@ SEXP R_git_config_set(SEXP ptr, SEXP name, SEXP value, SEXP add){
   git_config_free(cfg);
   return R_NilValue;
 }
+
+SEXP R_git_config_unset(SEXP ptr, SEXP name, SEXP pattern){
+  git_config *cfg = NULL;
+  const char *cname = CHAR(STRING_ELT(name, 0));
+  const char *cpattern = CHAR(STRING_ELT(pattern, 0));
+  if(Rf_isNull(ptr)) {
+    bail_if(git_config_open_default(&cfg), "git_config_open_default");
+  } else {
+    bail_if(git_repository_config(&cfg, get_git_repository(ptr)),"git_repository_config");
+  }
+  bail_if(git_config_delete_multivar(cfg, cname, cpattern), "git_config_delete_multivar");
+  git_config_free(cfg);
+  return R_NilValue;
+}
