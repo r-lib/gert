@@ -26,9 +26,9 @@ git_config_set(name, value, add = FALSE, repo = ".")
 
 git_config_global_set(name, value, add = FALSE)
 
-git_config_unset(name, pattern, repo = ".")
+git_config_unset(name, pattern, fixed = FALSE, repo = ".")
 
-git_config_global_unset(name, pattern)
+git_config_global_unset(name, pattern, fixed = FALSE)
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -49,6 +49,9 @@ string values.}
 \item{pattern}{Regular expression matching values to unset. Note: the regular
 expressions engine used depends on the libgit2 installation; you can check
 this using \code{libgit2_config()$regex_backend}.}
+
+\item{fixed}{If \code{TRUE}, only unset values that match \code{pattern} entirely and
+as-is.}
 }
 \value{
 \itemize{

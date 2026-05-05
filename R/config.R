@@ -154,8 +154,11 @@ git_config_global_set <- function(name, value, add = FALSE) {
 #' @param pattern Regular expression matching values to unset. Note: the regular
 #'   expressions engine used depends on the libgit2 installation; you can check
 #'   this using `libgit2_config()$regex_backend`.
-git_config_unset <- function(name, pattern, repo = '.')
+#' @param fixed If `TRUE`, only unset values that match `pattern` entirely and
+#'   as-is.
+git_config_unset <- function(name, pattern, fixed = FALSE, repo = '.')
 {
+  if (fixed) pattern <- fixed_regex(pattern)
   repo <- git_open(repo)
   prev <- git_config_local_get(name, repo = repo)
   .Call(R_git_config_unset, repo, name, pattern)
@@ -166,8 +169,9 @@ git_config_unset <- function(name, pattern, repo = '.')
 
 #' @export
 #' @rdname git_config
-git_config_global_unset <- function(name, pattern)
+git_config_global_unset <- function(name, pattern, fixed = FALSE)
 {
+  if (fixed) pattern <- fixed_regex(pattern)
   prev <- git_config_global_get(name)
   .Call(R_git_config_unset, NULL, name, pattern)
   post <- git_config_global_get(name)
@@ -188,6 +192,15 @@ libgit2_config <- function() {
   res <- .Call(R_libgit2_config)
   res$version <- as.numeric_version(res$version)
   res
+}
+
+# helper used in git_config_unset()
+fixed_regex <- function(string) {
+  metachars <- c(".", "\\", "|", "(", ")", "[", "]", "{", "}", "^", "$", "*", "+", "?")
+  for (metachar in metachars) {
+    string <- gsub(metachar, paste0("\\", metachar), string, fixed = TRUE)
+  }
+  paste0("^", string, "$")
 }
 
 # helpers used in tests
