@@ -51,7 +51,7 @@ test_that("git_config_unset() works for multivar options", {
   expect_equal(removed, "ccc")
   expect_equal(git_config_get("aaa.bbb", repo = repo), c("cccc", "ddd"))
 
-  removed <- git_config_unset("aaa.bbb", ".*", repo = repo)
-  expect_equal(removed, c("cccc", "ddd"))
+  wildcard_removed <- git_config_unset("aaa.bbb", ".*", repo = repo)
+  expect_equal(wildcard_removed, c("cccc", "ddd"))
   expect_null(git_config_get("aaa.bbb", repo = repo))
 })

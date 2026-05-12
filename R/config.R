@@ -153,28 +153,34 @@ git_config_global_set <- function(name, value, add = FALSE) {
 #' @useDynLib gert R_git_config_unset
 #' @param pattern Regular expression matching values to unset. Note: the regular
 #'   expressions engine used depends on the libgit2 installation; you can check
-#'   this using `libgit2_config()$regex_backend`.
+#'   this using `libgit2_config()$regex_backend`
+#'   (`"`\code{\Sexpr[stage=render,results=rd]{gert::libgit2_config()$regex_backend}}`"`
+#'   for this installation).
 #' @param fixed If `TRUE`, only unset values that match `pattern` entirely and
 #'   as-is.
 git_config_unset <- function(name, pattern, fixed = FALSE, repo = '.')
 {
-  if (fixed) pattern <- fixed_regex(pattern)
-  repo <- git_open(repo)
-  prev <- git_config_local_get(name, repo = repo)
-  .Call(R_git_config_unset, repo, name, pattern)
-  post <- git_config_local_get(name, repo = repo)
-  out <- setdiff(prev, post)
-  invisible(out)
+  git_config_unset_impl(
+    name, pattern, fixed, git_open(repo),
+    function() git_config_local_get(name, repo = repo)
+  )
 }
 
 #' @export
 #' @rdname git_config
 git_config_global_unset <- function(name, pattern, fixed = FALSE)
 {
+  git_config_unset_impl(
+    name, pattern, fixed, NULL,
+    function() git_config_global_get(name)
+  )
+}
+
+git_config_unset_impl <- function(name, pattern, fixed, repo, get_val_cb) {
   if (fixed) pattern <- fixed_regex(pattern)
-  prev <- git_config_global_get(name)
-  .Call(R_git_config_unset, NULL, name, pattern)
-  post <- git_config_global_get(name)
+  prev <- (get_val_cb)()
+  .Call(R_git_config_unset, repo, name, pattern)
+  post <- (get_val_cb)()
   out <- setdiff(prev, post)
   invisible(out)
 }

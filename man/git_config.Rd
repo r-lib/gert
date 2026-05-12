@@ -48,7 +48,9 @@ string values.}
 
 \item{pattern}{Regular expression matching values to unset. Note: the regular
 expressions engine used depends on the libgit2 installation; you can check
-this using \code{libgit2_config()$regex_backend}.}
+this using \code{libgit2_config()$regex_backend}
+(\verb{"}\code{\Sexpr[stage=render,results=rd]{gert::libgit2_config()$regex_backend}}\verb{"}
+for this installation).}
 
 \item{fixed}{If \code{TRUE}, only unset values that match \code{pattern} entirely and
 as-is.}
