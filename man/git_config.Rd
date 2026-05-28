@@ -26,9 +26,9 @@ git_config_set(name, value, add = FALSE, repo = ".")
 
 git_config_global_set(name, value, add = FALSE)
 
-git_config_unset(name, pattern, fixed = FALSE, repo = ".")
+git_config_unset(name, pattern = NULL, repo = ".")
 
-git_config_global_unset(name, pattern, fixed = FALSE)
+git_config_global_unset(name, pattern = NULL)
 }
 \arguments{
 \item{repo}{The path to the git repository. If the directory is not a
@@ -46,14 +46,8 @@ unset).}
 existing one(s). Equivalent to \verb{git config --add}. Only supported for
 string values.}
 
-\item{pattern}{Regular expression matching values to unset. Note: the regular
-expressions engine used depends on the libgit2 installation; you can check
-this using \code{libgit2_config()$regex_backend}
-(\verb{"}\code{\Sexpr[stage=render,results=rd]{gert::libgit2_config()$regex_backend}}\verb{"}
-for this installation).}
-
-\item{fixed}{If \code{TRUE}, only unset values that match \code{pattern} entirely and
-as-is.}
+\item{pattern}{optional regular expression, for matching values to unset in
+case of multiple values}
 }
 \value{
 \itemize{
