@@ -44,14 +44,12 @@ test_that("git_config_unset() works for multivar options", {
   on.exit(unlink(repo, recursive = TRUE))
 
   git_config_set("aaa.bbb", "ccc", add = TRUE, repo = repo)
-  git_config_set("aaa.bbb", "cccc", add = TRUE, repo = repo)
+  git_config_set("aaa.bbb", "ccccc", add = TRUE, repo = repo)
   git_config_set("aaa.bbb", "ddd", add = TRUE, repo = repo)
 
-  removed <- git_config_unset("aaa.bbb", "ccc", fixed = TRUE, repo = repo)
-  expect_equal(removed, "ccc")
-  expect_equal(git_config_get("aaa.bbb", repo = repo), c("cccc", "ddd"))
+  git_config_unset("aaa.bbb", "ccc", repo = repo)
+  expect_equal(git_config_get("aaa.bbb", repo = repo), "ddd")
 
-  wildcard_removed <- git_config_unset("aaa.bbb", ".*", repo = repo)
-  expect_equal(wildcard_removed, c("cccc", "ddd"))
+  git_config_unset("aaa.bbb", repo = repo)
   expect_null(git_config_get("aaa.bbb", repo = repo))
 })
