@@ -38,3 +38,18 @@ test_that("local, custom config roundtrip", {
   expect_equal(orig, "ccc")
   expect_null(git_config_get("aaa.bbb", repo = repo))
 })
+
+test_that("git_config_unset() works for multivar options", {
+  repo <- git_init(tempfile("gert-tests-config"))
+  on.exit(unlink(repo, recursive = TRUE))
+
+  git_config_set("aaa.bbb", "ccc", add = TRUE, repo = repo)
+  git_config_set("aaa.bbb", "ccccc", add = TRUE, repo = repo)
+  git_config_set("aaa.bbb", "ddd", add = TRUE, repo = repo)
+
+  git_config_unset("aaa.bbb", "ccc", repo = repo)
+  expect_equal(git_config_get("aaa.bbb", repo = repo), "ddd")
+
+  git_config_unset("aaa.bbb", repo = repo)
+  expect_null(git_config_get("aaa.bbb", repo = repo))
+})

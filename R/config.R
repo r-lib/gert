@@ -1,16 +1,16 @@
 #' Get or set Git configuration
 #'
 #' @description
-#' Get or set Git options, as `git config` does on the command line. **Global**
-#' settings affect all of a user's Git operations (`git config --global`),
-#' whereas **local** settings are scoped to a specific repository (`git config
-#' --local`). When both exist, local options always win.
+#' Get, set, or unset Git options, as `git config` does on the command line.
+#' **Global** settings affect all of a user's Git operations
+#' (`git config --global`), whereas **local** settings are scoped to a specific
+#' repository (`git config --local`). When both exist, local options always win.
 #'
 #' ```{r echo = FALSE, results = "asis"}
 #' dat <- data.frame(
-#'   local = c("`git_config()`", "`git_config_get()`", "`git_config_local_get()`", "`git_config_set()`"),
-#'   global = c("`git_config_global()`", "`git_config_get()`", "`git_config_global_get()`", "`git_config_global_set()`"),
-#'   row.names = c("get all", "get one (local+global)", "get one (local or global only)", "set")
+#'   local = c("`git_config()`", "`git_config_get()`", "`git_config_local_get()`", "`git_config_set()`", "`git_config_unset()`"),
+#'   global = c("`git_config_global()`", "`git_config_get()`", "`git_config_global_get()`", "`git_config_global_set()`", "`git_config_global_unset()`"),
+#'   row.names = c("get all", "get one (local+global)", "get one (local or global only)", "set", "unset")
 #' )
 #' knitr::kable(dat, col.names = paste0("**", colnames(dat), "**"))
 #' ```
@@ -28,6 +28,8 @@
 #' * `git_config_set()`, `git_config_global_set()`: The previous value(s) of
 #'   `name` in local or global config, respectively. If this option was
 #'   previously unset, returns `NULL`. Returns invisibly.
+#' * `git_config_unset()`, `git_config_global_unset()`: The previous value(s) of
+#'   `name` that were unset. Returns invisibly.
 #'
 #' @note All entries in the `name` column are automatically normalised to
 #'   lowercase (see
@@ -144,6 +146,21 @@ git_config_global_set <- function(name, value, add = FALSE) {
   } else {
     invisible(NULL)
   }
+}
+
+#' @export
+#' @rdname git_config
+#' @useDynLib gert R_git_config_unset
+#' @param pattern optional regular expression, for matching values to unset in
+#' case of multiple values
+git_config_unset <- function(name, pattern = NULL, repo = '.'){
+  .Call(R_git_config_unset, git_open(repo), name, pattern)
+}
+
+#' @export
+#' @rdname git_config
+git_config_global_unset <- function(name, pattern = NULL){
+  .Call(R_git_config_unset, NULL, name, pattern)
 }
 
 #' Show libgit2 version and capabilities
