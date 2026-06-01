@@ -1,5 +1,6 @@
 # gert (development version)
 
+- Add `git_config_global_unset()` and `git_config_unset()` (@iofarm, #273)
 - Add `git_restore()` function (#259)
 - Add `git_config_get()`, `git_config_local_get()`, and `git_config_global_get()` to retrieve a single named config option, returning `NULL` if unset (#267).
 - `git_clone()` without a `path` argument now clones into a directory named after the
