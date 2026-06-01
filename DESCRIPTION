@@ -34,4 +34,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 SystemRequirements: libgit2 (>= 1.0): libgit2-devel (rpm) or libgit2-dev (deb)
 Language: en-US
-Config/roxygen2/version: 8.0.0.9000
+Config/roxygen2/version: 8.0.0

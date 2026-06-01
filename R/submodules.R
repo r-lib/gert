@@ -7,6 +7,7 @@
 #' @rdname git_submodule
 #' @inheritParams git_open
 #' @useDynLib gert R_git_submodule_list
+#' @git submodule
 git_submodule_list <- function(repo = '.') {
   repo <- git_open(repo)
   .Call(R_git_submodule_list, repo)
