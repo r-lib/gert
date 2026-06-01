@@ -198,7 +198,7 @@ global_user_is_configured <- function() {
 #'   `FALSE` otherwise.
 #'
 #' @export
-#' @examplesIf interactive()
+#' @examplesIf interactive() || isTRUE(as.logical(Sys.getenv("CI", "false")))
 #' user_is_configured()
 user_is_configured <- function(repo = ".") {
   user_name_exists <- !is.null(git_config_get("user.name", repo = repo))

@@ -34,7 +34,7 @@ to only stage the reverted changes without committing, leaving you free to
 amend or combine them before calling \code{\link[=git_commit]{git_commit()}}.
 }
 \examples{
-\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
+\dontshow{if (interactive() || isTRUE(as.logical(Sys.getenv("CI", "false")))) withAutoprint(\{ # examplesIf}
 repo <- file.path(tempdir(), "myrepo")
 git_init(repo)
 
