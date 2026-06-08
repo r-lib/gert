@@ -282,16 +282,18 @@ test_that("git_log shows commits from merged branches", {
   git_add("main2.txt", repo = repo)
   git_commit("Second commit on main", repo = repo)
 
-  writeLines("third content", file.path(repo, "main3.txt"))
-  git_add("main3.txt", repo = repo)
-  git_commit("Third commit on main", repo = repo)
-
   git_branch_create("feature", repo = repo)
   git_branch_switch("feature", repo = repo)
 
   writeLines("feature content 1", file.path(repo, "feature1.txt"))
   git_add("feature1.txt", repo = repo)
   git_commit("First commit on feature branch", repo = repo)
+
+  git_branch_switch(main, repo = repo)
+  writeLines("third content", file.path(repo, "main3.txt"))
+  git_add("main3.txt", repo = repo)
+  git_commit("Third commit on main", repo = repo)
+  git_branch_switch("feature", repo = repo)
 
   writeLines("feature content 2", file.path(repo, "feature2.txt"))
   git_add("feature2.txt", repo = repo)
