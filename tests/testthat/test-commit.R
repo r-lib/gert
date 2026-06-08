@@ -307,5 +307,14 @@ test_that("git_log shows commits from merged branches", {
   git_merge("feature", repo = repo)
 
   log <- git_log(repo = repo)
-  expect_snapshot(log$message)
+  expect_equal(
+    trimws(log$message),
+    c(
+      "Merged feature into main",
+      "Third commit on main",
+      "Second commit on main",
+      "Initial commit on main"
+    )
+  )
+  expect_equal(log$merge, c(TRUE, FALSE, FALSE, FALSE))
 })
