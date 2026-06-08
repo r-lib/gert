@@ -310,7 +310,7 @@ test_that("git_log shows commits from merged branches", {
   expect_equal(
     trimws(log$message),
     c(
-      "Merged feature into main",
+      sprintf("Merged feature into %s", main),
       "Third commit on main",
       "Second commit on main",
       "Initial commit on main"
