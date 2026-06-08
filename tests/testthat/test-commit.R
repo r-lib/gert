@@ -276,6 +276,7 @@ test_that("git_log shows commits from merged branches", {
   writeLines("initial content", file.path(repo, "main.txt"))
   git_add("main.txt", repo = repo)
   git_commit("Initial commit on main", repo = repo)
+  main <- git_branch(repo)
 
   writeLines("second content", file.path(repo, "main2.txt"))
   git_add("main2.txt", repo = repo)
@@ -300,7 +301,7 @@ test_that("git_log shows commits from merged branches", {
   git_add("feature3.txt", repo = repo)
   git_commit("Third commit on feature branch", repo = repo)
 
-  git_branch_switch("main", repo = repo)
+  git_branch_switch(main, repo = repo)
   git_merge("feature", repo = repo)
 
   log <- git_log(repo = repo)
