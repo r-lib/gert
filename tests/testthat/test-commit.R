@@ -267,3 +267,42 @@ test_that("git_revert raises an error for an invalid commit", {
 
   expect_error(git_revert("notacommit", repo = repo), "notacommit")
 })
+
+test_that("git_log shows commits from merged branches", {
+  repo <- git_init(tempfile("gert-tests-log-merged"))
+  on.exit(unlink(repo, recursive = TRUE))
+  configure_local_user(repo)
+
+  writeLines("initial content", file.path(repo, "main.txt"))
+  git_add("main.txt", repo = repo)
+  git_commit("Initial commit on main", repo = repo)
+
+  writeLines("second content", file.path(repo, "main2.txt"))
+  git_add("main2.txt", repo = repo)
+  git_commit("Second commit on main", repo = repo)
+
+  writeLines("third content", file.path(repo, "main3.txt"))
+  git_add("main3.txt", repo = repo)
+  git_commit("Third commit on main", repo = repo)
+
+  git_branch_create("feature", repo = repo)
+  git_branch_switch("feature", repo = repo)
+
+  writeLines("feature content 1", file.path(repo, "feature1.txt"))
+  git_add("feature1.txt", repo = repo)
+  git_commit("First commit on feature branch", repo = repo)
+
+  writeLines("feature content 2", file.path(repo, "feature2.txt"))
+  git_add("feature2.txt", repo = repo)
+  git_commit("Second commit on feature branch", repo = repo)
+
+  writeLines("feature content 3", file.path(repo, "feature3.txt"))
+  git_add("feature3.txt", repo = repo)
+  git_commit("Third commit on feature branch", repo = repo)
+
+  git_branch_switch("main", repo = repo)
+  git_merge("feature", repo = repo)
+
+  log <- git_log(repo = repo)
+  expect_snapshot(log$message)
+})
