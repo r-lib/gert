@@ -1,5 +1,6 @@
-# gert (development version)
+# 2.4.0
 
+- Linux: default to system libgit2 on Ubuntu 24 and up.
 - Add `git_config_global_unset()` and `git_config_unset()` (@iofarm, #273)
 - Add `git_restore()` function (#259)
 - Add `git_config_get()`, `git_config_local_get()`, and `git_config_global_get()` to retrieve a single named config option, returning `NULL` if unset (#267).
