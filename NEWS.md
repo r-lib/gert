@@ -1,4 +1,4 @@
-# 2.4.0
+# gert 2.4.0
 
 - Linux: default to system libgit2 on Ubuntu 24 and up.
 - Add `git_config_global_unset()` and `git_config_unset()` (@iofarm, #273)
@@ -16,12 +16,12 @@
 - new function `git_branch_switch()`, an alias to `git_branch_checkout()` (#254)
 - Add argument `depth` in `git_clone()` (#281, @etiennebacher).
 
-# 2.3.1
+# gert 2.3.1
 
 - git_stat_files() gains a 'max' parameter
 - Fix function declaration error
 
-# 2.3.0
+# gert 2.3.0
 
 - Add git_worktree() family of functions (#252)
 - Reformat code with air
