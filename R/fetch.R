@@ -183,6 +183,10 @@ git_push <- function(
 #' @param password a string or a callback function to get passwords for authentication
 #' or password protected ssh keys. Defaults to [askpass][askpass::askpass()] which
 #' checks `getOption('askpass')`.
+#' @param depth number of commits to fetch when creating a shallow clone. The
+#' default `0` clones the entire history. A positive value truncates the history
+#' to the given number of commits from the tip of each branch. Requires
+#' libgit2 >= 1.7.0.
 #' @param verbose display some progress info while downloading
 #' @examples {# Clone a small repository
 #' git_dir <- file.path(tempdir(), 'antiword')
@@ -220,6 +224,7 @@ git_clone <- function(
   ssh_key = NULL,
   bare = FALSE,
   mirror = FALSE,
+  depth = 0,
   verbose = interactive()
 ) {
   stopifnot(is.character(url))
@@ -233,6 +238,12 @@ git_clone <- function(
   }
   stopifnot(is.character(path))
   stopifnot(is.null(branch) || is.character(branch))
+  stopifnot(
+    "`depth` must be an integer >= 0" = is.numeric(depth) &&
+      length(depth) == 1 &&
+      depth >= 0
+  )
+  depth <- as.integer(depth)
   verbose <- as.logical(verbose)
   path <- normalizePath(path.expand(path), mustWork = FALSE)
   host <- url_to_host(url)
@@ -247,6 +258,7 @@ git_clone <- function(
     cred_cb,
     bare,
     mirror,
+    depth,
     verbose
   )
   git_repo_path(repo)

@@ -46,6 +46,7 @@ git_clone(
   ssh_key = NULL,
   bare = FALSE,
   mirror = FALSE,
+  depth = 0,
   verbose = interactive()
 )
 
@@ -97,6 +98,11 @@ For instance, "git@github.com:someone/myrepo.git" will be cloned to
 \item{branch}{name of branch to check out locally}
 
 \item{bare}{use the \code{--bare} flag}
+
+\item{depth}{number of commits to fetch when creating a shallow clone. The
+default \code{0} clones the entire history. A positive value truncates the history
+to the given number of commits from the tip of each branch. Requires
+libgit2 >= 1.7.0.}
 
 \item{rebase}{if TRUE we try to rebase instead of merge local changes. This
 is not possible in case of conflicts (you will get an error).}

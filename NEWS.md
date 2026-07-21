@@ -13,6 +13,7 @@
 - Use `NEWS.md` instead of `NEWS` (@olivroy, #209)
 - Add git_revert() function (#206)
 - new function `git_branch_switch()`, an alias to `git_branch_checkout()` (#254)
+- Add argument `depth` in `git_clone()` (#281, @etiennebacher).
 
 # 2.3.1
 

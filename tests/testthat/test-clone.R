@@ -45,3 +45,32 @@ test_that("cloning repositories works, no path", {
   repo <- git_clone('https://github.com/r-lib/gert.git')
   expect_true(file.exists(file.path(path, "gert", 'DESCRIPTION')))
 })
+
+test_that("shallow cloning with depth works", {
+  skip_if_offline('github.com')
+  skip_if_not(libgit2_config()$version >= "1.7.0")
+  path <- file.path(tempdir(), 'gert-shallow')
+  on.exit(unlink(path, recursive = TRUE))
+  repo <- git_clone('https://github.com/r-lib/gert', path = path, depth = 1)
+  expect_true(file.exists(file.path(path, 'DESCRIPTION')))
+  expect_equal(nrow(git_log(repo = repo)), 1L)
+})
+
+test_that("git_clone() validates depth argument", {
+  expect_error(
+    git_clone('https://github.com/r-lib/gert', depth = -1),
+    "`depth` must be an integer >= 0"
+  )
+  expect_error(
+    git_clone('https://github.com/r-lib/gert', depth = NA),
+    "`depth` must be an integer >= 0"
+  )
+  expect_error(
+    git_clone('https://github.com/r-lib/gert', depth = "a"),
+    "`depth` must be an integer >= 0"
+  )
+  expect_error(
+    git_clone('https://github.com/r-lib/gert', depth = c(1, 2)),
+    "`depth` must be an integer >= 0"
+  )
+})

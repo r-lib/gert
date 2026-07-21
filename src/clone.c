@@ -320,7 +320,7 @@ static int repository_enable_cache(git_repository **out, const char *path, int b
 }
 
 SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP getcred,
-                            SEXP bare, SEXP mirror, SEXP verbose){
+                            SEXP bare, SEXP mirror, SEXP depth, SEXP verbose){
   git_repository *repo = NULL;
   git_clone_options clone_opts = GIT_CLONE_OPTIONS_INIT;
   clone_opts.checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
@@ -330,6 +330,16 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
   clone_opts.repository_cb = repository_enable_cache;
 
   set_verify_handler(&clone_opts.fetch_opts.callbacks);
+
+  /* shallow clone: fetch only the last 'depth' commits (libgit2 >= 1.7) */
+  int clone_depth = Rf_asInteger(depth);
+  if(clone_depth > 0){
+#if AT_LEAST_LIBGIT2(1, 7)
+    clone_opts.fetch_opts.depth = clone_depth;
+#else
+    Rf_warning("Shallow clone (depth) requires libgit2 >= 1.7.0. Ignoring the depth parameter.");
+#endif
+  }
 
   /* Also enables download progress and user interrupt */
   if(Rf_asLogical(verbose)){
