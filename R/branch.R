@@ -30,6 +30,65 @@ git_branch_list <- function(local = NULL, repo = '.') {
 #' @param orphan if branch does not exist, checkout unborn branch
 #' @useDynLib gert R_git_checkout_branch R_git_checkout_unborn
 #' @git checkout
+#' @param force overwrite existing branch
+#' @examplesIf interactive()
+#' # Creating a branch
+#' repo <- file.path(tempdir(), "myrepo")
+#' git_init(repo)
+#' writeLines("hello", file.path(repo, "hello.txt"))
+#' git_add("hello.txt", repo = repo)
+#' first_commit <- git_commit("First commit", repo = repo)
+#'
+#' git_branch_create("new-feat", repo = repo)
+#' writeLines("world", file.path(repo, "hello.txt"))
+#' git_add("hello.txt", repo = repo)
+#' second_commit <- git_commit("Second commit", repo = repo)
+#'
+#' # Changing branches
+#' git_branch(repo = repo)
+#' git_branch_switch("main", repo = repo)
+#' git_branch(repo = repo)
+#'
+#' git_branch_exists("new-feat", repo = repo)
+#'
+#' # Listing branches
+#' git_branch_list(repo = repo)
+#'
+#' # Renaming a branch
+#' git_branch_move("new-feat", "better-name", repo = repo)
+#' git_branch_exists("new-feat", repo = repo)
+#' git_branch_list(repo = repo)
+#'
+#' # Deleting a branch
+#' git_branch_delete("better-name", repo = repo)
+#' git_branch_exists("better-name", repo = repo)
+#'
+#' # clean up
+#' unlink(repo, recursive = TRUE)
+#' # ------------------------
+#' # Creating an orphan branch
+#' repo <- file.path(tempdir(), "myrepo")
+#' git_init(repo)
+#'
+#' # Set a user if no default
+#' if (!user_is_configured()) {
+#'   git_config_set("user.name", "Jerry")
+#'   git_config_set("user.email", "jerry@gmail.com")
+#' }
+#' writeLines("hello", file.path(repo, "hello.txt"))
+#' git_add("hello.txt", repo = repo)
+#' first_commit <- git_commit("First commit", repo = repo)
+#'
+#' writeLines("world", file.path(repo, "hello.txt"))
+#' git_add("hello.txt", repo = repo)
+#' second_commit <- git_commit("Second commit", repo = repo)
+#'
+#' # Check out first commit
+#' git_branch_checkout(first_commit, orphan = TRUE, repo = repo)
+#' git_status(repo)
+#' # clean up
+#' unlink(repo, recursive = TRUE)
+#'
 git_branch_checkout <- function(
   branch,
   force = FALSE,
