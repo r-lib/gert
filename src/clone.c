@@ -337,7 +337,7 @@ SEXP R_git_repository_clone(SEXP url, SEXP path, SEXP branch, SEXP getkey, SEXP 
 #if AT_LEAST_LIBGIT2(1, 7)
     clone_opts.fetch_opts.depth = clone_depth;
 #else
-    Rf_error("Shallow clone (depth) requires libgit2 >= 1.7.0");
+    Rf_warning("Shallow clone (depth) requires libgit2 >= 1.7.0. Ignoring the depth parameter.");
 #endif
   }
 
