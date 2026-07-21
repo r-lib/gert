@@ -3,10 +3,10 @@
 #endif
 
 /* Beginning in libgit2 v1.4.5 and v1.5.1, libgit2 will now perform host key checking by default.
- * However on Windows libssh does not have access to the cert store */
-#if defined(_WIN32)
+ * However we do not want scripts to halt upon the first clone to a host...  */
+//#if defined(_WIN32)
 #define SKIP_HOSTKEY_CHECK
-#endif
+//#endif
 
 #include <string.h>
 #include "utils.h"
