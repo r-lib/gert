@@ -5,6 +5,7 @@ Version: 2.4.0
 Authors@R: c(
     person("Jeroen", "Ooms", role = c("aut", "cre"), email = "jeroenooms@gmail.com",
       comment = c(ORCID = "0000-0002-4035-0289")),
+    person("Maëlle", "Salmon", role = "aut", comment = c(ORCID = "0000-0002-2815-0399")),
     person("Jennifer", "Bryan", role = "ctb", email = "jenny@posit.co",
       comment = c(ORCID = "0000-0002-6983-2759")))
 Description: Simple git client for R based on 'libgit2' <https://libgit2.org> with
