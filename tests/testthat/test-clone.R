@@ -51,11 +51,7 @@ test_that("shallow cloning with depth works", {
   skip_if_not(libgit2_config()$version >= "1.7.0")
   path <- file.path(tempdir(), 'gert-shallow')
   on.exit(unlink(path, recursive = TRUE))
-  repo <- git_clone(
-    'https://github.com/r-lib/gert',
-    path = path,
-    depth = 1
-  )
+  repo <- git_clone('https://github.com/r-lib/gert', path = path, depth = 1)
   expect_true(file.exists(file.path(path, 'DESCRIPTION')))
   # A shallow clone with depth = 1 keeps only a single commit
   expect_equal(nrow(git_log(repo = repo)), 1L)
