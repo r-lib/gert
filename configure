@@ -14,8 +14,8 @@ PKG_TEST_FILE="tools/version.c"
 PKG_LIBS="-lgit2"
 PKG_CFLAGS=""
 
-# On Ubuntu we use static libgit2+libssh2 to support the ec keys
-if test -f "/etc/os-release" && grep -Fq Ubuntu "/etc/os-release"; then
+# On Ubuntu 22 use static libgit2+libssh2 to support the ec keys
+if test -f "/etc/os-release" && grep -Fq Jammy "/etc/os-release"; then
 PREFER_STATIC_LIBGIT2=1
 fi
 
