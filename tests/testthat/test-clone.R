@@ -60,18 +60,18 @@ test_that("shallow cloning with depth works", {
 test_that("git_clone() validates depth argument", {
   expect_error(
     git_clone('https://github.com/r-lib/gert', depth = -1),
-    "depth` must be an integer >= 0"
+    "`depth` must be an integer >= 0"
   )
   expect_error(
     git_clone('https://github.com/r-lib/gert', depth = NA),
-    "depth` must be an integer >= 0"
+    "`depth` must be an integer >= 0"
   )
   expect_error(
     git_clone('https://github.com/r-lib/gert', depth = "a"),
-    "depth` must be an integer >= 0"
+    "`depth` must be an integer >= 0"
   )
   expect_error(
     git_clone('https://github.com/r-lib/gert', depth = c(1, 2)),
-    "depth` must be an integer >= 0"
+    "`depth` must be an integer >= 0"
   )
 })
