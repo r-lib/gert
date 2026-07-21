@@ -1,6 +1,6 @@
 #' Submodules
 #'
-#' Interact with [submodules](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules)
+#' Interact with [submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
 #' in the repository.
 #'
 #' @export

@@ -43,7 +43,7 @@ versions of gert may have additional parameters.}
 \item{...}{extra arguments for \code{\link[=git_fetch]{git_fetch()}} for authentication things}
 }
 \description{
-Interact with \href{https://www.git-scm.com/book/en/v2/Git-Tools-Submodules}{submodules}
+Interact with \href{https://git-scm.com/book/en/v2/Git-Tools-Submodules}{submodules}
 in the repository.
 }
 \section{Related libgit2 documentation}{\href{https://libgit2.org/docs/reference/main/submodule/index.html}{\code{submodule}}.}
