@@ -58,7 +58,10 @@ test_that("creating a commit", {
   # Inspect the log file
   log <- git_log(repo = repo)
   expect_equal(log$author[2], local_author(repo))
-  expect_equal(log$time[1], timestamp)
+  expect_equal(
+    format(log$time[1], format = "%Y-%m-%d %H:%M:%S %Z"),
+    format(timestamp, format = "%Y-%m-%d %H:%M:%S %Z")
+  )
 })
 
 test_that("Passing ref into git_ls gives correct info", {

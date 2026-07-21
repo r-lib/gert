@@ -26,7 +26,7 @@ Suggests:
     spelling,
     knitr,
     rmarkdown,
-    testthat,
+    testthat (>= 3.0.0),
     roxygen2
 VignetteBuilder: 
     knitr
@@ -35,3 +35,4 @@ Roxygen: list(markdown = TRUE)
 SystemRequirements: libgit2 (>= 1.0): libgit2-devel (rpm) or libgit2-dev (deb)
 Language: en-US
 Config/roxygen2/version: 8.0.0
+Config/testthat/edition: 3
