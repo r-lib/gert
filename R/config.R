@@ -218,7 +218,13 @@ global_user_is_configured <- function() {
 #' @examplesIf interactive()
 #' user_is_configured()
 user_is_configured <- function(repo = ".") {
-  user_name_exists <- !is.null(git_config_get("user.name", repo = repo))
-  user_email_exists <- !is.null(git_config_get("user.email", repo = repo))
+  user_name_exists <- !is.null(tryCatch(
+    git_config_get("user.name", repo = repo),
+    error = function(e) git_config_global_get("user.name")
+  ))
+  user_email_exists <- !is.null(tryCatch(
+    git_config_get("user.email", repo = repo),
+    error = function(e) git_config_global_get("user.email")
+  ))
   user_name_exists && user_email_exists
 }
