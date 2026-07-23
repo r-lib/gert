@@ -30,7 +30,7 @@ current HEAD. By default restores from HEAD, discarding any local
 modifications.
 }
 \examples{
-\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
+\dontshow{if (interactive() || isTRUE(as.logical(Sys.getenv("CI", "false")))) withAutoprint(\{ # examplesIf}
 repo <- file.path(tempdir(), "myrepo")
 git_init(repo)
 
