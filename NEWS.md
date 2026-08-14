@@ -1,3 +1,7 @@
+# gert 2.4.1
+
+- Disable owner validation with recent libgit2 versions for backward compatibility
+
 # gert 2.4.0
 
 - Linux: default to system libgit2 on Ubuntu 24 and up.

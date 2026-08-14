@@ -3,6 +3,7 @@
 #include <R_ext/Rdynload.h>
 #include <R_ext/Visibility.h>
 #include <git2.h>
+#include "utils.h"
 
 #ifdef _WIN32
 #include <sys/stat.h>
@@ -188,6 +189,10 @@ static const R_CallMethodDef CallEntries[] = {
 
 attribute_visible void R_init_gert(DllInfo *dll) {
   git_libgit2_init();
+#if AT_LEAST_LIBGIT2(1, 5)
+  /* Do not error on repos owned by another uid (e.g. docker/CI mounts) */
+  git_libgit2_opts(GIT_OPT_SET_OWNER_VALIDATION, 0);
+#endif
 #ifdef _WIN32
   char homedir[8000] = {0};
   const char *userprofile = getenv("USERPROFILE");
