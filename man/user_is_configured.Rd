@@ -19,7 +19,7 @@ configured, in order to make commits. \code{user_is_configured()} makes no
 distinction between local or global user config.
 }
 \examples{
-\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
+\dontshow{if (interactive() || isTRUE(as.logical(Sys.getenv("CI", "false")))) withAutoprint(\{ # examplesIf}
 user_is_configured()
 \dontshow{\}) # examplesIf}
 }

@@ -3,11 +3,17 @@
 #' @description
 #' * `git_cherry_pick()` applies the changes from a given commit (from another branch)
 #' onto the current branch.
-#' *`git_rebase_commit()` resets the branch to the state of another branch (upstream)
+#'
+#' * `git_rebase_commit()` resets the branch to the state of another branch (upstream)
 #' and then re-applies your local changes by cherry-picking each of your local
 #' commits onto the upstream commit history.
-#' *`git_rebase_list()` shows your local commits that are missing from the `upstream`
+#'
+#' * `git_rebase_list()` shows your local commits that are missing from the `upstream`
 #' history, and if they conflict with upstream changes.
+#'
+#' * `git_ahead_behind()` returns a list containing the number of commits ahead and behind
+#' comparing `upstream` to `ref`,
+#' and the HEAD for respectively the `ref` and `upstream`.
 #'
 #'
 #' @details
@@ -20,6 +26,51 @@
 #' "rebasing" state. If conflicts arise, `git_rebase_commit()` will raise an error
 #' without making changes.
 #'
+#' @examplesIf interactive()
+#' # Cherry-picking
+#' repo <- tempfile()
+#' gert::git_init(path = repo)
+#' writeLines("hello", file.path(repo, 'hello.txt'))
+#' git_add('hello.txt', repo = repo)
+#' first_commit <- git_commit(
+#'     "First commit",
+#'     author = "Jane Doe <jane@example.com>",
+#'     repo = repo
+#'  )
+#' # Create a feature branch with a new commit
+#' mainbranch <- gert::git_branch(repo = repo)
+#' git_branch_create('feature', repo = repo)
+#' write.csv(mtcars, file.path(repo, 'mtcars.csv'))
+#' git_add('mtcars.csv', repo = repo)
+#' commit <- git_commit(
+#'   "Added mtcars.csv file",
+#'   author = "Jane Doe <jane@example.com>",
+#'   repo = repo
+#' )
+#' # Cherry pick the commit onto main
+#' git_branch_switch(mainbranch, repo = repo)
+#' git_log(repo = repo)
+#' git_cherry_pick(commit, repo = repo)
+#' git_log(repo = repo)
+#'
+#' # Clean up
+#' unlink(repo, recursive = TRUE)
+#'
+#' # git ahead/behind and git_rebase_list
+#' repo <- file.path(tempdir(), 'gert')
+#' if (!file.exists(repo)) {
+#'  git_clone('https://github.com/r-lib/gert', path = repo)
+#'}
+#' # Drop some commits, and fast-forward them back
+#' git_reset_hard('HEAD~5', repo = repo)
+#' file.create(file.path(repo, "bla"))
+#' git_add("bla", repo = repo)
+#' git_commit("add bla", repo = repo)
+#' git_ahead_behind(repo = repo)
+#' git_rebase_list(repo = repo)
+#'
+#' # Clean up
+#' unlink(repo, recursive = TRUE)
 #' @export
 #' @rdname git_rebase
 #' @name git_rebase

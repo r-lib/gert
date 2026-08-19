@@ -273,7 +273,7 @@ git_stat_files <- function(files, ref = "HEAD", max = NULL, repo = '.') {
 #' @param ... parameters passed to `git_commit` such as `message` or `author`
 #' @return The SHA of the new revert commit (invisibly), or `NULL` when
 #'   `commit = FALSE`.
-#' @examplesIf interactive()
+#' @examplesIf interactive() || isTRUE(as.logical(Sys.getenv("CI", "false")))
 #' repo <- file.path(tempdir(), "myrepo")
 #' git_init(repo)
 #'
