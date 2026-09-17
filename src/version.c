@@ -25,6 +25,13 @@ SEXP R_libgit2_config(void){
   SEXP ssh = PROTECT(Rf_ScalarLogical(features & GIT_FEATURE_SSH));
   SEXP https = PROTECT(Rf_ScalarLogical(features & GIT_FEATURE_HTTPS));
   SEXP threads = PROTECT(Rf_ScalarLogical(features & GIT_FEATURE_THREADS));
+#if AT_LEAST_LIBGIT2(1, 9)
+  SEXP https_backend = PROTECT(safe_string(git_libgit2_feature_backend(GIT_FEATURE_HTTPS)));
+  SEXP ssh_backend = PROTECT(safe_string(git_libgit2_feature_backend(GIT_FEATURE_SSH)));
+#else
+  SEXP https_backend = PROTECT(safe_string(NULL));
+  SEXP ssh_backend = PROTECT(safe_string(NULL));
+#endif
   git_buf buf = {0};
   git_config_find_global(&buf);
   SEXP config_global = PROTECT(safe_string(buf.ptr));
@@ -35,9 +42,10 @@ SEXP R_libgit2_config(void){
   git_libgit2_opts(GIT_OPT_GET_SEARCH_PATH, GIT_CONFIG_LEVEL_GLOBAL, &buf);
   SEXP config_search_path = PROTECT(safe_string(buf.ptr));
   git_buf_free(&buf);
-  SEXP out = build_list(7, "version", version, "ssh", ssh, "https", https, "threads", threads,
+  SEXP out = build_list(9, "version", version, "ssh", ssh, "https", https, "threads", threads,
+                    "https.backend", https_backend, "ssh.backend", ssh_backend,
                     "config.global", config_global, "config.system", config_system,
                     "config.home", config_search_path);
-  UNPROTECT(7);
+  UNPROTECT(9);
   return out;
 }

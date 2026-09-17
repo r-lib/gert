@@ -1,3 +1,7 @@
+# gert 2.5.0
+
+- Add `https.backend` and `ssh.backend` to `libgit2_config()` (when available)
+
 # gert 2.4.1
 
 - Disable owner validation with recent libgit2 versions for backward compatibility

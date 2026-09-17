@@ -25,6 +25,7 @@ Useful links:
 Authors:
 \itemize{
   \item Jeroen Ooms \email{jeroenooms@gmail.com} (\href{https://orcid.org/0000-0002-4035-0289}{ORCID})
+  \item Maëlle Salmon (\href{https://orcid.org/0000-0002-2815-0399}{ORCID})
 }
 
 Other contributors:
