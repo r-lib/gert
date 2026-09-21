@@ -16,7 +16,7 @@
 #' @param ref revision string with a branch/tag/commit to restore from.
 #'   Defaults to `"HEAD"`.
 #' @return Invisibly, the [git_status()] after restoring.
-#' @examplesIf interactive()
+#' @examplesIf interactive() || isTRUE(as.logical(Sys.getenv("CI", "false")))
 #' repo <- file.path(tempdir(), "myrepo")
 #' git_init(repo)
 #'
