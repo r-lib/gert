@@ -19,8 +19,14 @@ if test -f "/etc/os-release" && grep -Fq Jammy "/etc/os-release"; then
 PREFER_STATIC_LIBGIT2=1
 fi
 
+# Old CRAN libgit2 recipe version for 1.9.2 using wrong SSL backend
+# Fixed in https://github.com/R-macos/recipes/pull/92
+if [ `uname` = "Darwin" ]; then
+MINVER="--atleast-version=1.9.7"
+fi
+
 # Use pkg-config if available
-pkg-config ${PKG_CONFIG_NAME} --atleast-version=0.19 2>/dev/null
+pkg-config ${PKG_CONFIG_NAME} $MINVER 2>/dev/null
 if [ $? -eq 0 ]; then
   PKGCONFIG_CFLAGS=`pkg-config --cflags --silence-errors ${PKG_CONFIG_NAME}`
   PKGCONFIG_LIBS=`pkg-config --libs ${PKG_CONFIG_NAME}`

@@ -1,6 +1,7 @@
 # gert 2.5.0
 
 - Add `https.backend` and `ssh.backend` to `libgit2_config()` (when available)
+- MacOS: fix hangs in fetch by using OpenSSL instead of SecureChannel.
 
 # gert 2.4.1
 
