@@ -33,7 +33,7 @@ install.packages("gert")
 
 On Linux you need to install libgit2:
 
- - Debian: [libgit2-dev](https://packages.debian.org/buster/libgit2-dev)
+ - Debian: [libgit2-dev](https://packages.debian.org/stable/libgit2-dev)
  - Fedora / CentOS: [libgit2-devel](https://src.fedoraproject.org/rpms/libgit2)
  - Arch Linux [libgit2](https://archlinux.org/packages/extra/x86_64/libgit2)
  
