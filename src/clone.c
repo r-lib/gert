@@ -145,9 +145,11 @@ static int print_progress(unsigned int cur, unsigned int tot, size_t bytes, void
   static size_t prev = 0;
   if(prev != cur){
     prev = cur;
-    REprintf("\rTransferred %d of %d objects...", cur, tot);
-    if(cur == tot)
-      REprintf("done!\n");
+    if(cur == tot){
+      print_throttled(1, "\rTransferred %d of %d objects...done!\n", cur, tot);
+    } else {
+      print_throttled(0, "\rTransferred %d of %d objects...", cur, tot);
+    }
   }
   return 0;
 }
@@ -166,9 +168,11 @@ static void checkout_progress(const char *path, size_t cur, size_t tot, void *pa
   static size_t prev = 0;
   if(prev != cur){
     prev = cur;
-    REprintf("\rChecked out %zu of %zu commits...", cur, tot);
-    if(cur == tot)
-      REprintf(" done!\n");
+    if(cur == tot){
+      print_throttled(1, "\rChecked out %zu of %zu commits... done!\n", cur, tot);
+    } else {
+      print_throttled(0, "\rChecked out %zu of %zu commits...", cur, tot);
+    }
   }
 }
 

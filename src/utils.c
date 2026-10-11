@@ -1,5 +1,27 @@
 #include <string.h>
+#include <sys/time.h>
+#include <R_ext/Print.h>
 #include "utils.h"
+
+static double time_now(void){
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return tv.tv_sec + tv.tv_usec * 1e-6;
+}
+
+/* Throttle progress output to max 10x per second because RStudio lags otherwise.
+ * Use force = 1 for the final message, which always prints and resets the timer. */
+void print_throttled(int force, const char *fmt, ...){
+  static double last_print = 0;
+  double now = time_now();
+  if(!force && now - last_print < 0.1)
+    return;
+  last_print = force ? 0 : now;
+  va_list args;
+  va_start(args, fmt);
+  REvprintf(fmt, args);
+  va_end(args);
+}
 
 git_strarray *files_to_array(SEXP files){
   int len = Rf_length(files);
