@@ -2,21 +2,27 @@ IS_MUSL=$(ldd --version 2>&1 | grep musl)
 if [ $? -eq 0 ] && [ "$IS_MUSL" ]; then
 echo "Do not use static libgit2 on MUSL C"
 else
-OLDOPENSSL=$("${R_HOME}/bin/Rscript" -e 'cat(openssl::openssl_config()$version)' | grep "OpenSSL 1.0")
-if [ $? -eq 0 ] && [ "$OLDOPENSSL" ]; then
+OPENSSL_VERSION=$("${R_HOME}/bin/Rscript" -e 'cat(openssl::openssl_config()$version)')
+URL=""
+case "$OPENSSL_VERSION" in
+"OpenSSL 1.0"*)
 URL="https://r-lib.github.io/gert/libgit2-1.1.0.x86_64_legacy-linux.tar.gz"
 TMP_LIBS="-lstatgit2 -lrt -lpthread -lstatssh2 -lstatssl -lstatcrypto -ldl -lpcre -lz"
-else
-OPENSSL3=$("${R_HOME}/bin/Rscript" -e 'cat(openssl::openssl_config()$version)' | grep "OpenSSL 3")
-if [ $? -eq 0 ] && [ "$OPENSSL3" ]; then
-URL="https://r-lib.github.io/gert/libgit2-1.4.2-openssl3-x86_64_linux.tar.gz"
-echo "Found OpenSSL3"
-else
+;;
+"OpenSSL 1.1"*)
 URL="https://autobrew.github.io/archive/x86_64_linux/libgit2-1.4.2-x86_64_linux.tar.gz"
-fi
 TMP_LIBS="-lstatgit2 -lrt -lpthread -lstatssh2 -lstatssl -lstatcrypto -ldl"
-fi
-if "${R_HOME}/bin/R" -s -e "curl::curl_download('$URL','bundle.tar.gz')"; then
+;;
+"OpenSSL 3"*)
+URL="https://r-lib.github.io/gert/libgit2-1.4.2-openssl3-x86_64_linux.tar.gz"
+TMP_LIBS="-lstatgit2 -lrt -lpthread -lstatssh2 -lstatssl -lstatcrypto -ldl"
+echo "Found OpenSSL3"
+;;
+*)
+echo "No static libgit2 available for '$OPENSSL_VERSION', using system libgit2"
+;;
+esac
+if [ "$URL" ] && "${R_HOME}/bin/R" -s -e "curl::curl_download('$URL','bundle.tar.gz')"; then
   DEPS="$PWD/.deps"
   LIBDIR="$DEPS/lib"
   mkdir -p $DEPS
